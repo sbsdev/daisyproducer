@@ -7,6 +7,8 @@ class Document(models.Model):
     publisher = models.CharField(max_length=255)
     content = models.FileField(upload_to='media')
 
+    def __unicode__(self):
+        return self.title
 
 class DocumentForm(ModelForm):
     class Meta:
