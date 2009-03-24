@@ -21,18 +21,20 @@ def as_pdf(request, document_id):
     document = Document.objects.get(pk=document_id)
 
     response = HttpResponse(mimetype='application/pdf')
-    response['Content-Disposition'] = "attachment; filename=\"%s.pdf\"" % (document.title)
+    response['Content-Disposition'] = "attachment; filename=\"%s.pdf\"" % (document.title.encode('utf-8'))
 
     if not form.is_valid():
         return HttpResponseRedirect('/documents/')
 
-    fontSize = form.cleaned_data['fontSize']
-    font = form.cleaned_data['font']
-    pageStyle = form.cleaned_data['pageStyle']
-    alignment = form.cleaned_data['alignment']
-    paperSize = form.cleaned_data['paperSize']
+    formData = form.cleaned_data
     
-    options = "--fontsize=%s --font=\"%s\" --pageStyle=%s --alignment=%s --papersize=%s" % (fontSize, font, pageStyle, alignment, paperSize)
+    fmtString = "--fontsize=%s --font=\"%s\" --pageStyle=%s --alignment=%s --papersize=%s"
+    options = fmtString % (
+        formData['fontSize'], 
+        formData['font'], 
+        formData['pageStyle'], 
+        formData['alignment'],  
+        formData['paperSize'])
     
     inputFile = document.content.path
     outputFile = "/tmp/%s.pdf" % document_id
@@ -54,21 +56,28 @@ def as_brl(request, document_id):
     document = Document.objects.get(pk=document_id)
 
     response = HttpResponse(mimetype='text/plain')
-    response['Content-Disposition'] = "attachment; filename=\"%s.brl\"" % (document.title)
+    response['Content-Disposition'] = "attachment; filename=\"%s.brl\"" % (document.title.encode('utf-8'))
 
     if not form.is_valid():
         return HttpResponseRedirect('/documents/')
 
-    cellsPerLine = form.cleaned_data['cellsPerLine']
-    linesPerPage = form.cleaned_data['linesPerPage']
-    contraction = form.cleaned_data['contraction']
-    hyphenation = form.cleaned_data['hyphenation']
-    showOriginalPageNumbers = form.cleaned_data['showOriginalPageNumbers']
+    formData = form.cleaned_data
 
-    contractionMap = {0 : 'de-de-g0.sbs.utb', 1 : 'de-de-g1.sbs.ctb', 2 : 'de-de-g2.sbs.ctb'}
-    yesNoMap = {True : "yes", False : "no" }
+    contractionMap = {
+        0 : 'de-de-g0.sbs.utb', 
+        1 : 'de-de-g1.sbs.ctb', 
+        2 : 'de-de-g2.sbs.ctb'}
+    yesNoMap = {
+        True : "yes", 
+        False : "no" }
 
-    options = "-CcellsPerLine=\"%s\" -ClinesPerPage=\"%s\" -CliteraryTextTable=\"%s\" -Chyphenate=\"%s\" -CprintPages=\"%s\"" % (cellsPerLine, linesPerPage, contractionMap[contraction], yesNoMap[hyphenation], yesNoMap[showOriginalPageNumbers])
+    fmtString = "-CcellsPerLine=\"%s\" -ClinesPerPage=\"%s\" -CliteraryTextTable=\"%s\" -Chyphenate=\"%s\" -CprintPages=\"%s\""
+    options = fmtString % (
+        formData['cellsPerLine'], 
+        formData['linesPerPage'], 
+        contractionMap[formData['contraction']], 
+        yesNoMap[formData['hyphenation']], 
+        yesNoMap[formData['showOriginalPageNumbers']])
     
     inputFile = document.content.path
     outputFile = "/tmp/%s.brl" % document_id
