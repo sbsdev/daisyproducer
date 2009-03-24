@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Document Details{% endblock %}
+{% block title %}Document Details - {{ document.title }}{% endblock %}
 
 {% block content %}
 {% if document %}
+<h1>Document Details</h1>
 <table>
 
   <tr>
