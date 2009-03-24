@@ -1,0 +1,16 @@
+{% if document %}
+    <ul>
+        <li>{{ document.title }}</li>
+        <li>{{ document.author }}</li>
+        <li>{{ document.publisher }}</li>
+    </ul>
+    <h2>View as PDF</h2>
+
+<form action="/documents/{{ document.id }}.pdf" method="POST">
+{{ lpform.as_p }}
+<input type="submit" value="Download" />
+</form>
+
+{% else %}
+    <p>No document available.</p>
+{% endif %}

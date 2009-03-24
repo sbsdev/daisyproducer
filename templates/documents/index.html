@@ -1,0 +1,10 @@
+{% if document_list %}
+    <ul>
+    {% for document in document_list %}
+        <li><a href="{% url daisyproducer.documents.views.detail document.id %}">{{ document.title }}</a>
+</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No documents are available.</p>
+{% endif %}
