@@ -35,8 +35,44 @@ def as_pdf(request, document_id):
     options = "--fontsize=%s --font=\"%s\" --pageStyle=%s --alignment=%s --papersize=%s" % (fontSize, font, pageStyle, alignment, paperSize)
     
     inputFile = document.content.path
-    outputFile = "/tmp/foo.pdf"
+    outputFile = "/tmp/%s.pdf" % document_id
     command = "dtbook2pdf %s %s %s >/dev/null" % (inputFile, outputFile, options)
+    system(command)
+
+    f = open(outputFile)
+    try:
+        pdf = f.read()
+        response.write(pdf)
+    finally:
+        f.close()
+
+    return response
+
+def as_brl(request, document_id):
+    form = BrailleProfileForm(request.POST)
+
+    document = Document.objects.get(pk=document_id)
+
+    response = HttpResponse(mimetype='text/plain')
+    response['Content-Disposition'] = "attachment; filename=\"%s.brl\"" % (document.title)
+
+    if not form.is_valid():
+        return HttpResponseRedirect('/documents/')
+
+    cellsPerLine = form.cleaned_data['cellsPerLine']
+    linesPerPage = form.cleaned_data['linesPerPage']
+    contraction = form.cleaned_data['contraction']
+    hyphenation = form.cleaned_data['hyphenation']
+    showOriginalPageNumbers = form.cleaned_data['showOriginalPageNumbers']
+
+    contractionMap = {0 : 'de-de-g0.sbs.utb', 1 : 'de-de-g1.sbs.ctb', 2 : 'de-de-g2.sbs.ctb'}
+    yesNoMap = {True : "yes", False : "no" }
+
+    options = "-CcellsPerLine=\"%s\" -ClinesPerPage=\"%s\" -CliteraryTextTable=\"%s\" -Chyphenate=\"%s\" -CprintPages=\"%s\"" % (cellsPerLine, linesPerPage, contractionMap[contraction], yesNoMap[hyphenation], yesNoMap[showOriginalPageNumbers])
+    
+    inputFile = document.content.path
+    outputFile = "/tmp/%s.brl" % document_id
+    command = "dtbook2brl %s %s %s >/dev/null" % (inputFile, outputFile, options)
     system(command)
 
     f = open(outputFile)
