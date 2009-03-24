@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response, get_object_or_404
-from daisyproducer.documents.models import Document
+from daisyproducer.documents.models import Document, BrailleProfileForm
 from django.http import HttpResponse
 from django import forms
 
@@ -47,14 +47,15 @@ def index(request):
     return render_to_response('documents/index.html', {'document_list': document_list})
 
 def detail(request, document_id):
-    d = get_object_or_404(Document, pk=document_id)
+    document = get_object_or_404(Document, pk=document_id)
     lpform = LargePrintDownloadForm()
-    return render_to_response('documents/detail.html', {'document': d, 'lpform' : lpform})
+    bform = BrailleProfileForm()
+    return render_to_response('documents/detail.html', locals())
 
 def as_pdf(request, document_id):
     form = LargePrintDownloadForm(request.POST)
 
-    document = Document.objects.get(id=document_id)
+    document = Document.objects.get(pk=document_id)
 
     response = HttpResponse(mimetype='application/pdf')
     response['Content-Disposition'] = "attachment; filename=%s.pdf" % (document.title)

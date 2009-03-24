@@ -30,6 +30,15 @@
     <p><input type="submit" value="Download" /></p>
 </form>
 
+<h2>View as Braille</h2>
+
+<form action="/documents/{{ document.id }}.brl" method="POST">
+  <table>
+    {{ bform.as_table }}
+    </table>
+    <p><input type="submit" value="Download" /></p>
+</form>
+
 {% else %}
     <p>No document available.</p>
 {% endif %}
