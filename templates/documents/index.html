@@ -1,10 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Listing documents{% endblock %}
+
+{% block content %}
+<h1>Listing documents</h1>
+
 {% if document_list %}
-    <ul>
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Publisher</th>
+    </tr>
+
     {% for document in document_list %}
-        <li><a href="{% url daisyproducer.documents.views.detail document.id %}">{{ document.title }}</a>
-</li>
+      <tr>
+        <td>{{ document.title }}</td>
+        <td>{{ document.author }}</td>
+        <td>{{ document.publisher }}</td>
+        <td><a href="{% url daisyproducer.documents.views.detail document.id %}">Show</a></td>
+      </tr>
     {% endfor %}
-    </ul>
+    </table>
 {% else %}
     <p>No documents are available.</p>
 {% endif %}
+{% endblock %}

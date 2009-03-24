@@ -1,16 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Document Details{% endblock %}
+
+{% block content %}
 {% if document %}
-    <ul>
-        <li>{{ document.title }}</li>
-        <li>{{ document.author }}</li>
-        <li>{{ document.publisher }}</li>
-    </ul>
-    <h2>View as PDF</h2>
+<table>
+
+  <tr>
+    <th>Title:</th>
+    <td>{{ document.title }}</td>
+  </tr>
+  <tr>
+    <th>Author:</th>
+    <td>{{ document.author }}</td>
+    
+  </tr>
+  <tr>
+    <th>Publisher:</th>
+    <td>{{ document.publisher }}</td>
+  </tr>
+</table>
+
+<h2>View as PDF</h2>
 
 <form action="/documents/{{ document.id }}.pdf" method="POST">
-{{ lpform.as_p }}
-<input type="submit" value="Download" />
+  <table>
+    {{ lpform.as_table }}
+    </table>
+    <p><input type="submit" value="Download" /></p>
 </form>
 
 {% else %}
     <p>No document available.</p>
 {% endif %}
+{% endblock %}
