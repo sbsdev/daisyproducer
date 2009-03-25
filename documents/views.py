@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 
 from os import system
@@ -18,13 +18,13 @@ def detail(request, document_id):
 def as_pdf(request, document_id):
     form = LargePrintProfileForm(request.POST)
 
+    if not form.is_valid():
+        return HttpResponseRedirect('/documents/%s' % document_id)
+
     document = Document.objects.get(pk=document_id)
 
     response = HttpResponse(mimetype='application/pdf')
     response['Content-Disposition'] = "attachment; filename=\"%s.pdf\"" % (document.title.encode('utf-8'))
-
-    if not form.is_valid():
-        return HttpResponseRedirect('/documents/')
 
     formData = form.cleaned_data
     
@@ -53,13 +53,13 @@ def as_pdf(request, document_id):
 def as_brl(request, document_id):
     form = BrailleProfileForm(request.POST)
 
+    if not form.is_valid():
+        return HttpResponseRedirect('/documents/%s' % document_id)
+
     document = Document.objects.get(pk=document_id)
 
     response = HttpResponse(mimetype='text/plain')
     response['Content-Disposition'] = "attachment; filename=\"%s.brl\"" % (document.title.encode('utf-8'))
-
-    if not form.is_valid():
-        return HttpResponseRedirect('/documents/')
 
     formData = form.cleaned_data
 
