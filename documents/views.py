@@ -6,8 +6,8 @@ from django import forms
 from os import system
 
 def index(request):
-    document_list = Document.objects.all()
-    return render_to_response('documents/index.html', {'document_list': document_list})
+    document_list = Document.objects.all().order_by('title')
+    return render_to_response('documents/index.html', locals())
 
 def detail(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
@@ -22,9 +22,6 @@ def as_pdf(request, document_id):
         return HttpResponseRedirect('/documents/%s' % document_id)
 
     document = Document.objects.get(pk=document_id)
-
-    response = HttpResponse(mimetype='application/pdf')
-    response['Content-Disposition'] = "attachment; filename=\"%s.pdf\"" % (document.title.encode('utf-8'))
 
     formData = form.cleaned_data
     
@@ -41,14 +38,7 @@ def as_pdf(request, document_id):
     command = "dtbook2pdf %s %s %s >/dev/null" % (inputFile, outputFile, options)
     system(command)
 
-    f = open(outputFile)
-    try:
-        pdf = f.read()
-        response.write(pdf)
-    finally:
-        f.close()
-
-    return response
+    return render_to_mimetype_response('application/pdf', document.title.encode('utf-8'), outputFile)
 
 def as_brl(request, document_id):
     form = BrailleProfileForm(request.POST)
@@ -57,9 +47,6 @@ def as_brl(request, document_id):
         return HttpResponseRedirect('/documents/%s' % document_id)
 
     document = Document.objects.get(pk=document_id)
-
-    response = HttpResponse(mimetype='text/plain')
-    response['Content-Disposition'] = "attachment; filename=\"%s.brl\"" % (document.title.encode('utf-8'))
 
     formData = form.cleaned_data
 
@@ -84,12 +71,18 @@ def as_brl(request, document_id):
     command = "dtbook2brl %s %s %s >/dev/null" % (inputFile, outputFile, options)
     system(command)
 
+    return render_to_mimetype_response('text/plain', document.title.encode('utf-8'), outputFile)
+
+
+def render_to_mimetype_response(mimetype, filename, outputFile):
+    response = HttpResponse(mimetype=mimetype)
+    response['Content-Disposition'] = "attachment; filename=\"%s\"" % (filename)
+
     f = open(outputFile)
     try:
-        pdf = f.read()
-        response.write(pdf)
+        content = f.read()
+        response.write(content)
     finally:
         f.close()
 
     return response
-
