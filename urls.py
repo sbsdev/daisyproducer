@@ -1,5 +1,8 @@
 from django.conf.urls.defaults import *
 
+import os.path
+PROJECT_DIR = os.path.dirname(__file__)
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -12,7 +15,8 @@ urlpatterns = patterns('',
     (r'^documents/(?P<document_id>\d+).brl$', 'daisyproducer.documents.views.as_brl'),
 
     # static files
-    (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/eglic/src/daisyproducer/media'}),
+    (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
+     {'document_root': os.path.join(PROJECT_DIR, 'media')}),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
