@@ -1,9 +1,9 @@
 from django.conf.urls.defaults import *
+from django.contrib.auth.views import login, logout
 
 import os.path
 PROJECT_DIR = os.path.dirname(__file__)
 
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
@@ -14,14 +14,17 @@ urlpatterns = patterns('',
     (r'^documents/(?P<document_id>\d+).pdf$', 'daisyproducer.documents.views.as_pdf'),
     (r'^documents/(?P<document_id>\d+).brl$', 'daisyproducer.documents.views.as_brl'),
 
+    (r'^documents/manage/$', 'daisyproducer.documents.views.manage_index'),
+    (r'^documents/manage/(?P<document_id>\d+)/$', 'daisyproducer.documents.views.manage_detail'),
+
+    # authentication
+    (r'^accounts/login/$',  login, {'template_name' : 'login.html'}),
+    (r'^accounts/logout/$', logout),
+
     # static files
     (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
      {'document_root': os.path.join(PROJECT_DIR, 'media')}),
 
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
-    # to INSTALLED_APPS to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
+    # enable the admin:
     (r'^admin/(.*)', admin.site.root),
 )

@@ -1,11 +1,36 @@
 from django.db import models
 from django.forms import ModelForm
 
+from daisyproducer.documents.stateMachine import Machine
+
+STATE_CHOICES = (
+    ('new', 'new'),
+    ('scanned', 'scanned'),
+    ('ocred', 'ocred'),
+    ('marked-up', 'marked-up'),
+    ('corrected', 'corrected'),
+    ('production-ready', 'production-ready'),
+)
+
 class Document(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
+    state = models.CharField(max_length=32, default='new', choices=STATE_CHOICES)
     content = models.FileField(upload_to='media')
+
+    def __init__(self, *args, **kwargs):
+        super(Document, self).__init__(*args, **kwargs)
+
+        states = tuple([t[0] for t in STATE_CHOICES])
+
+        self.machine = Machine(self, states, initial='new')
+
+        self.machine.event('scan', {'from': 'new', 'to': 'scanned'})
+        self.machine.event('ocr', {'from': 'scanned', 'to': 'ocred'})
+        self.machine.event('markup', {'from': 'ocred', 'to': 'marked-up'})
+        self.machine.event('correct', {'from': 'marked-up', 'to': 'corrected'})
+        self.machine.event('ready', {'from': 'corrected', 'to': 'production-ready'})
 
     def __unicode__(self):
         return self.title

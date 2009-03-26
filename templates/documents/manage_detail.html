@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Document Details - {{ document.title }}{% endblock %}
+
+{% block content %}
+{% if document %}
+<h1>Manage Document Details</h1>
+<table>
+
+  <tr>
+    <th>Title:</th>
+    <td>{{ document.title }}</td>
+  </tr>
+  <tr>
+    <th>Author:</th>
+    <td>{{ document.author }}</td>
+  </tr>
+  <tr>
+    <th>Publisher:</th>
+    <td>{{ document.publisher }}</td>
+  </tr>
+  <tr>
+    <th>State:</th>
+    <td>{{ document.state }}</td>
+  </tr>
+</table>
+
+{% else %}
+    <p>No document available.</p>
+{% endif %}
+{% endblock %}

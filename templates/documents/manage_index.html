@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Managing documents{% endblock %}
+
+{% block content %}
+<h1>Managing documents</h1>
+
+{% if document_list %}
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Publisher</th>
+      <th>State</th>
+    </tr>
+
+    {% for document in document_list %}
+      <tr>
+        <td>{{ document.title }}</td>
+        <td>{{ document.author }}</td>
+        <td>{{ document.publisher }}</td>
+        <td>{{ document.state }}</td>
+        <td><a href="{% url daisyproducer.documents.views.manage_detail document.id %}">Show</a></td>
+      </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No documents are available.</p>
+{% endif %}
+{% endblock %}
