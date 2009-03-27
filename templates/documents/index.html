@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Listing documents{% endblock %}
+{% block title %}{{ block.super }} - Listing documents{% endblock %}
+{% block subtitle %}{{ block.super }} - Listing documents{% endblock %}
 
 {% block content %}
-<h1>Listing documents</h1>
 
 {% if document_list %}
   <table>
