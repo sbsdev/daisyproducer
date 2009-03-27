@@ -19,7 +19,8 @@ class Document(models.Model):
     author = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
     state = models.CharField(max_length=32, default='new', choices=STATE_CHOICES)
-    content = models.FileField(upload_to='media')
+    isValidXML = models.BooleanField(default=False)
+    content = models.FileField(upload_to='media', null=True)
 
     def __init__(self, *args, **kwargs):
         super(Document, self).__init__(*args, **kwargs)
@@ -36,11 +37,6 @@ class Document(models.Model):
 
     def __unicode__(self):
         return self.title
-
-class DocumentForm(ModelForm):
-    class Meta:
-        model = Document
-
 
 BRAILLE_CONTRACTION_GRADE_CHOICES = (
     ('0', 'Grade 0'),

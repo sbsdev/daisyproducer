@@ -13,9 +13,11 @@ urlpatterns = patterns('',
 
     (r'^documents/(?P<document_id>\d+).pdf$', 'daisyproducer.documents.views.as_pdf'),
     (r'^documents/(?P<document_id>\d+).brl$', 'daisyproducer.documents.views.as_brl'),
-
+    # manage
     (r'^documents/manage/$', 'daisyproducer.documents.views.manage_index'),
     (r'^documents/manage/(?P<document_id>\d+)/$', 'daisyproducer.documents.views.manage_detail'),
+    # create
+    (r'^documents/create/$', 'daisyproducer.documents.createViews.create'),
 
     # authentication
     (r'^accounts/login/$',  login, {'template_name' : 'login.html'}),

@@ -2,10 +2,10 @@ from django.shortcuts import render_to_response, get_object_or_404
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django import forms
 
 from os import system
 
+# consume use case
 def index(request):
     document_list = Document.objects.filter(state='production-ready').order_by('title')
     return render_to_response('documents/index.html', locals())
@@ -16,16 +16,6 @@ def detail(request, document_id):
     bform = BrailleProfileForm()
     return render_to_response('documents/detail.html', locals())
 
-@login_required
-def manage_index(request):
-    document_list = Document.objects.all().order_by('title')
-    return render_to_response('documents/manage_index.html', locals())
-    
-@login_required
-def manage_detail(request, document_id):
-    document = get_object_or_404(Document, pk=document_id)
-    return render_to_response('documents/manage_detail.html', locals())
-    
 def as_pdf(request, document_id):
     form = LargePrintProfileForm(request.POST)
 
@@ -97,3 +87,15 @@ def render_to_mimetype_response(mimetype, filename, outputFile):
         f.close()
 
     return response
+
+# manage use case
+@login_required
+def manage_index(request):
+    document_list = Document.objects.all().order_by('title')
+    return render_to_response('documents/manage_index.html', locals())
+    
+@login_required
+def manage_detail(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+    return render_to_response('documents/manage_detail.html', locals())
+    
