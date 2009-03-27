@@ -24,7 +24,7 @@ class Document(models.Model):
     def __init__(self, *args, **kwargs):
         super(Document, self).__init__(*args, **kwargs)
 
-        states = tuple([t[0] for t in STATE_CHOICES])
+        states = STATES
 
         self.machine = Machine(self, states, initial='new')
 
