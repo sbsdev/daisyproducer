@@ -15,6 +15,8 @@
 
     {% if request.user.is_authenticated %}
     	<div id="user-tools">User: <strong>{{ request.user.username }}</strong> <a href="/admin/logout/">Log out</a></div>
+    {% else %}
+    	<div id="user-tools"><a href="/accounts/login/">Log in</a></div>
     {% endif %}
     
   </div>
