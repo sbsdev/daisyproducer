@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Managing documents{% endblock %}
+{% block title %}{{ block.super }} - Managing documents{% endblock %}
+{% block subtitle %}{{ block.super }} - Managing documents{% endblock %}
 
 {% block content %}
-<h1>Managing documents</h1>
-
 {% if document_list %}
   <table>
     <tr>
@@ -16,11 +15,11 @@
 
     {% for document in document_list %}
       <tr>
-        <td>{{ document.title }}</td>
+        <td><a href="{% url daisyproducer.documents.manageViews.detail document.id %}">{{ document.title }}</a></td>
         <td>{{ document.author }}</td>
         <td>{{ document.publisher }}</td>
         <td>{{ document.state }}</td>
-        <td><a href="{% url daisyproducer.documents.views.manage_detail document.id %}">Show</a></td>
+        <td><a href="{% url daisyproducer.documents.manageViews.done document.id %}">Done</a></td>
       </tr>
     {% endfor %}
     </table>

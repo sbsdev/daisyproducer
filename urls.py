@@ -14,8 +14,9 @@ urlpatterns = patterns('',
     (r'^documents/(?P<document_id>\d+).pdf$', 'daisyproducer.documents.views.as_pdf'),
     (r'^documents/(?P<document_id>\d+).brl$', 'daisyproducer.documents.views.as_brl'),
     # manage
-    (r'^documents/manage/$', 'daisyproducer.documents.views.manage_index'),
-    (r'^documents/manage/(?P<document_id>\d+)/$', 'daisyproducer.documents.views.manage_detail'),
+    (r'^manage/$', 'daisyproducer.documents.manageViews.index'),
+    (r'^manage/(?P<document_id>\d+)/$', 'daisyproducer.documents.manageViews.detail'),
+    (r'^manage/(?P<document_id>\d+)/done$', 'daisyproducer.documents.manageViews.done'),
     # create
     (r'^documents/create/$', 'daisyproducer.documents.createViews.create'),
 

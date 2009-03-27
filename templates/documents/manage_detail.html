@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Manage Document Details - {{ document.title }}{% endblock %}
+{% block title %}{{ block.super }} - Manage Document Details - {{ document.title }}{% endblock %}
+{% block subtitle %}{{ block.super }} - Manage Document Details{% endblock %}
+
 
 {% block content %}
 {% if document %}
-<h1>Manage Document Details</h1>
 <table>
 
   <tr>
