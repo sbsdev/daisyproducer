@@ -3,14 +3,16 @@ from django.forms import ModelForm
 
 from daisyproducer.documents.stateMachine import Machine
 
-STATE_CHOICES = (
-    ('new', 'new'),
-    ('scanned', 'scanned'),
-    ('ocred', 'ocred'),
-    ('marked-up', 'marked-up'),
-    ('corrected', 'corrected'),
-    ('production-ready', 'production-ready'),
-)
+STATES = (
+    'new',
+    'scanned',
+    'ocred',
+    'marked-up',
+    'corrected',
+    'production-ready',
+    )
+
+STATE_CHOICES = tuple([(state, state) for state in STATES])
 
 class Document(models.Model):
     title = models.CharField(max_length=255)
