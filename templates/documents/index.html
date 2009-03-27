@@ -15,10 +15,9 @@
 
     {% for document in document_list %}
       <tr>
-        <td>{{ document.title }}</td>
+        <td><a href="{% url daisyproducer.documents.views.detail document.id %}">{{ document.title }}</a></td>
         <td>{{ document.author }}</td>
         <td>{{ document.publisher }}</td>
-        <td><a href="{% url daisyproducer.documents.views.detail document.id %}">Show</a></td>
       </tr>
     {% endfor %}
     </table>
