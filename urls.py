@@ -9,23 +9,23 @@ admin.autodiscover()
 
 # consume
 urlpatterns = patterns('daisyproducer.documents.views',
-    (r'^documents/$', 'index'),
-    (r'^documents/(?P<document_id>\d+)/$', 'detail'),
+    url(r'^documents/$', 'index', name='consume_index'),
+    url(r'^documents/(?P<document_id>\d+)/$', 'detail', name='consume_detail'),
 
-    (r'^documents/(?P<document_id>\d+).pdf$', 'as_pdf'),
-    (r'^documents/(?P<document_id>\d+).brl$', 'as_brl'),
+    url(r'^documents/(?P<document_id>\d+).pdf$', 'as_pdf'),
+    url(r'^documents/(?P<document_id>\d+).brl$', 'as_brl'),
 )
 
 # manage
 urlpatterns += patterns('daisyproducer.documents.manageViews',
-    (r'^manage/$', 'index'),
-    (r'^manage/(?P<document_id>\d+)/$', 'detail'),
-    (r'^manage/(?P<document_id>\d+)/done$', 'done'),
+    url(r'^manage/$', 'index', name='manage_index'),
+    url(r'^manage/(?P<document_id>\d+)/$', 'detail', name='manage_detail'),
+    url(r'^manage/(?P<document_id>\d+)/done$', 'done', name='manage_done'),
 )
 
-# create
+# meta data
 urlpatterns += patterns('daisyproducer.documents.createViews',
-    (r'^documents/create/$', 'create'),
+    url(r'^documents/create/$', 'create', name='meta_create'),
 )
 
 urlpatterns += patterns('',

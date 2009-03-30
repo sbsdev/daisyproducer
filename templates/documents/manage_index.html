@@ -15,11 +15,11 @@
 
     {% for document in document_list %}
       <tr>
-        <td><a href="{% url daisyproducer.documents.manageViews.detail document.id %}">{{ document.title }}</a></td>
+        <td><a href="{% url manage_detail document.id %}">{{ document.title }}</a></td>
         <td>{{ document.author }}</td>
         <td>{{ document.publisher }}</td>
         <td>{{ document.state }}</td>
-        <td><a href="{% url daisyproducer.documents.manageViews.done document.id %}">Done</a></td>
+        <td><a href="{% url manage_done document.id %}">Done</a></td>
       </tr>
     {% endfor %}
     </table>

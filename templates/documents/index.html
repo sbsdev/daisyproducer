@@ -15,7 +15,7 @@
 
     {% for document in document_list %}
       <tr>
-        <td><a href="{% url daisyproducer.documents.views.detail document.id %}">{{ document.title }}</a></td>
+        <td><a href="{% url consume_detail document.id %}">{{ document.title }}</a></td>
         <td>{{ document.author }}</td>
         <td>{{ document.publisher }}</td>
       </tr>
