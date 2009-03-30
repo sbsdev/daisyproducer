@@ -34,7 +34,7 @@ def as_pdf(request, document_id):
         formData['alignment'],  
         formData['paperSize'])
     
-    inputFile = document.content.path
+    inputFile = document.latest_version().content.path
     outputFile = "/tmp/%s.pdf" % document_id
     command = "dtbook2pdf %s %s %s >/dev/null" % (inputFile, outputFile, options)
     system(command)
@@ -67,7 +67,7 @@ def as_brl(request, document_id):
         yesNoMap[formData['hyphenation']], 
         yesNoMap[formData['showOriginalPageNumbers']])
     
-    inputFile = document.content.path
+    inputFile = document.latest_version().content.path
     outputFile = "/tmp/%s.brl" % document_id
     command = "dtbook2brl %s %s %s >/dev/null" % (inputFile, outputFile, options)
     system(command)

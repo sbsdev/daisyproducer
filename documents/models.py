@@ -19,8 +19,6 @@ class Document(models.Model):
     author = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
     state = models.CharField(max_length=32, default='new', choices=STATE_CHOICES)
-    isValidXML = models.BooleanField(default=False)
-    content = models.FileField(upload_to='media', null=True)
 
     def __init__(self, *args, **kwargs):
         super(Document, self).__init__(*args, **kwargs)
@@ -38,6 +36,31 @@ class Document(models.Model):
     def __unicode__(self):
         return self.title
 
+    def latest_version(self):
+        return self.version_set.latest()
+
+class Version(models.Model):
+    content = models.FileField(upload_to='media')
+    document = models.ForeignKey(Document)
+    version_date = models.DateField()
+
+    class Meta:
+        get_latest_by = "version_date"
+
+MIME_TYPE_CHOICES = (
+    ('application/pdf', 'Portable Document Format, PDF'),
+    ('application/msword', 'Microsoft Word files'),
+    ('application/rtf', 'Microsoft RTF files'),
+    ('text/html', 'HTML'),
+)
+
+class Attachment(models.Model):
+    comment = models.CharField(max_length=255)
+    mime_type = models.CharField(max_length=32, choices=MIME_TYPE_CHOICES)
+    content = models.FileField(upload_to='media')
+    document = models.ForeignKey(Document)
+    
+# Profiles
 BRAILLE_CONTRACTION_GRADE_CHOICES = (
     ('0', 'Grade 0'),
     ('1', 'Grade 1'),
