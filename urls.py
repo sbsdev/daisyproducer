@@ -8,7 +8,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 # consume
-urlpatterns = patterns('daisyproducer.documents.views',
+urlpatterns = patterns('daisyproducer.documents.views.consume',
     url(r'^documents/$', 'index', name='consume_index'),
     url(r'^documents/(?P<document_id>\d+)/$', 'detail', name='consume_detail'),
 
@@ -17,14 +17,14 @@ urlpatterns = patterns('daisyproducer.documents.views',
 )
 
 # manage
-urlpatterns += patterns('daisyproducer.documents.manageViews',
+urlpatterns += patterns('daisyproducer.documents.views.manage',
     url(r'^manage/$', 'index', name='manage_index'),
     url(r'^manage/(?P<document_id>\d+)/$', 'detail', name='manage_detail'),
     url(r'^manage/(?P<document_id>\d+)/done$', 'done', name='manage_done'),
 )
 
 # meta data
-urlpatterns += patterns('daisyproducer.documents.createViews',
+urlpatterns += patterns('daisyproducer.documents.views.metaData',
     url(r'^documents/create/$', 'create', name='meta_create'),
 )
 
