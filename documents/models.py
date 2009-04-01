@@ -8,9 +8,21 @@ STATES = (
     'scanned',
     'ocred',
     'marked-up',
-    'corrected',
-    'production-ready',
+    'proof-read',
+    'approved',
     )
+
+TRANSITIONS = (
+    'scanning',
+    'ocr', 
+    'marking up', 
+    'proof reading', 
+    'approving',
+    None,
+    )
+
+TRANSITION_STATE_MAP = dict(zip(TRANSITIONS,STATES)) # which transition leads to which state
+STATE_TRANSITION_MAP = dict(zip(STATES,TRANSITIONS)) # which state is coming from which transition
 
 STATE_CHOICES = tuple([(state, state) for state in STATES])
 
@@ -27,17 +39,22 @@ class Document(models.Model):
 
         self.machine = Machine(self, states, initial='new')
 
-        self.machine.event('scan', {'from': 'new', 'to': 'scanned'})
-        self.machine.event('ocr', {'from': 'scanned', 'to': 'ocred'})
-        self.machine.event('markup', {'from': 'ocred', 'to': 'marked-up'})
-        self.machine.event('correct', {'from': 'marked-up', 'to': 'corrected'})
-        self.machine.event('ready', {'from': 'corrected', 'to': 'production-ready'})
+        self.machine.event('scanning', {'from': 'new', 'to': 'scanned'})
+        self.machine.event('ocring', {'from': 'scanned', 'to': 'ocred'})
+        self.machine.event('marking-up', {'from': 'ocred', 'to': 'marked-up'})
+        self.machine.event('proof-reading', {'from': 'marked-up', 'to': 'proof-read'})
+        self.machine.event('approving', {'from': 'proof-read', 'to': 'approved'})
+        self.machine.event('fixing-errata', {'from': 'approved', 'to': 'marked-up'})
+        self.machine.event('fixing-typos', {'from': 'proof-read', 'to': 'marked-up'})
 
     def __unicode__(self):
         return self.title
 
     def latest_version(self):
         return self.version_set.latest()
+
+    def nextValidStates(self):
+        return self.machine.nextValidStates(self.state)
 
 class Version(models.Model):
     content = models.FileField(upload_to='media')
