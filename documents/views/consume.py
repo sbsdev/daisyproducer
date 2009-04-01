@@ -88,14 +88,3 @@ def render_to_mimetype_response(mimetype, filename, outputFile):
 
     return response
 
-# manage use case
-@login_required
-def manage_index(request):
-    document_list = Document.objects.all().order_by('title')
-    return render_to_response('documents/manage_index.html', locals())
-    
-@login_required
-def manage_detail(request, document_id):
-    document = get_object_or_404(Document, pk=document_id)
-    return render_to_response('documents/manage_detail.html', locals())
-    
