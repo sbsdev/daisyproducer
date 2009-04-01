@@ -1,5 +1,9 @@
+""" Taken from http://www.djangosnippets.org/snippets/737/"""
+
 from django.db import models
 from django.utils.functional import curry
+
+ERROR_MSG = "%s: '%s' is not a registered state"
 
 class MachineError(Exception):
     def __init__(self, value):
@@ -17,13 +21,16 @@ class Machine():
             raise MachineError("Must give an initial state")
         self._set_initial_or_retrieve_state(initial_state)
         self.states = []
+        self.validTransitions = {}
         self.state_triggers = {}
         for state in states:
             if isinstance(state, str):
                 self.states.append(state)
+                self.validTransitions[state] = set()
             elif isinstance(state, dict):
                 state_name = state.keys()[0]
                 self.states.append(state_name)
+                self.validTransitions[state_name] = set()
                 self.state_triggers[state_name] = state[state_name]
         self.states = tuple(self.states)
 
@@ -92,3 +99,28 @@ class Machine():
         is_state = "is_%s" % going_to
         setattr(self.model, end_state, curry(self.end_state, state=going_to, from_states=coming_from))
         setattr(self.model, is_state, curry(self.is_state, going_to))
+        self.updateValidTransitions(coming_from, going_to)
+
+    def updateValidTransitions(self, coming_from, going_to):
+        if going_to not in self.states:
+            raise MachineError(ERROR_MSG % ('going_to', going_to))
+        if isinstance(coming_from, str):
+            if coming_from == '*':
+                for state in self.states:
+                    self.validTransitions[state].add(going_to)
+            elif coming_from in self.states:
+                self.validTransitions[coming_from].add(going_to)
+            else:
+                raise MachineError(ERROR_MSG % ('coming_from', coming_from))
+        elif isinstance(coming_from, list):
+            for state in coming_from:
+                if state in self.states:
+                    self.validTransitions[coming_from].add(going_to)
+                else:
+                    raise MachineError(ERROR_MSG % ('coming_from', coming_from))
+
+    def nextValidStates(self, coming_from):
+        if coming_from not in self.states:
+            raise MachineError(ERROR_MSG % ('coming_from', coming_from))
+        return self.validTransitions[coming_from]
+
