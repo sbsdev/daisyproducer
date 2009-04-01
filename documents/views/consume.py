@@ -7,7 +7,7 @@ from os import system
 
 # consume use case
 def index(request):
-    document_list = Document.objects.filter(state='production-ready').order_by('title')
+    document_list = Document.objects.filter(state='approved').order_by('title')
     return render_to_response('documents/index.html', locals())
 
 def detail(request, document_id):
