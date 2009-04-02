@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response, get_object_or_404
-from daisyproducer.documents.models import Document, STATE_TRANSITION_MAP
+from daisyproducer.documents.models import Document
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 
