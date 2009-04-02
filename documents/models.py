@@ -1,32 +1,32 @@
 from django.db import models
 from django.forms import ModelForm
-
 from daisyproducer.documents.stateMachine import Machine
 
-STATES = (
-    'new',
-    'scanned',
-    'ocred',
-    'marked_up',
-    'proof_read',
-    'approved',
-    )
-
-TRANSITIONS = (
-    'scanning',
-    'ocr', 
-    'marking_up', 
-    'proof_reading', 
-    'approving',
-    None,
-    )
-
-TRANSITION_STATE_MAP = dict(zip(TRANSITIONS,STATES)) # which transition leads to which state
-STATE_TRANSITION_MAP = dict(zip(STATES,TRANSITIONS)) # which state is coming from which transition
-
-STATE_CHOICES = tuple([(state, state) for state in STATES])
-
 class Document(models.Model):
+
+    STATES = (
+        'new',
+        'scanned',
+        'ocred',
+        'marked_up',
+        'proof_read',
+        'approved',
+        )
+    
+    TRANSITIONS = (
+        'scanning',
+        'ocr', 
+        'marking_up', 
+        'proof_reading', 
+        'approving',
+        None,
+        )
+    
+    TRANSITION_STATE_MAP = dict(zip(TRANSITIONS,STATES)) # which transition leads to which state
+    STATE_TRANSITION_MAP = dict(zip(STATES,TRANSITIONS)) # which state is coming from which transition
+
+    STATE_CHOICES = tuple([(state, state) for state in STATES])
+
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
@@ -35,7 +35,7 @@ class Document(models.Model):
     def __init__(self, *args, **kwargs):
         super(Document, self).__init__(*args, **kwargs)
 
-        states = STATES
+        states = Document.STATES
 
         self.machine = Machine(self, states, initial='new')
 
