@@ -33,6 +33,8 @@ class Machine():
                 self.validTransitions[state_name] = set()
                 self.state_triggers[state_name] = state[state_name]
         self.states = tuple(self.states)
+        setattr(self.model, 'transitionTo' , curry(self._update_model))
+        setattr(self.model, 'nextValidStates' , curry(self.nextValidStates))
 
     def _extract_from_state(self, kwargs):
         try:
@@ -97,7 +99,7 @@ class Machine():
         coming_from = self._extract_from_state(transition)
         going_to = self._extract_to_state(transition)
         is_state = "is_%s" % going_to
-        setattr(self.model, end_state, curry(self.end_state, state=going_to, from_states=coming_from))
+#        setattr(self.model, end_state, curry(self.end_state, state=going_to, from_states=coming_from))
         setattr(self.model, is_state, curry(self.is_state, going_to))
         self.updateValidTransitions(coming_from, going_to)
 
@@ -119,8 +121,6 @@ class Machine():
                 else:
                     raise MachineError(ERROR_MSG % ('coming_from', coming_from))
 
-    def nextValidStates(self, coming_from):
-        if coming_from not in self.states:
-            raise MachineError(ERROR_MSG % ('coming_from', coming_from))
-        return self.validTransitions[coming_from]
-
+    def nextValidStates(self):
+        self._update_state_from_model()
+        return self.validTransitions[self.state]
