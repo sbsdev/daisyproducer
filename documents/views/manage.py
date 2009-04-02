@@ -8,13 +8,7 @@ def index(request):
     """Show all the documents that are relevant for the groups that
     the user has and group them by action
     """
-    document_list = Document.objects.all()
-    document_list_by_state = {}
-    for document in document_list:
-        document_list_by_state.setdefault(document.state, []).append(document)
-    document_list_by_transition = {}
-    for state, documents in document_list_by_state.items():
-        document_list_by_transition[STATE_TRANSITION_MAP[state]] = sorted(documents, lambda x,y: cmp(x.title, y.title))
+    document_list = Document.objects.all().order_by('state','title')
     return render_to_response('documents/manage_index.html', locals())
     
 @login_required
@@ -23,10 +17,9 @@ def detail(request, document_id):
     return render_to_response('documents/manage_detail.html', locals())
     
 @login_required
-def done(request, document_id):
+def transition(request, document_id, newState):
     document = Document.objects.get(pk=document_id)
-    # move to the next state and save
-    # document.scan()
-    # document.save()
+
+    document.transitionTo(newState)
     return HttpResponseRedirect('/manage/')
     
