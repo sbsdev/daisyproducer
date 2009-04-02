@@ -15,8 +15,8 @@ STATES = (
 TRANSITIONS = (
     'scanning',
     'ocr', 
-    'marking up', 
-    'proof reading', 
+    'marking_up', 
+    'proof_reading', 
     'approving',
     None,
     )
