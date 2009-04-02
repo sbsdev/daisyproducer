@@ -7,8 +7,8 @@ STATES = (
     'new',
     'scanned',
     'ocred',
-    'marked-up',
-    'proof-read',
+    'marked_up',
+    'proof_read',
     'approved',
     )
 
@@ -41,20 +41,17 @@ class Document(models.Model):
 
         self.machine.event('scanning', {'from': 'new', 'to': 'scanned'})
         self.machine.event('ocring', {'from': 'scanned', 'to': 'ocred'})
-        self.machine.event('marking-up', {'from': 'ocred', 'to': 'marked-up'})
-        self.machine.event('proof-reading', {'from': 'marked-up', 'to': 'proof-read'})
-        self.machine.event('approving', {'from': 'proof-read', 'to': 'approved'})
-        self.machine.event('fixing-errata', {'from': 'approved', 'to': 'marked-up'})
-        self.machine.event('fixing-typos', {'from': 'proof-read', 'to': 'marked-up'})
+        self.machine.event('marking-up', {'from': 'ocred', 'to': 'marked_up'})
+        self.machine.event('proof-reading', {'from': 'marked_up', 'to': 'proof_read'})
+        self.machine.event('approving', {'from': 'proof_read', 'to': 'approved'})
+        self.machine.event('fixing-errata', {'from': 'approved', 'to': 'marked_up'})
+        self.machine.event('fixing-typos', {'from': 'proof_read', 'to': 'marked_up'})
 
     def __unicode__(self):
         return self.title
 
     def latest_version(self):
         return self.version_set.latest()
-
-    def nextValidStates(self):
-        return self.machine.nextValidStates(self.state)
 
 class Version(models.Model):
     content = models.FileField(upload_to='media')
