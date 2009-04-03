@@ -29,18 +29,18 @@ def detail(request, document_id):
 
     if request.method == 'POST':
         form = PartialVersionForm(request.POST, request.FILES)
-        if form.is_valid():
+        content_type = request.FILES['content'].content_type
+        if form.is_valid() and content_type  == 'text/xml':
             version = form.save(commit=False)
             version.document = document
             # FIXME: make sure the uploaded version is valid xml
             version.save()
             return HttpResponseRedirect("/manage/%s/" % document_id)
-        # FIXME: this part is not reached as a PartialAttachmentForm
-        # is also a valid PartialVersionForm (they have the same
-        # fields
         form = PartialAttachmentForm(request.POST, request.FILES)
-        if form.is_valid():
+        if form.is_valid() and \
+                content_type in tuple([choice[0] for choice in Attachment.MIME_TYPE_CHOICES]):
             attachment = form.save(commit=False)
+            attachment.mime_type = content_type
             attachment.document = document
             # FIXME: make sure the uploaded attachment and the claimed mime_type is valid
             attachment.save()
