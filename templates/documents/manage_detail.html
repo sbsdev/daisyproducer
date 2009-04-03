@@ -28,8 +28,13 @@
 
 <h2>Versions</h2>
 <table>
+  <tr>
+    <th>Comment</td>
+    <th>Created at</td>
+  </tr>
   {% for version in document.version_set.all %}
   <tr>
+    <td>{{ version.comment }}</td>
     <td>{{ version.created_at }}</td>
   </tr>
   {% endfor %}

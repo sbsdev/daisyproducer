@@ -7,7 +7,7 @@ from django.forms import ModelForm
 class PartialVersionForm(ModelForm):
     class Meta:
         model = Version
-        fields = ('content',)
+        fields = ('comment', 'content',)
 
 @login_required
 def index(request):

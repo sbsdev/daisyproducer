@@ -54,6 +54,7 @@ class Document(models.Model):
         return self.version_set.latest()
 
 class Version(models.Model):
+    comment = models.CharField(max_length=255)
     content = models.FileField(upload_to='media')
     document = models.ForeignKey(Document)
     created_at = models.DateTimeField(auto_now_add=True)
