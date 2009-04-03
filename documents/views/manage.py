@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response, get_object_or_404
-from daisyproducer.documents.models import Document, Version
+from daisyproducer.documents.models import Document, Version, Attachment
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.forms import ModelForm
@@ -8,6 +8,12 @@ class PartialVersionForm(ModelForm):
     class Meta:
         model = Version
         fields = ('comment', 'content',)
+
+class PartialAttachmentForm(ModelForm):
+    class Meta:
+        model = Attachment
+        fields = ('comment', 'content',)
+
 
 @login_required
 def index(request):
@@ -29,8 +35,19 @@ def detail(request, document_id):
             # FIXME: make sure the uploaded version is valid xml
             version.save()
             return HttpResponseRedirect("/manage/%s/" % document_id)
+        # FIXME: this part is not reached as a PartialAttachmentForm
+        # is also a valid PartialVersionForm (they have the same
+        # fields
+        form = PartialAttachmentForm(request.POST, request.FILES)
+        if form.is_valid():
+            attachment = form.save(commit=False)
+            attachment.document = document
+            # FIXME: make sure the uploaded attachment and the claimed mime_type is valid
+            attachment.save()
+            return HttpResponseRedirect("/manage/%s/" % document_id)
 
     versionForm = PartialVersionForm()
+    attachmentForm = PartialAttachmentForm()
     return render_to_response('documents/manage_detail.html', locals())
     
 @login_required

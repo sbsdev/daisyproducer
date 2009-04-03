@@ -50,6 +50,30 @@
   <input type="submit" value="Add Version" /> 
 </form>
 
+<h2>Attachments</h2>
+<table>
+  <tr>
+    <th>Comment</td>
+    <th>Created at</td>
+  </tr>
+  {% for attachment in document.attachment_set.all %}
+  <tr>
+    <td>{{ attachment.comment }}</td>
+    <td>{{ attachment.created_at }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+<h2>Upload new attachment</h2>
+<form enctype="multipart/form-data" method="post" 
+      action="/manage/{{ document.id }}/">
+  <table>
+  {{ attachmentForm.as_table }}
+  </table>
+  <input type="submit" value="Add Attachment" /> 
+</form>
+
 {% else %}
     <p>No document available.</p>
 {% endif %}
