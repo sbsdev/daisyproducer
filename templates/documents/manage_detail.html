@@ -53,12 +53,16 @@
 <h2>Attachments</h2>
 <table>
   <tr>
+    <th>Name</td>
     <th>Comment</td>
+    <th>Mime type</td>
     <th>Created at</td>
   </tr>
   {% for attachment in document.attachment_set.all %}
   <tr>
+    <td>{{ attachment.content.name }}</td>
     <td>{{ attachment.comment }}</td>
+    <td>{{ attachment.mime_type }}</td>
     <td>{{ attachment.created_at }}</td>
   </tr>
   {% endfor %}
