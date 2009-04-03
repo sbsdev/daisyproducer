@@ -56,10 +56,10 @@ class Document(models.Model):
 class Version(models.Model):
     content = models.FileField(upload_to='media')
     document = models.ForeignKey(Document)
-    version_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        get_latest_by = "version_date"
+        get_latest_by = "created_at"
 
 class Attachment(models.Model):
 
@@ -74,6 +74,7 @@ class Attachment(models.Model):
     mime_type = models.CharField(max_length=32, choices=MIME_TYPE_CHOICES)
     content = models.FileField(upload_to='media')
     document = models.ForeignKey(Document)
+    created_at = models.DateTimeField(auto_now_add=True)
     
 # Profiles
 class BrailleProfile(models.Model):

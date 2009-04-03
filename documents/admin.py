@@ -15,8 +15,8 @@ class DocumentAdmin(admin.ModelAdmin):
 	inlines = [VersionInline, AttachmentInline,]
 
 class VersionAdmin(admin.ModelAdmin):
-        list_display = ('version_date',)
-        ordering = ('version_date',)
+        list_display = ('created_at',)
+        ordering = ('created_at',)
 
 class AttachmentAdmin(admin.ModelAdmin):
         list_display = ('comment', 'mime_type',)
