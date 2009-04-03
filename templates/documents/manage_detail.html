@@ -26,6 +26,15 @@
   </tr>
 </table>
 
+<h2>Upload new version</h2>
+<form enctype="multipart/form-data" method="post" 
+      action="/manage/{{ document.id }}/">
+  <table>
+  {{ versionForm.as_table }}
+  </table>
+  <input type="submit" value="Add Version" /> 
+</form>
+
 {% else %}
     <p>No document available.</p>
 {% endif %}
