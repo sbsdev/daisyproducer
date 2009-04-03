@@ -26,6 +26,16 @@
   </tr>
 </table>
 
+<h2>Versions</h2>
+<table>
+  {% for version in document.version_set.all %}
+  <tr>
+    <td>{{ version.created_at }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+
 <h2>Upload new version</h2>
 <form enctype="multipart/form-data" method="post" 
       action="/manage/{{ document.id }}/">
