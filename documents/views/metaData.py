@@ -3,6 +3,7 @@ from daisyproducer.documents.models import Document
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.forms import ModelForm
+from django.core.urlresolvers import reverse
 
 class PartialDocumentForm(ModelForm):
     class Meta:
@@ -16,7 +17,7 @@ def create(request):
         documentForm = PartialDocumentForm(request.POST, request.FILES)
         if documentForm.is_valid():
             documentForm.save()
-            return HttpResponseRedirect('/documents/')
+            return HttpResponseRedirect(reverse('consume_index'))
     
     return render_to_response('documents/create.html', locals())
 

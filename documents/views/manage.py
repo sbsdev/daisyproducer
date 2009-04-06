@@ -3,6 +3,7 @@ from daisyproducer.documents.models import Document
 from daisyproducer.documents.forms import PartialVersionForm, PartialAttachmentForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 @login_required
 def index(request):
@@ -25,7 +26,7 @@ def add_attachment(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method != 'POST':
-        return HttpResponseRedirect("/manage/%s/" % document_id)
+        return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
 
     form = PartialAttachmentForm(request.POST, request.FILES)
     if not form.is_valid():
@@ -37,14 +38,14 @@ def add_attachment(request, document_id):
     attachment.mime_type = form.content_type
     attachment.document = document
     attachment.save()
-    return HttpResponseRedirect("/manage/%s/" % document_id)
+    return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
     
 @login_required
 def add_version(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method != 'POST':
-        return HttpResponseRedirect("/manage/%s/" % document_id)
+        return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
 
     form = PartialVersionForm(request.POST, request.FILES)
     if not form.is_valid():
@@ -55,11 +56,11 @@ def add_version(request, document_id):
     version = form.save(commit=False)
     version.document = document
     version.save()
-    return HttpResponseRedirect("/manage/%s/" % document_id)
+    return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
 
 @login_required
 def transition(request, document_id, newState):
     document = Document.objects.get(pk=document_id)
 
     document.transitionTo(newState)
-    return HttpResponseRedirect('/manage/')
+    return HttpResponseRedirect(reverse('manage_index'))

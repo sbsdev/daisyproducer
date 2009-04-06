@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 from os import system
 
@@ -20,7 +21,7 @@ def as_pdf(request, document_id):
     form = LargePrintProfileForm(request.POST)
 
     if not form.is_valid():
-        return HttpResponseRedirect('/documents/%s' % document_id)
+        return HttpResponseRedirect(reverse('consume_detail', args=[document_id]))
 
     document = Document.objects.get(pk=document_id)
 
@@ -45,7 +46,7 @@ def as_brl(request, document_id):
     form = BrailleProfileForm(request.POST)
 
     if not form.is_valid():
-        return HttpResponseRedirect('/documents/%s' % document_id)
+        return HttpResponseRedirect(reverse('consume_detail', args=[document_id]))
 
     document = Document.objects.get(pk=document_id)
 
