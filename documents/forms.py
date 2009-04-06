@@ -22,7 +22,7 @@ class PartialAttachmentForm(ModelForm):
     def content_type(self):
         return self.files['content'].content_type
 
-    # make sure the content has mime type of 'text/xml'
+    # make sure the content has mime type as defined in the Attachment class
     def clean_content(self):
         data = self.files['content']
         choices = tuple([choice[0] for choice in Attachment.MIME_TYPE_CHOICES])
