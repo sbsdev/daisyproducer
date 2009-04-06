@@ -43,7 +43,7 @@
 
 <h2>Upload new version</h2>
 <form enctype="multipart/form-data" method="post" 
-      action="/manage/{{ document.id }}/">
+      action="/manage/{{ document.id }}/addVersion">
   <table>
   {{ versionForm.as_table }}
   </table>
@@ -71,7 +71,7 @@
 
 <h2>Upload new attachment</h2>
 <form enctype="multipart/form-data" method="post" 
-      action="/manage/{{ document.id }}/">
+      action="/manage/{{ document.id }}/addAttachment">
   <table>
   {{ attachmentForm.as_table }}
   </table>

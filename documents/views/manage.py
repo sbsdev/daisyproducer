@@ -1,19 +1,8 @@
 from django.shortcuts import render_to_response, get_object_or_404
-from daisyproducer.documents.models import Document, Version, Attachment
+from daisyproducer.documents.models import Document
+from daisyproducer.documents.forms import PartialVersionForm, PartialAttachmentForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.forms import ModelForm
-
-class PartialVersionForm(ModelForm):
-    class Meta:
-        model = Version
-        fields = ('comment', 'content',)
-
-class PartialAttachmentForm(ModelForm):
-    class Meta:
-        model = Attachment
-        fields = ('comment', 'content',)
-
 
 @login_required
 def index(request):
@@ -27,29 +16,47 @@ def index(request):
 def detail(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
-    if request.method == 'POST':
-        form = PartialVersionForm(request.POST, request.FILES)
-        content_type = request.FILES['content'].content_type
-        if form.is_valid() and content_type  == 'text/xml':
-            version = form.save(commit=False)
-            version.document = document
-            # FIXME: make sure the uploaded version is valid xml
-            version.save()
-            return HttpResponseRedirect("/manage/%s/" % document_id)
-        form = PartialAttachmentForm(request.POST, request.FILES)
-        if form.is_valid() and \
-                content_type in tuple([choice[0] for choice in Attachment.MIME_TYPE_CHOICES]):
-            attachment = form.save(commit=False)
-            attachment.mime_type = content_type
-            attachment.document = document
-            # FIXME: make sure the uploaded attachment and the claimed mime_type is valid
-            attachment.save()
-            return HttpResponseRedirect("/manage/%s/" % document_id)
-
     versionForm = PartialVersionForm()
     attachmentForm = PartialAttachmentForm()
     return render_to_response('documents/manage_detail.html', locals())
+
+@login_required
+def add_attachment(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    if request.method != 'POST':
+        return HttpResponseRedirect("/manage/%s/" % document_id)
+
+    form = PartialAttachmentForm(request.POST, request.FILES)
+    if not form.is_valid():
+        versionForm = PartialVersionForm()
+        attachmentForm = form
+        return render_to_response('documents/manage_detail.html', locals())
+
+    attachment = form.save(commit=False)
+    attachment.mime_type = form.content_type
+    attachment.document = document
+    attachment.save()
+    return HttpResponseRedirect("/manage/%s/" % document_id)
     
+@login_required
+def add_version(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    if request.method != 'POST':
+        return HttpResponseRedirect("/manage/%s/" % document_id)
+
+    form = PartialVersionForm(request.POST, request.FILES)
+    if not form.is_valid():
+        versionForm = form
+        attachmentForm = PartialAttachmentForm()
+        return render_to_response('documents/manage_detail.html', locals())
+
+    version = form.save(commit=False)
+    version.document = document
+    version.save()
+    return HttpResponseRedirect("/manage/%s/" % document_id)
+
 @login_required
 def transition(request, document_id, newState):
     document = Document.objects.get(pk=document_id)
