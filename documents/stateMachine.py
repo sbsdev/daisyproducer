@@ -3,7 +3,8 @@
 from django.db import models
 from django.utils.functional import curry
 
-ERROR_MSG = "%s: '%s' is not a registered state"
+NO_VALID_STATE = "%s: '%s' is not a registered state"
+NO_VALID_TRANSITION = "Cannot transition to %s from %s"
 
 class MachineError(Exception):
     def __init__(self, value):
@@ -33,7 +34,7 @@ class Machine():
                 self.validTransitions[state_name] = set()
                 self.state_triggers[state_name] = state[state_name]
         self.states = tuple(self.states)
-        setattr(self.model, 'transitionTo' , curry(self._update_model))
+        setattr(self.model, 'transitionTo' , curry(self.transitionTo))
         setattr(self.model, 'nextValidStates' , curry(self.nextValidStates))
 
     def _extract_from_state(self, kwargs):
@@ -44,11 +45,11 @@ class Machine():
 
         if isinstance(coming_from, str):
             if coming_from not in self.states and coming_from != '*':
-                raise MachineError("from: '%s' is not a registered state" % coming_from)
+                raise MachineError(NO_VALID_STATE % ('from', coming_from))
         elif isinstance(coming_from, list):
             for state in coming_from:
                 if state not in self.states:
-                    raise MachineError("from: '%s' is not a registered state" % coming_from)
+                    raise MachineError(NO_VALID_STATE % ('from', coming_from))
         return coming_from
 
     def _extract_to_state(self, kwargs):
@@ -58,7 +59,7 @@ class Machine():
             raise MachineError("Missing 'to'; must transtion to a state")
 
         if going_to not in self.states:
-            raise MachineError("to: '%s' is not a registered state" % coming_from)
+            raise MachineError(NO_VALID_STAT % ('to', coming_from))
         return going_to
 
     def _set_initial_or_retrieve_state(self, initial):
@@ -89,7 +90,7 @@ class Machine():
             self._update_model(state)
             return self.state
         else:
-            raise MachineError("Cannot transition to %s from %s" % (state, self.state))
+            raise MachineError(NO_VALID_TRANSITION % (state, self.state))
 
     def is_state(self, state, *args):
         self._update_state_from_model()
@@ -105,7 +106,7 @@ class Machine():
 
     def updateValidTransitions(self, coming_from, going_to):
         if going_to not in self.states:
-            raise MachineError(ERROR_MSG % ('going_to', going_to))
+            raise MachineError(NO_VALID_STATE % ('going_to', going_to))
         if isinstance(coming_from, str):
             if coming_from == '*':
                 for state in self.states:
@@ -113,14 +114,21 @@ class Machine():
             elif coming_from in self.states:
                 self.validTransitions[coming_from].add(going_to)
             else:
-                raise MachineError(ERROR_MSG % ('coming_from', coming_from))
+                raise MachineError(NO_VALID_STATE % ('coming_from', coming_from))
         elif isinstance(coming_from, list):
             for state in coming_from:
                 if state in self.states:
                     self.validTransitions[coming_from].add(going_to)
                 else:
-                    raise MachineError(ERROR_MSG % ('coming_from', coming_from))
+                    raise MachineError(NO_VALID_STATE % ('coming_from', coming_from))
 
     def nextValidStates(self):
         self._update_state_from_model()
         return self.validTransitions[self.state]
+
+    def transitionTo(self, state):
+        if not state in self.nextValidStates():
+            raise MachineError(NO_VALID_TRANSITION % (state, self.state))
+        self._update_model(state)
+        return self.state
+        
