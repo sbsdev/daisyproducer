@@ -1,4 +1,4 @@
-from daisyproducer.documents.models import Version, Attachment
+from daisyproducer.documents.models import Document, Version, Attachment
 from django import forms
 from django.forms import ModelForm
 
@@ -35,3 +35,9 @@ class PartialAttachmentForm(ModelForm):
         fields = ('comment', 'content',)
 
 
+class PartialDocumentForm(ModelForm):
+
+    class Meta:
+        model = Document
+        fields = ('state',)
+    

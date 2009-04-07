@@ -22,7 +22,7 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
     url(r'^manage/(?P<document_id>\d+)/$', 'detail', name='manage_detail'),
     url(r'^manage/(?P<document_id>\d+)/addVersion$', 'add_version', name='manage_add_version'),
     url(r'^manage/(?P<document_id>\d+)/addAttachment$', 'add_attachment', name='manage_add_attachmentdetail'),
-    url(r'^manage/(?P<document_id>\d+)/(?P<newState>\w+)$', 'transition', name='manage_transition'),
+    url(r'^manage/(?P<document_id>\d+)/transition$', 'transition', name='manage_transition'),
 )
 
 # meta data

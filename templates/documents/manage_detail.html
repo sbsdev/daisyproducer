@@ -78,6 +78,14 @@
   <input type="submit" value="Add Attachment" /> 
 </form>
 
+<h2>State</h2>
+<form method="post" action="/manage/{{ document.id }}/transition">
+  <table>
+  {{ documentForm.as_table }}
+  </table>
+  <input type="submit" value="Transition" /> 
+</form>
+
 {% else %}
     <p>No document available.</p>
 {% endif %}

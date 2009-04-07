@@ -11,7 +11,6 @@
       <th>Author</th>
       <th>Publisher</th>
       <th>State</th>
-      <th>Transition to</th>
     </tr>
 
     {% for document in document_list %}
@@ -20,11 +19,6 @@
         <td>{{ document.author }}</td>
         <td>{{ document.publisher }}</td>
         <td>{{ document.state }}</td>
-        <td>
-          {% for nextState in document.nextValidStates %}
-  	    <a href="{% url manage_transition document.id nextState %}">{{ nextState }}</a>
-          {% endfor %}
-  	    </td>
       </tr>
     {% endfor %}
   </table>
