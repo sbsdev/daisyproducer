@@ -17,7 +17,7 @@ def create(request):
         documentForm = PartialDocumentForm(request.POST, request.FILES)
         if documentForm.is_valid():
             documentForm.save()
-            return HttpResponseRedirect(reverse('consume_index'))
+            return HttpResponseRedirect(reverse('manage_index'))
     
     return render_to_response('documents/create.html', locals())
 
