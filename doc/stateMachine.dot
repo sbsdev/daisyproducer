@@ -1,0 +1,11 @@
+digraph finite_state_machine {
+	node [shape = doublecircle]; new approved;
+	node [shape = circle];
+	new -> scanned [ label = "scanning" ];
+	scanned -> ocred [ label = "ocring" ];
+	ocred -> marked_up [ label = "marking-up" ];
+	marked_up -> proof_read [ label = "proof-reading", weight=8 ];
+	proof_read -> approved [ label = "approving", weight=8 ];
+	approved -> marked_up [ label = "fixing-errata" ];
+	proof_read -> marked_up [ label = "fixing-typos" ];
+}
