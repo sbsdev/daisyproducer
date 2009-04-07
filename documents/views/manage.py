@@ -20,6 +20,9 @@ def detail(request, document_id):
     versionForm = PartialVersionForm()
     attachmentForm = PartialAttachmentForm()
     documentForm = PartialDocumentForm()
+    # limit the choices to the valid ones
+    nextValidStateChoices = [(state, state) for state in document.nextValidStates()]
+    documentForm.fields['state'].choices = nextValidStateChoices
     return render_to_response('documents/manage_detail.html', locals())
 
 @login_required
