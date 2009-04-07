@@ -13,18 +13,6 @@ class Document(models.Model):
         'approved',
         )
     
-    TRANSITIONS = (
-        'scanning',
-        'ocr', 
-        'marking_up', 
-        'proof_reading', 
-        'approving',
-        None,
-        )
-    
-    TRANSITION_STATE_MAP = dict(zip(TRANSITIONS,STATES)) # which transition leads to which state
-    STATE_TRANSITION_MAP = dict(zip(STATES,TRANSITIONS)) # which state is coming from which transition
-
     STATE_CHOICES = tuple([(state, state) for state in STATES])
 
     title = models.CharField(max_length=255)
@@ -41,11 +29,11 @@ class Document(models.Model):
 
         self.machine.event('scanning', {'from': 'new', 'to': 'scanned'})
         self.machine.event('ocring', {'from': 'scanned', 'to': 'ocred'})
-        self.machine.event('marking-up', {'from': 'ocred', 'to': 'marked_up'})
-        self.machine.event('proof-reading', {'from': 'marked_up', 'to': 'proof_read'})
+        self.machine.event('marking_up', {'from': 'ocred', 'to': 'marked_up'})
+        self.machine.event('proof_reading', {'from': 'marked_up', 'to': 'proof_read'})
         self.machine.event('approving', {'from': 'proof_read', 'to': 'approved'})
-        self.machine.event('fixing-errata', {'from': 'approved', 'to': 'marked_up'})
-        self.machine.event('fixing-typos', {'from': 'proof_read', 'to': 'marked_up'})
+        self.machine.event('fixing_errata', {'from': 'approved', 'to': 'marked_up'})
+        self.machine.event('fixing_typos', {'from': 'proof_read', 'to': 'marked_up'})
 
     def __unicode__(self):
         return self.title
