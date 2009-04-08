@@ -5,24 +5,28 @@
 {% block content %}
 <h2>Managing documents</h2>
 {% if document_list %}
-  <table>
+<table class="list">
+  <thead>
     <tr>
       <th>Title</th>
       <th>Author</th>
       <th>Publisher</th>
       <th>State</th>
     </tr>
+  </thead>
 
+  <tbody>
     {% for document in document_list %}
-      <tr>
-        <td><a href="{% url manage_detail document.id %}">{{ document.title }}</a></td>
-        <td>{{ document.author }}</td>
-        <td>{{ document.publisher }}</td>
-        <td>{{ document.state }}</td>
-      </tr>
+    <tr class="{% cycle 'even' 'odd' %}">
+      <td><a href="{% url manage_detail document.id %}">{{ document.title }}</a></td>
+      <td>{{ document.author }}</td>
+      <td>{{ document.publisher }}</td>
+      <td>{{ document.state }}</td>
+    </tr>
     {% endfor %}
-  </table>
+  </tbody>
+</table>
 {% else %}
-    <p>No documents are available.</p>
+<p>No documents are available.</p>
 {% endif %}
 {% endblock %}
