@@ -9,13 +9,13 @@ from os import system
 # consume use case
 def index(request):
     document_list = Document.objects.filter(state='approved').order_by('title')
-    return render_to_response('documents/index.html', locals())
+    return render_to_response('documents/consume_index.html', locals())
 
 def detail(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     lpform = LargePrintProfileForm()
     bform = BrailleProfileForm()
-    return render_to_response('documents/detail.html', locals())
+    return render_to_response('documents/consume_detail.html', locals())
 
 def as_pdf(request, document_id):
     form = LargePrintProfileForm(request.POST)
