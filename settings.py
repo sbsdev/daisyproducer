@@ -52,6 +52,10 @@ LOGIN_REDIRECT_URL = '/manage'
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
+# Format for date and datetime strings.
+DATE_FORMAT = 'j M y'
+DATETIME_FORMAT = 'j M y H:i'
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '9jf6-plsfz1fy8x-%lgy+4gt9a)z1u4)!8e)aa%pg*z+i-+h6f'
 
