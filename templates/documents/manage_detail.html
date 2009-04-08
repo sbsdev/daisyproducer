@@ -29,7 +29,7 @@
   
   <div id="relations">
     <div class="contextual">
-      <a href="#" onclick="Element.toggle('new-relation-form'); this.blur(); return false;">Add</a>
+      <a href="#" onclick="Element.toggle('new-version-form); this.blur(); return false;">Add</a>
     </div>
     
     <p><strong>Versions</strong></p>
@@ -50,12 +50,21 @@
       </tr>
       {% endfor %}
     </table>
+
+    <form enctype="multipart/form-data" method="post" 
+	  action="/manage/{{ document.id }}/addVersion" id="new-version-form">
+      <p>
+	{{ versionForm.as_one_p }}
+	<input type="submit" value="Add Version" /> 
+	<a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Cancel</a>
+      </p>
+    </form>
   </div>
   <hr />
-
+  
   <div id="relations">
     <div class="contextual">
-      <a href="#" onclick="Element.toggle('new-relation-form'); this.blur(); return false;">Add</a>
+      <a href="#" onclick="Element.toggle('new-attachment-form); this.blur(); return false;">Add</a>
     </div>
     
     <p><strong>Attachments</strong></p>
@@ -80,6 +89,14 @@
       </tr>
       {% endfor %}
     </table>
+    <form enctype="multipart/form-data" method="post" 
+	  action="/manage/{{ document.id }}/addAttachment" id="new-attachment-form">
+      <p>
+	{{ attachmentForm.as_one_p }}
+	<input type="submit" value="Add Attachment" /> 
+	<a href="#" onclick="Element.toggle('new-attachment-form');this.blur(); return false;">Cancel</a>
+      </p>
+    </form>
   </div>
   <hr />
 

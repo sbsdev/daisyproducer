@@ -1,6 +1,19 @@
 from daisyproducer.documents.models import Document, Version, Attachment
 from django import forms
 from django.forms import ModelForm
+from django.forms.util import ErrorList
+
+class DivErrorList(ErrorList):
+    def __unicode__(self):
+        return self.as_divs()
+
+    def as_divs(self):
+        if not self: return u''
+        return u'<div class="errorExplanation"><ul>%s</ul></div>' % ''.join([u'<li>%s</li>' % e for e in self])
+
+class FormWithDivErrorList(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(FormWithDivErrorList, self).__init__(error_class=DivErrorList, *args, **kwargs)
 
 class PartialVersionForm(ModelForm):
 
@@ -11,6 +24,9 @@ class PartialVersionForm(ModelForm):
             raise forms.ValidationError("Uploaded file must be 'text/xml'")
         # FIXME: make sure the uploaded version is valid xml
         return data
+
+    def as_one_p(self):
+        return self._html_output(u'%(label)s %(field)s%(help_text)s', u'%s', '</p>', u' %s', True)
 
     class Meta:
         model = Version
@@ -29,6 +45,10 @@ class PartialAttachmentForm(ModelForm):
         if data.content_type not in choices:
             raise forms.ValidationError("Uploaded file must be in %s" % ', '.join(choices))
         return data
+
+    def as_one_p(self):
+        return self._html_output(u'%(label)s %(field)s%(help_text)s', u'%s', '', u' %s', True)
+
 
     class Meta:
         model = Attachment
