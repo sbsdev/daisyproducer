@@ -105,10 +105,10 @@
   <div id="relations">
     <p><strong>State</strong></p>
     <form method="post" action="/manage/{{ document.id }}/transition">
-      <table>
-	{{ documentForm.as_table }}
-      </table>
-      <input type="submit" value="Transition" />
+      <p>
+	{{ documentForm.as_one_p }}
+	<input type="submit" value="Transition" />
+      </p>
     </form>
   </div>
 </div>

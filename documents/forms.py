@@ -11,11 +11,15 @@ class DivErrorList(ErrorList):
         if not self: return u''
         return u'<div class="errorExplanation"><ul>%s</ul></div>' % ''.join([u'<li>%s</li>' % e for e in self])
 
-class FormWithDivErrorList(ModelForm):
+class BaseForm(ModelForm):
     def __init__(self, *args, **kwargs):
-        super(FormWithDivErrorList, self).__init__(error_class=DivErrorList, *args, **kwargs)
+        super(BaseForm, self).__init__(error_class=DivErrorList, *args, **kwargs)
 
-class PartialVersionForm(ModelForm):
+    def as_one_p(self):
+        return self._html_output(u'%(label)s %(field)s%(help_text)s', u'%s', '', u' %s', True)
+
+
+class PartialVersionForm(BaseForm):
 
     # make sure the content has mime type of 'text/xml'
     def clean_content(self):
@@ -25,14 +29,11 @@ class PartialVersionForm(ModelForm):
         # FIXME: make sure the uploaded version is valid xml
         return data
 
-    def as_one_p(self):
-        return self._html_output(u'%(label)s %(field)s%(help_text)s', u'%s', '</p>', u' %s', True)
-
     class Meta:
         model = Version
         fields = ('comment', 'content',)
 
-class PartialAttachmentForm(ModelForm):
+class PartialAttachmentForm(BaseForm):
 
     @property
     def content_type(self):
@@ -46,16 +47,12 @@ class PartialAttachmentForm(ModelForm):
             raise forms.ValidationError("Uploaded file must be in %s" % ', '.join(choices))
         return data
 
-    def as_one_p(self):
-        return self._html_output(u'%(label)s %(field)s%(help_text)s', u'%s', '', u' %s', True)
-
-
     class Meta:
         model = Attachment
         fields = ('comment', 'content',)
 
 
-class PartialDocumentForm(ModelForm):
+class PartialDocumentForm(BaseForm):
 
     class Meta:
         model = Document
