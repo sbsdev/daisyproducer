@@ -37,32 +37,21 @@
     </div>
     
     <h1>{% block subtitle %}Daisy Producer{% endblock %}</h1>
-    
+
     <div id="main-menu">
       <ul>
-	<li><a href="/manage/">Pending</a></li>
-	<li><a href="/documents">Finished</a></li>
-	<li><a href="/manage/create" accesskey="7">New Document</a></li>
+	<li><a href="/manage/"{% block tab-pending %}{% endblock %}>Pending</a></li>
+	<li><a href="/documents"{% block tab-finished %}{% endblock %}>Finished</a></li>
+	<li><a href="/manage/create" accesskey="7"{% block tab-new %}{% endblock %}>New Document</a></li>
       </ul>
     </div>
   </div>
   
   <div class="" id="main">
-    <!-- <div id="sidebar">         -->
-      
-    <!--   <h3>Meta Data</h3> -->
-    <!--   <a href="">Create new document</a><br /> -->
-    <!--   <a href="">Modify existing document</a><br /> -->
-
-    <!--   <h3>Manage</h3> -->
-    <!--   <a href="">View all documents</a><br /> -->
-      
-    <!--   <h3>Consume</h3> -->
-    <!--   <p><a href="">View all approved documents</a></p> -->
-    <!-- </div> -->
-
+    {% block sidebar %}{% endblock %}
+    
     <div id="content">
-  {% block content %}{% endblock %}
+      {% block content %}{% endblock %}
     </div>
   </div>
   
