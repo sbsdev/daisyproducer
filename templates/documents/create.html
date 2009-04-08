@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}{{ block.super }} - Create Document{% endblock %}
-{% block subtitle %}{{ block.super }} - Create Document{% endblock %}
 
 {% block content %}
-
+<h2>Create Document</h2>
 <form enctype="multipart/form-data" action="" method="POST">
   <table>
     {{ documentForm.as_table }}

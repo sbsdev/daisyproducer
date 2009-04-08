@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}{{ block.super }} - Listing documents{% endblock %}
-{% block subtitle %}{{ block.super }} - Listing documents{% endblock %}
 
 {% block content %}
 
 {% if document_list %}
+<h2>Listing documents</h2>
   <table>
     <tr>
       <th>Title</th>

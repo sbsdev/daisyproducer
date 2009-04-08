@@ -5,24 +5,66 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>{% block title %}Daisy Producer{% endblock %}</title>
-  <link href="/media/css/base.css" rel="stylesheet" type="text/css" />
+  <link href="/stylesheets/application.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <div id="header">
-    <div id="branding">
-      <h1 id="site-name">{% block subtitle %}Daisy Producer{% endblock %}</h1>
-    </div>
-
+  <div id="top-menu">
     {% if request.user.is_authenticated %}
-    	<div id="user-tools">User: <strong>{{ request.user.username }}</strong> <a href="/admin/logout/">Log out</a></div>
+    <div id="account">
+      <ul>
+	<li><a href="/admin/logout/" class="logout">Sign out</a></li>
+      </ul>    
+    </div>
+    <div id="loggedas">Logged in as {{ request.user.username }}</div>
     {% else %}
-    	<div id="user-tools"><a href="/accounts/login/">Log in</a></div>
+    <div id="account">
+      <ul><li><a href="/accounts/login/" class="login">Sign in</a></li></ul>
+    </div>
     {% endif %}
-    
+    <ul>
+      <li><a href="/admin" class="administration">Administration</a></li>
+      <li><a href="" class="help">Help</a></li>
+    </ul>
   </div>
 
-  {% block content %}{% endblock %}
+  <div id="header">
+    <div id="quick-search">
+      <form action="/search/index/pendenzen" method="get">
+        <a href="/search/index/pendenzen" accesskey="4">Search</a>:
+        <input accesskey="f" class="small" id="q" name="q" size="20" type="text" />
+      </form>
+    </div>
+    
+    <h1>{% block subtitle %}Daisy Producer{% endblock %}</h1>
+    
+    <div id="main-menu">
+      <ul>
+	<li><a href="/manage/">Pending Documents</a></li>
+	<li><a href="/documents">Finished Documents</a></li>
+	<li><a href="/manage/create" accesskey="7">New Document</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="" id="main">
+    <!-- <div id="sidebar">         -->
+      
+    <!--   <h3>Meta Data</h3> -->
+    <!--   <a href="">Create new document</a><br /> -->
+    <!--   <a href="">Modify existing document</a><br /> -->
 
+    <!--   <h3>Manage</h3> -->
+    <!--   <a href="">View all documents</a><br /> -->
+      
+    <!--   <h3>Consume</h3> -->
+    <!--   <p><a href="">View all approved documents</a></p> -->
+    <!-- </div> -->
+
+    <div id="content">
+  {% block content %}{% endblock %}
+    </div>
+  </div>
+  
 </body>
 </html>
 

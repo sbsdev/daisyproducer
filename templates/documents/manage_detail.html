@@ -1,92 +1,99 @@
 {% extends "base.html" %}
 
 {% block title %}{{ block.super }} - Manage Document Details - {{ document.title }}{% endblock %}
-{% block subtitle %}{{ block.super }} - Manage Document Details{% endblock %}
-
 
 {% block content %}
 {% if document %}
-<table>
+<h2>Managing document details</h2>
 
-  <tr>
-    <th>Title:</th>
-    <td>{{ document.title }}</td>
-  </tr>
-  <tr>
-    <th>Author:</th>
-    <td>{{ document.author }}</td>
-  </tr>
-  <tr>
-    <th>Publisher:</th>
-    <td>{{ document.publisher }}</td>
-  </tr>
-  <tr>
-    <th>State:</th>
-    <td>{{ document.state }}</td>
-  </tr>
-</table>
-
-<h2>Versions</h2>
-<table>
-  <tr>
-    <th>Comment</td>
-    <th>Created at</td>
-  </tr>
-  {% for version in document.version_set.all %}
-  <tr>
-    <td>{{ version.comment }}</td>
-    <td>{{ version.created_at }}</td>
-  </tr>
-  {% endfor %}
-</table>
-
-
-<h2>Upload new version</h2>
-<form enctype="multipart/form-data" method="post" 
-      action="/manage/{{ document.id }}/addVersion">
-  <table>
-  {{ versionForm.as_table }}
+<div class="issue">
+  
+  <h3>{{ document.title }}</h3>
+  <!-- <p class="author"> -->
+  <!--   Added by <a href="">Christian Egli</a> 28 days ago. -->
+  <!--   Updated 19 days ago. -->
+  <!-- </p> -->
+  
+  <table width="100%">
+    <tr>
+      <td style="width:15%" class=""><b>Author:</b></td><td style="width:35%">{{ document.author }}</td>
+      <td style="width:15%" class="status"><b>State:</b></td><td style="width:35%" class="status">{{ document.state }}</td>
+    </tr>
+    <tr>
+      <td class=""><b>Publisher:</b></td><td class=" ">{{ document.publisher }}</td>
+      
+      <td class=""><b></b></td><td class=""></td>
+    </tr>
   </table>
-  <input type="submit" value="Add Version" /> 
-</form>
+  <hr />
+  
+  <div id="relations">
+    <div class="contextual">
+      <a href="#" onclick="Element.toggle('new-relation-form'); this.blur(); return false;">Add</a>
+    </div>
+    
+    <p><strong>Versions</strong></p>
+    <table style="width:100%">
+      <!-- <tr> -->
+      <!-- 	<th>Comment</th> -->
+      <!-- 	<th>Created at</th> -->
+      <!-- </tr> -->
+      {% for version in document.version_set.all %}
+      <tr>
+	<td>{{ version.comment }}</td>
+	<td>{{ version.created_at }}</td>
+	<td>
+	  <a href="#" title="Delete relation">
+	    <img alt="Delete" src="/images/delete.png" />
+	  </a>
+	</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <hr />
 
-<h2>Attachments</h2>
-<table>
-  <tr>
-    <th>Name</td>
-    <th>Comment</td>
-    <th>Mime type</td>
-    <th>Created at</td>
-  </tr>
-  {% for attachment in document.attachment_set.all %}
-  <tr>
-    <td>{{ attachment.content.name }}</td>
-    <td>{{ attachment.comment }}</td>
-    <td>{{ attachment.mime_type }}</td>
-    <td>{{ attachment.created_at }}</td>
-  </tr>
-  {% endfor %}
-</table>
+  <div id="relations">
+    <div class="contextual">
+      <a href="#" onclick="Element.toggle('new-relation-form'); this.blur(); return false;">Add</a>
+    </div>
+    
+    <p><strong>Attachments</strong></p>
+    <table style="width:100%">
+      <!-- <tr> -->
+      <!-- 	<th>Name</th> -->
+      <!-- 	<th>Comment</th> -->
+      <!-- 	<th>Mime type</th> -->
+      <!-- 	<th>Created at</th> -->
+      <!-- </tr> -->
+      {% for attachment in document.attachment_set.all %}
+      <tr>
+	<td><a href="{{ attachment.content.url }}">{{ attachment.content.name }}</a></td>
+	<td>{{ attachment.comment }}</td>
+	<td>{{ attachment.mime_type }}</td>
+	<td>{{ attachment.created_at }}</td>
+	<td>
+	  <a href="#" title="Delete relation">
+	    <img alt="Delete" src="/images/delete.png" />
+	  </a>
+	</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <hr />
 
-
-<h2>Upload new attachment</h2>
-<form enctype="multipart/form-data" method="post" 
-      action="/manage/{{ document.id }}/addAttachment">
-  <table>
-  {{ attachmentForm.as_table }}
-  </table>
-  <input type="submit" value="Add Attachment" /> 
-</form>
-
-<h2>State</h2>
-<form method="post" action="/manage/{{ document.id }}/transition">
-  <table>
-  {{ documentForm.as_table }}
-  </table>
-  <input type="submit" value="Transition" /> 
-</form>
-
+  <div id="relations">
+    <p><strong>State</strong></p>
+    <form method="post" action="/manage/{{ document.id }}/transition">
+      <table>
+	{{ documentForm.as_table }}
+      </table>
+      <input type="submit" value="Transition" />
+    </form>
+  </div>
+</div>
 {% else %}
-    <p>No document available.</p>
+<p>No document available.</p>
 {% endif %}
 {% endblock %}

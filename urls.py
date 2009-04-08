@@ -37,7 +37,7 @@ urlpatterns += patterns('',
 
     # static files
     (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': os.path.join(PROJECT_DIR, 'media')}),
+     {'document_root': os.path.join(PROJECT_DIR, 'public', 'stylesheets')}),
 
     # enable the admin:
     (r'^admin/(.*)', admin.site.root),
