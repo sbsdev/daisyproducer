@@ -54,6 +54,10 @@ class PartialAttachmentForm(BaseForm):
 
 class PartialDocumentForm(BaseForm):
 
+    def limitChoicesToValidStates(self, document):
+        nextValidStateChoices = [(state, state) for state in document.nextValidStates()]
+        self.fields['state'].choices = nextValidStateChoices
+
     class Meta:
         model = Document
         fields = ('state',)

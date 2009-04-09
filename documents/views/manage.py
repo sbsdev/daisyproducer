@@ -26,9 +26,7 @@ def detail(request, document_id):
     versionForm = PartialVersionForm()
     attachmentForm = PartialAttachmentForm()
     documentForm = PartialDocumentForm()
-    # limit the choices to the valid ones
-    nextValidStateChoices = [(state, state) for state in document.nextValidStates()]
-    documentForm.fields['state'].choices = nextValidStateChoices
+    documentForm.limitChoicesToValidStates(document)
     return render_to_response('documents/manage_detail.html', locals(),
                               context_instance=RequestContext(request))
 
@@ -44,6 +42,7 @@ def add_attachment(request, document_id):
         versionForm = PartialVersionForm()
         attachmentForm = form
         documentForm = PartialDocumentForm()
+        documentForm.limitChoicesToValidStates(document)
         return render_to_response('documents/manage_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
@@ -65,6 +64,7 @@ def add_version(request, document_id):
         versionForm = form
         attachmentForm = PartialAttachmentForm()
         documentForm = PartialDocumentForm()
+        documentForm.limitChoicesToValidStates(document)
         return render_to_response('documents/manage_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
