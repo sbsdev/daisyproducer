@@ -4,7 +4,7 @@
 
 {% block content %}
 <h2>Managing documents</h2>
-{% if document_list %}
+{% if object_list %}
 <table class="list">
   <thead>
     <tr>
@@ -16,7 +16,7 @@
   </thead>
 
   <tbody>
-    {% for document in document_list %}
+    {% for document in object_list %}
     <tr class="{% cycle 'even' 'odd' %}">
       <td><a href="{% url manage_detail document.id %}">{{ document.title }}</a></td>
       <td>{{ document.author }}</td>

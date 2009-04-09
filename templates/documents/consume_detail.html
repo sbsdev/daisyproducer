@@ -1,30 +1,30 @@
 {% extends "documents/consume.html" %}
 
-{% block title %}{{ block.super }} - Document Details - {{ document.title }}{% endblock %}
+{% block title %}{{ block.super }} - Document Details - {{ object.title }}{% endblock %}
 
 {% block content %}
-{% if document %}
+{% if object %}
 <h2>Document Details</h2>
 <table>
 
   <tr>
     <th>Title:</th>
-    <td>{{ document.title }}</td>
+    <td>{{ object.title }}</td>
   </tr>
   <tr>
     <th>Author:</th>
-    <td>{{ document.author }}</td>
+    <td>{{ object.author }}</td>
     
   </tr>
   <tr>
     <th>Publisher:</th>
-    <td>{{ document.publisher }}</td>
+    <td>{{ object.publisher }}</td>
   </tr>
 </table>
 
 <h2>View as PDF</h2>
 
-<form action="/documents/{{ document.id }}.pdf" method="POST">
+<form action="/documents/{{ object.id }}.pdf" method="POST">
   <table>
     {{ lpform.as_table }}
     </table>
@@ -33,7 +33,7 @@
 
 <h2>View as Braille</h2>
 
-<form action="/documents/{{ document.id }}.brl" method="POST">
+<form action="/documents/{{ object.id }}.brl" method="POST">
   <table>
     {{ bform.as_table }}
     </table>

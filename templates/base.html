@@ -10,13 +10,13 @@
 </head>
 <body>
   <div id="top-menu">
-    {% if request.user.is_authenticated %}
+    {% if user.is_authenticated %}
     <div id="account">
       <ul>
 	<li><a href="/admin/logout/" class="logout">Sign out</a></li>
       </ul>    
     </div>
-    <div id="loggedas">Logged in as {{ request.user.username }}</div>
+    <div id="loggedas">Logged in as {{ user.username }}</div>
     {% else %}
     <div id="account">
       <ul><li><a href="/accounts/login/" class="login">Sign in</a></li></ul>

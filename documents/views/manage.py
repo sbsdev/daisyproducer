@@ -4,14 +4,20 @@ from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionFor
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.views.generic.list_detail import object_list
+from django.template import RequestContext
 
 @login_required
 def index(request):
     """Show all the documents that are relevant for the groups that
     the user has and group them by action
     """
-    document_list = Document.objects.all().order_by('state','title')
-    return render_to_response('documents/manage_index.html', locals())
+    response = object_list(
+        request,
+        queryset = Document.objects.all().order_by('state','title'),
+        template_name = 'documents/manage_index.html',
+    )
+    return response
     
 @login_required
 def detail(request, document_id):
@@ -23,7 +29,8 @@ def detail(request, document_id):
     # limit the choices to the valid ones
     nextValidStateChoices = [(state, state) for state in document.nextValidStates()]
     documentForm.fields['state'].choices = nextValidStateChoices
-    return render_to_response('documents/manage_detail.html', locals())
+    return render_to_response('documents/manage_detail.html', locals(),
+                              context_instance=RequestContext(request))
 
 @login_required
 def add_attachment(request, document_id):
@@ -37,7 +44,8 @@ def add_attachment(request, document_id):
         versionForm = PartialVersionForm()
         attachmentForm = form
         documentForm = PartialDocumentForm()
-        return render_to_response('documents/manage_detail.html', locals())
+        return render_to_response('documents/manage_detail.html', locals(),
+                                  context_instance=RequestContext(request))
 
     attachment = form.save(commit=False)
     attachment.mime_type = form.content_type
@@ -57,7 +65,8 @@ def add_version(request, document_id):
         versionForm = form
         attachmentForm = PartialAttachmentForm()
         documentForm = PartialDocumentForm()
-        return render_to_response('documents/manage_detail.html', locals())
+        return render_to_response('documents/manage_detail.html', locals(),
+                                  context_instance=RequestContext(request))
 
     version = form.save(commit=False)
     version.document = document
@@ -76,7 +85,8 @@ def transition(request, document_id):
         versionForm = PartialVersionForm()
         attachmentForm = PartialAttachmentForm()
         documentForm = form
-        return render_to_response('documents/manage_detail.html', locals())
+        return render_to_response('documents/manage_detail.html', locals(),
+                                  context_instance=RequestContext(request))
 
     document.transitionTo(form.cleaned_data['state'])
     return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))

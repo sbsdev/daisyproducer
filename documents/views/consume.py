@@ -1,21 +1,32 @@
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import get_object_or_404
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.views.generic.list_detail import object_list, object_detail
 
 from os import system
 
 # consume use case
 def index(request):
-    document_list = Document.objects.filter(state='approved').order_by('title')
-    return render_to_response('documents/consume_index.html', locals())
+    response = object_list(
+        request,
+        queryset = Document.objects.filter(state='approved').order_by('title'),
+        template_name = 'documents/consume_index.html',
+    )
+    return response
 
 def detail(request, document_id):
-    document = get_object_or_404(Document, pk=document_id)
     lpform = LargePrintProfileForm()
     bform = BrailleProfileForm()
-    return render_to_response('documents/consume_detail.html', locals())
+    response = object_detail(
+        request,
+        queryset = Document.objects.all(),
+        object_id = document_id,
+        template_name = 'documents/consume_detail.html',
+        extra_context = locals(),
+    )
+    return response
 
 def as_pdf(request, document_id):
     form = LargePrintProfileForm(request.POST)
