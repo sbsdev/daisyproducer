@@ -1,0 +1,14 @@
+{% extends "documents/metaData.html" %}
+
+{% block title %}{{ block.super }} - Update Document Meta Data{% endblock %}
+
+{% block content %}
+<h2>Update Meta Data</h2>
+<form action="" method="POST">
+  <table>
+    {{ form.as_table }}
+    </table>
+    <p><input type="submit" value="Update" /></p>
+</form>
+
+{% endblock %}

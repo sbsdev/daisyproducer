@@ -27,7 +27,8 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
 
 # meta data
 urlpatterns += patterns('daisyproducer.documents.views.metaData',
-    url(r'^documents/create/$', 'create', name='meta_create'),
+    url(r'^manage/create/$', 'create', name='meta_create'),
+    url(r'^manage/(?P<document_id>\d+)/updateMetadata/$', 'update', name='meta_update'),
 )
 
 urlpatterns += patterns('',
@@ -38,6 +39,8 @@ urlpatterns += patterns('',
     # static files
     (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
      {'document_root': os.path.join(PROJECT_DIR, 'public', 'stylesheets')}),
+    (r'^javascripts/(?P<path>.*)$', 'django.views.static.serve',
+     {'document_root': os.path.join(PROJECT_DIR, 'public', 'javascripts')}),
 
     # enable the admin:
     (r'^admin/(.*)', admin.site.root),
