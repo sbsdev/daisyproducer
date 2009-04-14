@@ -3,6 +3,7 @@
 {% block title %}{{ block.super }} - Update Document Meta Data{% endblock %}
 
 {% block content %}
+{% if object %}
 <h2>Update Meta Data</h2>
 <form action="" method="POST">
   <table>
@@ -10,5 +11,9 @@
     </table>
     <p><input type="submit" value="Update" /></p>
 </form>
+
+{% else %}
+<p class="nodata">No data to display</p>
+{% endif %}
 
 {% endblock %}
