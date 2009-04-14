@@ -28,9 +28,9 @@
   <hr />
   
   <div id="relations">
-    <div class="contextual">
-      <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Add</a>
-    </div>
+    <!-- <div class="contextual"> -->
+    <!--   <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Add</a> -->
+    <!-- </div> -->
     
     <p><strong>Versions</strong></p>
     <table style="width:100%">
@@ -42,31 +42,31 @@
       <tr>
 	<td>{{ version.comment }}</td>
 	<td>{{ version.created_at }}</td>
-	<td>
-	  <a href="#" title="Delete relation">
-	    <img alt="Delete" src="/images/delete.png" />
-	  </a>
-	</td>
+	<!-- <td> -->
+	<!--   <a href="#" title="Delete relation"> -->
+	<!--     <img alt="Delete" src="/images/delete.png" /> -->
+	<!--   </a> -->
+	<!-- </td> -->
       </tr>
       {% endfor %}
     </table>
 
     <form enctype="multipart/form-data" method="post" 
-	  action="/manage/{{ document.id }}/addVersion"
-	  id="new-version-form" style="display: none;">
+	  action="/manage/{{ document.id }}/addVersion">
+	  <!-- id="new-version-form" style="display: none;"> -->
       <p>
 	{{ versionForm.as_one_p }}
 	<input type="submit" value="Add" /> 
-	<a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Cancel</a>
+	<!-- <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Cancel</a> -->
       </p>
     </form>
   </div>
   <hr />
   
   <div id="relations">
-    <div class="contextual">
-      <a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Add</a>
-    </div>
+    <!-- <div class="contextual"> -->
+    <!--   <a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Add</a> -->
+    <!-- </div> -->
     
     <p><strong>Attachments</strong></p>
     <table style="width:100%">
@@ -82,21 +82,21 @@
 	<td>{{ attachment.comment }}</td>
 	<td>{{ attachment.mime_type }}</td>
 	<td>{{ attachment.created_at }}</td>
-	<td>
-	  <a href="#" title="Delete relation">
-	    <img alt="Delete" src="/images/delete.png" />
-	  </a>
-	</td>
+	<!-- <td> -->
+	<!--   <a href="#" title="Delete relation"> -->
+	<!--     <img alt="Delete" src="/images/delete.png" /> -->
+	<!--   </a> -->
+	<!-- </td> -->
       </tr>
       {% endfor %}
     </table>
     <form enctype="multipart/form-data" method="post"
-	  action="/manage/{{ document.id }}/addAttachment"
-	  id="new-attachment-form" style="display: none;">
+	  action="/manage/{{ document.id }}/addAttachment">
+	  <!-- id="new-attachment-form" style="display: none;"> -->
       <p>
 	{{ attachmentForm.as_one_p }}
 	<input type="submit" value="Add" /> 
-	<a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Cancel</a>
+	<!-- <a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Cancel</a> -->
       </p>
     </form>
   </div>
