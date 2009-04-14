@@ -16,7 +16,7 @@ def create(request):
         form_class=PartialDocumentForm,
         post_save_redirect=reverse('manage_index'),
         login_required = True,
-        template_name = 'documents/metaData_update.html',
+        template_name = 'documents/metaData_create.html',
     )
     return response
 
