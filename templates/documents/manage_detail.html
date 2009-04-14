@@ -55,7 +55,9 @@
 	  action="/manage/{{ document.id }}/addVersion">
 	  <!-- id="new-version-form" style="display: none;"> -->
       <p>
-	{{ versionForm.as_one_p }}
+	{% with versionForm as form %}
+	{% include "documents/simpleForm.html" %}
+	{% endwith %}
 	<input type="submit" value="Add" /> 
 	<!-- <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Cancel</a> -->
       </p>
@@ -94,7 +96,9 @@
 	  action="/manage/{{ document.id }}/addAttachment">
 	  <!-- id="new-attachment-form" style="display: none;"> -->
       <p>
-	{{ attachmentForm.as_one_p }}
+	{% with attachmentForm as form %}
+	{% include "documents/simpleForm.html" %}
+	{% endwith %}
 	<input type="submit" value="Add" /> 
 	<!-- <a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Cancel</a> -->
       </p>
@@ -106,7 +110,9 @@
     <p><strong>State</strong></p>
     <form method="post" action="/manage/{{ document.id }}/transition">
       <p>
-	{{ documentForm.as_one_p }}
+	{% with documentForm as form %}
+	{% include "documents/simpleForm.html" %}
+	{% endwith %}
 	<input type="submit" value="Transition" />
       </p>
     </form>
