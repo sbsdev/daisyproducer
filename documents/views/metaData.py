@@ -1,15 +1,36 @@
-from daisyproducer.documents.models import Document
+from daisyproducer.documents.models import Document, Version
 from django.contrib.auth.decorators import login_required
 from django.forms import ModelForm
 from django.core.urlresolvers import reverse
 from django.views.generic.create_update import create_object, update_object
+from django.db import transaction
+from django.core.files.base import ContentFile
+from django.template.loader import render_to_string
 
 class PartialDocumentForm(ModelForm):
     class Meta:
         model = Document
         fields = ('title', 'author', 'publisher')
 
+    def save(self):
+        instance = super(PartialDocumentForm, self).save()
+        if instance.version_set.count() == 0:
+            contentString  = render_to_string('DTBookTemplate.xml', {
+                    'title' : self.cleaned_data['title'],
+                    'author' : self.cleaned_data['author'],
+                    'publisher' : self.cleaned_data['publisher'],
+                    })
+            content = ContentFile(contentString)
+            version = Version(
+                comment = "Initial version created from template and meta data",
+                content = content,
+                document = instance)
+            version.content.save("initial_version.xml", content, save=False)
+            version.save()
+        return instance
+
 @login_required
+@transaction.commit_on_success
 def create(request):
     response = create_object(
         request,
