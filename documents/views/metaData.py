@@ -1,11 +1,11 @@
 from daisyproducer.documents.models import Document, Version
 from django.contrib.auth.decorators import login_required
-from django.forms import ModelForm
-from django.core.urlresolvers import reverse
-from django.views.generic.create_update import create_object, update_object
-from django.db import transaction
 from django.core.files.base import ContentFile
+from django.core.urlresolvers import reverse
+from django.db import transaction
+from django.forms import ModelForm
 from django.template.loader import render_to_string
+from django.views.generic.create_update import create_object, update_object
 
 class PartialDocumentForm(ModelForm):
     class Meta:
