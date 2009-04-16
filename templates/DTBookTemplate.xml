@@ -2,11 +2,11 @@
 <!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
 <dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="de-CH">
   <head>
-    <meta name="dc:Title" content="%(title)s" />
-    <meta name="dc:Creator" content="%(author)s" />
+    <meta name="dc:Title" content="{{ title }}" />
+    <meta name="dc:Creator" content="{{ author }}" />
     <meta name="dc:Subject" content="" />
     <meta name="dc:Description" content="" />
-    <meta name="dc:Publisher" content="%(publisher)s" />
+    <meta name="dc:Publisher" content="{{ publisher }}" />
     <meta name="dc:Date" content="2009-03-16" />
     <meta name="dc:Type" content="Text" />
     <meta name="dc:Format" content="ANSI/NISO Z39.86-2005" />
@@ -23,9 +23,9 @@
   
   <book>
     <frontmatter>
-      <doctitle>%(title)s</doctitle>
+      <doctitle>{{ title }}</doctitle>
       <level1 class="title_page">
-        <docauthor>%(author)s</docauthor>
+        <docauthor>{{ author }}</docauthor>
       </level1>
     </frontmatter>
     
