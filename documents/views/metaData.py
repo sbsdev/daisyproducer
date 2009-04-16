@@ -10,7 +10,7 @@ from django.views.generic.create_update import create_object, update_object
 class PartialDocumentForm(ModelForm):
     class Meta:
         model = Document
-        fields = ('title', 'author', 'publisher')
+        fields = ('title', 'author', 'publisher', 'assigned_to')
 
     def save(self):
         instance = super(PartialDocumentForm, self).save()
@@ -22,7 +22,7 @@ class PartialDocumentForm(ModelForm):
                     })
             content = ContentFile(contentString)
             version = Version(
-                comment = "Initial version created from template and meta data",
+                comment = "Initial version created from meta data",
                 content = content,
                 document = instance)
             version.content.save("initial_version.xml", content, save=False)

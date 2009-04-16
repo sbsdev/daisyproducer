@@ -34,7 +34,8 @@ class Machine():
                 self.validTransitions[state_name] = set()
                 self.state_triggers[state_name] = state[state_name]
         self.states = tuple(self.states)
-        setattr(self.model, 'transitionTo' , curry(self.transitionTo))
+        if not hasattr(self.model, 'transitionTo'):
+            setattr(self.model, 'transitionTo' , curry(self.transitionTo)) 
         setattr(self.model, 'nextValidStates' , curry(self.nextValidStates))
 
     def _extract_from_state(self, kwargs):

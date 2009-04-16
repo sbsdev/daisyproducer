@@ -22,8 +22,10 @@
     </tr>
     <tr>
       <td class=""><b>Publisher:</b></td><td class=" ">{{ document.publisher }}</td>
-      
-      <td class=""><b></b></td><td class=""></td>
+
+      {% if document.assigned_to %}
+      <td class=""><b>Assigned to:</b></td><td class="">{{ document.assigned_to.get_full_name }}</td>
+      {% endif %}
     </tr>
   </table>
   <hr />

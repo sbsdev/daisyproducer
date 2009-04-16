@@ -1,6 +1,7 @@
+from daisyproducer.documents.stateMachine import Machine
+from django.contrib.auth.models import User
 from django.db import models
 from django.forms import ModelForm
-from daisyproducer.documents.stateMachine import Machine
 
 class Document(models.Model):
 
@@ -19,6 +20,9 @@ class Document(models.Model):
     author = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
     state = models.CharField(max_length=32, default='new', choices=STATE_CHOICES)
+    assigned_to = models.ForeignKey(User, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def __init__(self, *args, **kwargs):
         super(Document, self).__init__(*args, **kwargs)
@@ -40,6 +44,10 @@ class Document(models.Model):
 
     def latest_version(self):
         return self.version_set.latest()
+
+    def transitionTo(self, state):
+        self.assigned_to = None
+        self.machine.transitionTo(state)
 
 def get_version_path(instance, filename):
         return 'media/%s/versions/%s' % (instance.document_id, instance.id)
