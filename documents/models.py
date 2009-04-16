@@ -41,14 +41,20 @@ class Document(models.Model):
     def latest_version(self):
         return self.version_set.latest()
 
+def get_version_path(instance, filename):
+        return 'media/%s/versions/%s' % (instance.document_id, instance.id)
+    
 class Version(models.Model):
     comment = models.CharField(max_length=255)
-    content = models.FileField(upload_to='media')
     document = models.ForeignKey(Document)
+    content = models.FileField(upload_to=get_version_path)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         get_latest_by = "created_at"
+
+def get_attachment_path(instance, filename):
+        return 'media/%s/attachments/%s' % (instance.document_id, filename)
 
 class Attachment(models.Model):
 
@@ -61,8 +67,8 @@ class Attachment(models.Model):
     
     comment = models.CharField(max_length=255)
     mime_type = models.CharField(max_length=32, choices=MIME_TYPE_CHOICES)
-    content = models.FileField(upload_to='media')
     document = models.ForeignKey(Document)
+    content = models.FileField(upload_to=get_attachment_path)
     created_at = models.DateTimeField(auto_now_add=True)
     
 # Profiles

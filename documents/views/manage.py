@@ -1,11 +1,12 @@
-from django.shortcuts import render_to_response, get_object_or_404
-from daisyproducer.documents.models import Document
 from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm
+from daisyproducer.documents.models import Document, Version, Attachment
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.views.generic.list_detail import object_list
+from django.db import transaction
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.views.generic.list_detail import object_list
 
 @login_required
 def index(request):
@@ -31,6 +32,7 @@ def detail(request, document_id):
                               context_instance=RequestContext(request))
 
 @login_required
+@transaction.commit_on_success
 def add_attachment(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
@@ -46,13 +48,20 @@ def add_attachment(request, document_id):
         return render_to_response('documents/manage_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
-    attachment = form.save(commit=False)
-    attachment.mime_type = form.content_type
-    attachment.document = document
-    attachment.save()
+    # this is a bit of a hack as we need to create (and save) a
+    # version before the id is known. We need to know the id before we
+    # can save the content file under /document_id/versions/version_id
+    attachment = Attachment.objects.create(
+        comment=form.cleaned_data['comment'], 
+        document=document,
+        mime_type=form.content_type)
+    content_file = request.FILES['content']
+    attachment.content.save(content_file.name, content_file)
+
     return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
     
 @login_required
+@transaction.commit_on_success
 def add_version(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
@@ -68,9 +77,15 @@ def add_version(request, document_id):
         return render_to_response('documents/manage_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
-    version = form.save(commit=False)
-    version.document = document
-    version.save()
+    # this is a bit of a hack as we need to create (and save) a
+    # version before the id is known. We need to know the id before we
+    # can save the content file under /document_id/versions/version_id
+    version = Version.objects.create(
+        comment=form.cleaned_data['comment'], 
+        document=document)
+    content_file = request.FILES['content']
+    version.content.save(content_file.name, content_file)
+
     return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
 
 @login_required
