@@ -21,12 +21,10 @@ class PartialDocumentForm(ModelForm):
                     'publisher' : self.cleaned_data['publisher'],
                     })
             content = ContentFile(contentString)
-            version = Version(
+            version = Version.objects.create(
                 comment = "Initial version created from meta data",
-                content = content,
                 document = instance)
-            version.content.save("initial_version.xml", content, save=False)
-            version.save()
+            version.content.save("initial_version.xml", content)
         return instance
 
 @login_required
@@ -42,6 +40,7 @@ def create(request):
     return response
 
 @login_required
+@transaction.commit_on_success
 def update(request, document_id):
     # Delegate to the generic view and get an HttpResponse.
     response = update_object(
