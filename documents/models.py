@@ -50,7 +50,7 @@ class Document(models.Model):
         self.machine.transitionTo(state)
 
 def get_version_path(instance, filename):
-        return 'media/%s/versions/%s' % (instance.document_id, instance.id)
+        return '%s/versions/%s.xml' % (instance.document_id, instance.id)
     
 class Version(models.Model):
     comment = models.CharField(max_length=255)
@@ -62,7 +62,7 @@ class Version(models.Model):
         get_latest_by = "created_at"
 
 def get_attachment_path(instance, filename):
-        return 'media/%s/attachments/%s' % (instance.document_id, filename)
+        return '%s/attachments/%s' % (instance.document_id, filename)
 
 class Attachment(models.Model):
 

@@ -1,6 +1,7 @@
 
 *.pyc
 *~
+/archive
 /development.db
 /media
 /xml2brl.temp

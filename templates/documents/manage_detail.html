@@ -43,7 +43,7 @@
       <!-- </tr> -->
       {% for version in document.version_set.all %}
       <tr>
-	<td>{{ version.comment }}</td>
+	<td><a href="{{ version.content.url }}">{{ version.comment }}</a></td>
 	<td>{{ version.created_at }}</td>
 	<!-- <td> -->
 	<!--   <a href="#" title="Delete relation"> -->
