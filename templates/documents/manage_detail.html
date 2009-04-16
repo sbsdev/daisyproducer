@@ -1,4 +1,5 @@
 {% extends "documents/manage.html" %}
+{% load basename %}
 
 {% block title %}{{ block.super }} - Manage Document Details - {{ document.title }}{% endblock %}
 
@@ -80,7 +81,7 @@
       <!-- </tr> -->
       {% for attachment in document.attachment_set.all %}
       <tr>
-	<td><a href="{{ attachment.content.url }}">{{ attachment.content.name }}</a></td>
+	<td><a href="{{ attachment.content.url }}">{{ attachment.content.name|basename }}</a></td>
 	<td>{{ attachment.comment }}</td>
 	<td>{{ attachment.mime_type }}</td>
 	<td>{{ attachment.created_at }}</td>
