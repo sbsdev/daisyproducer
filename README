@@ -1,0 +1,6 @@
+Requirements:
+
+- Python from http://www.python.org (tested with Python 2.5) (package python)
+- Django from http://www.djangoproject.com/ (package python-django)
+- lxml from http://codespeak.net/lxml/index.html (package python-lxml)
+
