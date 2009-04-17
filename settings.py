@@ -59,6 +59,14 @@ DATETIME_FORMAT = 'j M y H:i'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '9jf6-plsfz1fy8x-%lgy+4gt9a)z1u4)!8e)aa%pg*z+i-+h6f'
 
+# The maximum size (in bytes) that an upload will be before it gets
+# streamed to the file system. Set this to 0 so that files are stored
+# in a temporary location and can be validated by external tools. 
+FILE_UPLOAD_MAX_MEMORY_SIZE = 0
+
+# The path to the  the Daisy Pipeline 
+DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline-20090410')
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',

@@ -1,7 +1,9 @@
+from daisyproducer import settings
 from daisyproducer.documents.models import Document, Version, Attachment
 from django import forms
 from django.forms import ModelForm
 from django.forms.util import ErrorList
+from subprocess import call
 
 class PartialVersionForm(ModelForm):
 
@@ -10,7 +12,18 @@ class PartialVersionForm(ModelForm):
         data = self.files['content']
         if data.content_type != 'text/xml':
             raise forms.ValidationError("The mime type of the uploaded file must be 'text/xml'")
-        # FIXME: make sure the uploaded version is valid xml
+        # FIXME: test the mime-type with python-magic
+        # make sure the uploaded version is valid xml
+        command = (
+            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
+            "%s/%s" %  (
+                settings.DAISY_PIPELINE_PATH, 
+                'scripts/verify/DTBookValidator.taskScript'),
+            "--input=%s" % data.temporary_file_path(),
+            )
+        exitStatus = call(command)
+        if not exitStatus == 0:
+            raise forms.ValidationError("The uploaded file is not a valid DTBook XML document")            
         return data
 
     class Meta:
