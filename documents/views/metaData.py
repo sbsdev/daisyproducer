@@ -1,4 +1,5 @@
 from daisyproducer.documents.models import Document, Version
+from daisyproducer.documents.versionContent import VersionContent
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
@@ -15,6 +16,7 @@ class PartialDocumentForm(ModelForm):
     def save(self):
         instance = super(PartialDocumentForm, self).save()
         if instance.version_set.count() == 0:
+            # create an initial version
             contentString  = render_to_string('DTBookTemplate.xml', {
                     'title' : self.cleaned_data['title'],
                     'author' : self.cleaned_data['author'],
@@ -25,6 +27,16 @@ class PartialDocumentForm(ModelForm):
                 comment = "Initial version created from meta data",
                 document = instance)
             version.content.save("initial_version.xml", content)
+        else:
+            # create a new version with the new content
+            version = instance.latest_version()
+            versionContent = VersionContent(version)
+            contentString = versionContent.getUpdatedContent(**self.cleaned_data)
+            content = ContentFile(contentString)
+            version = Version.objects.create(
+                comment = "Updated version due to meta data change",
+                document = instance)
+            version.content.save("updated_version.xml", content)
         return instance
 
 @login_required
