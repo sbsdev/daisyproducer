@@ -13,21 +13,21 @@ class VersionContent:
         self.tree = etree.parse(self.version.content.file)
         self.version.content.close()
         # fix author
-        self.updateMetaAttribute("dc:Creator", author)
-        self.updateMetaElement("docauthor", author)
+        self._updateMetaAttribute("dc:Creator", author)
+        self._updateMetaElement("docauthor", author)
         # fix title
-        self.updateMetaAttribute("dc:Title", title)
-        self.updateMetaElement("doctitle", title)
+        self._updateMetaAttribute("dc:Title", title)
+        self._updateMetaElement("doctitle", title)
         # fix publisher
-        self.updateMetaAttribute("dc:Publisher", publisher)
+        self._updateMetaAttribute("dc:Publisher", publisher)
         
         return etree.tostring(self.tree, xml_declaration=True, encoding="UTF-8")
 
-    def updateMetaAttribute(self, key, value):
+    def _updateMetaAttribute(self, key, value):
         for element in self.tree.findall("//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key)):
             element.attrib['content'] = value
         
-    def updateMetaElement(self, key, value):
+    def _updateMetaElement(self, key, value):
         for element in self.tree.findall("//{%s}%s" % (self.DTBOOK_NAMESPACE, key)):
             element.text = value
         
