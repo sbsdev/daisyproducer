@@ -24,7 +24,7 @@
 
 <h2>View as PDF</h2>
 
-<form action="/documents/{{ object.id }}.pdf" method="POST">
+<form action="{% url consume_pdf object.id %}" method="POST">
   <table>
     {{ lpform.as_table }}
     </table>
@@ -33,7 +33,7 @@
 
 <h2>View as Braille</h2>
 
-<form action="/documents/{{ object.id }}.brl" method="POST">
+<form action="{% url consume_brl object.id %}" method="POST">
   <table>
     {{ bform.as_table }}
     </table>

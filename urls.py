@@ -9,11 +9,11 @@ admin.autodiscover()
 
 # consume
 urlpatterns = patterns('daisyproducer.documents.views.consume',
-    url(r'^documents/$', 'index', name='consume_index'),
-    url(r'^documents/(?P<document_id>\d+)/$', 'detail', name='consume_detail'),
+    url(r'^$', 'index', name='consume_index'),
+    url(r'^(?P<document_id>\d+)/$', 'detail', name='consume_detail'),
 
-    url(r'^documents/(?P<document_id>\d+).pdf$', 'as_pdf'),
-    url(r'^documents/(?P<document_id>\d+).brl$', 'as_brl'),
+    url(r'^(?P<document_id>\d+).pdf$', 'as_pdf', name='consume_pdf'),
+    url(r'^(?P<document_id>\d+).brl$', 'as_brl', name='consume_brl'),
 )
 
 # manage
