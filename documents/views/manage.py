@@ -15,7 +15,7 @@ def index(request):
     """
     response = object_list(
         request,
-        queryset = Document.objects.all().order_by('state','title'),
+        queryset = Document.objects.exclude(state='approved').order_by('state','title'),
         template_name = 'documents/manage_index.html',
     )
     return response
