@@ -10,12 +10,15 @@ class PartialVersionForm(ModelForm):
     def clean_content(self):
         data = self.files['content']
         if data.content_type != 'text/xml':
-            raise forms.ValidationError("The mime type of the uploaded file must be 'text/xml'")
+            raise forms.ValidationError(
+                "The mime type of the uploaded file must be 'text/xml'")
         # FIXME: test the mime-type with python-magic
         # make sure the uploaded version is valid xml
-        exitStatus = DaisyPipeline.validate(data.temporary_file_path())
-        if not exitStatus == 0:
-            raise forms.ValidationError("The uploaded file is not a valid DTBook XML document")            
+        exitMessage = DaisyPipeline.validate(data.temporary_file_path())
+        if exitMessage:
+            raise forms.ValidationError(
+                "The uploaded file is not a valid DTBook XML document: %s" % 
+                ' '.join(exitMessage))            
         return data
 
     class Meta:
@@ -33,7 +36,9 @@ class PartialAttachmentForm(ModelForm):
         data = self.files['content']
         choices = tuple([choice[0] for choice in Attachment.MIME_TYPE_CHOICES])
         if data.content_type not in choices:
-            raise forms.ValidationError("The mime type of the uploaded file must be in %s" % ', '.join(choices))
+            raise forms.ValidationError(
+                "The mime type of the uploaded file must be in %s" % 
+                ', '.join(choices))
         return data
 
     class Meta:
