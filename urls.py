@@ -25,12 +25,12 @@ urlpatterns += patterns('daisyproducer.documents.views.todo',
     url(r'^todo/(?P<document_id>\d+)/transition$', 'transition', name='todo_transition'),
 )
 
-# meta data
-urlpatterns += patterns('daisyproducer.documents.views.metaData',
-    url(r'^metadata/$', 'index', name='meta_index'),
-    url(r'^metadata/(?P<document_id>\d+)/$', 'detail', name='meta_detail'),
-    url(r'^metadata/create/$', 'create', name='meta_create'),
-    url(r'^metadata/(?P<document_id>\d+)/edit/$', 'edit', name='meta_edit'),
+# management of documents and meta data
+urlpatterns += patterns('daisyproducer.documents.views.manage',
+    url(r'^manage/$', 'index', name='manage_index'),
+    url(r'^manage/(?P<document_id>\d+)/$', 'detail', name='manage_detail'),
+    url(r'^manage/create/$', 'create', name='manage_create'),
+    url(r'^manage/(?P<document_id>\d+)/edit/$', 'edit', name='manage_edit'),
 )
 
 urlpatterns += patterns('',

@@ -1,4 +1,4 @@
-{% extends "documents/metaData.html" %}
+{% extends "documents/manage.html" %}
 {% load basename %}
 
 {% block title %}{{ block.super }} - Manage Document Details - {{ object.title }}{% endblock %}
@@ -6,7 +6,7 @@
 {% block content %}
 {% if object %}
 <div class="contextual">
-  <a href="{% url meta_edit object.id %}" accesskey="e" class="icon icon-edit">Update</a>
+  <a href="{% url manage_edit object.id %}" accesskey="e" class="icon icon-edit">Update</a>
 </div>
 
 <h2>Document details</h2>

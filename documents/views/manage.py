@@ -14,7 +14,7 @@ def index(request):
     response = object_list(
         request,
         queryset = Document.objects.all().order_by('state','title'),
-        template_name = 'documents/metaData_index.html',
+        template_name = 'documents/manage_index.html',
     )
     return response
     
@@ -23,7 +23,7 @@ def detail(request, document_id):
     response = object_detail(
         request,
         queryset = Document.objects.all(),
-        template_name = 'documents/metaData_detail.html',
+        template_name = 'documents/manage_detail.html',
         object_id = document_id,
     )
     return response
@@ -67,7 +67,7 @@ def create(request):
         form_class=PartialDocumentForm,
         post_save_redirect=reverse('todo_index'),
         login_required = True,
-        template_name = 'documents/metaData_create.html',
+        template_name = 'documents/manage_create.html',
     )
     return response
 
@@ -78,9 +78,9 @@ def edit(request, document_id):
     response = update_object(
         request,
         form_class=PartialDocumentForm,
-        post_save_redirect=reverse('meta_index'),
+        post_save_redirect=reverse('manage_index'),
         object_id = document_id,
         login_required = True,
-        template_name = 'documents/metaData_update.html',
+        template_name = 'documents/manage_update.html',
     )
     return response
