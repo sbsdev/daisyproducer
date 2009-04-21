@@ -1,0 +1,37 @@
+{% extends "documents/metaData.html" %}
+{% load basename %}
+
+{% block title %}{{ block.super }} - Manage Document Details - {{ object.title }}{% endblock %}
+
+{% block content %}
+{% if object %}
+<div class="contextual">
+  <a href="{% url meta_edit object.id %}" accesskey="e" class="icon icon-edit">Update</a>
+</div>
+
+<h2>Managing document details</h2>
+
+<div class="issue">
+  
+  <h3>{{ object.title }}</h3>
+  <p class="author">
+    Added {{ object.created_at }}.
+    Updated {{ object.modified_at }}.
+  </p>
+  
+  <table width="100%">
+    <tr>
+      <td style="width:15%" class=""><b>Author:</b></td><td style="width:35%">{{ object.author }}</td>
+      <td style="width:15%" class="status"><b>State:</b></td><td style="width:35%" class="status">{{ object.state }}</td>
+    </tr>
+    <tr>
+      <td class=""><b>Publisher:</b></td><td class=" ">{{ object.publisher }}</td>
+
+      <td class=""><b>Assigned to:</b></td><td class="">{{ object.assigned_to.get_full_name }}</td>
+    </tr>
+  </table>
+
+{% else %}
+<p class="nodata">No data to display</p>
+{% endif %}
+{% endblock %}

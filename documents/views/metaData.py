@@ -7,6 +7,26 @@ from django.db import transaction
 from django.forms import ModelForm
 from django.template.loader import render_to_string
 from django.views.generic.create_update import create_object, update_object
+from django.views.generic.list_detail import object_list, object_detail
+
+@login_required
+def index(request):
+    response = object_list(
+        request,
+        queryset = Document.objects.all().order_by('state','title'),
+        template_name = 'documents/metaData_index.html',
+    )
+    return response
+    
+@login_required
+def detail(request, document_id):
+    response = object_detail(
+        request,
+        queryset = Document.objects.all(),
+        template_name = 'documents/metaData_detail.html',
+        object_id = document_id,
+    )
+    return response
 
 class PartialDocumentForm(ModelForm):
     class Meta:
@@ -53,12 +73,12 @@ def create(request):
 
 @login_required
 @transaction.commit_on_success
-def update(request, document_id):
+def edit(request, document_id):
     # Delegate to the generic view and get an HttpResponse.
     response = update_object(
         request,
         form_class=PartialDocumentForm,
-        post_save_redirect=reverse('manage_index'),
+        post_save_redirect=reverse('meta_index'),
         object_id = document_id,
         login_required = True,
         template_name = 'documents/metaData_update.html',

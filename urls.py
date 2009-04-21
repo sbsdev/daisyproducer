@@ -27,8 +27,10 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
 
 # meta data
 urlpatterns += patterns('daisyproducer.documents.views.metaData',
-    url(r'^manage/create/$', 'create', name='meta_create'),
-    url(r'^manage/(?P<document_id>\d+)/updateMetadata/$', 'update', name='meta_update'),
+    url(r'^metadata/$', 'index', name='meta_index'),
+    url(r'^metadata/(?P<document_id>\d+)/$', 'detail', name='meta_detail'),
+    url(r'^metadata/create/$', 'create', name='meta_create'),
+    url(r'^metadata/(?P<document_id>\d+)/edit/$', 'edit', name='meta_edit'),
 )
 
 urlpatterns += patterns('',
