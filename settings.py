@@ -45,7 +45,7 @@ MEDIA_ROOT = os.path.join(PROJECT_DIR, 'archive')
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/archive/'
 
-LOGIN_REDIRECT_URL = '/manage'
+LOGIN_REDIRECT_URL = '/todo'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.

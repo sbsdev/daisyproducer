@@ -1,4 +1,4 @@
-{% extends "documents/manage.html" %}
+{% extends "documents/todo.html" %}
 {% load basename %}
 
 {% block title %}{{ block.super }} - Manage Document Details - {{ document.title }}{% endblock %}
@@ -55,7 +55,7 @@
     </table>
 
     <form enctype="multipart/form-data" method="post" 
-	  action="/manage/{{ document.id }}/addVersion">
+	  action="{% url todo_add_version document.id %}">
 	  <!-- id="new-version-form" style="display: none;"> -->
       <p>
 	{% with versionForm as form %}
@@ -96,7 +96,7 @@
       {% endfor %}
     </table>
     <form enctype="multipart/form-data" method="post"
-	  action="/manage/{{ document.id }}/addAttachment">
+	  action="{% url todo_add_attachment document.id %}">
 	  <!-- id="new-attachment-form" style="display: none;"> -->
       <p>
 	{% with attachmentForm as form %}
@@ -111,7 +111,7 @@
 
   <div id="relations">
     <p><strong>State</strong></p>
-    <form method="post" action="/manage/{{ document.id }}/transition">
+    <form method="post" action="{% url todo_transition  document.id %}">
       <p>
 	{% with documentForm as form %}
 	{% include "documents/simpleForm.html" %}

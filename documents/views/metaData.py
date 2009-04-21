@@ -65,7 +65,7 @@ def create(request):
     response = create_object(
         request,
         form_class=PartialDocumentForm,
-        post_save_redirect=reverse('manage_index'),
+        post_save_redirect=reverse('todo_index'),
         login_required = True,
         template_name = 'documents/metaData_create.html',
     )

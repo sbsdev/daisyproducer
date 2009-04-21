@@ -16,7 +16,7 @@ def index(request):
     response = object_list(
         request,
         queryset = Document.objects.exclude(state='approved').order_by('state','title'),
-        template_name = 'documents/manage_index.html',
+        template_name = 'documents/todo_index.html',
     )
     return response
     
@@ -28,7 +28,7 @@ def detail(request, document_id):
     attachmentForm = PartialAttachmentForm()
     documentForm = PartialDocumentForm()
     documentForm.limitChoicesToValidStates(document)
-    return render_to_response('documents/manage_detail.html', locals(),
+    return render_to_response('documents/todo_detail.html', locals(),
                               context_instance=RequestContext(request))
 
 @login_required
@@ -37,7 +37,7 @@ def add_attachment(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
+        return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
     form = PartialAttachmentForm(request.POST, request.FILES)
     if not form.is_valid():
@@ -45,7 +45,7 @@ def add_attachment(request, document_id):
         attachmentForm = form
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
-        return render_to_response('documents/manage_detail.html', locals(),
+        return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
     # this is a bit of a hack as we need to create (and save) a
@@ -58,7 +58,7 @@ def add_attachment(request, document_id):
     content_file = request.FILES['content']
     attachment.content.save(content_file.name, content_file)
 
-    return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
+    return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
     
 @login_required
 @transaction.commit_on_success
@@ -66,7 +66,7 @@ def add_version(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
+        return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
     form = PartialVersionForm(request.POST, request.FILES)
     if not form.is_valid():
@@ -74,7 +74,7 @@ def add_version(request, document_id):
         attachmentForm = PartialAttachmentForm()
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
-        return render_to_response('documents/manage_detail.html', locals(),
+        return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
     # this is a bit of a hack as we need to create (and save) a
@@ -86,22 +86,22 @@ def add_version(request, document_id):
     content_file = request.FILES['content']
     version.content.save(content_file.name, content_file)
 
-    return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
+    return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
 @login_required
 def transition(request, document_id):
     document = Document.objects.get(pk=document_id)
 
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
+        return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
     form = PartialDocumentForm(request.POST)
     if not form.is_valid():
         versionForm = PartialVersionForm()
         attachmentForm = PartialAttachmentForm()
         documentForm = form
-        return render_to_response('documents/manage_detail.html', locals(),
+        return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
     document.transitionTo(form.cleaned_data['state'])
-    return HttpResponseRedirect(reverse('manage_detail', args=[document_id]))
+    return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))

@@ -40,7 +40,7 @@
 
     <div id="main-menu">
       <ul>
-	<li><a href="{% url manage_index %}"{% block tab-pending %}{% endblock %}>Pending</a></li>
+	<li><a href="{% url todo_index %}"{% block tab-todo %}{% endblock %}>TODO</a></li>
 	<li><a href="{% url browse_index %}"{% block tab-browse %}{% endblock %}>Browse</a></li>
 	<li><a href="{% url meta_index %}" accesskey="7"{% block tab-new %}{% endblock %}>Manage</a></li>
       </ul>

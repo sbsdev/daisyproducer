@@ -7,7 +7,7 @@ PROJECT_DIR = os.path.dirname(__file__)
 from django.contrib import admin
 admin.autodiscover()
 
-# browse
+# browse finished documents
 urlpatterns = patterns('daisyproducer.documents.views.browse',
     url(r'^$', 'index', name='browse_index'),
     url(r'^(?P<document_id>\d+)/$', 'detail', name='browse_detail'),
@@ -16,13 +16,13 @@ urlpatterns = patterns('daisyproducer.documents.views.browse',
     url(r'^(?P<document_id>\d+).brl$', 'as_brl', name='browse_brl'),
 )
 
-# manage
-urlpatterns += patterns('daisyproducer.documents.views.manage',
-    url(r'^manage/$', 'index', name='manage_index'),
-    url(r'^manage/(?P<document_id>\d+)/$', 'detail', name='manage_detail'),
-    url(r'^manage/(?P<document_id>\d+)/addVersion$', 'add_version', name='manage_add_version'),
-    url(r'^manage/(?P<document_id>\d+)/addAttachment$', 'add_attachment', name='manage_add_attachmentdetail'),
-    url(r'^manage/(?P<document_id>\d+)/transition$', 'transition', name='manage_transition'),
+# work on pending documents
+urlpatterns += patterns('daisyproducer.documents.views.todo',
+    url(r'^todo/$', 'index', name='todo_index'),
+    url(r'^todo/(?P<document_id>\d+)/$', 'detail', name='todo_detail'),
+    url(r'^todo/(?P<document_id>\d+)/addVersion$', 'add_version', name='todo_add_version'),
+    url(r'^todo/(?P<document_id>\d+)/addAttachment$', 'add_attachment', name='todo_add_attachment'),
+    url(r'^todo/(?P<document_id>\d+)/transition$', 'transition', name='todo_transition'),
 )
 
 # meta data
