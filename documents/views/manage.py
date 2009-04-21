@@ -73,7 +73,7 @@ def create(request):
 
 @login_required
 @transaction.commit_on_success
-def edit(request, document_id):
+def update(request, document_id):
     # Delegate to the generic view and get an HttpResponse.
     response = update_object(
         request,

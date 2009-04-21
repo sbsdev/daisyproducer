@@ -30,7 +30,7 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
     url(r'^manage/$', 'index', name='manage_index'),
     url(r'^manage/(?P<document_id>\d+)/$', 'detail', name='manage_detail'),
     url(r'^manage/create/$', 'create', name='manage_create'),
-    url(r'^manage/(?P<document_id>\d+)/edit/$', 'edit', name='manage_edit'),
+    url(r'^manage/(?P<document_id>\d+)/update/$', 'update', name='manage_update'),
 )
 
 urlpatterns += patterns('',
