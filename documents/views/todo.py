@@ -11,8 +11,7 @@ from django.views.generic.list_detail import object_list
 @login_required
 def index(request):
     """Show all the documents that are relevant for the groups that
-    the user has and group them by action
-    """
+    the user has and group them by action"""
     response = object_list(
         request,
         queryset = Document.objects.exclude(state='approved').order_by('state','title'),

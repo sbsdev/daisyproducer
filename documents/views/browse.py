@@ -9,6 +9,7 @@ from os import system
 
 # browse use case
 def index(request):
+    """Show all the documents that approved and order them by title"""
     response = object_list(
         request,
         queryset = Document.objects.filter(state='approved').order_by('title'),
