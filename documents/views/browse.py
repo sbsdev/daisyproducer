@@ -7,12 +7,12 @@ from django.views.generic.list_detail import object_list, object_detail
 
 from os import system
 
-# consume use case
+# browse use case
 def index(request):
     response = object_list(
         request,
         queryset = Document.objects.filter(state='approved').order_by('title'),
-        template_name = 'documents/consume_index.html',
+        template_name = 'documents/browse_index.html',
     )
     return response
 
@@ -23,7 +23,7 @@ def detail(request, document_id):
         request,
         queryset = Document.objects.all(),
         object_id = document_id,
-        template_name = 'documents/consume_detail.html',
+        template_name = 'documents/browse_detail.html',
         extra_context = locals(),
     )
     return response
@@ -32,7 +32,7 @@ def as_pdf(request, document_id):
     form = LargePrintProfileForm(request.POST)
 
     if not form.is_valid():
-        return HttpResponseRedirect(reverse('consume_detail', args=[document_id]))
+        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
 
     document = Document.objects.get(pk=document_id)
 
@@ -57,7 +57,7 @@ def as_brl(request, document_id):
     form = BrailleProfileForm(request.POST)
 
     if not form.is_valid():
-        return HttpResponseRedirect(reverse('consume_detail', args=[document_id]))
+        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
 
     document = Document.objects.get(pk=document_id)
 

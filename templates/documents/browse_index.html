@@ -1,4 +1,4 @@
-{% extends "documents/consume.html" %}
+{% extends "documents/browse.html" %}
 
 {% block title %}{{ block.super }} - Listing documents{% endblock %}
 
@@ -18,7 +18,7 @@
   <tbody>
     {% for document in object_list %}
     <tr class="{% cycle 'even' 'odd' %}">
-      <td><a href="{% url consume_detail document.id %}">{{ document.title }}</a></td>
+      <td><a href="{% url browse_detail document.id %}">{{ document.title }}</a></td>
       <td>{{ document.author }}</td>
       <td>{{ document.publisher }}</td>
     </tr>

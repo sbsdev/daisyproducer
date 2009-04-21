@@ -7,13 +7,13 @@ PROJECT_DIR = os.path.dirname(__file__)
 from django.contrib import admin
 admin.autodiscover()
 
-# consume
-urlpatterns = patterns('daisyproducer.documents.views.consume',
-    url(r'^$', 'index', name='consume_index'),
-    url(r'^(?P<document_id>\d+)/$', 'detail', name='consume_detail'),
+# browse
+urlpatterns = patterns('daisyproducer.documents.views.browse',
+    url(r'^$', 'index', name='browse_index'),
+    url(r'^(?P<document_id>\d+)/$', 'detail', name='browse_detail'),
 
-    url(r'^(?P<document_id>\d+).pdf$', 'as_pdf', name='consume_pdf'),
-    url(r'^(?P<document_id>\d+).brl$', 'as_brl', name='consume_brl'),
+    url(r'^(?P<document_id>\d+).pdf$', 'as_pdf', name='browse_pdf'),
+    url(r'^(?P<document_id>\d+).brl$', 'as_brl', name='browse_brl'),
 )
 
 # manage
