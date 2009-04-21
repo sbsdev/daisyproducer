@@ -45,6 +45,8 @@ urlpatterns += patterns('',
      {'document_root': os.path.join(PROJECT_DIR, 'public', 'javascripts')}),
     (r'^archive/(?P<path>.*)$', 'django.views.static.serve',
      {'document_root': os.path.join(PROJECT_DIR, 'archive')}),
+    (r'^images/(?P<path>.*)$', 'django.views.static.serve',
+     {'document_root': os.path.join(PROJECT_DIR, 'public', 'images')}),
 
     # enable the admin:
     (r'^admin/(.*)', admin.site.root),
