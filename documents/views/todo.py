@@ -3,6 +3,7 @@ from daisyproducer.documents.models import Document, Version, Attachment
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -12,9 +13,19 @@ from django.views.generic.list_detail import object_list
 def index(request):
     """Show all the documents that are relevant for the groups that
     the user has and group them by action"""
+    # FIXME: this can be simplified in a more modern version of django
+    # (see http://docs.djangoproject.com/en/dev/ref/models/querysets/#in)
+    # to the following: 
+    # user_groups = request.user.groups
+    user_groups = request.user.groups.values('pk').query
     response = object_list(
         request,
-        queryset = Document.objects.exclude(state__name='approved').order_by('state','title'),
+        queryset = Document.objects.filter(
+            Q(assigned_to=request.user) | Q(assigned_to__isnull=True),
+            # only show documents in a state for which i'm (or my
+            # group is) responsible
+            state__responsible__in=user_groups
+            ).order_by('state','title'),
         template_name = 'documents/todo_index.html',
     )
     return response
@@ -103,4 +114,4 @@ def transition(request, document_id):
                                   context_instance=RequestContext(request))
 
     document.transitionTo(form.cleaned_data['state'])
-    return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+    return HttpResponseRedirect(reverse('todo_index'))

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 from django.forms import ModelForm
 
@@ -12,6 +12,7 @@ class StateError(Exception):
 class State(models.Model):
     name = models.CharField(unique=True, max_length=32)
     next_states = models.ManyToManyField("self", symmetrical=False, blank=True)
+    responsible = models.ManyToManyField(Group)
     sort_order = models.PositiveSmallIntegerField()
 
     def __unicode__(self):
@@ -21,7 +22,7 @@ class State(models.Model):
         if not isinstance(state, State):
             raise TypeError("'%s' is not a registered state" % state)
         if not state in self.next_states.all():
-            raise StateError("Cannot transition to %s from %s" % self.name, state.name)
+            raise StateError("Cannot transition to %s from %s" % (self.name, state.name))
         return state
 
 
