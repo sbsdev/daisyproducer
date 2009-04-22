@@ -21,9 +21,9 @@ def index(request):
     response = object_list(
         request,
         queryset = Document.objects.filter(
+            # only show documents which noone else is assigned,
             Q(assigned_to=request.user) | Q(assigned_to__isnull=True),
-            # only show documents in a state for which i'm (or my
-            # group is) responsible
+            # and which are in a state for which my group is responsible
             state__responsible__in=user_groups
             ).order_by('state','title'),
         template_name = 'documents/todo_index.html',
