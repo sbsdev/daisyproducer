@@ -34,11 +34,11 @@ class PartialDocumentForm(ModelForm):
         fields = ('title', 'author', 'publisher', 'assigned_to')
 
     def save(self):
-        instance = super(PartialDocumentForm, self).save(commit=False)
-        # set initial state
-        instance.state = State.objects.filter(name='new')[0]
-        instance.save()
+        instance = super(PartialDocumentForm, self).save()
         if instance.version_set.count() == 0:
+            # set initial state
+            instance.state = State.objects.filter(name='new')[0]
+            instance.save()
             # create an initial version
             contentString  = render_to_string('DTBookTemplate.xml', {
                     'title' : self.cleaned_data['title'],
