@@ -45,7 +45,7 @@ class PartialDocumentForm(ModelForm):
                     'author' : self.cleaned_data['author'],
                     'publisher' : self.cleaned_data['publisher'],
                     })
-            content = ContentFile(contentString)
+            content = ContentFile(contentString.encode('utf-8'))
             version = Version.objects.create(
                 comment = "Initial version created from meta data",
                 document = instance)
