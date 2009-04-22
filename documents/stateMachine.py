@@ -60,7 +60,7 @@ class Machine():
             raise MachineError("Missing 'to'; must transtion to a state")
 
         if going_to not in self.states:
-            raise MachineError(NO_VALID_STAT % ('to', coming_from))
+            raise MachineError(NO_VALID_STATE % ('to', coming_from))
         return going_to
 
     def _set_initial_or_retrieve_state(self, initial):
