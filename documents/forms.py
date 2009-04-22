@@ -6,9 +6,9 @@ from django.forms.util import ErrorList
 
 class PartialVersionForm(ModelForm):
 
-    # make sure the content has mime type of 'text/xml'
     def clean_content(self):
         data = self.files['content']
+        # make sure the content has mime type of 'text/xml'
         if data.content_type != 'text/xml':
             raise forms.ValidationError(
                 "The mime type of the uploaded file must be 'text/xml'")
