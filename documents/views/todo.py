@@ -14,7 +14,7 @@ def index(request):
     the user has and group them by action"""
     response = object_list(
         request,
-        queryset = Document.objects.exclude(state='approved').order_by('state','title'),
+        queryset = Document.objects.exclude(state__name='approved').order_by('state','title'),
         template_name = 'documents/todo_index.html',
     )
     return response

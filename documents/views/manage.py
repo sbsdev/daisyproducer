@@ -1,4 +1,4 @@
-from daisyproducer.documents.models import Document, Version
+from daisyproducer.documents.models import Document, Version, State
 from daisyproducer.documents.versionContent import VersionContent
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
@@ -34,7 +34,10 @@ class PartialDocumentForm(ModelForm):
         fields = ('title', 'author', 'publisher', 'assigned_to')
 
     def save(self):
-        instance = super(PartialDocumentForm, self).save()
+        instance = super(PartialDocumentForm, self).save(commit=False)
+        # set initial state
+        instance.state = State.objects.filter(name='new')[0]
+        instance.save()
         if instance.version_set.count() == 0:
             # create an initial version
             contentString  = render_to_string('DTBookTemplate.xml', {
@@ -65,7 +68,7 @@ def create(request):
     response = create_object(
         request,
         form_class=PartialDocumentForm,
-        post_save_redirect=reverse('todo_index'),
+        post_save_redirect=reverse('manage_index'),
         login_required = True,
         template_name = 'documents/manage_create.html',
     )

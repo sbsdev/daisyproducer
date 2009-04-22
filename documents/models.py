@@ -1,43 +1,42 @@
-from daisyproducer.documents.stateMachine import Machine
 from django.contrib.auth.models import User
 from django.db import models
 from django.forms import ModelForm
 
-class Document(models.Model):
+class StateError(Exception):
+    def __init__(self, value):
+        self.value = value
 
-    STATES = (
-        'new',
-        'scanned',
-        'ocred',
-        'marked_up',
-        'proof_read',
-        'approved',
-        )
-    
-    STATE_CHOICES = tuple([(state, state) for state in STATES])
+    def __str__(self):
+        return repr(self.value)
+
+class State(models.Model):
+    name = models.CharField(unique=True, max_length=32)
+    next_states = models.ManyToManyField("self", symmetrical=False, blank=True)
+    sort_order = models.PositiveSmallIntegerField()
+
+    def __unicode__(self):
+        return self.name
+
+    def transitionTo(self, state):
+        if not isinstance(state, State):
+            raise TypeError("'%s' is not a registered state" % state)
+        if not state in self.next_states.all():
+            raise StateError("Cannot transition to %s from %s" % self.name, state.name)
+        return state
+
+
+    class Meta:
+        ordering = ['sort_order']
+
+class Document(models.Model):
 
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
-    state = models.CharField(max_length=32, default='new', choices=STATE_CHOICES)
+    state = models.ForeignKey(State)
     assigned_to = models.ForeignKey(User, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-
-    def __init__(self, *args, **kwargs):
-        super(Document, self).__init__(*args, **kwargs)
-
-        states = Document.STATES
-
-        self.machine = Machine(self, states, initial='new')
-
-        self.machine.event('scanning', {'from': 'new', 'to': 'scanned'})
-        self.machine.event('ocring', {'from': 'scanned', 'to': 'ocred'})
-        self.machine.event('marking_up', {'from': 'ocred', 'to': 'marked_up'})
-        self.machine.event('proof_reading', {'from': 'marked_up', 'to': 'proof_read'})
-        self.machine.event('approving', {'from': 'proof_read', 'to': 'approved'})
-        self.machine.event('fixing_errata', {'from': 'approved', 'to': 'marked_up'})
-        self.machine.event('fixing_typos', {'from': 'proof_read', 'to': 'marked_up'})
 
     def __unicode__(self):
         return self.title
@@ -47,7 +46,8 @@ class Document(models.Model):
 
     def transitionTo(self, state):
         self.assigned_to = None
-        self.machine.transitionTo(state)
+        self.state = self.state.transitionTo(state)
+        self.save()
 
 def get_version_path(instance, filename):
         return '%s/versions/%s.xml' % (instance.document_id, instance.id)
@@ -60,6 +60,7 @@ class Version(models.Model):
 
     class Meta:
         get_latest_by = "created_at"
+        ordering = ['-created_at']
 
 def get_attachment_path(instance, filename):
         return '%s/attachments/%s' % (instance.document_id, filename)
@@ -78,7 +79,10 @@ class Attachment(models.Model):
     document = models.ForeignKey(Document)
     content = models.FileField(upload_to=get_attachment_path)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
+    class Meta:
+        ordering = ['-created_at']
+
 # Profiles
 class BrailleProfile(models.Model):
 

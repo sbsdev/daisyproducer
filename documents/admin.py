@@ -1,4 +1,4 @@
-from daisyproducer.documents.models import Document, Version, Attachment
+from daisyproducer.documents.models import Document, Version, Attachment, State
 from django.contrib import admin
 
 class VersionInline(admin.TabularInline):
@@ -6,6 +6,11 @@ class VersionInline(admin.TabularInline):
 
 class AttachmentInline(admin.TabularInline):
 	model = Attachment
+
+class StateAdmin(admin.ModelAdmin):
+        list_display = ('name', 'sort_order',)
+        ordering = ('sort_order',)
+        search_fields = ('name',)
 
 class DocumentAdmin(admin.ModelAdmin):
         list_display = ('title', 'author', 'publisher', 'state',)
@@ -21,6 +26,7 @@ class VersionAdmin(admin.ModelAdmin):
 class AttachmentAdmin(admin.ModelAdmin):
         list_display = ('comment', 'mime_type',)
 
+admin.site.register(State,StateAdmin)
 admin.site.register(Document,DocumentAdmin)
 admin.site.register(Version,VersionAdmin)
 admin.site.register(Attachment,AttachmentAdmin)
