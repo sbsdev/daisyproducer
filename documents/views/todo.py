@@ -79,6 +79,12 @@ def add_version(request, document_id):
         return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
     form = PartialVersionForm(request.POST, request.FILES)
+    # attach some data to the form for validation
+    form.contentMetaData = {
+        'author' : document.author, 
+        'title' : document.title, 
+        'publisher' : document.publisher
+        }
     if not form.is_valid():
         versionForm = form
         attachmentForm = PartialAttachmentForm()

@@ -1,10 +1,19 @@
-from daisyproducer.documents.models import Document, Version, Attachment
 from daisyproducer.documents.external import DaisyPipeline
+from daisyproducer.documents.models import Document, Version, Attachment
+from daisyproducer.documents.versionHelper import XMLContent
 from django import forms
 from django.forms import ModelForm
 from django.forms.util import ErrorList
 
 class PartialVersionForm(ModelForm):
+
+    def getcontentMetaData(self):
+        return self._contentMetaData
+
+    def setcontentMetaData(self, value):
+        self._contentMetaData = value
+
+    contentMetaData = property(getcontentMetaData, setcontentMetaData)
 
     def clean_content(self):
         data = self.files['content']
@@ -19,6 +28,17 @@ class PartialVersionForm(ModelForm):
             raise forms.ValidationError(
                 "The uploaded file is not a valid DTBook XML document: %s" % 
                 ' '.join(exitMessage))            
+        # make sure the meta data of the uploaded version corresponds
+        # to the meta data in the document
+        xmlContent = XMLContent()
+        errorList = xmlContent.validateContentMetaData(
+            data.temporary_file_path(), **self.contentMetaData)
+        if errorList:
+            raise forms.ValidationError(
+                # FIXME: find a way to sanely display all error
+                # messages from the errorList, not just the first one
+                "The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorList[0])
+            
         return data
 
     class Meta:
