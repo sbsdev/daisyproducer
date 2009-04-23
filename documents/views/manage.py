@@ -1,5 +1,5 @@
 from daisyproducer.documents.models import Document, Version, State
-from daisyproducer.documents.versionContent import VersionContent
+from daisyproducer.documents.versionHelper import XMLContent
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
@@ -49,9 +49,8 @@ class PartialDocumentForm(ModelForm):
             version.content.save("initial_version.xml", content)
         else:
             # create a new version with the new content
-            version = instance.latest_version()
-            versionContent = VersionContent(version)
-            contentString = versionContent.getUpdatedContent(**self.cleaned_data)
+            xmlContent = XMLContent(instance.latest_version())
+            contentString = xmlContent.getUpdatedContent(**self.cleaned_data)
             content = ContentFile(contentString)
             version = Version.objects.create(
                 comment = "Updated version due to meta data change",

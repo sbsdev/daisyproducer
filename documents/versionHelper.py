@@ -1,6 +1,6 @@
 from lxml import etree
 
-class VersionContent:
+class XMLContent:
     
     DTBOOK_NAMESPACE = "http://www.daisy.org/z3986/2005/dtbook/"
 
