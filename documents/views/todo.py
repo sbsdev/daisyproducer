@@ -21,7 +21,7 @@ def index(request):
     response = object_list(
         request,
         queryset = Document.objects.filter(
-            # only show documents which noone else is assigned,
+            # only show documents that aren't assigned to anyone else,
             Q(assigned_to=request.user) | Q(assigned_to__isnull=True),
             # and which are in a state for which my group is responsible
             state__responsible__in=user_groups
