@@ -36,7 +36,7 @@ class PartialDocumentForm(ModelForm):
         instance = super(PartialDocumentForm, self).save()
         if instance.version_set.count() == 0:
             # create an initial version
-            contentString  = XMLContent.getInitialContent(**self.cleaned_data)
+            contentString  = XMLContent.getInitialContent(instance)
             content = ContentFile(contentString)
             version = Version.objects.create(
                 comment = "Initial version created from meta data",

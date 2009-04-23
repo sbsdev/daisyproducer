@@ -67,6 +67,9 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 0
 # The path to the  the Daisy Pipeline 
 DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline-20090410')
 
+# The publisher that should be inserted in the meta data by default
+DAISY_DEFAULT_PUBLISHER = "Swiss Library for the Blind and Visually Impaired"
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',

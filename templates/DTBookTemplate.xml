@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
-<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="de-CH">
+<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="{{ language }}">
   <head>
     <meta name="dc:Title" content="{{ title }}" />
     <meta name="dc:Creator" content="{{ author }}" />
-    <meta name="dc:Subject" content="" />
-    <meta name="dc:Description" content="" />
+    <meta name="dc:Subject" content="{{ subject }}" />
+    <meta name="dc:Description" content="{{ description }}" />
     <meta name="dc:Publisher" content="{{ publisher }}" />
-    <meta name="dc:Date" content="2009-03-16" />
+    <meta name="dc:Date" content="{{ date }}" />
     <meta name="dc:Type" content="Text" />
     <meta name="dc:Format" content="ANSI/NISO Z39.86-2005" />
-    <meta name="dc:Identifier" content="sbs-dtbook2009-exemplar-01" />
-    <meta name="dc:Source" scheme="ISBN" content="3-257-21733-1" />
-    <meta name="dc:Language" content="de-CH" />
-    <meta name="dc:Rights" content="Information about rights held in and over the DTB" />
-    <meta name="dtb:uid" content="sbs-dtbook2009-exemplar-01" />
-    <meta name="dtb:sourceDate" content="2009" />
-    <meta name="dtb:sourceEdition" content="XHTML" />
-    <meta name="dtb:sourcePublisher" content="Diogenes" />
-    <meta name="dtb:sourceRights" content="Information about rights held in and over the resource" />
+    <meta name="dc:Identifier" content="{{ identifier }}" />
+    <meta name="dc:Source" content="{{ isbn }}" />
+    <meta name="dc:Language" content="{{ language }}" />
+    <meta name="dc:Rights" content="{{ rights }}" />
+    <meta name="dtb:uid" content="{{ identifier }}" />
+    <meta name="dtb:sourceDate" content="{{ sourceDate }}" />
+    <meta name="dtb:sourceEdition" content="{{ sourceEdition }}" />
+    <meta name="dtb:sourcePublisher" content="{{ sourcePublisher }}" />
+    <meta name="dtb:sourceRights" content="{{ sourceRights }}" />
   </head>
   
   <book>

@@ -1,3 +1,5 @@
+from daisyproducer import settings
+from datetime import date
 from django.template.loader import render_to_string
 from lxml import etree
 
@@ -6,11 +8,15 @@ class XMLContent:
     DTBOOK_NAMESPACE = "http://www.daisy.org/z3986/2005/dtbook/"
 
     @staticmethod
-    def getInitialContent(author, title, publisher, **kwargs):
+    def getInitialContent(document):
         content  = render_to_string('DTBookTemplate.xml', {
-                'title' : title,
-                'author' : author,
-                'publisher' : publisher,
+                'title' : document.title,
+                'author' : document.author,
+                'publisher' : settings.DAISY_DEFAULT_PUBLISHER,
+                'date' : date.today().isoformat(),
+                'identifier' : "ch-sbs-%s" % document.id,
+                'language' : "de-CH",
+                'sourcePublisher' : document.publisher
                 })
         return content.encode('utf-8')
         
