@@ -50,6 +50,12 @@ class Document(models.Model):
         self.state = self.state.transitionTo(state)
         self.save()
 
+    def save(self):
+        # set initial state
+        if not self.pk:
+            self.state = State.objects.filter(name='new')[0]
+        super(Document, self).save()
+
 def get_version_path(instance, filename):
         return '%s/versions/%s.xml' % (instance.document_id, instance.id)
     
