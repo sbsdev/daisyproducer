@@ -1,9 +1,19 @@
+from django.template.loader import render_to_string
 from lxml import etree
 
 class XMLContent:
     
     DTBOOK_NAMESPACE = "http://www.daisy.org/z3986/2005/dtbook/"
 
+    @staticmethod
+    def getInitialContent(author, title, publisher, **kwargs):
+        content  = render_to_string('DTBookTemplate.xml', {
+                'title' : title,
+                'author' : author,
+                'publisher' : publisher,
+                })
+        return content.encode('utf-8')
+        
     def __init__(self, version):
         self.version = version
 

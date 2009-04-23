@@ -5,7 +5,6 @@ from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.forms import ModelForm
-from django.template.loader import render_to_string
 from django.views.generic.create_update import create_object, update_object
 from django.views.generic.list_detail import object_list, object_detail
 
@@ -37,12 +36,8 @@ class PartialDocumentForm(ModelForm):
         instance = super(PartialDocumentForm, self).save()
         if instance.version_set.count() == 0:
             # create an initial version
-            contentString  = render_to_string('DTBookTemplate.xml', {
-                    'title' : self.cleaned_data['title'],
-                    'author' : self.cleaned_data['author'],
-                    'publisher' : self.cleaned_data['publisher'],
-                    })
-            content = ContentFile(contentString.encode('utf-8'))
+            contentString  = XMLContent.getInitialContent(**self.cleaned_data)
+            content = ContentFile(contentString)
             version = Version.objects.create(
                 comment = "Initial version created from meta data",
                 document = instance)
