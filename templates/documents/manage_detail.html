@@ -14,20 +14,20 @@
 <div class="issue">
   
   <h3>{{ object.title }}</h3>
-  <p class="author">
-    Added {{ object.created_at }}.
-    Updated {{ object.modified_at }}.
-  </p>
-  
   <table width="100%">
     <tr>
-      <td style="width:15%" class=""><b>Author:</b></td><td style="width:35%">{{ object.author }}</td>
-      <td style="width:15%" class="status"><b>State:</b></td><td style="width:35%" class="status">{{ object.state }}</td>
+      <td style="width:15%" class=""><b>{{ fields.author.label }}:</b></td><td style="width:35%">{{ object.author }}</td>
+      <td style="width:15%" class="status"><b>{{ fields.state.label }}:</b></td><td style="width:35%" class="status">{{ object.state }}</td>
     </tr>
     <tr>
-      <td class=""><b>Source Publisher:</b></td><td class=" ">{{ object.sourcePublisher }}</td>
+      <td class=""><b>{{ fields.sourcePublisher.label }}:</b></td><td class=" ">{{ object.sourcePublisher }}</td>
 
-      <td class=""><b>Assigned to:</b></td><td class="">{{ object.assigned_to.get_full_name }}</td>
+      <td class=""><b>{{ fields.assigned_to.label }}:</b></td><td class="">{{ object.assigned_to.get_full_name }}</td>
+    </tr>
+    <tr>
+      <td class=""><b>{{ fields.created_at.label }}:</b></td><td class=" ">{{ object.created_at }}</td>
+
+      <td class=""><b>{{ fields.modified_at.label }}:</b></td><td class="">{{ object.modified_at }}</td>
     </tr>
   </table>
 

@@ -15,7 +15,7 @@ def index(request):
         request,
         queryset = Document.objects.all().order_by('state','title'),
         template_name = 'documents/manage_index.html',
-        extra_context = {'fields' : fields_for_model(Document(),fields = ('title','author','sourcePublisher','state','assigned_to','created_at','modified_at',))}
+        extra_context = {'fields' : fields_for_model(Document())}
     )
     return response
     
@@ -26,6 +26,7 @@ def detail(request, document_id):
         queryset = Document.objects.all(),
         template_name = 'documents/manage_detail.html',
         object_id = document_id,
+        extra_context = {'fields' : fields_for_model(Document())}
     )
     return response
 

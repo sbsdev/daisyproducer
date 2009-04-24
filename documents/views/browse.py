@@ -1,3 +1,4 @@
+from daisyproducer.utils import fields_for_model
 from django.shortcuts import get_object_or_404
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from django.http import HttpResponse, HttpResponseRedirect
@@ -14,12 +15,14 @@ def index(request):
         request,
         queryset = Document.objects.filter(state__name='approved').order_by('title'),
         template_name = 'documents/browse_index.html',
+        extra_context = {'fields' : fields_for_model(Document())}
     )
     return response
 
 def detail(request, document_id):
     lpform = LargePrintProfileForm()
     bform = BrailleProfileForm()
+    fields = fields_for_model(Document())
     response = object_detail(
         request,
         queryset = Document.objects.all(),
