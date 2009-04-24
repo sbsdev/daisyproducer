@@ -31,9 +31,19 @@ class State(models.Model):
 
 class Document(models.Model):
 
-    title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255)
-    sourcePublisher = models.CharField("Source Publisher", max_length=255)
+    title = models.CharField(
+        max_length=255,
+        help_text="The title of the DTB, including any subtitles")
+    author = models.CharField(
+        max_length=255,
+        help_text="Names of primary author or creator of the intellectual content of the publication",
+        blank=True)
+    sourcePublisher = models.CharField(
+        "Source Publisher", 
+        max_length=255,
+        help_text="The agency responsible for making available the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
+        blank=True)
+
     state = models.ForeignKey(State)
     assigned_to = models.ForeignKey(User, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
