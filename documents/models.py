@@ -93,8 +93,8 @@ class Document(models.Model):
 
     state = models.ForeignKey(State)
     assigned_to = models.ForeignKey(User, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField("Created", auto_now_add=True)
+    modified_at = models.DateTimeField("Last Modified", auto_now=True)
 
     def __unicode__(self):
         return self.title

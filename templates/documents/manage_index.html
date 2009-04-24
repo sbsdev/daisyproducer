@@ -8,13 +8,9 @@
 <table class="list">
   <thead>
     <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Source Publisher</th>
-      <th>State</th>
-      <th>Assigned To</th>
-      <th>Created</th>
-      <th>Last Modified</th>
+    {% for field in fields.values %}
+      <th>{{ field.label }}</th>
+    {% endfor %}
     </tr>
   </thead>
 

@@ -1,3 +1,4 @@
+from daisyproducer.utils import fields_for_model
 from daisyproducer.documents.models import Document, Version, State
 from daisyproducer.documents.versionHelper import XMLContent
 from django.contrib.auth.decorators import login_required
@@ -14,6 +15,7 @@ def index(request):
         request,
         queryset = Document.objects.all().order_by('state','title'),
         template_name = 'documents/manage_index.html',
+        extra_context = {'fields' : fields_for_model(Document(),fields = ('title','author','sourcePublisher','state','assigned_to','created_at','modified_at',))}
     )
     return response
     
