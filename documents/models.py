@@ -2,6 +2,7 @@ from daisyproducer import settings
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.forms import ModelForm
+import uuid
 
 class StateError(Exception):
     def __init__(self, value):
@@ -110,6 +111,8 @@ class Document(models.Model):
         # set initial state
         if not self.pk:
             self.state = State.objects.filter(name='new')[0]
+        if not self.identifier:
+            self.identifier = "ch-sbs-%s" % str(uuid.uuid4())
         super(Document, self).save()
 
 def get_version_path(instance, filename):
