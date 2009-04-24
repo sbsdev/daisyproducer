@@ -10,7 +10,7 @@
     <tr>
       <th>Title</th>
       <th>Author</th>
-      <th>Publisher</th>
+      <th>Source Publisher</th>
       <th>State</th>
       <th>Assigned To</th>
       <th>Created</th>
@@ -23,7 +23,7 @@
     <tr class="{% cycle 'even' 'odd' %}">
       <td><a href="{% url manage_detail document.id %}">{{ document.title }}</a></td>
       <td>{{ document.author }}</td>
-      <td>{{ document.publisher }}</td>
+      <td>{{ document.sourcePublisher }}</td>
       <td>{{ document.state }}</td>
       <td>{{ document.assigned_to }}</td>
       <td>{{ document.created_at }}</td>

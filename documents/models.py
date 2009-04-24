@@ -33,7 +33,7 @@ class Document(models.Model):
 
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
-    publisher = models.CharField(max_length=255)
+    sourcePublisher = models.CharField("Source Publisher", max_length=255)
     state = models.ForeignKey(State)
     assigned_to = models.ForeignKey(User, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

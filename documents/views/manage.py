@@ -30,7 +30,7 @@ def detail(request, document_id):
 class PartialDocumentForm(ModelForm):
     class Meta:
         model = Document
-        fields = ('title', 'author', 'publisher', 'assigned_to')
+        fields = ('title', 'author', 'sourcePublisher', 'assigned_to')
 
     def save(self):
         instance = super(PartialDocumentForm, self).save()

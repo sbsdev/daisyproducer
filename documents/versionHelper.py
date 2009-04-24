@@ -16,14 +16,14 @@ class XMLContent:
                 'date' : date.today().isoformat(),
                 'identifier' : "ch-sbs-%s" % document.id,
                 'language' : "de-CH",
-                'sourcePublisher' : document.publisher
+                'sourcePublisher' : document.sourcePublisher
                 })
         return content.encode('utf-8')
         
     def __init__(self, version=None):
         self.version = version
 
-    def getUpdatedContent(self, author, title, publisher, **kwargs):
+    def getUpdatedContent(self, author, title, sourcePublisher, **kwargs):
         # update the existing version with the modified meta data
         self.version.content.open()
         self.tree = etree.parse(self.version.content.file)
@@ -34,12 +34,12 @@ class XMLContent:
         # fix title
         self._updateMetaAttribute("dc:Title", title)
         self._updateMetaElement("doctitle", title)
-        # fix publisher
-        self._updateMetaAttribute("dtb:sourcePublisher", publisher)
+        # fix sourcePublisher
+        self._updateMetaAttribute("dtb:sourcePublisher", sourcePublisher)
         
         return etree.tostring(self.tree, xml_declaration=True, encoding="UTF-8")
 
-    def validateContentMetaData(self, filePath, author, title, publisher, **kwargs):
+    def validateContentMetaData(self, filePath, author, title, sourcePublisher, **kwargs):
         versionFile = open(filePath)
         self.tree = etree.parse(versionFile)
         versionFile.close()
@@ -52,8 +52,8 @@ class XMLContent:
             # validate title
             self._validateMetaAttribute("dc:Title", title) +
             self._validateMetaElement("doctitle", title) +
-            # validate publisher
-            self._validateMetaAttribute("dtb:sourcePublisher", publisher)
+            # validate sourcePublisher
+            self._validateMetaAttribute("dtb:sourcePublisher", sourcePublisher)
             )
         
     def _updateMetaAttribute(self, key, value):

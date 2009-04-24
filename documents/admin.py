@@ -13,8 +13,8 @@ class StateAdmin(admin.ModelAdmin):
         search_fields = ('name',)
 
 class DocumentAdmin(admin.ModelAdmin):
-        list_display = ('title', 'author', 'publisher', 'state',)
-        list_filter = ('author', 'publisher', 'state',)
+        list_display = ('title', 'author', 'sourcePublisher', 'state',)
+        list_filter = ('author', 'sourcePublisher', 'state',)
         ordering = ('title', 'state',)
         search_fields = ('title',)
 	inlines = [VersionInline, AttachmentInline,]

@@ -83,7 +83,7 @@ def add_version(request, document_id):
     form.contentMetaData = {
         'author' : document.author, 
         'title' : document.title, 
-        'publisher' : document.publisher
+        'sourcePublisher' : document.sourcePublisher
         }
     if not form.is_valid():
         versionForm = form

@@ -4,14 +4,14 @@
 
 {% block content %}
 
-{% if object_list %}
 <h2>Finished documents</h2>
+{% if object_list %}
 <table class="list">
   <thead>
     <tr>
       <th>Title</th>
       <th>Author</th>
-      <th>Publisher</th>
+      <th>Source Publisher</th>
     </tr>
   </thead>
   
@@ -20,7 +20,7 @@
     <tr class="{% cycle 'even' 'odd' %}">
       <td><a href="{% url browse_detail document.id %}">{{ document.title }}</a></td>
       <td>{{ document.author }}</td>
-      <td>{{ document.publisher }}</td>
+      <td>{{ document.sourcePublisher }}</td>
     </tr>
     {% endfor %}
   </tbody>
