@@ -1,0 +1,148 @@
+.. -*- mode: rst -*-
+
+=======================
+ Daisy Producer Manual
+=======================
+
+Daisy Producer is a system to help you manage the production process
+of accessible material. The actual generation of the accessible
+material is done by third-party libraries such as the `Daisy Pipeline`_
+or liblouis_. What Daisy Producer does is to help in the preparation of
+the documents so that they are in a state where they can be fed into
+the backend.
+
+.. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
+.. _liblouis: http://code.google.com/p/liblouis/
+
+.. contents:: 
+
+Tutorial
+========
+
+Creating a new document
+-----------------------
+
+Start by creating a new document. To do this select the under the
+`Manage tab`_ and click on `Create a new document`_. The form will let
+you enter all the relevant meta data. After successful creation of the
+document you will see it in the `management overview`_.
+
+.. _Manage tab: ../manage/
+.. _Create a new document: ../manage/create/
+.. _management overview: ../manage/
+
+Working on a document
+---------------------
+
+Now you can go into the `TODO tab`_ and look at the list of documents
+that need to be worked on. Your newly created document is listed by
+its title. Click on the title to get a detailed overview for this
+document. The detailed overview shows you all the meta data (such as
+author and title of the document) and it lets you add attachments and
+versions to this document. An attachment is typically added if you
+have a PDF as the result of a scanning process. As you then progress
+transforming the document into DTBook XML you can upload new versions
+of the XML until you are finished. Mark the state of the document as
+you proceed. Dependent on your group membership you will only see
+documents of a certain state for which you are responsible.
+
+.. _TODO tab: ../todo
+
+Consuming a document
+--------------------
+
+Once the document has reached the state `approved` it will be listed
+in the `Browse tab`_. Again clicking on a document title will show a
+detailed overview of a document and list the options for download. A
+document can be fetched as a either 
+
+Large Print 
+	with options such as `Font`, `Font size`, `Alignment`, etc.
+
+Braille 
+	with options such as `Contraction`, `Hyphenation`, etc.
+
+.. _Browse tab: ../
+
+Use Cases
+=========
+
+There are a number of use cases that Daisy Producer tries to cover.
+
+- Firstly there are the users that want to consume an accessible
+  document
+- Secondly there are the users who are working on making a document
+  accessible, i.e. transforming the content into a markup that is
+  understood be that backends
+- And thirdly there are the users who oversee the production process,
+  edit the meta data of a document and initiate the production of a
+  new document.
+
+In some cases these users are one and the same person in other cases
+they might be different people.
+
+Consume accessible documents
+----------------------------
+
+Download a customized braille for a document
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Carol would like to read a certain book in braille. She goes to the
+web site and searches for "Wachtmeister Studer". She finds the title
+and goes to the detailed overview for this title. In there she
+specifies how she would like to have her Braille and downloads a
+customized version of "Wachtmeister Studer" in braille.
+
+Download a customized large print for a document
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Carol would like to read a certain book in large print. She goes to
+the web site and searches for "Wachtmeister Studer". She finds the
+title and goes to the detailed overview for this title. In there she
+specifies how she would like to have her large print and downloads a
+customized version of "Wachtmeister Studer" in large print.
+
+Create documents and edit meta data
+-----------------------------------
+
+Create a Document
+~~~~~~~~~~~~~~~~~
+
+Manager Alice wants to initiate the work on a book say, "Wachtmeister
+Studer" by Friedrich Glauser. For that reason she creates a new
+document which serves as a container for the given meta data (most
+likely something along the lines of MarcXML_ or `MARC 21`_).
+
+.. _MarcXML: http://en.wikipedia.org/wiki/MARCXML
+.. _MARC 21: http://en.wikipedia.org/wiki/MARC21
+
+Modify the meta data
+~~~~~~~~~~~~~~~~~~~~
+
+Bob discovered that the publishing date in the meta data of
+"Wachtmeister Studer" is wrong. He notifies manager Alice and she
+corrects the date in the meta data of "Wachtmeister Studer".
+
+Manage documents
+----------------
+
+Add an attachment
+~~~~~~~~~~~~~~~~~
+
+Dave is tasked to work on the document "Wachtmeister Studer". It will
+show up in his list of pending tasks. He does the necessary work to
+complete the task, e.g. scan or ocr the document and attaches the
+result to the document. Finally he indicates that he is done with his
+work which will move the workflow state to the next state.
+
+Update the document
+~~~~~~~~~~~~~~~~~~~
+
+Eve is tasked to transform the document into valid XML. She uses
+previous results of work done on and attached to the document, e.g. a
+ocred version of the document as rtf or maybe a pdf as received from
+the publisher. She enhances the initial XML (that was created from the
+meta data) to contain the information from the respective attachment.
+Finally she indicates that she is done with her work which will move
+the workflow state to the next state.
+

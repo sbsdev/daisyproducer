@@ -33,10 +33,20 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
     url(r'^manage/(?P<document_id>\d+)/update/$', 'update', name='manage_update'),
 )
 
+def getHelpContent():
+    f = open(os.path.join(PROJECT_DIR, 'doc', 'help', 'index.txt'))
+    return f.read()
+
 urlpatterns += patterns('',
     # authentication
     (r'^accounts/login/$',  login, {'template_name' : 'login.html'}),
     (r'^accounts/logout/$', logout),
+
+    # help
+    url(r'^help/$', 'django.views.generic.simple.direct_to_template', 
+        {'template': 'help.html',
+         'extra_context': {'content': getHelpContent}},
+        "help"),
 
     # static files
     (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
@@ -51,3 +61,4 @@ urlpatterns += patterns('',
     # enable the admin:
     (r'^admin/(.*)', admin.site.root),
 )
+

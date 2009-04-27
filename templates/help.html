@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load markup %}
+
+{% block title %}{{ block.super }} - Help{% endblock %}
+
+{% block content %}
+
+<p>{{content|restructuredtext}}</p>
+
+{% endblock %}
+

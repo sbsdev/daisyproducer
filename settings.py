@@ -77,6 +77,8 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.load_template_source',
 )
 
+RESTRUCTUREDTEXT_FILTER_SETTINGS = {'doctitle_xform': 0}
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -93,10 +95,11 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'daisyproducer.documents',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.markup',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.admin',
-    'daisyproducer.documents',
 )
