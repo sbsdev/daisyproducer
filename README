@@ -1,8 +1,94 @@
-Requirements:
+.. -*- mode: rst -*-
 
-- Python from http://www.python.org (tested with Python 2.5) (package python)
-- Django from http://www.djangoproject.com/ (package python-django)
-- lxml from http://codespeak.net/lxml/index.html (package python-lxml)
-- Daisy Pipeline from http://www.daisy.org/projects/pipeline/ (use the Pipeline Core Packages)
+=====================
+Daisy Producer README
+=====================
+
+1  What is it?
+2  Requirements
+  2.1  Basic requirements
+    2.1.1  Required packages
+  2.2  Deployment requirements
+  2.3  Optional requirements
+
+What is it?
+===========
+
+The `Daisy Producer`_ helps you manage the production process of
+accessible media. It assumes that you are transforming the content
+from hard copy or any electronic format to `DTBook XML`_. Once you
+have the DTBook XML the `Daisy Pipeline`_ and liblouis_ can be used to
+generate Daisy Talking Books, Large Print and Braille in a fully
+automated way.
+
+Daisy producer mainly tracks the status of the transformation process
+and helps you manage your artifacts that are needed in the
+transformation process.
+
+For the generation of accessible media Daisy Producer offers a nice
+interface however the work is essentially done by the Daisy Pipeline
+and liblouis.
+
+.. _Daisy Producer: http://www.daisy-producer.org
+.. _DTBook XML: http://www.daisy.org/projects/pipeline/
+.. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
+.. _liblouis: http://code.google.com/p/liblouis/
+
+Requirements
+============
+
+Basic requirements
+------------------
+
+- Python_ (tested with Python 2.5)
+- Django_ 
+- lxml_
+- `Daisy Pipeline`_ (use the Pipeline Core Packages)
+- liblouis_
+- A database for example PostgreSQL_ or MySQL_.
+- A Python database interface like psycopg2_ or mysqldb_ for example.
+- docutils_ to render the help page (which is written in
+  reStructuredText Markup).
+
+.. _Python: http://www.python.org
+.. _Django: http://www.djangoproject.com
+.. _lxml: http://codespeak.net/lxml/index.html
+.. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
+.. _PostgreSQL: http://www.postgresql.org/
+.. _MySQL: http://www.mysql.com/
+.. _psycopg2: http://www.initd.org/
+.. _mysqldb: http://sourceforge.net/projects/mysql-python
+.. _docutils: http://docutils.sourceforge.net
+
+Required packages
+~~~~~~~~~~~~~~~~~
+
+In terms of (Debian/Ubuntu) packages this translates to
+
+- python
+- python-django
+- python-lxml
+- postgresql
+- postgresql-client
+- python-psycopg2
+- python-docutils
+
+There is a `Debian package for liblouis`_ which could probably be
+used. The Daisy Pipeline has not been packaged so far and will have to
+be installed somewhere.
+
+.. _Debian package for liblouis: http://packages.debian.org/search?keywords=liblouis&searchon=names&suite=all&section=all
 
 
+Deployment requirements
+-----------------------
+- `Python WSGI adapter module for Apache`_ (libapache2-mod-wsgi)
+
+.. _Python WSGI adapter module for Apache: http://code.google.com/p/modwsgi/
+
+Optional requirements
+---------------------
+- autodoc_ (package postgresql-autodoc) if you want to generate the ER
+  diagrams.
+
+.. _autodoc: http://www.rbt.ca/autodoc/
