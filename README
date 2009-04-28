@@ -14,12 +14,12 @@ Daisy Producer README
 What is it?
 ===========
 
-The `Daisy Producer`_ helps you manage the production process of
-accessible media. It assumes that you are transforming the content
-from hard copy or any electronic format to `DTBook XML`_. Once you
-have the DTBook XML the `Daisy Pipeline`_ and liblouis_ can be used to
-generate Daisy Talking Books, Large Print and Braille in a fully
-automated way.
+`Daisy Producer`_ is a system to help you manage the production
+process of accessible media. It assumes that you are transforming the
+content from hard copy or any electronic format to `DTBook XML`_. Once
+you have the DTBook XML the `Daisy Pipeline`_ and liblouis_ can be
+used to generate Daisy Talking Books, Large Print and Braille in a
+fully automated way.
 
 Daisy producer mainly tracks the status of the transformation process
 and helps you manage your artifacts that are needed in the
