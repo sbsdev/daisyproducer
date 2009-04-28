@@ -4,17 +4,86 @@
  Daisy Producer Manual
 =======================
 
-Daisy Producer is a system to help you manage the production process
-of accessible material. The actual generation of the accessible
-material is done by third-party libraries such as the `Daisy Pipeline`_
-or liblouis_. What Daisy Producer does is to help in the preparation of
-the documents so that they are in a state where they can be fed into
-the backend.
+`Daisy Producer`_ is a system to help you manage the production
+process of accessible media. It assumes that you are transforming the
+content from hard copy or any electronic format to `DTBook XML`_. Once
+you have the DTBook XML the `Daisy Pipeline`_ and liblouis_ can be
+used to generate Daisy Talking Books, Large Print and Braille in a
+fully automated way.
 
+Daisy producer mainly tracks the status of the transformation process
+and helps you manage your artifacts that are needed in the
+transformation process.
+
+For the generation of accessible media Daisy Producer offers a nice
+interface however the work is essentially done by the Daisy Pipeline
+and liblouis.
+
+.. _Daisy Producer: http://www.daisy-producer.org
+.. _DTBook XML: http://www.daisy.org/projects/pipeline/
 .. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
 .. _liblouis: http://code.google.com/p/liblouis/
 
 .. contents:: 
+
+Daisy Producer in 3 steps
+=========================
+
+1. Create a new document
+
+   a) Click on `Create a new document`_ in the `Manage tab`_ and  fill in the form
+   b) click on `Create`
+
+.. _Manage tab: ../manage/
+.. _Create a new document: ../manage/create/
+
+2. Work on a document 
+
+   a) Click on the `TODO tab`_ and click on the title of the
+      document you intend to work on.
+
+   b) The detailed view lets you upload attachments. You could upload
+      the PDF that you received from the source publisher or a RTF
+      that resulted from the OCR process for example.
+      
+      i) Add a comment relating to this attachment in the comment field
+      ii) Add a file in the file chooser field
+      iii) Click on `Add`
+
+   c) The detailed view also lets you upload versions. Versions
+      contain the DTBook XML of your document. As you transform the
+      document into DTBook XML (using the initial version as a bases)
+      you will be uploading versions of this XML. The first one maybe
+      contains a preliminary draft, the second one will have
+      corrections from a proof reader, etc.
+
+      i) Add a comment relating to this version in the comment field
+      ii) Add a file in the file chooser field
+      iii) Click on `Add`
+
+   d) As you continue to work on the document you will reflect the
+      state of your work by transitioning the state of the document to
+      the corresponding state. Depending on your role you will only
+      see documents that are in a certain state.
+
+      i) Pick the next state in the state dropdown
+      ii) Click on `Transition`
+
+.. _TODO tab: ../todo
+
+3. Get an accessible version of the document
+
+   a) Once the document is in state `approved` it will show up in the
+      `Browse tab`_. Click on the title of the document you intend to
+      get an accessible version of.
+
+   b) Specify how you want your accessible version (in the case of
+      Large Print specify `Font`, `Font size`, etc for example).
+
+   c) Click on `Download`
+
+.. _Browse tab: ../
+
 
 Tutorial
 ========
@@ -27,8 +96,6 @@ Start by creating a new document. To do this select the under the
 you enter all the relevant meta data. After successful creation of the
 document you will see it in the `management overview`_.
 
-.. _Manage tab: ../manage/
-.. _Create a new document: ../manage/create/
 .. _management overview: ../manage/
 
 Working on a document
@@ -46,8 +113,6 @@ of the XML until you are finished. Mark the state of the document as
 you proceed. Dependent on your group membership you will only see
 documents of a certain state for which you are responsible.
 
-.. _TODO tab: ../todo
-
 Consuming a document
 --------------------
 
@@ -56,13 +121,11 @@ in the `Browse tab`_. Again clicking on a document title will show a
 detailed overview of a document and list the options for download. A
 document can be fetched as a either 
 
-Large Print 
+Large Print
 	with options such as `Font`, `Font size`, `Alignment`, etc.
 
 Braille 
 	with options such as `Contraction`, `Hyphenation`, etc.
-
-.. _Browse tab: ../
 
 Use Cases
 =========
@@ -73,7 +136,7 @@ There are a number of use cases that Daisy Producer tries to cover.
   document
 - Secondly there are the users who are working on making a document
   accessible, i.e. transforming the content into a markup that is
-  understood be that backends
+  understood by the backends.
 - And thirdly there are the users who oversee the production process,
   edit the meta data of a document and initiate the production of a
   new document.
