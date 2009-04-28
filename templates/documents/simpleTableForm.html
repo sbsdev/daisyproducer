@@ -1,0 +1,11 @@
+{% if form.errors %}
+<div class="errorExplanation" id="errorExplanation">
+  <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span>
+  {{ form.errors }}
+</div>
+{% endif %}
+<table>
+  {% for field in form %}
+  <tr><th>{{ field.label_tag }}:</th><td>{{ field }}<br/>{{ field.help_text }}</td>
+  {% endfor %}
+</table>
