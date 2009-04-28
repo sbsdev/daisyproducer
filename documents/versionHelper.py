@@ -1,4 +1,3 @@
-from daisyproducer import settings
 from datetime import date
 from django.template.loader import render_to_string
 from lxml import etree
@@ -9,14 +8,21 @@ class XMLContent:
 
     @staticmethod
     def getInitialContent(document):
-        content  = render_to_string('DTBookTemplate.xml', {
+        content = render_to_string('DTBookTemplate.xml', {
                 'title' : document.title,
                 'author' : document.author,
-                'publisher' : settings.DAISY_DEFAULT_PUBLISHER,
-                'date' : date.today().isoformat(),
-                'identifier' : "ch-sbs-%s" % document.id,
-                'language' : "de-CH",
-                'sourcePublisher' : document.sourcePublisher
+                'subject' : document.subject,
+                'description' : document.description,
+                'publisher' : document.publisher,
+                'date' : document.date.isoformat(),
+                'identifier' : document.identifier,
+                'source' : document.source,
+                'language' : document.language,
+                'rights' : document.rights,
+                'sourceDate' : document.sourceDate,
+                'sourceEdition' : document.sourceEdition,
+                'sourcePublisher' : document.sourcePublisher,
+                'sourceRights' : document.sourceRights
                 })
         return content.encode('utf-8')
         

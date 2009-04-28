@@ -1,6 +1,8 @@
+from daisyproducer import settings
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.forms import ModelForm
+import uuid
 
 class StateError(Exception):
     def __init__(self, value):
@@ -32,22 +34,67 @@ class State(models.Model):
 class Document(models.Model):
 
     title = models.CharField(
-        max_length=255,
+        max_length=255, 
         help_text="The title of the DTB, including any subtitles")
     author = models.CharField(
-        max_length=255,
+        max_length=255, 
         help_text="Names of primary author or creator of the intellectual content of the publication",
+        blank=True)
+    subject = models.CharField(
+        max_length=255, 
+        help_text="The topic of the content of the publication",
+        blank=True)
+    description = models.TextField(
+        help_text="Plain text describing the publication's content",
+        blank=True)
+    publisher = models.CharField(
+        max_length=255,
+        default=settings.DAISY_DEFAULT_PUBLISHER,
+        help_text="The agency responsible for making the DTB available")
+    date = models.DateField(
+        auto_now_add=True,
+        help_text="Date of publication of the DTB")
+    identifier = models.CharField(
+        max_length=255, 
+        help_text="A string or number identifying the DTB")
+    source = models.CharField(
+        max_length=10, 
+        help_text="A reference to a resource (e.g., a print original, ebook, etc.) from which the DTB is derived. Best practice is to use the ISBN when available", 
+        blank=True)
+    language_choices = (('de-CH', 'de-CH',),)
+    language = models.CharField(
+        max_length=10,
+        choices=language_choices,
+        help_text="Language of the content of the publication")
+    rights = models.CharField(
+        max_length=255, 
+        help_text="Content: Information about rights held in and over the DTB",
+        blank=True)
+    
+    sourceDate = models.DateField(
+        "Source Date",
+        help_text="Date of publication of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
+        null=True, blank=True)
+    sourceEdition = models.CharField(
+        "Source Edition", 
+        max_length=255, 
+        help_text="A string describing the edition of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
         blank=True)
     sourcePublisher = models.CharField(
         "Source Publisher", 
-        max_length=255,
+        max_length=255, 
         help_text="The agency responsible for making available the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
+        blank=True)
+    sourceRights = models.CharField(
+        "Source Rights", 
+        max_length=255, 
+        help_text="Information about rights held in and over the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
         blank=True)
 
     state = models.ForeignKey(State)
     assigned_to = models.ForeignKey(User, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField("Created", auto_now_add=True)
+    modified_at = models.DateTimeField("Last Modified", auto_now=True)
 
     def __unicode__(self):
         return self.title
@@ -64,6 +111,8 @@ class Document(models.Model):
         # set initial state
         if not self.pk:
             self.state = State.objects.filter(name='new')[0]
+        if not self.identifier:
+            self.identifier = "ch-sbs-%s" % str(uuid.uuid4())
         super(Document, self).save()
 
 def get_version_path(instance, filename):

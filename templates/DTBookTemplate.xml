@@ -11,11 +11,13 @@
     <meta name="dc:Type" content="Text" />
     <meta name="dc:Format" content="ANSI/NISO Z39.86-2005" />
     <meta name="dc:Identifier" content="{{ identifier }}" />
-    <meta name="dc:Source" content="{{ isbn }}" />
+    <meta name="dc:Source" content="{{ source }}" />
     <meta name="dc:Language" content="{{ language }}" />
     <meta name="dc:Rights" content="{{ rights }}" />
     <meta name="dtb:uid" content="{{ identifier }}" />
+    {% if sourceDate %}
     <meta name="dtb:sourceDate" content="{{ sourceDate }}" />
+    {% endif %}
     <meta name="dtb:sourceEdition" content="{{ sourceEdition }}" />
     <meta name="dtb:sourcePublisher" content="{{ sourcePublisher }}" />
     <meta name="dtb:sourceRights" content="{{ sourceRights }}" />

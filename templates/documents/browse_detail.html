@@ -5,43 +5,33 @@
 {% block content %}
 {% if object %}
 <h2>Document Details</h2>
-<table>
 
-  <tr>
-    <th>Title:</th>
-    <td>{{ object.title }}</td>
-  </tr>
-  <tr>
-    <th>Author:</th>
-    <td>{{ object.author }}</td>
-    
-  </tr>
-  <tr>
-    <th>Source Publisher:</th>
-    <td>{{ object.sourcePublisher }}</td>
-  </tr>
-</table>
+<h3>{{ object.title }}</h3>
 
-<h2>View as PDF</h2>
-
-<form action="{% url browse_pdf object.id %}" method="POST">
-  <table>
-    {{ lpform.as_table }}
+<div class="issue">
+  <table width="100%">
+    <tr>
+      <td style="width:15%" class=""><b>{{ fields.author.label }}:</b></td><td style="width:35%">{{ object.author }}</td>
+    </tr>
+    <tr>
+      <td class=""><b>{{ fields.sourcePublisher.label }}:</b></td><td class=" ">{{ object.sourcePublisher }}</td>
+    </tr>
+  </table>
+  <h3>View as PDF</h3>
+  <form action="{% url browse_pdf object.id %}" method="POST">
+    <table>
+      {{ lpform.as_table }}
     </table>
     <p><input type="submit" value="Download" /></p>
-</form>
-
-<h2>View as Braille</h2>
-
-<form action="{% url browse_brl object.id %}" method="POST">
-  <table>
-    {{ bform.as_table }}
+  </form>
+  <h3>View as Braille</h3>
+  <form action="{% url browse_brl object.id %}" method="POST">
+    <table>
+      {{ bform.as_table }}
     </table>
     <p><input type="submit" value="Download" /></p>
-</form>
-
-<a href="{% url browse_index %}">Back</a>
-
+  </form>
+</div>
 {% else %}
 <p class="nodata">No data to display</p>
 {% endif %}

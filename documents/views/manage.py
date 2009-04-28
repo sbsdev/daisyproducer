@@ -1,3 +1,4 @@
+from daisyproducer.utils import fields_for_model
 from daisyproducer.documents.models import Document, Version, State
 from daisyproducer.documents.versionHelper import XMLContent
 from django.contrib.auth.decorators import login_required
@@ -14,6 +15,7 @@ def index(request):
         request,
         queryset = Document.objects.all().order_by('state','title'),
         template_name = 'documents/manage_index.html',
+        extra_context = {'fields' : fields_for_model(Document())}
     )
     return response
     
@@ -24,13 +26,14 @@ def detail(request, document_id):
         queryset = Document.objects.all(),
         template_name = 'documents/manage_detail.html',
         object_id = document_id,
+        extra_context = {'fields' : fields_for_model(Document())}
     )
     return response
 
 class PartialDocumentForm(ModelForm):
     class Meta:
         model = Document
-        fields = ('title', 'author', 'sourcePublisher', 'assigned_to')
+        fields = ('title', 'author', 'sourcePublisher', 'subject', 'description', 'source', 'language', 'rights', 'sourceDate', 'sourceEdition', 'sourceRights', 'assigned_to')
 
     def save(self):
         instance = super(PartialDocumentForm, self).save()

@@ -1,3 +1,4 @@
+from daisyproducer.utils import fields_for_model
 from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm
 from daisyproducer.documents.models import Document, Version, Attachment
 from django.contrib.auth.decorators import login_required
@@ -27,6 +28,7 @@ def index(request):
             state__responsible__in=user_groups
             ).order_by('state','title'),
         template_name = 'documents/todo_index.html',
+        extra_context = {'fields' : fields_for_model(Document())}
     )
     return response
     
@@ -38,6 +40,7 @@ def detail(request, document_id):
     attachmentForm = PartialAttachmentForm()
     documentForm = PartialDocumentForm()
     documentForm.limitChoicesToValidStates(document)
+    fields = fields_for_model(Document())
     return render_to_response('documents/todo_detail.html', locals(),
                               context_instance=RequestContext(request))
 
@@ -55,6 +58,7 @@ def add_attachment(request, document_id):
         attachmentForm = form
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
+        fields = fields_for_model(Document())
         return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
@@ -90,6 +94,7 @@ def add_version(request, document_id):
         attachmentForm = PartialAttachmentForm()
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
+        fields = fields_for_model(Document())
         return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
@@ -116,6 +121,7 @@ def transition(request, document_id):
         versionForm = PartialVersionForm()
         attachmentForm = PartialAttachmentForm()
         documentForm = form
+        fields = fields_for_model(Document())
         return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
