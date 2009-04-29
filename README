@@ -10,6 +10,7 @@ Daisy Producer README
     2.1.1  Required packages
   2.2  Deployment requirements
   2.3  Optional requirements
+3  Installation
 
 What is it?
 ===========
@@ -44,6 +45,10 @@ Basic requirements
 - Django_ 
 - lxml_
 - `Daisy Pipeline`_ (use the Pipeline Core Packages)
+- XeTex_ (to generate Large Print from LaTeX)
+- texlive_ (should contain the extbook and titlesec class which is
+  needed for Large Print) 
+- `Tiresias LP font`_ (a font designed for Large Print publications)
 - `Java Runtime`_ (`Daisy Pipeline`_ needs at least Java 5)
 - liblouis_
 - A database for example PostgreSQL_ or MySQL_.
@@ -54,6 +59,9 @@ Basic requirements
 .. _Python: http://www.python.org
 .. _Django: http://www.djangoproject.com
 .. _lxml: http://codespeak.net/lxml/index.html
+.. _XeTex: http://www.tug.org/xetex/
+.. _texlive: http://www.tug.org/texlive/
+.. _`Tiresias LP font`: http://www.tiresias.org/fonts/lpfont/about_lp.htm
 .. _Java Runtime: http://www.java.com/en/download/manual.jsp
 .. _PostgreSQL: http://www.postgresql.org/
 .. _MySQL: http://www.mysql.com/
@@ -70,6 +78,12 @@ In terms of (Debian/Ubuntu) packages this translates to
 - python-django
 - python-lxml
 - python-docutils
+- sun-java6-jre
+- texlive-xetex
+- texlive-latex-extra
+- texlive-lang-german
+- ttf-tiresias
+- xsltproc
 
 For PostgreSQL
 
@@ -104,3 +118,18 @@ Optional requirements
   diagrams.
 
 .. _autodoc: http://www.rbt.ca/autodoc/
+
+Installation
+============
+
+The following settings have to be adapted for your site:
+
+- DATABASE_ENGINE
+- DATABASE_NAME
+- DATABASE_USER
+- DATABASE_PASSWORD
+- DAISY_DEFAULT_PUBLISHER
+- DAISY_PIPELINE_PATH
+- SECRET_KEY
+- TIME_ZONE
+
