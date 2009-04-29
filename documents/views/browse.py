@@ -1,9 +1,10 @@
-from daisyproducer.utils import fields_for_model
-from django.shortcuts import get_object_or_404
+from daisyproducer.documents.external import DaisyPipeline
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
-from django.http import HttpResponse, HttpResponseRedirect
+from daisyproducer.utils import fields_for_model
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.views.generic.list_detail import object_list, object_detail
 
 from os import system
@@ -40,20 +41,9 @@ def as_pdf(request, document_id):
 
     document = Document.objects.get(pk=document_id)
 
-    formData = form.cleaned_data
-    
-    fmtString = "--fontsize=%s --font=\"%s\" --pageStyle=%s --alignment=%s --papersize=%s"
-    options = fmtString % (
-        formData['fontSize'], 
-        formData['font'], 
-        formData['pageStyle'], 
-        formData['alignment'],  
-        formData['paperSize'])
-    
     inputFile = document.latest_version().content.path
     outputFile = "/tmp/%s.pdf" % document_id
-    command = "dtbook2pdf %s %s %s >/dev/null" % (inputFile, outputFile, options)
-    system(command)
+    DaisyPipeline.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
 
     return render_to_mimetype_response('application/pdf', document.title.encode('utf-8'), outputFile)
 
