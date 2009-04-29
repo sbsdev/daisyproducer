@@ -2,6 +2,7 @@
 *.pyc
 *~
 /archive
+/daisyproducer.tgz
 /development.db
 /media
 /xml2brl.temp
