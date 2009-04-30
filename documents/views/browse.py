@@ -1,4 +1,4 @@
-from daisyproducer.documents.external import DaisyPipeline
+from daisyproducer.documents.external import DaisyPipeline, Liblouis
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from daisyproducer.utils import fields_for_model
 from django.contrib.auth.decorators import login_required
@@ -55,28 +55,9 @@ def as_brl(request, document_id):
 
     document = Document.objects.get(pk=document_id)
 
-    formData = form.cleaned_data
-
-    contractionMap = {
-        0 : 'de-de-g0.sbs.utb', 
-        1 : 'de-de-g1.sbs.ctb', 
-        2 : 'de-de-g2.sbs.ctb'}
-    yesNoMap = {
-        True : "yes", 
-        False : "no" }
-
-    fmtString = "-CcellsPerLine=\"%s\" -ClinesPerPage=\"%s\" -CliteraryTextTable=\"%s\" -Chyphenate=\"%s\" -CprintPages=\"%s\""
-    options = fmtString % (
-        formData['cellsPerLine'], 
-        formData['linesPerPage'], 
-        contractionMap[formData['contraction']], 
-        yesNoMap[formData['hyphenation']], 
-        yesNoMap[formData['showOriginalPageNumbers']])
-    
     inputFile = document.latest_version().content.path
     outputFile = "/tmp/%s.brl" % document_id
-    command = "dtbook2brl %s %s %s >/dev/null" % (inputFile, outputFile, options)
-    system(command)
+    Liblouis.dtbook2brl(inputFile, outputFile, **form.cleaned_data)
 
     return render_to_mimetype_response('text/plain', document.title.encode('utf-8'), outputFile)
 
