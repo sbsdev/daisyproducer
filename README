@@ -133,3 +133,25 @@ The following settings have to be adapted for your site:
 - SECRET_KEY
 - TIME_ZONE
 
+When installing under Apache you need to set up URLconf to server the
+media files for the admin site. Add the following to urls.py
+
+  (r'^media/(?P<path>.*)$', 'django.views.static.serve',
+    {'document_root': os.path.join(PROJECT_DIR, 'public', 'media')}),
+
+and add a link under the public directory
+
+  $ ln -s /usr/share/python-support/python-django/django/contrib/admin/media media
+
+Adapt the settings file to your environment.
+
+  $ cd $DAISYPRODUCER_HOME
+  $ mv settings_test.py settings.py
+
+For the archive create a directory named archive under the
+daisyproducer directory and give www-data write access to it:
+
+  $ cd $DAISYPRODUCER_HOME
+  $ mkdir archive
+  $ chown www-data archive
+
