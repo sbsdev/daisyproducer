@@ -141,6 +141,7 @@ media files for the admin site. Add the following to urls.py
 
 and add a link under the public directory
 
+  $ cd $DAISYPRODUCER_HOME/public
   $ ln -s /usr/share/python-support/python-django/django/contrib/admin/media media
 
 Adapt the settings file to your environment.
