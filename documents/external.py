@@ -2,7 +2,7 @@ from django.conf import settings
 from os.path import join, basename, splitext
 from shutil import rmtree
 from subprocess import call, Popen, PIPE
-from tempfile import mkdtemp
+from tempfile import mkdtemp, gettempdir
 import os
 
 class DaisyPipeline:
@@ -107,7 +107,11 @@ class Liblouis:
             "-CsemanticFiles=dtbook.sem",
             "-CinternetAccess=no",
             )
-        p2 = Popen(command, stdin=p1.stdout, stdout=PIPE)
+        p2 = Popen(command, stdin=p1.stdout, stdout=PIPE, 
+                   # FIXME: xml2brl creates a temporary file in cwd,
+                   # so we have to change directory to a place where
+                   # www-data can create temporary files
+                   cwd=gettempdir())
         # transform to braille
         command = (
             "tr",
