@@ -1,4 +1,4 @@
-from daisyproducer import settings
+from django.conf import settings
 from os.path import join, basename, splitext
 from shutil import rmtree
 from subprocess import call, Popen, PIPE
