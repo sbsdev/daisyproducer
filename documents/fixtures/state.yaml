@@ -1,0 +1,257 @@
+- fields:
+    name: new
+    next_states: [2]
+    responsible: []
+    sort_order: 1
+  model: documents.state
+  pk: 1
+- fields:
+    name: scanned
+    next_states: [3]
+    responsible: []
+    sort_order: 2
+  model: documents.state
+  pk: 2
+- fields:
+    name: ocred
+    next_states: [4]
+    responsible: []
+    sort_order: 3
+  model: documents.state
+  pk: 3
+- fields:
+    name: marked_up
+    next_states: [5]
+    responsible: []
+    sort_order: 4
+  model: documents.state
+  pk: 4
+- fields:
+    name: proof_read
+    next_states: [4, 6]
+    responsible: []
+    sort_order: 5
+  model: documents.state
+  pk: 5
+- fields:
+    name: approved
+    next_states: [4]
+    responsible: []
+    sort_order: 6
+  model: documents.state
+  pk: 6
+- fields: {assigned_to: null, author: Matti Y. Joensuu, created_at: !!timestamp '2009-06-05
+      11:45:24.238512', date: 2009-06-05, description: '', identifier: ch-sbs-ef2a4888-d7bf-40ec-a70c-f6ac8e22efd8,
+    language: de-CH, modified_at: !!timestamp '2009-06-05 11:45:24.238550', publisher: Swiss
+      Library for the Blind and Visually Impaired, rights: '', source: '', sourceDate: null,
+    sourceEdition: '', sourcePublisher: '', sourceRights: '', state: 1, subject: '',
+    title: "Der einsame M\xF6rder"}
+  model: documents.document
+  pk: 1
+- fields: {comment: Initial version created from meta data, content: 1/versions/1__.xml,
+    created_at: !!timestamp '2009-06-05 11:45:24.245310', document: 1}
+  model: documents.version
+  pk: 1
+- fields: {codename: add_logentry, content_type: 7, name: Can add log entry}
+  model: auth.permission
+  pk: 19
+- fields: {codename: change_logentry, content_type: 7, name: Can change log entry}
+  model: auth.permission
+  pk: 20
+- fields: {codename: delete_logentry, content_type: 7, name: Can delete log entry}
+  model: auth.permission
+  pk: 21
+- fields: {codename: add_group, content_type: 9, name: Can add group}
+  model: auth.permission
+  pk: 25
+- fields: {codename: add_message, content_type: 11, name: Can add message}
+  model: auth.permission
+  pk: 31
+- fields: {codename: add_permission, content_type: 8, name: Can add permission}
+  model: auth.permission
+  pk: 22
+- fields: {codename: add_user, content_type: 10, name: Can add user}
+  model: auth.permission
+  pk: 28
+- fields: {codename: change_group, content_type: 9, name: Can change group}
+  model: auth.permission
+  pk: 26
+- fields: {codename: change_message, content_type: 11, name: Can change message}
+  model: auth.permission
+  pk: 32
+- fields: {codename: change_permission, content_type: 8, name: Can change permission}
+  model: auth.permission
+  pk: 23
+- fields: {codename: change_user, content_type: 10, name: Can change user}
+  model: auth.permission
+  pk: 29
+- fields: {codename: delete_group, content_type: 9, name: Can delete group}
+  model: auth.permission
+  pk: 27
+- fields: {codename: delete_message, content_type: 11, name: Can delete message}
+  model: auth.permission
+  pk: 33
+- fields: {codename: delete_permission, content_type: 8, name: Can delete permission}
+  model: auth.permission
+  pk: 24
+- fields: {codename: delete_user, content_type: 10, name: Can delete user}
+  model: auth.permission
+  pk: 30
+- fields: {codename: add_contenttype, content_type: 12, name: Can add content type}
+  model: auth.permission
+  pk: 34
+- fields: {codename: change_contenttype, content_type: 12, name: Can change content
+      type}
+  model: auth.permission
+  pk: 35
+- fields: {codename: delete_contenttype, content_type: 12, name: Can delete content
+      type}
+  model: auth.permission
+  pk: 36
+- fields: {codename: add_attachment, content_type: 4, name: Can add attachment}
+  model: auth.permission
+  pk: 10
+- fields: {codename: add_brailleprofile, content_type: 5, name: Can add braille profile}
+  model: auth.permission
+  pk: 13
+- fields: {codename: add_document, content_type: 2, name: Can add document}
+  model: auth.permission
+  pk: 4
+- fields: {codename: add_largeprintprofile, content_type: 6, name: Can add large print
+      profile}
+  model: auth.permission
+  pk: 16
+- fields: {codename: add_state, content_type: 1, name: Can add state}
+  model: auth.permission
+  pk: 1
+- fields: {codename: add_version, content_type: 3, name: Can add version}
+  model: auth.permission
+  pk: 7
+- fields: {codename: change_attachment, content_type: 4, name: Can change attachment}
+  model: auth.permission
+  pk: 11
+- fields: {codename: change_brailleprofile, content_type: 5, name: Can change braille
+      profile}
+  model: auth.permission
+  pk: 14
+- fields: {codename: change_document, content_type: 2, name: Can change document}
+  model: auth.permission
+  pk: 5
+- fields: {codename: change_largeprintprofile, content_type: 6, name: Can change large
+      print profile}
+  model: auth.permission
+  pk: 17
+- fields: {codename: change_state, content_type: 1, name: Can change state}
+  model: auth.permission
+  pk: 2
+- fields: {codename: change_version, content_type: 3, name: Can change version}
+  model: auth.permission
+  pk: 8
+- fields: {codename: delete_attachment, content_type: 4, name: Can delete attachment}
+  model: auth.permission
+  pk: 12
+- fields: {codename: delete_brailleprofile, content_type: 5, name: Can delete braille
+      profile}
+  model: auth.permission
+  pk: 15
+- fields: {codename: delete_document, content_type: 2, name: Can delete document}
+  model: auth.permission
+  pk: 6
+- fields: {codename: delete_largeprintprofile, content_type: 6, name: Can delete large
+      print profile}
+  model: auth.permission
+  pk: 18
+- fields: {codename: delete_state, content_type: 1, name: Can delete state}
+  model: auth.permission
+  pk: 3
+- fields: {codename: delete_version, content_type: 3, name: Can delete version}
+  model: auth.permission
+  pk: 9
+- fields: {codename: add_session, content_type: 13, name: Can add session}
+  model: auth.permission
+  pk: 37
+- fields: {codename: change_session, content_type: 13, name: Can change session}
+  model: auth.permission
+  pk: 38
+- fields: {codename: delete_session, content_type: 13, name: Can delete session}
+  model: auth.permission
+  pk: 39
+- fields: {codename: add_site, content_type: 14, name: Can add site}
+  model: auth.permission
+  pk: 40
+- fields: {codename: change_site, content_type: 14, name: Can change site}
+  model: auth.permission
+  pk: 41
+- fields: {codename: delete_site, content_type: 14, name: Can delete site}
+  model: auth.permission
+  pk: 42
+- fields:
+    date_joined: 2009-06-05 11:44:21.521730
+    email: christian.egli@sbszh.ch
+    first_name: ''
+    groups: []
+    is_active: true
+    is_staff: true
+    is_superuser: true
+    last_login: 2009-06-05 13:40:16.359746
+    last_name: ''
+    password: sha1$7f9bd$3f462bde23be3160689297043812e1fc68b88729
+    user_permissions: []
+    username: eglic
+  model: auth.user
+  pk: 1
+- fields: {app_label: documents, model: attachment, name: attachment}
+  model: contenttypes.contenttype
+  pk: 4
+- fields: {app_label: documents, model: brailleprofile, name: braille profile}
+  model: contenttypes.contenttype
+  pk: 5
+- fields: {app_label: contenttypes, model: contenttype, name: content type}
+  model: contenttypes.contenttype
+  pk: 12
+- fields: {app_label: documents, model: document, name: document}
+  model: contenttypes.contenttype
+  pk: 2
+- fields: {app_label: auth, model: group, name: group}
+  model: contenttypes.contenttype
+  pk: 9
+- fields: {app_label: documents, model: largeprintprofile, name: large print profile}
+  model: contenttypes.contenttype
+  pk: 6
+- fields: {app_label: admin, model: logentry, name: log entry}
+  model: contenttypes.contenttype
+  pk: 7
+- fields: {app_label: auth, model: message, name: message}
+  model: contenttypes.contenttype
+  pk: 11
+- fields: {app_label: auth, model: permission, name: permission}
+  model: contenttypes.contenttype
+  pk: 8
+- fields: {app_label: sessions, model: session, name: session}
+  model: contenttypes.contenttype
+  pk: 13
+- fields: {app_label: sites, model: site, name: site}
+  model: contenttypes.contenttype
+  pk: 14
+- fields: {app_label: documents, model: state, name: state}
+  model: contenttypes.contenttype
+  pk: 1
+- fields: {app_label: auth, model: user, name: user}
+  model: contenttypes.contenttype
+  pk: 10
+- fields: {app_label: documents, model: version, name: version}
+  model: contenttypes.contenttype
+  pk: 3
+- fields: {expire_date: !!timestamp '2009-06-19 13:40:16.394994', session_data: 'gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k
+
+      cy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwF1LmIwMzE0ODI0Yjg4MjQ2NzRiNTI3
+
+      ODIxMjZjYTAyZTdm
+
+      '}
+  model: sessions.session
+  pk: f638986ef7a0d0d4fd2d63ef247e126f
+- fields: {domain: example.com, name: example.com}
+  model: sites.site
+  pk: 1
+

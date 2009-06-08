@@ -1,0 +1,15 @@
+- fields:
+    date_joined: 2009-06-05 11:44:21.521730
+    email: testuser@test.com
+    first_name: 'Test'
+    groups: []
+    is_active: true
+    is_staff: true
+    is_superuser: true
+    last_login: 2009-06-05 13:40:16.359746
+    last_name: ''
+    password: sha1$7f9bd$3f462bde23be3160689297043812e1fc68b88729
+    user_permissions: []
+    username: testuser
+  model: auth.user
+  pk: 1
