@@ -39,6 +39,84 @@ class ManageViewTest(TestCase):
         self.assertTemplateNotUsed(response, 'documents/manage_detail.html')
         self.failIfEqual(response.status_code, 200)
 
+    def test_manage_create_get(self):
+        """Check if creation is rendered with the correct template"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.get(reverse('manage_create'))
+        self.assertTemplateUsed(response, 'documents/manage_create.html')
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_manage_create_partial(self):
+        """Check if creation of an invalid new document fails"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.post(reverse('manage_create'), {
+                'author': 'foo'
+                })
+        self.assertFormError(response, 'form', 'title', 'This field is required.')
+        self.assertFormError(response, 'form', 'language', 'This field is required.')
+        self.assertTemplateUsed(response, 'documents/manage_create.html')
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_manage_create_invalid_language(self):
+        """Check if creation of a new document with invalid language fails"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.post(reverse('manage_create'), {
+                'title': 'testing 123',
+                'language': 'foo'
+                })
+        self.assertFormError(response, 'form', 'language', 'Select a valid choice. foo is not one of the available choices.')
+        self.assertTemplateUsed(response, 'documents/manage_create.html')
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_manage_create(self):
+        """Check if creation of a new document succeeds"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.post(reverse('manage_create'), {
+                'title': 'testing 123',
+                'language': 'de-CH'
+                })
+        self.assertTemplateNotUsed(response, 'documents/manage_create.html')
+        self.assertRedirects(response, reverse('manage_index'))
+
+    def test_manage_update_get(self):
+        """Check if update is rendered with the correct template"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.get(reverse('manage_update', args=[self.document.pk]))
+        self.assertTemplateUsed(response, 'documents/manage_update.html')
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_manage_update_partial(self):
+        """Check if update of a document with insufficient data fails"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.post(reverse('manage_update', args=[self.document.pk]), {
+                'author': 'foo'
+                })
+        self.assertFormError(response, 'form', 'title', 'This field is required.')
+        self.assertFormError(response, 'form', 'language', 'This field is required.')
+        self.assertTemplateUsed(response, 'documents/manage_update.html')
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_manage_update_invalid_language(self):
+        """Check if update of a document with with invalid language fails"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.post(reverse('manage_update', args=[self.document.pk]), {
+                'title': 'testing 123',
+                'language': 'foo'
+                })
+        self.assertFormError(response, 'form', 'language', 'Select a valid choice. foo is not one of the available choices.')
+        self.assertTemplateUsed(response, 'documents/manage_update.html')
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_manage_update(self):
+        """Check if creation of a new document succeeds"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.post(reverse('manage_update', args=[self.document.pk]), {
+                'title': 'testing 456',
+                'language': 'de-CH'
+                })
+        self.assertTemplateNotUsed(response, 'documents/manage_update.html')
+        self.assertRedirects(response, reverse('manage_index'))
+
 class BrowseViewTest(TestCase):
     fixtures = ['state.yaml', 'user.yaml']
 
@@ -182,6 +260,12 @@ class TodoViewTest(TestCase):
         self.assertTemplateNotUsed(response, 'documents/todo_detail.html')
         self.failIfEqual(response.status_code, 200)
 
+    def test_todo_add_attachment_get(self):
+        """Check if get for adding an attachment is redirected"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.get(reverse('todo_add_attachment', args=[self.document.pk]))
+        self.assertRedirects(response, reverse('todo_detail', args=[self.document.pk]))
+
     def test_todo_add_attachment(self):
         """Check if adding a valid attachment succeeds"""
         self.client.login(username='testuser', password='foobar')
@@ -202,6 +286,7 @@ class TodoViewTest(TestCase):
         self.client.login(username='testuser', password='foobar')
         response = self.client.post(reverse('todo_transition', args=[self.document.pk]), 
                                     {'state': 'foo'})
+        self.assertFormError(response, 'form', 'state', 'Select a valid choice. foo is not one of the available choices.')
         self.assertTemplateUsed(response, 'documents/todo_detail.html')
 
     def test_todo_transition_invalid_state(self):
@@ -210,6 +295,7 @@ class TodoViewTest(TestCase):
         response = self.client.post(reverse('todo_transition', args=[self.document.pk]), 
                                     # 99 is certainly not a valid state
                                     {'state': 99})
+        self.assertFormError(response, 'form', 'state', 'Select a valid choice. 99 is not one of the available choices.')
         self.assertTemplateUsed(response, 'documents/todo_detail.html')
 
     def test_todo_transition_invalid_state(self):
@@ -219,3 +305,10 @@ class TodoViewTest(TestCase):
                               self.client.post,
                               reverse('todo_transition', args=[self.document.pk]), 
                               {'state': 3})
+
+    def test_todo_transition_valid_state(self):
+        """Check if an valid transition succeeds"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.post(reverse('todo_transition', args=[self.document.pk]), 
+                                    {'state': 2})
+        self.assertRedirects(response, reverse('todo_index'))
