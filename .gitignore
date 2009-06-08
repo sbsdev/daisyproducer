@@ -1,8 +1,9 @@
-
 *.pyc
 *~
+/.coverage
 /archive
 /daisyproducer.tgz
+/daisyproducer_dev
 /development.db
 /media
 /xml2brl.temp
