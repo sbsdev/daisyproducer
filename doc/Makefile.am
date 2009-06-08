@@ -1,3 +1,6 @@
+SUBDIRS = help
+
+# Generate a ERP Diagram from the database schema
 DOT=/usr/bin/dot
 AUTODOC=/usr/bin/postgresql_autodoc
 
@@ -23,5 +26,5 @@ PNGS = $(addsuffix .png,$(DOCUMENTS))
 
 all: $(PDFS) $(PNGS)
 
-clean:
+clean-local:
 	rm -rf $(PDFS) $(PNGS) $(DOTS_GENERATED)
