@@ -10,6 +10,8 @@ AC_CONFIG_FILES([
 	documents/Makefile
 	documents/templatetags/Makefile
 	documents/views/Makefile
+	documents/test/Makefile
+	documents/test/functional/Makefile
 	templates/Makefile
 	templates/documents/Makefile
 ])
