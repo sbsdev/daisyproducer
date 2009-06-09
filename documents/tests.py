@@ -118,6 +118,33 @@ class ManageViewTest(TestCase):
         self.assertTemplateNotUsed(response, 'documents/manage_update.html')
         self.assertRedirects(response, reverse('manage_index'))
 
+    def test_manage_update_with_existing_version(self):
+        """Check if creation of a new document succeeds even if there is a version to update """
+        import os.path
+        from django.core.files.base import File
+
+        document = Document()
+        document.title = "Wachtmeister Studer"
+        document.author = "Friedrich Glauser"
+        document.sourcePublisher = "Diogenes"
+        document.save()
+
+        TEST_DIR = os.path.abspath(os.path.dirname(__file__))
+        versionFile = File(open(os.path.join(TEST_DIR, 'testdata', 'test.xml')))
+        version = Version.objects.create(
+            comment = "testing 123",
+            document = document)
+        version.content.save("updated_version.xml", versionFile)
+        versionFile.close()
+
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.post(reverse('manage_update', args=[document.pk]), {
+                'title': 'testing 456',
+                'language': 'de-CH'
+                })
+        self.assertTemplateNotUsed(response, 'documents/manage_update.html')
+        self.assertRedirects(response, reverse('manage_index'))
+
 class BrowseViewTest(TestCase):
     fixtures = ['state.yaml', 'user.yaml']
 
@@ -363,15 +390,6 @@ class TodoViewTest(TestCase):
     def test_todo_add_version_empty_content(self):
         """Check if adding a version with an empty content fails"""
         self.version_form_test({'comment': 'foo', 'content': ''}, 'content')
-
-    def test_todo_add_version(self):
-        """Check if adding a valid version succeeds"""
-        self.client.login(username='testuser', password='foobar')
-        response = self.client.post(reverse('todo_add_version', args=[self.document.pk]), {
-                'comment': 'testing 123', 
-                'content': 'hah', 
-                })
-        self.failUnlessEqual(response.status_code, 200)
 
     def test_todo_add_version_invalid_mimetype(self):
         """Check if adding a version with wrong mime type fails"""
