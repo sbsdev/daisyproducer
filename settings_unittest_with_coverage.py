@@ -1,6 +1,6 @@
 from settings_unittest import *
 
-TEST_RUNNER='documents.tests_with_coverage.test_runner'
+TEST_RUNNER='documents.test.tests_with_coverage.test_runner'
  
 # List of modules to enable for code coverage
 COVERAGE_MODULES = [
