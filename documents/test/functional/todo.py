@@ -7,8 +7,12 @@ import os
 
 TEST_DATA_DIR= os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data'))
 
+# We have to do some monkey patching here since the default django
+# test client encodes files always as an octet stream. However as We
+# want to be able to specify the content-type we overwrite the
+# default django functionality 
 def get_file_encoder(content_type):
-    def encode_pdf_file(boundary, key, file):
+    def local_encode_file(boundary, key, file):
         from django.utils.encoding import smart_str
         import os
         
@@ -21,7 +25,7 @@ def get_file_encoder(content_type):
             '',
             file.read()
             ]
-    return encode_pdf_file
+    return local_encode_file
 
 class TodoViewTest(TestCase):
     fixtures = ['state.yaml', 'user.yaml']
