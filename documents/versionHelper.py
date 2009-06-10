@@ -1,29 +1,33 @@
 from datetime import date
 from django.template.loader import render_to_string
 from lxml import etree
+import datetime
 
 class XMLContent:
     
     DTBOOK_NAMESPACE = "http://www.daisy.org/z3986/2005/dtbook/"
+    FIELD_ATTRIBUTE_MAP = {
+            'subject' : "dtb:Subject",
+             'description' : "dtb:Description",
+             'publisher' : "dtb:Publisher",
+             'date' : "dtb:Date",
+             'identifier' : "dtb:Identifier",
+             'source' : "dtb:Source",
+             'language' : "dtb:Language",
+             'rights' : "dtb:Rights",
+             'identifier' : "dtb:uid",
+             'sourceDate' : "dtb:sourceDate",
+             'sourceEdition' : "dtb:sourceEdition",
+             'sourceRights' : "dtb:sourceRights"
+        }
 
     @staticmethod
     def getInitialContent(document):
-        content = render_to_string('DTBookTemplate.xml', {
-                'title' : document.title,
-                'author' : document.author,
-                'subject' : document.subject,
-                'description' : document.description,
-                'publisher' : document.publisher,
-                'date' : document.date.isoformat(),
-                'identifier' : document.identifier,
-                'source' : document.source,
-                'language' : document.language,
-                'rights' : document.rights,
-                'sourceDate' : document.sourceDate,
-                'sourceEdition' : document.sourceEdition,
-                'sourcePublisher' : document.sourcePublisher,
-                'sourceRights' : document.sourceRights
-                })
+        from django.forms.models import model_to_dict
+        context = model_to_dict(document)
+        context['date'] = document.date.isoformat() if document.date else ''
+        context['sourceDate'] = document.sourceDate.isoformat() if document.sourceDate else ''
+        content = render_to_string('DTBookTemplate.xml', context)
         return content.encode('utf-8')
         
     def __init__(self, version=None):
@@ -42,7 +46,11 @@ class XMLContent:
         self._updateMetaElement("doctitle", title)
         # fix sourcePublisher
         self._updateMetaAttribute("dtb:sourcePublisher", sourcePublisher)
-        
+        for model_field, field_value in kwargs.items():
+            # fix attribute
+            if self.FIELD_ATTRIBUTE_MAP.has_key(model_field):
+                self._updateMetaAttribute(self.FIELD_ATTRIBUTE_MAP[model_field], (field_value or ''))
+       
         return etree.tostring(self.tree, xml_declaration=True, encoding="UTF-8")
 
     def validateContentMetaData(self, filePath, author, title, sourcePublisher, **kwargs):
@@ -59,10 +67,36 @@ class XMLContent:
             self._validateMetaAttribute("dc:Title", title) +
             self._validateMetaElement("doctitle", title) +
             # validate sourcePublisher
-            self._validateMetaAttribute("dtb:sourcePublisher", sourcePublisher)
+            self._validateMetaAttribute("dtb:sourcePublisher", sourcePublisher) +
+            # validate subject
+            self._validateMetaAttribute("dtb:Subject", kwargs.get('subject', '')) +
+            # validate description
+            self._validateMetaAttribute("dtb:Description", kwargs.get('description', '')) +
+            # validate publisher
+            self._validateMetaAttribute("dtb:Publisher", kwargs.get('publisher', '')) +
+            # validate date
+            self._validateMetaAttribute("dtb:Date", (kwargs.get('date') or '')) +
+            # validate identifier
+            self._validateMetaAttribute("dtb:Identifier", kwargs.get('identifier', '')) +
+            # validate source
+            self._validateMetaAttribute("dtb:Source", kwargs.get('source', '')) +
+            # validate language
+            self._validateMetaAttribute("dtb:Language", kwargs.get('language', '')) +
+            # validate rights
+            self._validateMetaAttribute("dtb:Rights", kwargs.get('rights', '')) +
+            # validate identifier
+            self._validateMetaAttribute("dtb:uid", kwargs.get('identifier', '')) +
+            # validate sourceDate
+            self._validateMetaAttribute("dtb:sourceDate", (kwargs.get('sourceDate') or '')) +
+            # validate sourceEdition
+            self._validateMetaAttribute("dtb:sourceEdition", kwargs.get('sourceEdition', '')) +
+            # validate sourceRights
+            self._validateMetaAttribute("dtb:sourceRights", kwargs.get('sourceRights', ''))
             )
         
     def _updateMetaAttribute(self, key, value):
+        if isinstance(value, datetime.date):
+            value = value.isoformat()
         for element in self.tree.findall("//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key)):
             element.attrib['content'] = value
         

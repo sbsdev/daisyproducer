@@ -83,12 +83,10 @@ def add_version(request, document_id):
         return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
     form = PartialVersionForm(request.POST, request.FILES)
-    # attach some data to the form for validation
-    form.contentMetaData = {
-        'author' : document.author, 
-        'title' : document.title, 
-        'sourcePublisher' : document.sourcePublisher
-        }
+    # attach some data to the form for validation        
+    from django.forms.models import model_to_dict
+    form.contentMetaData = model_to_dict(document)
+
     if not form.is_valid():
         versionForm = form
         attachmentForm = PartialAttachmentForm()

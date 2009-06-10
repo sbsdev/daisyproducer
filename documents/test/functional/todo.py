@@ -185,14 +185,41 @@ class TodoViewTest(TestCase):
         django.test.client.encode_file = original_function
         self.assertContains(response, "The meta data &#39;dc:Title&#39; in the uploaded file does not correspond to the value in the document: &#39;Wachtmeister Studer&#39; instead of &#39;foo&#39;")
 
-    def test_todo_add_version(self):
-        """Check if adding a version with valid mime type succeeds"""
+    def test_todo_add_version_missing_metadata(self):
+        """Check if adding a version with invalid meta data fails"""
         document = Document()
         document.title = "Wachtmeister Studer"
         document.author = "Friedrich Glauser"
         document.sourcePublisher = "Diogenes"
         document.save()
 
+        self.client.login(username='testuser', password='foobar')
+        version = open(os.path.join(TEST_DATA_DIR, 'test.xml'))
+        post_data = {
+            'comment': 'testing 123',
+            'content': version, 
+        }
+        original_function = django.test.client.encode_file
+        django.test.client.encode_file = get_file_encoder('text/xml')
+        response = self.client.post(
+            reverse('todo_add_version', args=[document.pk]), 
+            post_data)
+        version.close()
+        django.test.client.encode_file = original_function
+        self.assertContains(response, "The meta data &#39;dtb:uid&#39; in the uploaded file does not correspond to the value in the document: &#39;ch-sbs-1&#39; instead of &#39;ch-sbs-")
+
+    def test_todo_add_version(self):
+        """Check if adding a version with valid mime type succeeds"""
+        document = Document()
+        document.title = "Wachtmeister Studer"
+        document.author = "Friedrich Glauser"
+        document.sourcePublisher = "Diogenes"
+        document.publisher = "Swiss Library for the Blind and Visually Impaired"
+        document.date = "2009-04-23"
+        document.identifier = "ch-sbs-1"
+        document.language = "de-CH"
+        document.save()
+        
         self.client.login(username='testuser', password='foobar')
         version = open(os.path.join(TEST_DATA_DIR, 'test.xml'))
         post_data = {
