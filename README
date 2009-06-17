@@ -11,6 +11,8 @@ Daisy Producer README
   2.2  Deployment requirements
   2.3  Optional requirements
 3  Installation
+4  Frequently Asked Questions
+  4.1  Why is daisyproducer not using distutils or setuptools
 
 What is it?
 ===========
@@ -156,3 +158,30 @@ daisyproducer directory and give www-data write access to it:
   $ mkdir archive
   $ chown www-data archive
 
+Frequently Asked Questions
+==========================
+
+Why is daisyproducer not using distutils or setuptools
+------------------------------------------------------
+The basic requirements for a build and distribution utility are
+support for building a source distribution, support for installation
+and deinstallation and finally support for test invocation. 
+
+While distutils_ seems to be the standard in the Python world it has
+no built-in support for running a test suite. setuptools_ seem to be a
+modern version of distutils and do support invocation of a test suite
+albeit in a limited way. Thirdly and apparently currently most trendy
+is there is buildout_ which seems to support all of this and way more.
+All of these tools seem to either add an unnecessary level of
+complexity for little gain.
+
+Lastly there are the tried and true autotools_ which lets you add
+anything to the Makefile. While they do not support many of the
+advanced features like dependency tracking and are crud in many ways
+they still provide a fairly simple way to package, test and install
+software.
+
+.. _distutils: http://docs.python.org/distutils/
+.. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
+.. _buildout: http://jacobian.org/writing/django-apps-with-buildout/
+.. _autotools: http://en.wikipedia.org/wiki/GNU_build_system
