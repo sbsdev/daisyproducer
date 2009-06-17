@@ -1,5 +1,3 @@
-SUBDIRS = help
-
 # Generate a ERP Diagram from the database schema
 DOT=/usr/bin/dot
 AUTODOC=/usr/bin/postgresql_autodoc
@@ -11,6 +9,8 @@ DOCUMENTS = daisyproducer_dev stateMachine
 DOTS_GENERATED = $(addsuffix .dot,$(filter-out stateMachine,$(DOCUMENTS)))
 PDFS = $(addsuffix .pdf,$(DOCUMENTS))
 PNGS = $(addsuffix .png,$(DOCUMENTS))
+
+EXTRA_DIST = $(PDFS) $(PNGS)
 
 %.dot:
 	$(AUTODOC) -d $(DATABASE) -t dot --table=$(TABLES)
