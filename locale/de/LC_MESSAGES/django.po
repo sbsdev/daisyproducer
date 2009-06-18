@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-18 14:55+0200\n"
+"POT-Creation-Date: 2009-06-18 16:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,7 +140,7 @@ msgid ""
 "original, ebook, etc.) from which the DTB is derived"
 msgstr ""
 
-#: documents/models.py:105
+#: documents/models.py:105 templates/documents/todo_detail.html:115
 msgid "State"
 msgstr "Status"
 
@@ -273,6 +273,43 @@ msgstr ""
 msgid "Swiss Library for the Blind and Visually Impaired"
 msgstr "Schweizerische Bibliothek für Blinde und Sehbehinderte"
 
+#: templates/documents/browse_detail.html:5
+#: templates/documents/browse_detail.html:9
+#: templates/documents/manage_detail.html:5
+#: templates/documents/manage_detail.html:13
+#: templates/documents/todo_detail.html:6
+#: templates/documents/todo_detail.html:10
+msgid "Document Details"
+msgstr "Dokumentdetails"
+
+#: templates/documents/browse_detail.html:22
+msgid "View as PDF"
+msgstr ""
+
+#: templates/documents/browse_detail.html:27
+#: templates/documents/browse_detail.html:34
+msgid "Download"
+msgstr ""
+
+#: templates/documents/browse_detail.html:29
+msgid "View as Braille"
+msgstr ""
+
+#: templates/documents/browse_detail.html:38
+#: templates/documents/browse_index.html:31
+#: templates/documents/manage_detail.html:36
+#: templates/documents/manage_index.html:38
+#: templates/documents/manage_update.html:17
+#: templates/documents/todo_detail.html:127
+#: templates/documents/todo_index.html:32
+msgid "No data to display"
+msgstr ""
+
+#: templates/documents/browse_index.html:5
+#: templates/documents/browse_index.html:9
+msgid "Finished documents"
+msgstr ""
+
 #: templates/documents/manage.html:8
 msgid "Documents"
 msgstr "Dokumente"
@@ -280,3 +317,48 @@ msgstr "Dokumente"
 #: templates/documents/manage.html:9
 msgid "Create a new document"
 msgstr "Ein neues Dokument erstellen"
+
+#: templates/documents/manage_create.html:4
+#: templates/documents/manage_create.html:7
+msgid "Create Document"
+msgstr "Ein neues Dokument erstellen"
+
+#: templates/documents/manage_create.html:10
+msgid "Create"
+msgstr "Erstellen"
+
+#: templates/documents/manage_detail.html:10
+#: templates/documents/manage_update.html:13
+msgid "Update"
+msgstr ""
+
+#: templates/documents/manage_index.html:5
+#: templates/documents/manage_index.html:8
+msgid "Manage documents"
+msgstr ""
+
+#: templates/documents/manage_update.html:4
+#: templates/documents/manage_update.html:8
+msgid "Update Document Details"
+msgstr ""
+
+#: templates/documents/todo_detail.html:40
+msgid "Versions"
+msgstr ""
+
+#: templates/documents/todo_detail.html:66
+#: templates/documents/todo_detail.html:107
+msgid "Add"
+msgstr ""
+
+#: templates/documents/todo_detail.html:78
+msgid "Attachments"
+msgstr ""
+
+#: templates/documents/todo_detail.html:121
+msgid "Transition"
+msgstr ""
+
+#: templates/documents/todo_index.html:5 templates/documents/todo_index.html:8
+msgid "Pending documents"
+msgstr ""

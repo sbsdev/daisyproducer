@@ -1,19 +1,20 @@
 {% extends "documents/manage.html" %}
+{% load i18n %}
 
-{% block title %}{{ block.super }} - Update Document Meta Data{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Update Document Details" %}{% endblock %}
 
 {% block content %}
 {% if object %}
-<h2>Update Document Details</h2>
+<h2>{% trans "Update Document Details" %}</h2>
 <form action="" method="POST">
   <table>
     {{ form.as_table }}
     </table>
-    <p><input type="submit" value="Update" /></p>
+    <p><input type="submit" value="{% trans 'Update' %}" /></p>
 </form>
 
 {% else %}
-<p class="nodata">No data to display</p>
+<p class="nodata">{% trans "No data to display" %}</p>
 {% endif %}
 
 {% endblock %}

@@ -1,12 +1,13 @@
 {% extends "documents/manage.html" %}
+{% load i18n %}
 
-{% block title %}{{ block.super }} - Create Document{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Create Document" %}{% endblock %}
 
 {% block content %}
-<h2>Create Document</h2>
+<h2>{% trans "Create Document" %}</h2>
 <form action="" method="POST">
   {% include "documents/simpleTableForm.html" %}
-  <p><input type="submit" value="Create" /></p>
+  <p><input type="submit" value="{% trans 'Create' %}" /></p>
 </form>
 
 {% endblock %}

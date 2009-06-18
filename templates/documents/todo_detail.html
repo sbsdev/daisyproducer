@@ -1,12 +1,13 @@
 {% extends "documents/todo.html" %}
+{% load i18n %}
 {% load basename %}
 {% load verbose_name %}
 
-{% block title %}{{ block.super }} - Manage Document Details - {{ document.title }}{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Document Details" %} - {{ document.title }}{% endblock %}
 
 {% block content %}
 {% if document %}
-<h2>Document details</h2>
+<h2>{% trans "Document Details" %}</h2>
 
 <div class="issue">
   
@@ -36,7 +37,7 @@
     <!--   <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Add</a> -->
     <!-- </div> -->
     
-    <p><strong>Versions</strong></p>
+    <p><strong>{% trans "Versions" %}</strong></p>
     <table style="width:100%">
       <!-- <tr> -->
       <!-- 	<th>Comment</th> -->
@@ -62,7 +63,7 @@
 	{% with versionForm as form %}
 	{% include "documents/simpleForm.html" %}
 	{% endwith %}
-	<input type="submit" value="Add" /> 
+	<input type="submit" value="{% trans 'Add' %}" /> 
 	<!-- <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Cancel</a> -->
       </p>
     </form>
@@ -74,7 +75,7 @@
     <!--   <a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Add</a> -->
     <!-- </div> -->
     
-    <p><strong>Attachments</strong></p>
+    <p><strong>{% trans "Attachments" %}</strong></p>
     <table style="width:100%">
       <!-- <tr> -->
       <!-- 	<th>Name</th> -->
@@ -103,7 +104,7 @@
 	{% with attachmentForm as form %}
 	{% include "documents/simpleForm.html" %}
 	{% endwith %}
-	<input type="submit" value="Add" /> 
+	<input type="submit" value="{% trans 'Add' %}" /> 
 	<!-- <a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Cancel</a> -->
       </p>
     </form>
@@ -111,18 +112,18 @@
   <hr />
 
   <div id="relations">
-    <p><strong>State</strong></p>
+    <p><strong>{% trans "State" %}</strong></p>
     <form method="post" action="{% url todo_transition  document.id %}">
       <p>
 	{% with documentForm as form %}
 	{% include "documents/simpleForm.html" %}
 	{% endwith %}
-	<input type="submit" value="Transition" />
+	<input type="submit" value="{% trans 'Transition' %}" />
       </p>
     </form>
   </div>
 </div>
 {% else %}
-<p class="nodata">No data to display</p>
+<p class="nodata">{% trans "No data to display" %}</p>
 {% endif %}
 {% endblock %}

@@ -1,10 +1,11 @@
 {% extends "documents/manage.html" %}
+{% load i18n %}
 {% load verbose_name %}
 
-{% block title %}{{ block.super }} - Managing documents{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Manage documents" %}{% endblock %}
 
 {% block content %}
-<h2>Manage documents</h2>
+<h2>{% trans "Manage documents" %}</h2>
 {% if object_list %}
 <table class="list">
   <thead>
@@ -34,6 +35,6 @@
   </tbody>
 </table>
 {% else %}
-<p class="nodata">No data to display</p>
+<p class="nodata">{% trans "No data to display" %}</p>
 {% endif %}
 {% endblock %}
