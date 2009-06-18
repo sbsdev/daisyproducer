@@ -10,7 +10,7 @@ DOTS_GENERATED = $(addsuffix .dot,$(filter-out stateMachine,$(DOCUMENTS)))
 PDFS = $(addsuffix .pdf,$(DOCUMENTS))
 PNGS = $(addsuffix .png,$(DOCUMENTS))
 
-EXTRA_DIST = $(PDFS) $(PNGS)
+EXTRA_DIST = $(PDFS) $(PNGS) stateMachine.dot
 
 %.dot:
 	$(AUTODOC) -d $(DATABASE) -t dot --table=$(TABLES)
