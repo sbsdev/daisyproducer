@@ -1,5 +1,8 @@
 SUBDIRS = doc
 
+PO_FILES = locale/de/LC_MESSAGES/django.po
+MO_FILES = $(PO_FILES:.po=.mo)
+
 PYTHON_FILES = \
 	$(wildcard *.py) \
 	$(wildcard documents/*.py) \
@@ -29,6 +32,8 @@ TEST_FILES = \
 DOC_FILES = $(wildcard doc/help/*.txt)
 
 nobase_dist_pkgdata_DATA = \
+	$(PO_FILES) \
+	$(MO_FILES) \
 	$(PYTHON_FILES) \
 	$(TEMPLATE_FILES) \
 	$(PUBLIC_FILES) \
@@ -36,6 +41,14 @@ nobase_dist_pkgdata_DATA = \
 	$(DOC_FILES) \
 	daisyproducer.wsgi
 
+# i18n
+%.mo: %.po
+	django-admin compilemessages
+
+clean-local:
+	rm -f $(MO_FILES)
+
+# Testing
 TESTS = test.sh
 
 check-coverage:

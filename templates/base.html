@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,18 +14,18 @@
     {% if user.is_authenticated %}
     <div id="account">
       <ul>
-	<li><a href="/admin/logout/" class="logout">Sign out</a></li>
+	<li><a href="/admin/logout/" class="logout">{% trans "Sign out" %}</a></li>
       </ul>    
     </div>
-    <div id="loggedas">Logged in as {{ user.username }}</div>
+    <div id="loggedas">{% blocktrans with user.username as username %}Logged in as {{ username }}{% endblocktrans %}</div>
     {% else %}
     <div id="account">
-      <ul><li><a href="/accounts/login/" class="login">Sign in</a></li></ul>
+      <ul><li><a href="/accounts/login/" class="login">{% trans "Sign in" %}</a></li></ul>
     </div>
     {% endif %}
     <ul>
-      <li><a href="/admin" class="administration">Administration</a></li>
-      <li><a href="{% url help %}" class="help">Help</a></li>
+      <li><a href="/admin" class="administration">{% trans "Administration" %}</a></li>
+      <li><a href="{% url help %}" class="help">{% trans "Help" %}</a></li>
     </ul>
   </div>
 
@@ -40,9 +41,9 @@
 
     <div id="main-menu">
       <ul>
-	<li><a href="{% url todo_index %}"{% block tab-todo %}{% endblock %}>TODO</a></li>
-	<li><a href="{% url browse_index %}"{% block tab-browse %}{% endblock %}>Browse</a></li>
-	<li><a href="{% url manage_index %}" accesskey="7"{% block tab-manage %}{% endblock %}>Manage</a></li>
+	<li><a href="{% url todo_index %}"{% block tab-todo %}{% endblock %}>{% trans "TODO" %}</a></li>
+	<li><a href="{% url browse_index %}"{% block tab-browse %}{% endblock %}>{% trans "Browse" %}</a></li>
+	<li><a href="{% url manage_index %}" accesskey="7"{% block tab-manage %}{% endblock %}>{% trans "Manage" %}</a></li>
       </ul>
     </div>
   </div>
@@ -56,7 +57,7 @@
   </div>
   
   <div id="footer">
-    Powered by <a href="http://www.daisyproducer.org/">Daisy Producer</a> © 2009 Swiss Library for the Blind and Visually Impaired
+    {% trans "Powered by" %} <a href="http://www.daisyproducer.org/">Daisy Producer</a> © 2009 {% trans "Swiss Library for the Blind and Visually Impaired" %}
   </div>
   
 </body>

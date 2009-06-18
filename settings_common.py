@@ -82,6 +82,7 @@ RESTRUCTUREDTEXT_FILTER_SETTINGS = {'doctitle_xform': 0}
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 

@@ -1,6 +1,7 @@
 *.pyc
 *~
 .coverage
+django.mo
 
 /aclocal.m4
 /archive

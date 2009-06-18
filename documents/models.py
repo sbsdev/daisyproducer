@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.forms import ModelForm
+from django.utils.translation import ugettext_lazy as _
 import uuid
 
 class StateError(Exception):
@@ -34,67 +35,77 @@ class State(models.Model):
 class Document(models.Model):
 
     title = models.CharField(
+        _("Title"),
         max_length=255, 
-        help_text="The title of the DTB, including any subtitles")
+        help_text=_("The title of the DTB, including any subtitles"))
     author = models.CharField(
+        _("Author"),
         max_length=255, 
-        help_text="Names of primary author or creator of the intellectual content of the publication",
+        help_text=_("Names of primary author or creator of the intellectual content of the publication"),
         blank=True)
     subject = models.CharField(
+        _("Subject"),
         max_length=255, 
-        help_text="The topic of the content of the publication",
+        help_text=_("The topic of the content of the publication"),
         blank=True)
     description = models.TextField(
-        help_text="Plain text describing the publication's content",
+        _("Description"),
+        help_text=_("Plain text describing the publication's content"),
         blank=True)
     publisher = models.CharField(
+        _("Publisher"),
         max_length=255,
         default=settings.DAISY_DEFAULT_PUBLISHER,
-        help_text="The agency responsible for making the DTB available")
+        help_text=_("The agency responsible for making the DTB available"))
     date = models.DateField(
+        _("Date"),
         auto_now_add=True,
-        help_text="Date of publication of the DTB")
+        help_text=_("Date of publication of the DTB"))
     identifier = models.CharField(
+        _("Identifier"),
         max_length=255, 
-        help_text="A string or number identifying the DTB")
+        help_text=_("A string or number identifying the DTB"))
     source = models.CharField(
+        _("Source"),
         max_length=10, 
-        help_text="A reference to a resource (e.g., a print original, ebook, etc.) from which the DTB is derived. Best practice is to use the ISBN when available", 
+        help_text=_("A reference to a resource (e.g., a print original, ebook, etc.) from which the DTB is derived. Best practice is to use the ISBN when available"), 
         blank=True)
     language_choices = (('de-CH', 'de-CH',),)
     language = models.CharField(
+        _("Language"),
         max_length=10,
         choices=language_choices,
-        help_text="Language of the content of the publication")
+        help_text=_("Language of the content of the publication"))
     rights = models.CharField(
+        _("Rights"),
         max_length=255, 
-        help_text="Content: Information about rights held in and over the DTB",
+        help_text=_("Information about rights held in and over the DTB"),
         blank=True)
     
     sourceDate = models.DateField(
-        "Source Date",
-        help_text="Date of publication of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
+        _("Source Date"),
+        help_text=_("Date of publication of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
         null=True, blank=True)
     sourceEdition = models.CharField(
-        "Source Edition", 
+        _("Source Edition"), 
         max_length=255, 
-        help_text="A string describing the edition of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
+        help_text=_("A string describing the edition of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
         blank=True)
     sourcePublisher = models.CharField(
-        "Source Publisher", 
+        _("Source Publisher"), 
         max_length=255, 
-        help_text="The agency responsible for making available the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
+        help_text=_("The agency responsible for making available the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
         blank=True)
     sourceRights = models.CharField(
-        "Source Rights", 
+        _("Source Rights"), 
         max_length=255, 
-        help_text="Information about rights held in and over the resource (e.g., a print original, ebook, etc.) from which the DTB is derived",
+        help_text=_("Information about rights held in and over the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
         blank=True)
 
-    state = models.ForeignKey(State)
-    assigned_to = models.ForeignKey(User, null=True, blank=True)
-    created_at = models.DateTimeField("Created", auto_now_add=True)
-    modified_at = models.DateTimeField("Last Modified", auto_now=True)
+    state = models.ForeignKey(State, verbose_name=_("State"))
+    assigned_to = models.ForeignKey(User, verbose_name=_("Assigned to"), null=True, blank=True)
+    created_at = models.DateTimeField(_("Created"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Last Modified"), auto_now=True)
 
     def __unicode__(self):
         return self.title
@@ -158,13 +169,13 @@ class BrailleProfile(models.Model):
         ('2', 'Grade 2'),
         )
 
-    cellsPerLine = models.PositiveSmallIntegerField("Cells per Line", default=40, max_length=4)
-    linesPerPage = models.PositiveSmallIntegerField("Line per Page", default=28, max_length=4)
-    contraction = models.PositiveSmallIntegerField(default=0, choices=BRAILLE_CONTRACTION_GRADE_CHOICES)
-    hyphenation = models.BooleanField(default=True)
-    showOriginalPageNumbers = models.BooleanField("Show original page numbers", default=True)
-    enableCapitalization = models.BooleanField("Enable Capitalization")
-    detailedAccentedCharacters = models.BooleanField("Detailed Accented Characters")
+    cellsPerLine = models.PositiveSmallIntegerField(_("Cells per Line"), default=40, max_length=4)
+    linesPerPage = models.PositiveSmallIntegerField(_("Lines per Page"), default=28, max_length=4)
+    contraction = models.PositiveSmallIntegerField(_("Contraction"), default=0, choices=BRAILLE_CONTRACTION_GRADE_CHOICES)
+    hyphenation = models.BooleanField(_("Hyphenation"), default=True)
+    showOriginalPageNumbers = models.BooleanField(_("Show original page numbers"), default=True)
+    enableCapitalization = models.BooleanField(_("Enable Capitalization"))
+    detailedAccentedCharacters = models.BooleanField(_("Detailed Accented Characters"))
 
 class BrailleProfileForm(ModelForm):
     class Meta:
@@ -201,11 +212,11 @@ class LargePrintProfile(models.Model):
         ('a4paper', 'a4paper'),
         )
     
-    fontSize = models.CharField("Fontsize", default='17pt', max_length=4, choices=FONTSIZE_CHOICES)
-    font = models.CharField(default='Tiresias LPfont', max_length=60, choices=FONT_CHOICES)
-    pageStyle = models.CharField("Page style", default='plain', max_length=16, choices=PAGESTYLE_CHOICES)
+    fontSize = models.CharField(_("Fontsize"), default='17pt', max_length=4, choices=FONTSIZE_CHOICES)
+    font = models.CharField(_("Font"), default='Tiresias LPfont', max_length=60, choices=FONT_CHOICES)
+    pageStyle = models.CharField(_("Page style"), default='plain', max_length=16, choices=PAGESTYLE_CHOICES)
     alignment = models.CharField(default='justified', max_length=16, choices=ALIGNMENT_CHOICES)
-    paperSize = models.CharField("Papersize", default='a4paper', max_length=16, choices=PAPERSIZE_CHOICES)
+    paperSize = models.CharField(_("Papersize"), default='a4paper', max_length=16, choices=PAPERSIZE_CHOICES)
 
 class LargePrintProfileForm(ModelForm):
     class Meta:
