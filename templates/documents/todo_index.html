@@ -1,4 +1,5 @@
 {% extends "documents/todo.html" %}
+{% load verbose_name %}
 
 {% block title %}{{ block.super }} - Managing documents{% endblock %}
 
@@ -8,10 +9,10 @@
 <table class="list">
   <thead>
     <tr>
-      <th>{{ fields.title.label }}</th>
-      <th>{{ fields.author.label }}</th>
-      <th>{{ fields.sourcePublisher.label }}</th>
-      <th>{{ fields.state.label }}</th>
+      <th>{{ object_list|first|verbose_name:"title" }}</th>
+      <th>{{ object_list|first|verbose_name:"author" }}</th>
+      <th>{{ object_list|first|verbose_name:"sourcePublisher" }}</th>
+      <th>{{ object_list|first|verbose_name:"state" }}</th>
     </tr>
   </thead>
 

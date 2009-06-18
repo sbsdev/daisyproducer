@@ -1,4 +1,5 @@
 {% extends "documents/browse.html" %}
+{% load verbose_name %}
 
 {% block title %}{{ block.super }} - Document Details - {{ object.title }}{% endblock %}
 
@@ -11,10 +12,10 @@
 <div class="issue">
   <table width="100%">
     <tr>
-      <td style="width:15%" class=""><b>{{ fields.author.label }}:</b></td><td style="width:35%">{{ object.author }}</td>
+      <td style="width:15%" class=""><b>{{ object|verbose_name:"author" }}:</b></td><td style="width:35%">{{ object.author }}</td>
     </tr>
     <tr>
-      <td class=""><b>{{ fields.sourcePublisher.label }}:</b></td><td class=" ">{{ object.sourcePublisher }}</td>
+      <td class=""><b>{{ object|verbose_name:"sourcePublisher" }}:</b></td><td class=" ">{{ object.sourcePublisher }}</td>
     </tr>
   </table>
   <h3>View as PDF</h3>

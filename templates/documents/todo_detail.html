@@ -1,5 +1,6 @@
 {% extends "documents/todo.html" %}
 {% load basename %}
+{% load verbose_name %}
 
 {% block title %}{{ block.super }} - Manage Document Details - {{ document.title }}{% endblock %}
 
@@ -17,14 +18,14 @@
   
   <table width="100%">
     <tr>
-      <td style="width:15%" class=""><b>{{ fields.author.label }}:</b></td><td style="width:35%">{{ document.author }}</td>
-      <td style="width:15%" class="status"><b>{{ fields.state.label }}:</b></td><td style="width:35%" class="status">{{ document.state }}</td>
+      <td style="width:15%" class=""><b>{{ document|verbose_name:"author" }}:</b></td><td style="width:35%">{{ document.author }}</td>
+      <td style="width:15%" class="status"><b>{{ document|verbose_name:"state" }}:</b></td><td style="width:35%" class="status">{{ document.state }}</td>
     </tr>
     <tr>
-      <td class=""><b>{{ fields.sourcePublisher.label }}:</b></td><td class=" ">{{ document.sourcePublisher }}</td>
+      <td class=""><b>{{ document|verbose_name:"sourcePublisher" }}:</b></td><td class=" ">{{ document.sourcePublisher }}</td>
 
       {% if document.assigned_to %}
-      <td class=""><b>{{ fields.assigned_to.label }}:</b></td><td class="">{{ document.assigned_to.get_full_name }}</td>
+      <td class=""><b>{{ document|verbose_name:"assigned_to" }}:</b></td><td class="">{{ document.assigned_to.get_full_name }}</td>
       {% endif %}
     </tr>
   </table>

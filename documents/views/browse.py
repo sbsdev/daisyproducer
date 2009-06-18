@@ -1,6 +1,5 @@
 from daisyproducer.documents.external import DaisyPipeline, Liblouis
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
-from daisyproducer.utils import fields_for_model
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
@@ -15,8 +14,7 @@ def index(request):
     response = object_list(
         request,
         queryset = Document.objects.filter(state__name='approved').order_by('title'),
-        template_name = 'documents/browse_index.html',
-        extra_context = {'fields' : fields_for_model(Document())}
+        template_name = 'documents/browse_index.html'
     )
     return response
 
@@ -28,8 +26,7 @@ def detail(request, document_id):
         template_name = 'documents/browse_detail.html',
         extra_context = {
             'lpform' : LargePrintProfileForm(),
-            'bform' : BrailleProfileForm(),
-            'fields' : fields_for_model(Document())},
+            'bform' : BrailleProfileForm()}
         )
     return response
 

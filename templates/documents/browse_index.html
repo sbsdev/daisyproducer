@@ -1,4 +1,5 @@
 {% extends "documents/browse.html" %}
+{% load verbose_name %}
 
 {% block title %}{{ block.super }} - Listing documents{% endblock %}
 
@@ -9,9 +10,9 @@
 <table class="list">
   <thead>
     <tr>
-      <th>{{ fields.title.label }}</th>
-      <th>{{ fields.author.label }}</th>
-      <th>{{ fields.sourcePublisher.label }}</th>
+      <th>{{ object_list|first|verbose_name:"title" }}</th>
+      <th>{{ object_list|first|verbose_name:"author" }}</th>
+      <th>{{ object_list|first|verbose_name:"sourcePublisher" }}</th>
     </tr>
   </thead>
   
