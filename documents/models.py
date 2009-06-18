@@ -164,9 +164,9 @@ class Attachment(models.Model):
 class BrailleProfile(models.Model):
 
     BRAILLE_CONTRACTION_GRADE_CHOICES = (
-        ('0', 'Grade 0'),
-        ('1', 'Grade 1'),
-        ('2', 'Grade 2'),
+        ('0', _('Grade 0')),
+        ('1', _('Grade 1')),
+        ('2', _('Grade 2')),
         )
 
     cellsPerLine = models.PositiveSmallIntegerField(_("Cells per Line"), default=40, max_length=4)
@@ -197,14 +197,14 @@ class LargePrintProfile(models.Model):
         )
     
     PAGESTYLE_CHOICES = (
-        ('plain', 'Plain'),
-        ('withPageNums', 'With original page numbers'),
-        ('scientific', 'Scientific'),
+        ('plain', _('Plain')),
+        ('withPageNums', _('With original page numbers')),
+        ('scientific', _('Scientific')),
         )
     
     ALIGNMENT_CHOICES = (
-        ('justified', 'justified'),
-        ('left', 'left aligned'),
+        ('justified', _('justified')),
+        ('left', _('left aligned')),
         )
     
     PAPERSIZE_CHOICES = (
