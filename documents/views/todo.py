@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic.list_detail import object_list
@@ -21,7 +21,7 @@ def index(request):
     user_groups = request.user.groups.values('pk').query
     response = object_list(
         request,
-        queryset = Document.objects.filter(
+        queryset = Document.objects.select_related('state').filter(
             # only show documents that aren't assigned to anyone else,
             Q(assigned_to=request.user) | Q(assigned_to__isnull=True),
             # and which are in a state for which my group is responsible
@@ -34,7 +34,10 @@ def index(request):
     
 @login_required
 def detail(request, document_id):
-    document = get_object_or_404(Document, pk=document_id)
+    try:
+        document = Document.objects.select_related('state').get(pk=document_id)
+    except Document.DoesNotExist:
+        raise Http404
 
     versionForm = PartialVersionForm()
     attachmentForm = PartialAttachmentForm()

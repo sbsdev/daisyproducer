@@ -13,7 +13,7 @@ from django.views.generic.list_detail import object_list, object_detail
 def index(request):
     response = object_list(
         request,
-        queryset = Document.objects.all().order_by('state','title'),
+        queryset = Document.objects.select_related('state').all().order_by('state','title'),
         template_name = 'documents/manage_index.html',
         extra_context = {'fields' : fields_for_model(Document())}
     )
@@ -23,7 +23,7 @@ def index(request):
 def detail(request, document_id):
     response = object_detail(
         request,
-        queryset = Document.objects.all(),
+        queryset = Document.objects.select_related('state').all(),
         template_name = 'documents/manage_detail.html',
         object_id = document_id,
         extra_context = {'fields' : fields_for_model(Document())}

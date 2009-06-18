@@ -21,16 +21,16 @@ def index(request):
     return response
 
 def detail(request, document_id):
-    lpform = LargePrintProfileForm()
-    bform = BrailleProfileForm()
-    fields = fields_for_model(Document())
     response = object_detail(
         request,
         queryset = Document.objects.all(),
         object_id = document_id,
         template_name = 'documents/browse_detail.html',
-        extra_context = locals(),
-    )
+        extra_context = {
+            'lpform' : LargePrintProfileForm(),
+            'bform' : BrailleProfileForm(),
+            'fields' : fields_for_model(Document())},
+        )
     return response
 
 def as_pdf(request, document_id):
