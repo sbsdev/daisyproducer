@@ -25,9 +25,11 @@ TEST_FILES = \
 	$(wildcard documents/test/*.py) \
 	$(wildcard documents/test/functional/*.py) \
 	$(wildcard documents/test/unit/*.py) \
-	$(wildcard documents/fixtures/*.yaml) \
-	$(wildcard documents/test/data/*) \
 	test.sh
+
+TEST_DATA_FILES = \
+	$(wildcard documents/fixtures/*.yaml) \
+	$(wildcard documents/test/data/*)
 
 DOC_FILES = $(wildcard doc/help/*.txt)
 
@@ -38,8 +40,12 @@ nobase_dist_pkgdata_DATA = \
 	$(TEMPLATE_FILES) \
 	$(PUBLIC_FILES) \
 	$(TEST_FILES) \
+	$(TEST_DATA_FILES) \
 	$(DOC_FILES) \
 	daisyproducer.wsgi
+
+# TAGS
+ETAGS_ARGS = $(PYTHON_FILES) $(TEST_FILES)
 
 # i18n
 %.mo: %.po

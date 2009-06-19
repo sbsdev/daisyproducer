@@ -3,6 +3,10 @@
 .coverage
 django.mo
 
+Makefile
+Makefile.in
+TAGS
+
 /aclocal.m4
 /archive
 /autom4te.cache
@@ -16,6 +20,3 @@ django.mo
 /missing
 /py-compile
 /xml2brl.temp
-
-Makefile
-Makefile.in
