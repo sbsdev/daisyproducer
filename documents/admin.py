@@ -8,23 +8,23 @@ class AttachmentInline(admin.TabularInline):
 	model = Attachment
 
 class StateAdmin(admin.ModelAdmin):
-        list_display = ('name', 'sort_order',)
-        ordering = ('sort_order',)
-        search_fields = ('name',)
+	list_display = ('name', 'sort_order',)
+	ordering = ('sort_order',)
+	search_fields = ('name',)
 
 class DocumentAdmin(admin.ModelAdmin):
-        list_display = ('title', 'author', 'sourcePublisher', 'state',)
-        list_filter = ('author', 'sourcePublisher', 'state',)
-        ordering = ('title', 'state',)
-        search_fields = ('title',)
+	list_display = ('title', 'author', 'sourcePublisher', 'state',)
+	list_filter = ('author', 'sourcePublisher', 'state',)
+	ordering = ('title', 'state',)
+	search_fields = ('title',)
 	inlines = [VersionInline, AttachmentInline,]
 
 class VersionAdmin(admin.ModelAdmin):
-        list_display = ('created_at',)
-        ordering = ('created_at',)
+	list_display = ('created_at',)
+	ordering = ('created_at',)
 
 class AttachmentAdmin(admin.ModelAdmin):
-        list_display = ('comment', 'mime_type',)
+	list_display = ('comment', 'mime_type',)
 
 admin.site.register(State,StateAdmin)
 admin.site.register(Document,DocumentAdmin)
