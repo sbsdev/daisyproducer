@@ -47,29 +47,29 @@ class BrowseViewTest(TestCase):
         """Check if post with an partial form fails"""
         response = self.client.post(reverse('browse_pdf', args=[self.document.pk]), {
                 'alignment': 'justified',
-                'paperSize': 'a3paper',
+                'paper_size': 'a3paper',
                 })
         self.failIfEqual(response.status_code, 200)
 
     def test_browse_pdf_invalid(self):
         """Check if post with an invalid form fails"""
         response = self.client.post(reverse('browse_pdf', args=[self.document.pk]), {
-                'fontSize': 'foo', 
+                'font_size': 'foo', 
                 'font': 'bar',
-                'pageStyle': 'baz',
+                'page_style': 'baz',
                 'alignment': 'not',
-                'paperSize': 'valid',
+                'paper_size': 'valid',
                 })
         self.failIfEqual(response.status_code, 200)
 
     def test_browse_pdf(self):
         """Check if post with a valid form succeeds"""
         response = self.client.post(reverse('browse_pdf', args=[self.document.pk]), {
-                'fontSize': '14pt', 
+                'font_size': '14pt', 
                 'font': 'Tiresias LPfont',
-                'pageStyle': 'withPageNums',
+                'page_style': 'withPageNums',
                 'alignment': 'justified',
-                'paperSize': 'a3paper',
+                'paper_size': 'a3paper',
                 })
         self.failUnlessEqual(response.status_code, 200)
 
@@ -81,34 +81,34 @@ class BrowseViewTest(TestCase):
     def test_browse_brl_partial(self):
         """Check if post with an partial form fails"""
         response = self.client.post(reverse('browse_brl', args=[self.document.pk]), {
-                'cellsPerLine': '40', 
-                'linesPerPage': '28', 
+                'cells_per_line': '40', 
+                'lines_per_page': '28', 
                 })
         self.failIfEqual(response.status_code, 200)
 
     def test_browse_brl_invalid(self):
         """Check if post with an invalid form fails"""
         response = self.client.post(reverse('browse_brl', args=[self.document.pk]), {
-                'cellsPerLine': 'foo', 
-                'linesPerPage': 'bar', 
+                'cells_per_line': 'foo', 
+                'lines_per_page': 'bar', 
                 'contraction': 'baz', 
                 'hyphenation': 'not', 
-                'showOriginalPageNumbers': 'even', 
-                'enableCapitalization': 'remotely', 
-                'detailedAccentedCharacters': 'valid'
+                'show_original_page_numbers': 'even', 
+                'enable_capitalization': 'remotely', 
+                'detailed_accented_characters': 'valid'
                 })
         self.failIfEqual(response.status_code, 200)
 
     def test_browse_brl(self):
         """Check if post with a valid form succeeds"""
         response = self.client.post(reverse('browse_brl', args=[self.document.pk]), {
-                'cellsPerLine': '40', 
-                'linesPerPage': '28', 
+                'cells_per_line': '40', 
+                'lines_per_page': '28', 
                 'contraction': '0', 
                 'hyphenation': '', 
-                'showOriginalPageNumbers': 'True', 
-                'enableCapitalization': 'True', 
-                'detailedAccentedCharacters': 'True'
+                'show_original_page_numbers': 'True', 
+                'enable_capitalization': 'True', 
+                'detailed_accented_characters': 'True'
                 })
         self.failUnlessEqual(response.status_code, 200)
 

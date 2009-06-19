@@ -37,11 +37,11 @@ class DaisyPipeline:
                 '/scripts/create_distribute/latex/DTBookToLaTeX.taskScript'),
             "--input=%s" % inputFile,
             "--output=%s" % latexFileName,
-            "--fontsize=%(fontSize)s" % kwargs,
+            "--fontsize=%(font_size)s" % kwargs,
             "--font=%(font)s" % kwargs,
-            "--pageStyle=%(pageStyle)s" % kwargs,
+            "--pageStyle=%(page_style)s" % kwargs,
             "--alignment=%(alignment)s" % kwargs,
-            "--papersize=%(paperSize)s" % kwargs,
+            "--papersize=%(paper_size)s" % kwargs,
             )
         call(command)
         # Transform to pdf using xelatex
@@ -85,11 +85,11 @@ class Liblouis:
         # transform to braille
         command = (
             "xml2brl",
-            "-CcellsPerLine=%(cellsPerLine)s" % kwargs,
-            "-ClinesPerPage=%(linesPerPage)s" % kwargs,
+            "-CcellsPerLine=%(cells_per_line)s" % kwargs,
+            "-ClinesPerPage=%(lines_per_page)s" % kwargs,
             "-CliteraryTextTable=%s" % Liblouis.contractionMap[kwargs['contraction']],
             "-Chyphenate=%s" % Liblouis.yesNoMap[kwargs['hyphenation']],
-            "-CprintPages=%s" % Liblouis.yesNoMap[kwargs['showOriginalPageNumbers']],
+            "-CprintPages=%s" % Liblouis.yesNoMap[kwargs['show_original_page_numbers']],
             "-Cinterpoint=no",
             "-CnewEntries=no",
             "-Cinterline=no",

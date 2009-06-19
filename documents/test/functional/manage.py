@@ -122,7 +122,7 @@ class ManageViewTest(TestCase):
         document = Document()
         document.title = "Wachtmeister Studer"
         document.author = "Friedrich Glauser"
-        document.sourcePublisher = "Diogenes"
+        document.source_publisher = "Diogenes"
         document.save()
 
         versionFile = File(open(os.path.join(TEST_DATA_DIR, 'test.xml')))

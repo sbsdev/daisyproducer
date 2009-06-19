@@ -15,12 +15,12 @@
     <meta name="dc:Language" content="{{ language }}" />
     <meta name="dc:Rights" content="{{ rights }}" />
     <meta name="dtb:uid" content="{{ identifier }}" />
-    {% if sourceDate %}
-    <meta name="dtb:sourceDate" content="{{ sourceDate }}" />
+    {% if source_date %}
+    <meta name="dtb:sourceDate" content="{{ source_date }}" />
     {% endif %}
-    <meta name="dtb:sourceEdition" content="{{ sourceEdition }}" />
-    <meta name="dtb:sourcePublisher" content="{{ sourcePublisher }}" />
-    <meta name="dtb:sourceRights" content="{{ sourceRights }}" />
+    <meta name="dtb:sourceEdition" content="{{ source_edition }}" />
+    <meta name="dtb:sourcePublisher" content="{{ source_publisher }}" />
+    <meta name="dtb:sourceRights" content="{{ source_rights }}" />
   </head>
   
   <book>

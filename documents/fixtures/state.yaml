@@ -43,8 +43,8 @@
 - fields: {assigned_to: null, author: Matti Y. Joensuu, created_at: !!timestamp '2009-06-05
       11:45:24.238512', date: 2009-06-05, description: '', identifier: ch-sbs-ef2a4888-d7bf-40ec-a70c-f6ac8e22efd8,
     language: de-CH, modified_at: !!timestamp '2009-06-05 11:45:24.238550', publisher: Swiss
-      Library for the Blind and Visually Impaired, rights: '', source: '', sourceDate: null,
-    sourceEdition: '', sourcePublisher: '', sourceRights: '', state: 1, subject: '',
+      Library for the Blind and Visually Impaired, rights: '', source: '', source_date: null,
+    source_edition: '', source_publisher: '', source_rights: '', state: 1, subject: '',
     title: "Der einsame M\xF6rder"}
   model: documents.document
   pk: 1
