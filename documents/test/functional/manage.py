@@ -140,3 +140,11 @@ class ManageViewTest(TestCase):
         self.assertTemplateNotUsed(response, 'documents/manage_update.html')
         self.assertRedirects(response, reverse('manage_index'))
 
+    def test_translation(self):
+        """Check if i18n stuff works"""
+        self.client.login(username='testuser', password='foobar')
+        http_headers = {'HTTP_ACCEPT_LANGUAGE' : 'de'}
+        response = self.client.get(reverse('manage_index'), **http_headers)
+        print response
+        self.assertEquals(response['Content-Language'],'de')
+        self.assertContains(response, "Titel")
