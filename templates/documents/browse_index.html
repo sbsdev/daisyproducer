@@ -13,7 +13,7 @@
     <tr>
       <th>{{ object_list|first|verbose_name:"title" }}</th>
       <th>{{ object_list|first|verbose_name:"author" }}</th>
-      <th>{{ object_list|first|verbose_name:"sourcePublisher" }}</th>
+      <th>{{ object_list|first|verbose_name:"source_publisher" }}</th>
     </tr>
   </thead>
   
@@ -22,7 +22,7 @@
     <tr class="{% cycle 'even' 'odd' %}">
       <td><a href="{% url browse_detail document.id %}">{{ document.title }}</a></td>
       <td>{{ document.author }}</td>
-      <td>{{ document.sourcePublisher }}</td>
+      <td>{{ document.source_publisher }}</td>
     </tr>
     {% endfor %}
   </tbody>

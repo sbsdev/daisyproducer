@@ -171,7 +171,7 @@ class TodoViewTest(TestCase):
         document = Document()
         document.title = "foo"
         document.author = "Friedrich Glauser"
-        document.sourcePublisher = "Diogenes"
+        document.source_publisher = "Diogenes"
         document.save()
 
         self.client.login(username='testuser', password='foobar')
@@ -194,7 +194,7 @@ class TodoViewTest(TestCase):
         document = Document()
         document.title = "Wachtmeister Studer"
         document.author = "Friedrich Glauser"
-        document.sourcePublisher = "Diogenes"
+        document.source_publisher = "Diogenes"
         document.save()
 
         self.client.login(username='testuser', password='foobar')
@@ -217,7 +217,7 @@ class TodoViewTest(TestCase):
         document = Document()
         document.title = "Wachtmeister Studer"
         document.author = "Friedrich Glauser"
-        document.sourcePublisher = "Diogenes"
+        document.source_publisher = "Diogenes"
         document.publisher = "Swiss Library for the Blind and Visually Impaired"
         document.date = "2009-04-23"
         document.identifier = "ch-sbs-1"

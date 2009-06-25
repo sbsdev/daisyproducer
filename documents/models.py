@@ -82,21 +82,21 @@ class Document(models.Model):
         help_text=_("Information about rights held in and over the DTB"),
         blank=True)
     
-    sourceDate = models.DateField(
+    source_date = models.DateField(
         _("Source Date"),
         help_text=_("Date of publication of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
         null=True, blank=True)
-    sourceEdition = models.CharField(
+    source_edition = models.CharField(
         _("Source Edition"), 
         max_length=255, 
         help_text=_("A string describing the edition of the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
         blank=True)
-    sourcePublisher = models.CharField(
+    source_publisher = models.CharField(
         _("Source Publisher"), 
         max_length=255, 
         help_text=_("The agency responsible for making available the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
         blank=True)
-    sourceRights = models.CharField(
+    source_rights = models.CharField(
         _("Source Rights"), 
         max_length=255, 
         help_text=_("Information about rights held in and over the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
@@ -169,13 +169,13 @@ class BrailleProfile(models.Model):
         ('2', _('Grade 2')),
         )
 
-    cellsPerLine = models.PositiveSmallIntegerField(_("Cells per Line"), default=40, max_length=4)
-    linesPerPage = models.PositiveSmallIntegerField(_("Lines per Page"), default=28, max_length=4)
+    cells_per_line = models.PositiveSmallIntegerField(_("Cells per Line"), default=40, max_length=4)
+    lines_per_page = models.PositiveSmallIntegerField(_("Lines per Page"), default=28, max_length=4)
     contraction = models.PositiveSmallIntegerField(_("Contraction"), default=0, choices=BRAILLE_CONTRACTION_GRADE_CHOICES)
     hyphenation = models.BooleanField(_("Hyphenation"), default=True)
-    showOriginalPageNumbers = models.BooleanField(_("Show original page numbers"), default=True)
-    enableCapitalization = models.BooleanField(_("Enable Capitalization"))
-    detailedAccentedCharacters = models.BooleanField(_("Detailed Accented Characters"))
+    show_original_page_numbers = models.BooleanField(_("Show original page numbers"), default=True)
+    enable_capitalization = models.BooleanField(_("Enable Capitalization"))
+    detailed_accented_characters = models.BooleanField(_("Detailed Accented Characters"))
 
 class BrailleProfileForm(ModelForm):
     class Meta:
@@ -212,11 +212,11 @@ class LargePrintProfile(models.Model):
         ('a4paper', 'a4paper'),
         )
     
-    fontSize = models.CharField(_("Fontsize"), default='17pt', max_length=4, choices=FONTSIZE_CHOICES)
+    font_size = models.CharField(_("Fontsize"), default='17pt', max_length=4, choices=FONTSIZE_CHOICES)
     font = models.CharField(_("Font"), default='Tiresias LPfont', max_length=60, choices=FONT_CHOICES)
-    pageStyle = models.CharField(_("Page style"), default='plain', max_length=16, choices=PAGESTYLE_CHOICES)
+    page_style = models.CharField(_("Page style"), default='plain', max_length=16, choices=PAGESTYLE_CHOICES)
     alignment = models.CharField(default='justified', max_length=16, choices=ALIGNMENT_CHOICES)
-    paperSize = models.CharField(_("Papersize"), default='a4paper', max_length=16, choices=PAPERSIZE_CHOICES)
+    paper_size = models.CharField(_("Papersize"), default='a4paper', max_length=16, choices=PAPERSIZE_CHOICES)
 
 class LargePrintProfileForm(ModelForm):
     class Meta:

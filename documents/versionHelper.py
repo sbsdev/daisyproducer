@@ -16,9 +16,9 @@ class XMLContent:
              'language' : "dtb:Language",
              'rights' : "dtb:Rights",
              'identifier' : "dtb:uid",
-             'sourceDate' : "dtb:sourceDate",
-             'sourceEdition' : "dtb:sourceEdition",
-             'sourceRights' : "dtb:sourceRights"
+             'source_date' : "dtb:sourceDate",
+             'source_edition' : "dtb:sourceEdition",
+             'source_rights' : "dtb:sourceRights"
         }
 
     @staticmethod
@@ -26,14 +26,14 @@ class XMLContent:
         from django.forms.models import model_to_dict
         context = model_to_dict(document)
         context['date'] = document.date.isoformat() if document.date else ''
-        context['sourceDate'] = document.sourceDate.isoformat() if document.sourceDate else ''
+        context['source_date'] = document.source_date.isoformat() if document.source_date else ''
         content = render_to_string('DTBookTemplate.xml', context)
         return content.encode('utf-8')
         
     def __init__(self, version=None):
         self.version = version
 
-    def getUpdatedContent(self, author, title, sourcePublisher, **kwargs):
+    def getUpdatedContent(self, author, title, source_publisher, **kwargs):
         # update the existing version with the modified meta data
         self.version.content.open()
         self.tree = etree.parse(self.version.content.file)
@@ -45,7 +45,7 @@ class XMLContent:
         self._updateMetaAttribute("dc:Title", title)
         self._updateMetaElement("doctitle", title)
         # fix sourcePublisher
-        self._updateMetaAttribute("dtb:sourcePublisher", sourcePublisher)
+        self._updateMetaAttribute("dtb:sourcePublisher", source_publisher)
         for model_field, field_value in kwargs.items():
             # fix attribute
             if self.FIELD_ATTRIBUTE_MAP.has_key(model_field):
@@ -53,7 +53,7 @@ class XMLContent:
        
         return etree.tostring(self.tree, xml_declaration=True, encoding="UTF-8")
 
-    def validateContentMetaData(self, filePath, author, title, sourcePublisher, **kwargs):
+    def validateContentMetaData(self, filePath, author, title, source_publisher, **kwargs):
         versionFile = open(filePath)
         self.tree = etree.parse(versionFile)
         versionFile.close()
@@ -67,7 +67,7 @@ class XMLContent:
             self._validateMetaAttribute("dc:Title", title) +
             self._validateMetaElement("doctitle", title) +
             # validate sourcePublisher
-            self._validateMetaAttribute("dtb:sourcePublisher", sourcePublisher) +
+            self._validateMetaAttribute("dtb:sourcePublisher", source_publisher) +
             # validate subject
             self._validateMetaAttribute("dtb:Subject", kwargs.get('subject', '')) +
             # validate description
@@ -87,11 +87,11 @@ class XMLContent:
             # validate identifier
             self._validateMetaAttribute("dtb:uid", kwargs.get('identifier', '')) +
             # validate sourceDate
-            self._validateMetaAttribute("dtb:sourceDate", (kwargs.get('sourceDate') or '')) +
+            self._validateMetaAttribute("dtb:sourceDate", (kwargs.get('source_date') or '')) +
             # validate sourceEdition
-            self._validateMetaAttribute("dtb:sourceEdition", kwargs.get('sourceEdition', '')) +
+            self._validateMetaAttribute("dtb:sourceEdition", kwargs.get('source_edition', '')) +
             # validate sourceRights
-            self._validateMetaAttribute("dtb:sourceRights", kwargs.get('sourceRights', ''))
+            self._validateMetaAttribute("dtb:sourceRights", kwargs.get('source_rights', ''))
             )
         
     def _updateMetaAttribute(self, key, value):

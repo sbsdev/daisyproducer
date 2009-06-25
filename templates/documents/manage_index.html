@@ -12,7 +12,7 @@
     <tr>
       <th>{{ object_list|first|verbose_name:"title" }}</th>
       <th>{{ object_list|first|verbose_name:"author" }}</th>
-      <th>{{ object_list|first|verbose_name:"sourcePublisher" }}</th>
+      <th>{{ object_list|first|verbose_name:"source_publisher" }}</th>
       <th>{{ object_list|first|verbose_name:"state" }}</th>
       <th>{{ object_list|first|verbose_name:"assigned_to" }}</th>
       <th>{{ object_list|first|verbose_name:"created_at" }}</th>
@@ -25,7 +25,7 @@
     <tr class="{% cycle 'even' 'odd' %}">
       <td><a href="{% url manage_detail document.id %}">{{ document.title }}</a></td>
       <td>{{ document.author }}</td>
-      <td>{{ document.sourcePublisher }}</td>
+      <td>{{ document.source_publisher }}</td>
       <td>{{ document.state }}</td>
       <td>{{ document.assigned_to }}</td>
       <td>{{ document.created_at }}</td>

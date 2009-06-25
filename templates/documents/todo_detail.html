@@ -23,7 +23,7 @@
       <td style="width:15%" class="status"><b>{{ document|verbose_name:"state" }}:</b></td><td style="width:35%" class="status">{{ document.state }}</td>
     </tr>
     <tr>
-      <td class=""><b>{{ document|verbose_name:"sourcePublisher" }}:</b></td><td class=" ">{{ document.sourcePublisher }}</td>
+      <td class=""><b>{{ document|verbose_name:"source_publisher" }}:</b></td><td class=" ">{{ document.source_publisher }}</td>
 
       {% if document.assigned_to %}
       <td class=""><b>{{ document|verbose_name:"assigned_to" }}:</b></td><td class="">{{ document.assigned_to.get_full_name }}</td>
