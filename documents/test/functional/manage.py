@@ -145,6 +145,5 @@ class ManageViewTest(TestCase):
         self.client.login(username='testuser', password='foobar')
         http_headers = {'HTTP_ACCEPT_LANGUAGE' : 'de'}
         response = self.client.get(reverse('manage_index'), **http_headers)
-        print response
         self.assertEquals(response['Content-Language'],'de')
         self.assertContains(response, "Titel")
