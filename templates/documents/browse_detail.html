@@ -8,9 +8,10 @@
 {% if object %}
 <h2>{% trans "Document Details" %}</h2>
 
-<h3>{{ object.title }}</h3>
-
 <div class="issue">
+
+  <h3>{{ object.title }}</h3>
+
   <table width="100%">
     <tr>
       <td style="width:15%" class=""><b>{{ object|verbose_name:"author" }}:</b></td><td style="width:35%">{{ object.author }}</td>
