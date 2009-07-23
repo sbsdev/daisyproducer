@@ -6,6 +6,6 @@
 {% endif %}
 <table>
   {% for field in form %}
-  <tr><th>{{ field.label_tag }}:</th><td>{{ field }}<br/>{{ field.help_text }}</td>
+  <tr><th>{{ field.label_tag }}:{% if field.field.required %}<span class="required"> *</span>{% endif %}</th><td>{{ field }}<br/>{{ field.help_text }}</td>
   {% endfor %}
 </table>
