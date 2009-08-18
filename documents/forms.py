@@ -2,8 +2,11 @@ from daisyproducer.documents.external import DaisyPipeline
 from daisyproducer.documents.models import Document, Version, Attachment
 from daisyproducer.documents.versionHelper import XMLContent
 from django import forms
+from django.db import models
+from django.core.files.base import ContentFile
 from django.forms import ModelForm
 from django.forms.util import ErrorList
+from django.utils.translation import ugettext_lazy as _
 
 class PartialVersionForm(ModelForm):
 
@@ -76,3 +79,29 @@ class PartialDocumentForm(ModelForm):
         model = Document
         fields = ('state',)
     
+class OCRForm(forms.Form):
+    data = forms.FileField(
+        label = _("Data from scan"), 
+        help_text = _("The image files that resulted from the scan"))
+
+
+class MarkupForm(forms.Form):
+    data = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class' : "wiki-edit",
+                'cols' : "60",
+                'rows' : "24"}))
+    comment = forms.CharField(
+        widget=forms.TextInput(attrs={'size':'60'}))
+
+    def save(self, document):
+        # create a new version with the new content
+        contentString = self.cleaned_data['data']
+        content = ContentFile(contentString.encode("utf-8"))
+        version = Version.objects.create(
+            comment = self.cleaned_data['comment'],
+            document = document)
+        version.content.save("updated_version.xml", content)
+
+

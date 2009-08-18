@@ -1,4 +1,4 @@
-from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm
+from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm
 from daisyproducer.documents.models import Document, Version, Attachment
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -61,9 +61,9 @@ def add_attachment(request, document_id):
         return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
-    # this is a bit of a hack as we need to create (and save) a
-    # version before the id is known. We need to know the id before we
-    # can save the content file under /document_id/versions/version_id
+    # this is a bit of a hack as we need to create (and save) an
+    # attachment before the id is known. We need to know the id before we
+    # can save the content file under /document_id/attachments/file_name
     attachment = Attachment.objects.create(
         comment=form.cleaned_data['comment'], 
         document=document,
@@ -122,3 +122,36 @@ def transition(request, document_id):
 
     document.transitionTo(form.cleaned_data['state'])
     return HttpResponseRedirect(reverse('todo_index'))
+
+@login_required
+def ocr(request, document_id):
+    document = Document.objects.get(pk=document_id)
+    if request.method == 'POST':
+        form = OCRForm(request.POST, request.FILES)
+        if form.is_valid():
+            # do whatever is needed here
+            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+    else:
+        form = OCRForm()
+
+    return render_to_response('documents/todo_ocr.html', locals(),
+                              context_instance=RequestContext(request))
+
+@login_required
+def markup(request, document_id):
+    document = Document.objects.select_related('state').get(pk=document_id)
+    if request.method == 'POST':
+        form = MarkupForm(request.POST)
+        if form.is_valid():
+            # create a new version with the given form content
+            form.save(document)
+            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+    else:
+        file_field = document.latest_version().content
+        file_field.open()
+        content = file_field.read()
+        file_field.close()
+        form = MarkupForm({'data' : content, 'comment' : "Insert a comment here"})
+
+    return render_to_response('documents/todo_markup.html', locals(),
+                              context_instance=RequestContext(request))

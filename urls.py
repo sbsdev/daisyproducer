@@ -23,6 +23,8 @@ urlpatterns += patterns('daisyproducer.documents.views.todo',
     url(r'^todo/(?P<document_id>\d+)/addVersion$', 'add_version', name='todo_add_version'),
     url(r'^todo/(?P<document_id>\d+)/addAttachment$', 'add_attachment', name='todo_add_attachment'),
     url(r'^todo/(?P<document_id>\d+)/transition$', 'transition', name='todo_transition'),
+    url(r'^todo/(?P<document_id>\d+)/ocr$', 'ocr', name='todo_ocr'),
+    url(r'^todo/(?P<document_id>\d+)/markup$', 'markup', name='todo_markup'),
 )
 
 # management of documents and meta data
