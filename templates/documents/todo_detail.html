@@ -7,6 +7,11 @@
 
 {% block content %}
 {% if document %}
+<div class="contextual">
+  <a href="{% url todo_ocr document.id %}" accesskey="o" class="icon icon-ocr">{% trans "OCR" %}</a>
+  <a href="{% url todo_markup document.id %}" accesskey="m" class="icon icon-edit">{% trans "Markup" %}</a>
+</div>
+
 <h2>{% trans "Document Details" %}</h2>
 
 <div class="issue">
@@ -17,21 +22,8 @@
   <!--   Updated 19 days ago. -->
   <!-- </p> -->
   
-  <table width="100%">
-    <tr>
-      <td style="width:15%" class=""><b>{{ document|verbose_name:"author" }}:</b></td><td style="width:35%">{{ document.author }}</td>
-      <td style="width:15%" class="status"><b>{{ document|verbose_name:"state" }}:</b></td><td style="width:35%" class="status">{{ document.state }}</td>
-    </tr>
-    <tr>
-      <td class=""><b>{{ document|verbose_name:"source_publisher" }}:</b></td><td class=" ">{{ document.source_publisher }}</td>
+  {% include "documents/documentDetails.html" %}
 
-      {% if document.assigned_to %}
-      <td class=""><b>{{ document|verbose_name:"assigned_to" }}:</b></td><td class="">{{ document.assigned_to.get_full_name }}</td>
-      {% endif %}
-    </tr>
-  </table>
-  <hr />
-  
   <div id="relations">
     <!-- <div class="contextual"> -->
     <!--   <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Add</a> -->
