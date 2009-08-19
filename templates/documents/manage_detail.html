@@ -26,9 +26,9 @@
       <td class=""><b>{{ object|verbose_name:"assigned_to" }}:</b></td><td class="">{{ object.assigned_to.get_full_name }}</td>
     </tr>
     <tr>
-      <td class=""><b>{{ object|verbose_name:"created_at" }}:</b></td><td class=" ">{{ object.created_at }}</td>
+      <td class=""><b>{{ object|verbose_name:"created_at" }}:</b></td><td class=" ">{{ object.created_at|date }}</td>
 
-      <td class=""><b>{{ object|verbose_name:"modified_at" }}:</b></td><td class="">{{ object.modified_at }}</td>
+      <td class=""><b>{{ object|verbose_name:"modified_at" }}:</b></td><td class="">{{ object.modified_at|date }}</td>
     </tr>
   </table>
 

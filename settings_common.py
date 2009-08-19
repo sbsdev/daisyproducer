@@ -53,7 +53,7 @@ LOGIN_REDIRECT_URL = '/todo'
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Format for date and datetime strings.
-DATE_FORMAT = 'j M y'
+DATE_FORMAT = 'Y-m-d H:i'
 DATETIME_FORMAT = 'j M y H:i'
 
 # Make this unique, and don't share it with anybody.
