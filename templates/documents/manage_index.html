@@ -27,7 +27,7 @@
       <td>{{ document.author }}</td>
       <td>{{ document.source_publisher }}</td>
       <td>{{ document.state }}</td>
-      <td>{{ document.assigned_to }}</td>
+      <td>{{ document.assigned_to.get_full_name }}</td>
       <td>{{ document.created_at|date }}</td>
       <td>{{ document.modified_at|date }}</td>
     </tr>
