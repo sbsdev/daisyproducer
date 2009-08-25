@@ -4,11 +4,20 @@
 
 {% block title %}{{ block.super }} - {% trans "Document Details" %} - {{ object.title }}{% endblock %}
 
+{% block sidebar %}
+{% if object %}
+<div id="sidebar">
+  <h3>{% trans "Document" %}</h3>
+    <a href="{% url manage_update object.id %}" accesskey="e">{% trans "Update" %}</a><br />
+</div>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 {% if object %}
-<div class="contextual">
-  <a href="{% url manage_update object.id %}" accesskey="e" class="icon icon-edit">{% trans "Update" %}</a>
-</div>
+<!-- <div class="contextual"> -->
+<!--   <a href="{% url manage_update object.id %}" accesskey="e" class="icon icon-edit">{% trans "Update" %}</a> -->
+<!-- </div> -->
 
 <h2>{% trans "Document Details" %}</h2>
 

@@ -5,12 +5,22 @@
 
 {% block title %}{{ block.super }} - {% trans "Document Details" %} - {{ document.title }}{% endblock %}
 
+{% block sidebar %}
+{% if document %}
+<div id="sidebar">
+  <h3>{% trans "Document" %}</h3>
+  <a href="{% url todo_ocr document.id %}" accesskey="o" >{% trans "OCR" %}</a><br />
+  <a href="{% url todo_markup document.id %}" accesskey="m" >{% trans "Markup" %}</a><br />
+</div>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 {% if document %}
-<div class="contextual">
-  <a href="{% url todo_ocr document.id %}" accesskey="o" class="icon icon-ocr">{% trans "OCR" %}</a>
-  <a href="{% url todo_markup document.id %}" accesskey="m" class="icon icon-edit">{% trans "Markup" %}</a>
-</div>
+<!-- <div class="contextual"> -->
+<!--   <a href="{% url todo_ocr document.id %}" accesskey="o" class="icon icon-ocr">{% trans "OCR" %}</a> -->
+<!--   <a href="{% url todo_markup document.id %}" accesskey="m" class="icon icon-edit">{% trans "Markup" %}</a> -->
+<!-- </div> -->
 
 <h2>{% trans "Document Details" %}</h2>
 
