@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.daisy.org/z3986/2005/dtbook/" xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <xs:element name="dtbook">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dtbook:head"/>
+        <xs:element ref="dtbook:book"/>
+      </xs:sequence>
+      <xs:attribute name="version" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute ref="xml:lang" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="meta">
+    <xs:complexType>
+      <xs:attribute name="content" use="required"/>
+      <xs:attribute name="name" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="head">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="dtbook:meta"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="book">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dtbook:frontmatter"/>
+        <xs:element ref="dtbook:bodymatter"/>
+        <xs:element minOccurs="0" ref="dtbook:rearmatter"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="frontmatter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dtbook:doctitle"/>
+        <xs:element ref="dtbook:docauthor"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="dtbook:level"/>
+          <xs:element ref="dtbook:level1"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="bodymatter">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="dtbook:level"/>
+        <xs:element ref="dtbook:level1"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="rearmatter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="dtbook:level"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="doctitle" type="xs:string"/>
+  <xs:element name="docauthor" type="xs:string"/>
+  <xs:element name="h1" type="xs:string"/>
+  <xs:element name="h2" type="xs:string"/>
+  <xs:element name="level1">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dtbook:h1"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="dtbook:level2"/>
+          <xs:element ref="dtbook:p"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="level2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dtbook:h2"/>
+        <xs:element maxOccurs="unbounded" ref="dtbook:p"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="level">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="dtbook:docauthor"/>
+          <xs:element ref="dtbook:doctitle"/>
+        </xs:sequence>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="dtbook:level"/>
+          <xs:element ref="dtbook:pagenum"/>
+          <xs:element ref="dtbook:dl"/>
+          <xs:element ref="dtbook:hd"/>
+          <xs:element ref="dtbook:linegroup"/>
+          <xs:element ref="dtbook:p"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="class" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="hd">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="dtbook:span"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="dl">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="dtbook:pagenum"/>
+        <xs:element ref="dtbook:dd"/>
+        <xs:element ref="dtbook:dt"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="dd" type="xs:string"/>
+  <xs:element name="dt" type="xs:string"/>
+  <xs:element name="line">
+    <xs:complexType mixed="true">
+      <xs:attribute name="class" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="linegroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="dtbook:line"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="p">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="dtbook:pagenum"/>
+        <xs:element ref="dtbook:br"/>
+      </xs:choice>
+      <xs:attribute name="class" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="br">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="pagenum">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:integer">
+          <xs:attribute name="class" type="xs:NCName"/>
+          <xs:attribute name="id" use="required" type="xs:NCName"/>
+          <xs:attribute name="page">
+            <xs:simpleType>
+              <xs:restriction base="xs:token">
+                <xs:enumeration value="normal"/>
+                <xs:enumeration value="front"/>
+                <xs:enumeration value="special"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="span">
+    <xs:complexType mixed="true">
+      <xs:attribute name="class" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

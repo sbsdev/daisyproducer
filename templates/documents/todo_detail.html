@@ -11,6 +11,7 @@
   <h3>{% trans "Document" %}</h3>
   <a href="{% url todo_ocr document.id %}" accesskey="o" >{% trans "OCR" %}</a><br />
   <a href="{% url todo_markup document.id %}" accesskey="m" >{% trans "Markup" %}</a><br />
+  <a href="{% url todo_markup_xopus document.id %}" accesskey="e" >{% trans "Markup with Xopus" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}

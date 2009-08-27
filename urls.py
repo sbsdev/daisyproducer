@@ -25,6 +25,7 @@ urlpatterns += patterns('daisyproducer.documents.views.todo',
     url(r'^todo/(?P<document_id>\d+)/transition$', 'transition', name='todo_transition'),
     url(r'^todo/(?P<document_id>\d+)/ocr$', 'ocr', name='todo_ocr'),
     url(r'^todo/(?P<document_id>\d+)/markup$', 'markup', name='todo_markup'),
+    url(r'^todo/(?P<document_id>\d+)/markup_xopus$', 'markup_xopus', name='todo_markup_xopus'),
 )
 
 # management of documents and meta data
@@ -59,6 +60,10 @@ urlpatterns += patterns('',
      {'document_root': os.path.join(PROJECT_DIR, 'archive')}),
     (r'^images/(?P<path>.*)$', 'django.views.static.serve',
      {'document_root': os.path.join(PROJECT_DIR, 'public', 'images')}),
+    (r'^xopus/(?P<path>.*)$', 'django.views.static.serve',
+     {'document_root': os.path.join(PROJECT_DIR, 'public', 'xopus')}),
+    (r'^xopus-local/(?P<path>.*)$', 'django.views.static.serve',
+     {'document_root': os.path.join(PROJECT_DIR, 'public', 'xopus-local')}),
 
     # enable the admin:
     (r'^admin/(.*)', admin.site.root),

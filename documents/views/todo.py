@@ -1,6 +1,7 @@
 from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm
 from daisyproducer.documents.models import Document, Version, Attachment
 from django.contrib.auth.decorators import login_required
+from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
@@ -8,6 +9,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic.list_detail import object_list
+from lxml import etree
 
 @login_required
 def index(request):
@@ -155,3 +157,24 @@ def markup(request, document_id):
 
     return render_to_response('documents/todo_markup.html', locals(),
                               context_instance=RequestContext(request))
+
+@login_required
+def markup_xopus(request, document_id):
+    document = Document.objects.get(pk=document_id)
+    if request.method == 'POST':
+        rawData = request.raw_post_data
+        root = etree.fromstring(rawData)
+#        root.getroottree().write("/tmp/document.xml", encoding="UTF-8", xml_declaration=True)    
+        content = ContentFile(
+            etree.tostring(root, 
+                           encoding="UTF-8",
+                           pretty_print=True,
+                           xml_declaration=True))
+        version = Version.objects.create(
+            comment="Changed with Xopus", 
+            document=document)
+        version.content.save("initial_version.xml", content)
+        return HttpResponse("success")
+    else:
+        return render_to_response('documents/todo_markup_xopus.html', locals(),
+                                  context_instance=RequestContext(request))

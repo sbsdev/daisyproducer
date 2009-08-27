@@ -1,0 +1,42 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>{% block title %}Daisy Producer{% endblock %}</title>
+  <link href="/stylesheets/application.css" rel="stylesheet" type="text/css" />
+  <script src="/xopus/xopus/xopus.js" type="text/javascript"></script>
+</head>
+<body>
+
+  {% if document %}
+  <script type="text/javascript">
+    function get_save_url() {
+    return "{% url todo_markup_xopus document.id %}";
+    }
+  </script>
+  <div xopus="true" autostart="true">
+    <xml>
+      <x:config version="1.0" xmlns:x="http://www.xopus.com/xmlns/config">
+	<x:javascript src="/xopus-local/js/save.js"/>	
+	<x:pipeline xml="{{ document.latest_version.content.url }}" xsd="/xopus-local/config/fasttrack.xsd">
+	  <x:view name="View all">
+            <x:transform xsl="/xopus-local/config/fasttrack.xsl"/>
+	  </x:view>
+	</x:pipeline>
+      </x:config>
+    </xml>
+  </div>
+  {% else %}
+  <p class="nodata">{% trans "No data to display" %}</p>
+  {% endif %}
+
+  <div id="footer">
+    {% trans "Powered by" %} <a href="http://www.daisyproducer.org/">Daisy Producer</a> © 2009 {% trans "Swiss Library for the Blind and Visually Impaired" %}
+  </div>
+  
+</body>
+</html>
+
