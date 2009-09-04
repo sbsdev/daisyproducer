@@ -1,18 +1,8 @@
-.. -*- mode: rst -*-
-
 =====================
 Daisy Producer README
 =====================
 
-1  What is it?
-2  Requirements
-  2.1  Basic requirements
-    2.1.1  Required packages
-  2.2  Deployment requirements
-  2.3  Optional requirements
-3  Installation
-4  Frequently Asked Questions
-  4.1  Why is daisyproducer not using distutils or setuptools
+.. contents:: 
 
 What is it?
 ===========
