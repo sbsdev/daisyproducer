@@ -1,0 +1,40 @@
+.. -*- mode: rst -*-
+
+=====================
+About Daisy Producer
+=====================
+
+Copyright (C) 2009 Swiss Library for the Blind and Visually Impaired
+
+`Daisy Producer`_ is a system to help you manage the production
+process of accessible media. It assumes that you are transforming the
+content from hard copy or any electronic format to `DTBook XML`_. Once
+you have the DTBook XML the `Daisy Pipeline`_ and liblouis_ can be
+used to generate Daisy Talking Books, Large Print and Braille in a
+fully automated way.
+
+.. _Daisy Producer: http://www.daisy-producer.org
+.. _DTBook XML: http://www.daisy.org/projects/pipeline/
+.. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
+.. _liblouis: http://code.google.com/p/liblouis/
+
+.. contents:: 
+
+License
+=======
+
+`Daisy Producer`_ is released under the terms of the `GNU Affero
+General Public License (AGPL)`_.
+
+.. _GNU Affero General Public License (AGPL): http://www.gnu.org/licenses/agpl.html
+
+How to participate
+==================
+
+To participate in discussion and development, subscribe to our `mailing
+list`_, fetch the code from the `code repository`_ or submit bugs in the
+`issue tracker`_.
+
+.. _mailing list:
+.. _code repository: http://github.com/egli/daisy-producer
+.. _issue tracker: http://github.com/egli/daisy-producer/issues
