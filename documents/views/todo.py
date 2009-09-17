@@ -5,7 +5,7 @@ from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic.list_detail import object_list
@@ -160,7 +160,7 @@ def markup(request, document_id):
 
 @login_required
 def markup_xopus(request, document_id):
-    document = Document.objects.get(pk=document_id)
+    document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
         rawData = request.raw_post_data
         root = etree.fromstring(rawData)
