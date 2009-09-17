@@ -2,8 +2,6 @@
 Daisy Producer README
 =====================
 
-.. contents:: 
-
 What is it?
 ===========
 
@@ -27,151 +25,62 @@ and liblouis.
 .. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
 .. _liblouis: http://code.google.com/p/liblouis/
 
-Requirements
-============
+About
+=====
+`Daisy Producer`_ is released under the terms of the `GNU Affero
+General Public License (AGPL)`_.
 
-Basic requirements
-------------------
+.. _GNU Affero General Public License (AGPL): http://www.gnu.org/licenses/agpl.html
 
-- Python_ (tested with Python 2.5)
-- Django_ 
-- lxml_
-- `Daisy Pipeline`_ (use the Pipeline Core Packages)
-- XeTex_ (to generate Large Print from LaTeX)
-- texlive_ (should contain the extbook and titlesec class which is
-  needed for Large Print) 
-- `Tiresias LP font`_ (a font designed for Large Print publications)
-- `Java Runtime`_ (`Daisy Pipeline`_ needs at least Java 5)
-- liblouis_
-- A database for example PostgreSQL_ or MySQL_.
-- A Python database interface like psycopg2_ or mysqldb_ for example.
-- docutils_ to render the help page (which is written in
-  reStructuredText Markup).
+How to participate
+==================
+To participate in discussion and development, subscribe to our `mailing
+list`_, fetch the code from the `code repository`_ or submit bugs in the
+`issue tracker`_.
 
-.. _Python: http://www.python.org
-.. _Django: http://www.djangoproject.com
-.. _lxml: http://codespeak.net/lxml/index.html
-.. _XeTex: http://www.tug.org/xetex/
-.. _texlive: http://www.tug.org/texlive/
-.. _`Tiresias LP font`: http://www.tiresias.org/fonts/lpfont/about_lp.htm
-.. _Java Runtime: http://www.java.com/en/download/manual.jsp
-.. _PostgreSQL: http://www.postgresql.org/
-.. _MySQL: http://www.mysql.com/
-.. _psycopg2: http://www.initd.org/
-.. _mysqldb: http://sourceforge.net/projects/mysql-python
-.. _docutils: http://docutils.sourceforge.net
+.. _mailing list:
+.. _code repository: http://github.com/egli/daisy-producer
+.. _issue tracker: http://github.com/egli/daisy-producer/issues
 
-Required packages
-~~~~~~~~~~~~~~~~~
+Download
+========
+The latest release of `Daisy Producer`_ is available from the
+`download page`_.
 
-In terms of (Debian/Ubuntu) packages this translates to
+.. _download page: http://github.com/egli/daisy-producer/downloads
 
-- python
-- python-django
-- python-lxml
-- python-docutils
-- sun-java6-jre
-- texlive-xetex
-- texlive-latex-extra
-- texlive-lang-german
-- ttf-tiresias
-- xsltproc
+Documentation
+=============
+`Daisy Producer`_ comes with built in documentation. See the `Help
+link`_ in your installation.
 
-For PostgreSQL
-
-- postgresql
-- postgresql-client
-- python-psycopg2
-
-For MySQL
-
-- mysql-server
-- mysql-client
-- python-mysqldb
-
-There is a `Debian package for liblouis`_ which could probably be
-used. The Daisy Pipeline has not been packaged so far and will have to
-be installed somewhere.
-
-.. _Debian package for liblouis: http://packages.debian.org/search?keywords=liblouis&searchon=names&suite=all&section=all
+.. _Help link: http://127.0.0.1:8000/help/
 
 
-Deployment requirements
------------------------
-- Apache_ (apache2)
-- `Python WSGI adapter module for Apache`_ (libapache2-mod-wsgi)
+.. Frequently Asked Questions
+.. ==========================
 
-.. _Apache: http://www.apache.org
-.. _Python WSGI adapter module for Apache: http://code.google.com/p/modwsgi/
+.. Why is daisyproducer not using distutils or setuptools
+.. ------------------------------------------------------
+.. The basic requirements for a build and distribution utility are
+.. support for building a source distribution, support for installation
+.. and deinstallation and finally support for test invocation. 
 
-Optional requirements
----------------------
-- autodoc_ (package postgresql-autodoc) if you want to generate the ER
-  diagrams.
+.. While distutils_ seems to be the standard in the Python world it has
+.. no built-in support for running a test suite. setuptools_ seem to be a
+.. modern version of distutils and do support invocation of a test suite
+.. albeit in a limited way. Thirdly and apparently currently most trendy
+.. is there is buildout_ which seems to support all of this and way more.
+.. All of these tools seem to either add an unnecessary level of
+.. complexity for little gain.
 
-.. _autodoc: http://www.rbt.ca/autodoc/
+.. Lastly there are the tried and true autotools_ which lets you add
+.. anything to the Makefile. While they do not support many of the
+.. advanced features like dependency tracking and are crud in many ways
+.. they still provide a fairly simple way to package, test and install
+.. software.
 
-Installation
-============
-
-The following settings have to be adapted for your site:
-
-- DATABASE_ENGINE
-- DATABASE_NAME
-- DATABASE_USER
-- DATABASE_PASSWORD
-- DAISY_DEFAULT_PUBLISHER
-- DAISY_PIPELINE_PATH
-- SECRET_KEY
-- TIME_ZONE
-
-When installing under Apache you need to set up URLconf to server the
-media files for the admin site. Add the following to urls.py
-
-  (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-    {'document_root': os.path.join(PROJECT_DIR, 'public', 'media')}),
-
-and add a link under the public directory
-
-  $ cd $DAISYPRODUCER_HOME/public
-  $ ln -s /usr/share/python-support/python-django/django/contrib/admin/media media
-
-Adapt the settings file to your environment.
-
-  $ cd $DAISYPRODUCER_HOME
-  $ mv settings_test.py settings.py
-
-For the archive create a directory named archive under the
-daisyproducer directory and give www-data write access to it:
-
-  $ cd $DAISYPRODUCER_HOME
-  $ mkdir archive
-  $ chown www-data archive
-
-Frequently Asked Questions
-==========================
-
-Why is daisyproducer not using distutils or setuptools
-------------------------------------------------------
-The basic requirements for a build and distribution utility are
-support for building a source distribution, support for installation
-and deinstallation and finally support for test invocation. 
-
-While distutils_ seems to be the standard in the Python world it has
-no built-in support for running a test suite. setuptools_ seem to be a
-modern version of distutils and do support invocation of a test suite
-albeit in a limited way. Thirdly and apparently currently most trendy
-is there is buildout_ which seems to support all of this and way more.
-All of these tools seem to either add an unnecessary level of
-complexity for little gain.
-
-Lastly there are the tried and true autotools_ which lets you add
-anything to the Makefile. While they do not support many of the
-advanced features like dependency tracking and are crud in many ways
-they still provide a fairly simple way to package, test and install
-software.
-
-.. _distutils: http://docs.python.org/distutils/
-.. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
-.. _buildout: http://jacobian.org/writing/django-apps-with-buildout/
-.. _autotools: http://en.wikipedia.org/wiki/GNU_build_system
+.. .. _distutils: http://docs.python.org/distutils/
+.. .. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
+.. .. _buildout: http://jacobian.org/writing/django-apps-with-buildout/
+.. .. _autotools: http://en.wikipedia.org/wiki/GNU_build_system

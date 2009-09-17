@@ -1,12 +1,10 @@
+
+
 *.pyc
 *~
 .coverage
-django.mo
-
-Makefile
-Makefile.in
-TAGS
-
+/INSTALL.html
+/README.html
 /aclocal.m4
 /archive
 /autom4te.cache
@@ -20,3 +18,7 @@ TAGS
 /missing
 /py-compile
 /xml2brl.temp
+Makefile
+Makefile.in
+TAGS
+django.mo
