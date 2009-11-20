@@ -9,6 +9,19 @@
 
   <xsl:output encoding="UTF-8" method="xml"/>
 
+  <xsl:template match="/">
+    <style>
+      .level {margin-left: 3em}
+    </style>
+    <xsl:apply-templates />
+  </xsl:template>
+
+  <xsl:template match="dtb:level">
+    <div class="level">
+      <xsl:apply-templates />
+    </div>
+  </xsl:template>
+
   <xsl:template match="dtb:hd">
     <h2 class="generic-element">
       <xsl:apply-templates />
@@ -16,7 +29,7 @@
   </xsl:template>
 
   <xsl:template match="dtb:pagenum">
-    <span class="generic-element">
+    <span class="generic-element" style="position:relative;float:left;left:-3em">
       <xsl:apply-templates />
     </span>
   </xsl:template>
