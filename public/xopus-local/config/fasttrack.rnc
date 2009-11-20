@@ -1,0 +1,110 @@
+default namespace = "http://www.daisy.org/z3986/2005/dtbook/"
+
+start = dtbook
+
+dtbook = element dtbook {
+   attribute version { xsd:NMTOKEN },
+   attribute xml:lang { xsd:NCName },
+   head,
+   book
+}
+
+meta = element meta {
+   attribute content { text },
+   attribute name { xsd:NMTOKEN }
+}
+
+head = element head {
+   meta+
+}
+
+book = element book {
+   frontmatter,
+   bodymatter,
+   rearmatter?
+}
+
+frontmatter = element frontmatter { 
+   doctitle, 
+   docauthor, 
+   ( level | level1 )*
+}
+
+bodymatter = element bodymatter { 
+   ( level | level1 )+ 
+}
+rearmatter = element rearmatter {
+   level+
+}
+
+doctitle = element doctitle { text }
+
+docauthor = element docauthor { text }
+
+h1 = element h1 {
+   text
+}
+
+h2 = element h2 {
+   text
+}
+
+level1 = element level1 {
+   h1, 
+   (level2 | p)*
+}
+level2 = element level2 {
+   h2, 
+   p+
+}
+
+level = element level {
+   attribute class { xsd:NCName },
+   (docauthor, doctitle)?,
+   (level
+    | pagenum
+    | dl
+    | hd
+    | linegroup
+    | p)*
+}
+
+hd = element hd {
+   span?,
+   text
+}
+
+dl = element dl {
+   (pagenum
+    | element dd { text }
+    | element dt { text })+
+}
+
+line = element line {
+   attribute class { xsd:NCName }?,
+   text
+}
+
+linegroup = element linegroup {
+   line+
+}
+
+p = element p {
+   attribute class { xsd:NCName }?,
+   (text
+    | pagenum
+    | element br { empty })+
+}
+
+pagenum = element pagenum {
+   attribute class { xsd:NCName }?,
+   attribute id { xsd:NCName },
+   attribute page { "normal" | "front" | "special" }?,
+   xsd:integer
+}
+
+span = element span { 
+   attribute class { xsd:NCName }?,
+   text 
+}
+

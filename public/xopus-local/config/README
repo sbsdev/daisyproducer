@@ -1,0 +1,4 @@
+Use trang to build fasttrack.xsd from fasttrack.rnc:
+
+$ java -jar trang.jar fasttrack.rnc fasttrack.xsd
+ 
