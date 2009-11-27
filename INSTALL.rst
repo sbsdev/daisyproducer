@@ -116,7 +116,7 @@ and add a link under the public directory
 Adapt the settings file to your environment.
 
   $ cd $DAISYPRODUCER_HOME
-  $ mv settings_test.py settings.py
+  $ emacs settings.py
 
 For the archive create a directory named archive under the
 daisyproducer directory and give www-data write access to it:
@@ -127,11 +127,15 @@ daisyproducer directory and give www-data write access to it:
 
 Configuration
 =============
+
 Once the application is installed you will need to configure the
-workflow, the users and the groups. I suggest you start with the
-workflow. Daisy Producer comes with a default workflow but you are
-free to define your own. In the `admin interface`_ you will be able to
-define states and transitions between them.
+workflow, the users and the groups. Daisy Producer comes with a
+default workflow, default groups and a demo user (password "demo")
+that you can use to get started. You are of course free to define your
+own workflow, users and groups. 
+
+Once you are familiar with the concepts you can use the `admin
+interface`_ to define states and transitions between them.
 
 After you've defined the states and the transitions you will have to
 create groups and define which group is responsible for which state.
