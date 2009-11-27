@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 from django.contrib.auth.views import login, logout
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 import os.path
 PROJECT_DIR = os.path.dirname(__file__)
@@ -37,34 +38,11 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
     url(r'^manage/(?P<document_id>\d+)/update/$', 'update', name='manage_update'),
 )
 
-urlpatterns += patterns('',
-    # authentication
-    (r'^accounts/login/$',  login, {'template_name' : 'login.html'}),
-    (r'^accounts/logout/$', logout),
-
-    # static files
-    (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': os.path.join(PROJECT_DIR, 'public', 'stylesheets')}),
-    (r'^javascripts/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': os.path.join(PROJECT_DIR, 'public', 'javascripts')}),
-    (r'^archive/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': os.path.join(PROJECT_DIR, 'archive')}),
-    (r'^images/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': os.path.join(PROJECT_DIR, 'public', 'images')}),
-    (r'^xopus/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': os.path.join(PROJECT_DIR, 'public', 'xopus')}),
-    (r'^xopus-local/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': os.path.join(PROJECT_DIR, 'public', 'xopus-local')}),
-
-    # enable the admin:
-    (r'^admin/(.*)', admin.site.root),
-)
-
+# help and about
 def getRSTContent(file_name):
     f = open(os.path.join(PROJECT_DIR, 'doc', 'help', file_name))
     return f.read()
 
-# help and about
 urlpatterns += patterns('',
     # help
     url(r'^help/$', 'django.views.generic.simple.direct_to_template', 
@@ -81,3 +59,32 @@ urlpatterns += patterns('',
                 'title': _('About')}},
         "about"),
 )
+
+# authentication
+urlpatterns += patterns('',
+    (r'^accounts/login/$',  login, {'template_name' : 'login.html'}),
+    (r'^accounts/logout/$', logout),
+)
+
+# enable the admin:
+urlpatterns += patterns('',
+    (r'^admin/(.*)', admin.site.root),
+)
+
+# static files
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
+         {'document_root': os.path.join(PROJECT_DIR, 'public', 'stylesheets')}),
+        (r'^javascripts/(?P<path>.*)$', 'django.views.static.serve',
+         {'document_root': os.path.join(PROJECT_DIR, 'public', 'javascripts')}),
+        (r'^archive/(?P<path>.*)$', 'django.views.static.serve',
+         {'document_root': os.path.join(PROJECT_DIR, 'archive')}),
+        (r'^images/(?P<path>.*)$', 'django.views.static.serve',
+         {'document_root': os.path.join(PROJECT_DIR, 'public', 'images')}),
+        (r'^xopus/(?P<path>.*)$', 'django.views.static.serve',
+         {'document_root': os.path.join(PROJECT_DIR, 'public', 'xopus')}),
+        (r'^xopus-local/(?P<path>.*)$', 'django.views.static.serve',
+         {'document_root': os.path.join(PROJECT_DIR, 'public', 'xopus-local')}),
+    )
+
