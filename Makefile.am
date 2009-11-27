@@ -67,7 +67,8 @@ clean-local:
 	rm -f $(MO_FILES)
 
 # Testing
-TESTS = test.sh
+check:
+	django-admin test --pythonpath=. --settings=settings_unittest
 
 check-coverage:
 	django-admin test --pythonpath=. --settings=settings_unittest_with_coverage
