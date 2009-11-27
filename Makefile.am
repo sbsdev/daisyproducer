@@ -33,8 +33,7 @@ TEST_FILES = \
 	$(wildcard documents/test/*.py) \
 	$(wildcard documents/test/functional/*.py) \
 	$(wildcard documents/test/unit/*.py) \
-	$(wildcard documents/fixtures/*.yaml) \
-	test.sh
+	$(wildcard documents/fixtures/*.yaml)
 
 TEST_DATA_FILES = \
 	$(wildcard documents/test/data/*)
