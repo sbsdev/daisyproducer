@@ -61,12 +61,9 @@ class DaisyPipeline:
 class Liblouis:
 
     contractionMap = {
-        0 : 'de-de-g0.utb', 
-        1 : 'de-de-g1.ctb', 
-        # FIXME: the current release of liblouis doesn't support
-        # german grade 2. Adapt this table as soon as it has support
-        # for grade 2
-        2 : 'de-de-g1.ctb'}
+        0 : 'de-ch-g0.utb', 
+        1 : 'de-ch-g1.ctb', 
+        2 : 'de-ch-g2.ctb'}
 
     yesNoMap = {
         True : "yes", 
