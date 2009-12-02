@@ -119,6 +119,7 @@ j </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:em">
+    <xsl:apply-templates mode="italic"/>
   </xsl:template>
 
   <xsl:template match="dtb:strong">
@@ -132,6 +133,10 @@ j </xsl:text>
    
    <xsl:template match="text()">
      <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+   </xsl:template>
+
+   <xsl:template match="text()" mode="italic">
+     <xsl:value-of select='louis:translate(string(),string($translation_table),"italic")'/>
    </xsl:template>
 
    <xsl:template match="dtb:*">

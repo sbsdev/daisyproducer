@@ -131,8 +131,15 @@ class SBSForms:
 
     nodeName = None
 
+    modeMap = {
+        'plain_text' : louis.plain_text, 
+        'italic' : louis.italic, 
+        'underline' : louis.underline, 
+        'bold' : louis.bold, 
+        'computer_braille' : louis.computer_braille}
+
     @staticmethod
-    def translate(ctx, str, translation_table):
+    def translate(ctx, str, translation_table, mode=None):
         global nodeName
         
         try:
@@ -143,7 +150,8 @@ class SBSForms:
         except:
             pass
 
-        braille = louis.translate([translation_table], str.decode('utf-8'))[0]
+        typeform = len(str)*[SBSForms.modeMap[mode]] if mode else None
+        braille = louis.translate([translation_table], str.decode('utf-8'), typeform=typeform)[0]
         braille = braille.encode('utf-8')
         return SBSForms.wrapper.fill(braille)
 
