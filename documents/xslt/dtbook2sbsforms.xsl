@@ -10,6 +10,8 @@
   <xsl:strip-space elements="*"/>
   <xsl:preserve-space elements="code samp"/>
 	
+  <xsl:param name="translation_table">de-ch-g2.ctb</xsl:param>
+
   <xsl:template match="/">
     <xsl:apply-templates/>
   </xsl:template>
@@ -129,7 +131,7 @@ j </xsl:text>
    </xsl:template>
    
    <xsl:template match="text()">
-     <xsl:value-of select='louis:translate(string())'/>
+     <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
    </xsl:template>
 
    <xsl:template match="dtb:*">

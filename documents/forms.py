@@ -111,4 +111,5 @@ class SBSFormsForm(forms.Form):
         ('1', _('Grade 1')),
         ('2', _('Grade 2')),
         )
-    contraction = forms.ChoiceField(BRAILLE_CONTRACTION_GRADE_CHOICES, label=_("Contraction"))
+    contraction = forms.TypedChoiceField(BRAILLE_CONTRACTION_GRADE_CHOICES, 
+        label=_("Contraction"), coerce=int)

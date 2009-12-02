@@ -129,12 +129,10 @@ import textwrap
 class SBSForms:
     wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
 
-    TRANSLATION_TABLE = "de-ch-g2.ctb"
-
     nodeName = None
 
     @staticmethod
-    def translate(ctx, str):
+    def translate(ctx, str, translation_table):
         global nodeName
         
         try:
@@ -144,8 +142,8 @@ class SBSForms:
             nodeName = tctxt.insertNode().name
         except:
             pass
-        
-        braille = louis.translate([SBSForms.TRANSLATION_TABLE], str.decode('utf-8'))[0]
+
+        braille = louis.translate([translation_table], str.decode('utf-8'))[0]
         braille = braille.encode('utf-8')
         return SBSForms.wrapper.fill(braille)
 
@@ -157,7 +155,8 @@ class SBSForms:
             join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsforms.xsl'))
         style = libxslt.parseStylesheetDoc(styledoc)
         doc = libxml2.parseFile(inputFile)
-        result = style.applyStylesheet(doc, None)
+        params = {"translation_table" : "'" + Liblouis.contractionMap[kwargs['contraction']] + "'"}
+        result = style.applyStylesheet(doc, params)
         style.saveResultToFilename(outputFile, result, 0)
         style.freeStylesheet()
         doc.freeDoc()
