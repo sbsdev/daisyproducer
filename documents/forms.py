@@ -105,3 +105,10 @@ class MarkupForm(forms.Form):
         version.content.save("updated_version.xml", content)
 
 
+class SBSFormsForm(forms.Form):
+    BRAILLE_CONTRACTION_GRADE_CHOICES = (
+        ('0', _('Grade 0')),
+        ('1', _('Grade 1')),
+        ('2', _('Grade 2')),
+        )
+    contraction = forms.ChoiceField(BRAILLE_CONTRACTION_GRADE_CHOICES, label=_("Contraction"))

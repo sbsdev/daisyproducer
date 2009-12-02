@@ -119,4 +119,48 @@ class Liblouis:
         p3 = Popen(command, stdin=p2.stdout, stdout=f)
         p3.communicate()
         f.close()
+
+import louis
+import libxml2
+import libxslt
+import string
+import textwrap
+
+class SBSForms:
+    wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
+
+    TRANSLATION_TABLE = "de-ch-g2.ctb"
+
+    nodeName = None
+
+    @staticmethod
+    def translate(ctx, str):
+        global nodeName
         
+        try:
+            pctxt = libxslt.xpathParserContext(_obj=ctx)
+            ctxt = pctxt.context()
+            tctxt = ctxt.transformContext()
+            nodeName = tctxt.insertNode().name
+        except:
+            pass
+        
+        braille = louis.translate([SBSForms.TRANSLATION_TABLE], str.decode('utf-8'))[0]
+        braille = braille.encode('utf-8')
+        return SBSForms.wrapper.fill(braille)
+
+
+    @staticmethod
+    def dtbook2sbsforms(inputFile, outputFile, **kwargs):
+        """Transform a dtbook xml file to sbsforms"""
+        styledoc = libxml2.parseFile(
+            join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsforms.xsl'))
+        style = libxslt.parseStylesheetDoc(styledoc)
+        doc = libxml2.parseFile(inputFile)
+        result = style.applyStylesheet(doc, None)
+        style.saveResultToFilename(outputFile, result, 0)
+        style.freeStylesheet()
+        doc.freeDoc()
+        result.freeDoc()
+
+libxslt.registerExtModuleFunction("translate", "http://liblouis.org/liblouis", SBSForms.translate)

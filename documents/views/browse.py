@@ -1,4 +1,5 @@
-from daisyproducer.documents.external import DaisyPipeline, Liblouis
+from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForms
+from daisyproducer.documents.forms import SBSFormsForm
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -26,7 +27,8 @@ def detail(request, document_id):
         template_name = 'documents/browse_detail.html',
         extra_context = {
             'lpform' : LargePrintProfileForm(),
-            'bform' : BrailleProfileForm()}
+            'bform' : BrailleProfileForm(),
+            'sform' : SBSFormsForm()}
         )
     return response
 
@@ -55,6 +57,19 @@ def as_brl(request, document_id):
     inputFile = document.latest_version().content.path
     outputFile = "/tmp/%s.brl" % document_id
     Liblouis.dtbook2brl(inputFile, outputFile, **form.cleaned_data)
+
+    return render_to_mimetype_response('text/plain', document.title.encode('utf-8'), outputFile)
+
+def as_sbsforms(request, document_id):
+    form = SBSFormsForm(request.POST)
+
+    if not form.is_valid():
+        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
+
+    document = Document.objects.get(pk=document_id)
+    inputFile = document.latest_version().content.path
+    outputFile = "/tmp/%s.sbsforms" % document_id
+    SBSForms.dtbook2sbsforms(inputFile, outputFile, **form.cleaned_data)
 
     return render_to_mimetype_response('text/plain', document.title.encode('utf-8'), outputFile)
 
