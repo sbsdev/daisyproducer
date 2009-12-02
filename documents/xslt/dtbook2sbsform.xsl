@@ -91,8 +91,12 @@ y Pe
   </xsl:template>
 
   <xsl:template match="dtb:pagenum">
-    <xsl:text>
-j </xsl:text>
+    <!-- add a line feed if we're inside a p -->
+    <xsl:if test="name(..) = 'p'">
+      <xsl:text>
+</xsl:text>
+    </xsl:if>
+    <xsl:text>j </xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>
 </xsl:text>
