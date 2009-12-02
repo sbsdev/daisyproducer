@@ -27,8 +27,8 @@
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <h3>{% trans "View as Braille (SBSForms)" %}</h3>
-  <form action="{% url browse_sbsforms object.id %}" method="POST">
+  <h3>{% trans "View as Braille (SBSForm)" %}</h3>
+  <form action="{% url browse_sbsform object.id %}" method="POST">
     <table>
       {{ sform.as_table }}
     </table>

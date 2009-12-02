@@ -105,7 +105,7 @@ class MarkupForm(forms.Form):
         version.content.save("updated_version.xml", content)
 
 
-class SBSFormsForm(forms.Form):
+class SBSFormForm(forms.Form):
     BRAILLE_CONTRACTION_GRADE_CHOICES = (
         ('0', _('Grade 0')),
         ('1', _('Grade 1')),

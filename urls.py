@@ -16,7 +16,7 @@ urlpatterns = patterns('daisyproducer.documents.views.browse',
 
     url(r'^(?P<document_id>\d+).pdf$', 'as_pdf', name='browse_pdf'),
     url(r'^(?P<document_id>\d+).brl$', 'as_brl', name='browse_brl'),
-    url(r'^(?P<document_id>\d+).sbsforms$', 'as_sbsforms', name='browse_sbsforms'),
+    url(r'^(?P<document_id>\d+).sbsform$', 'as_sbsform', name='browse_sbsform'),
 )
 
 # work on pending documents

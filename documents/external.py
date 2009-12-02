@@ -126,7 +126,7 @@ import libxslt
 import string
 import textwrap
 
-class SBSForms:
+class SBSForm:
     wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
 
     nodeName = None
@@ -150,17 +150,17 @@ class SBSForms:
         except:
             pass
 
-        typeform = len(str)*[SBSForms.modeMap[mode]] if mode else None
+        typeform = len(str)*[SBSForm.modeMap[mode]] if mode else None
         braille = louis.translate([translation_table], str.decode('utf-8'), typeform=typeform)[0]
         braille = braille.encode('utf-8')
-        return SBSForms.wrapper.fill(braille)
+        return SBSForm.wrapper.fill(braille)
 
 
     @staticmethod
-    def dtbook2sbsforms(inputFile, outputFile, **kwargs):
-        """Transform a dtbook xml file to sbsforms"""
+    def dtbook2sbsform(inputFile, outputFile, **kwargs):
+        """Transform a dtbook xml file to sbsform"""
         styledoc = libxml2.parseFile(
-            join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsforms.xsl'))
+            join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsform.xsl'))
         style = libxslt.parseStylesheetDoc(styledoc)
         doc = libxml2.parseFile(inputFile)
         params = {"translation_table" : "'" + Liblouis.contractionMap[kwargs['contraction']] + "'"}
@@ -170,4 +170,4 @@ class SBSForms:
         doc.freeDoc()
         result.freeDoc()
 
-libxslt.registerExtModuleFunction("translate", "http://liblouis.org/liblouis", SBSForms.translate)
+libxslt.registerExtModuleFunction("translate", "http://liblouis.org/liblouis", SBSForm.translate)
