@@ -17,7 +17,8 @@ Basic requirements
   needed for Large Print) 
 - `Tiresias LP font`_ (a font designed for Large Print publications)
 - `Java Runtime`_ (`Daisy Pipeline`_ needs at least Java 5)
-- liblouis_
+- liblouis_ You need to install both liblouis, liblouixml and the
+  python bindings.
 - A database for example PostgreSQL_ or MySQL_.
 - A Python database interface like psycopg2_ or mysqldb_ for example.
 - docutils_ to render the help page (which is written in
@@ -47,6 +48,8 @@ In terms of (Debian/Ubuntu) packages this translates to
 - python-django
 - python-lxml
 - python-docutils
+- python-libxml2
+- python-libxslt1
 - sun-java6-jre
 - texlive-xetex
 - texlive-latex-extra
