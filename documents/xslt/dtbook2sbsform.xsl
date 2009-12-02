@@ -123,26 +123,31 @@ j </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:strong">
-   </xsl:template>
+    <xsl:apply-templates mode="bold"/>
+  </xsl:template>
 
-   <xsl:template match="dtb:abbr">
-   </xsl:template>
-   
-   <xsl:template match="dtb:acronym">
-   </xsl:template>
-   
-   <xsl:template match="text()">
-     <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
-   </xsl:template>
-
-   <xsl:template match="text()" mode="italic">
-     <xsl:value-of select='louis:translate(string(),string($translation_table),"italic")'/>
-   </xsl:template>
-
-   <xsl:template match="dtb:*">
-     <xsl:message>
-       *****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
-     </xsl:message>
-   </xsl:template>
-   
+  <xsl:template match="dtb:abbr">
+  </xsl:template>
+  
+  <xsl:template match="dtb:acronym">
+  </xsl:template>
+  
+  <xsl:template match="text()">
+    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  </xsl:template>
+  
+  <xsl:template match="text()" mode="italic">
+    <xsl:value-of select='louis:translate(string(),string($translation_table),"italic")'/>
+  </xsl:template>
+  
+  <xsl:template match="text()" mode="bold">
+    <xsl:value-of select='louis:translate(string(),string($translation_table),"bold")'/>
+  </xsl:template>
+  
+  <xsl:template match="dtb:*">
+    <xsl:message>
+      *****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
+    </xsl:message>
+  </xsl:template>
+  
 </xsl:stylesheet>
