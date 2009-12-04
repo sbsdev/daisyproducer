@@ -111,5 +111,15 @@ class SBSFormForm(forms.Form):
         ('1', _('Grade 1')),
         ('2', _('Grade 2')),
         )
-    contraction = forms.TypedChoiceField(BRAILLE_CONTRACTION_GRADE_CHOICES, 
-        label=_("Contraction"), coerce=int)
+    cells_per_line = forms.IntegerField(label=_("Cells per Line"), initial=40, min_value=1, max_value=255)
+    lines_per_page = forms.IntegerField(label=_("Lines per Page"), initial=28, min_value=1, max_value=255)
+    contraction = forms.TypedChoiceField(
+        label=_("Contraction"), 
+        choices=BRAILLE_CONTRACTION_GRADE_CHOICES, 
+        coerce=int)
+    hyphenation = forms.BooleanField(label=_("Hyphenation"), required=False)
+    generate_toc = forms.BooleanField(label=_("Generate a table of contents"), required=False)
+    show_original_page_numbers = forms.BooleanField(label=_("Show original page numbers"), required=False)
+    enable_capitalization = forms.BooleanField(label=_("Enable Capitalization"), required=False)
+    detailed_accented_characters = forms.BooleanField(label=_("Detailed Accented Characters"), required=False)
+
