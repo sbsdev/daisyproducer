@@ -28,28 +28,28 @@
     <xsl:text>x Daisy Producer Version: </xsl:text>
     <xsl:value-of select="$version"/><xsl:text>
 </xsl:text>
-    <xsl:text>?grade: </xsl:text>
+    <xsl:text>?grade:</xsl:text>
     <xsl:value-of select="$contraction"/><xsl:text>
 </xsl:text>
-    <xsl:text>?cells_per_line: </xsl:text>
+    <xsl:text>?cells_per_line:</xsl:text>
     <xsl:value-of select="$cells_per_line"/><xsl:text>
 </xsl:text>
-    <xsl:text>?lines_per_page: </xsl:text>
+    <xsl:text>?lines_per_page:</xsl:text>
     <xsl:value-of select="$lines_per_page"/><xsl:text>
 </xsl:text>
-    <xsl:text>?hyphenation: </xsl:text>
+    <xsl:text>?hyphenation:</xsl:text>
     <xsl:value-of select="$hyphenation"/><xsl:text>
 </xsl:text>
-    <xsl:text>?generate_toc: </xsl:text>
+    <xsl:text>?generate_toc:</xsl:text>
     <xsl:value-of select="$generate_toc"/><xsl:text>
 </xsl:text>
-    <xsl:text>?show_original_page_numbers: </xsl:text>
+    <xsl:text>?show_original_page_numbers:</xsl:text>
     <xsl:value-of select="$show_original_page_numbers"/><xsl:text>
 </xsl:text>
-    <xsl:text>?enable_capitalization: </xsl:text>
+    <xsl:text>?enable_capitalization:</xsl:text>
     <xsl:value-of select="$enable_capitalization"/><xsl:text>
 </xsl:text>
-    <xsl:text>?detailed_accented_characters: </xsl:text>
+    <xsl:text>?detailed_accented_characters:</xsl:text>
     <xsl:value-of select="$detailed_accented_characters"/><xsl:text>
 </xsl:text>
     <xsl:text>U dtbook.sbf
@@ -75,9 +75,12 @@
     <xsl:text>y BOOKb
 y b Titlepage
 y TPb
-  </xsl:text><xsl:value-of select="//dtb:docauthor"/><xsl:text>
-  </xsl:text><xsl:value-of select="//dtb:doctitle"/><xsl:text>
-  </xsl:text><xsl:value-of select="//dtb:meta[@name='dc:Date']/@content"/><xsl:text>
+</xsl:text><xsl:apply-templates select="//dtb:docauthor/text()"/><xsl:text>
+</xsl:text><xsl:apply-templates select="//dtb:doctitle/text()"/><xsl:text>
+</xsl:text>
+  <xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string($translation_table))"/>
+  <xsl:text>
+    
 y TPink
 </xsl:text>
     <xsl:apply-templates select="//dtb:frontmatter/dtb:level1[1]"/>
@@ -90,7 +93,8 @@ y e Titlepage
   </xsl:template>
 
   <xsl:template match="dtb:frontmatter">
-    <xsl:text>y FRONTb
+    <xsl:text>y BrlVol
+y FRONTb
 </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>y FRONTe
