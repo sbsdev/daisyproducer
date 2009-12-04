@@ -179,7 +179,7 @@ class SBSForm:
             join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsform.xsl'))
         style = libxslt.parseStylesheetDoc(styledoc)
         doc = libxml2.parseFile(inputFile)
-        params = dict([(k, "'{0}'".format(v)) for (k, v) in kwargs.iteritems()])
+        params = dict([(k, "'%s'" % v) for (k, v) in kwargs.iteritems()])
         params["translation_table"] = "'" + Liblouis.contractionMap[kwargs['contraction']] + "'"
         params["version"] = "'2009-12-04'"
         result = style.applyStylesheet(doc, params)
