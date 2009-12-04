@@ -1,9 +1,10 @@
 from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm
 from daisyproducer.documents.forms import SBSFormForm
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
+from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic.list_detail import object_list, object_detail
 
@@ -72,18 +73,3 @@ def as_sbsform(request, document_id):
     SBSForm.dtbook2sbsform(inputFile, outputFile, **form.cleaned_data)
 
     return render_to_mimetype_response('text/plain', document.title.encode('utf-8'), outputFile)
-
-
-def render_to_mimetype_response(mimetype, filename, outputFile):
-    response = HttpResponse(mimetype=mimetype)
-    response['Content-Disposition'] = "attachment; filename=\"%s\"" % (filename)
-
-    f = open(outputFile)
-    try:
-        content = f.read()
-        response.write(content)
-    finally:
-        f.close()
-
-    return response
-

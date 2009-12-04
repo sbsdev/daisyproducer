@@ -1,5 +1,7 @@
+from daisyproducer.documents.external import DaisyPipeline
 from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm
 from daisyproducer.documents.models import Document, Version, Attachment
+from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
@@ -178,3 +180,15 @@ def markup_xopus(request, document_id):
     else:
         return render_to_response('documents/todo_markup_xopus.html', locals(),
                                   context_instance=RequestContext(request))
+
+@login_required
+def preview(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    inputFile = document.latest_version().content.path
+    outputFile = "/tmp/%s.xhtml" % document_id
+    params = {}
+    DaisyPipeline.dtbook2xhtml(inputFile, outputFile, **params)
+
+    return render_to_mimetype_response('text/html', document.title.encode('utf-8'), outputFile)
+

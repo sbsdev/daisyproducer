@@ -58,6 +58,22 @@ class DaisyPipeline:
         os.chdir(currentDir)
         rmtree(tmpDir)
 
+    @staticmethod
+    def dtbook2xhtml(inputFile, outputFile, **kwargs):
+        """Transform a dtbook xml file to xhtml"""
+        command = (
+            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
+            "%s/%s" %  (
+                settings.DAISY_PIPELINE_PATH, 
+                '/scripts/create_distribute/xhtml/DtbookToXhtml.taskScript'),
+            "--input=%s" % inputFile,
+            "--output=%s" % outputFile,
+            # "--daisyNoterefs=%(daisyNoterefs)s" % kwargs,
+            # "--genToc=%(genToc)s" % kwargs,
+            # "--genChunks=%(genChunks)s" % kwargs,
+            )
+        call(command)
+
 class Liblouis:
 
     contractionMap = {
