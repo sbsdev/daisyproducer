@@ -71,3 +71,7 @@ check:
 
 check-coverage:
 	django-admin test --pythonpath=. --settings=settings_unittest_with_coverage
+
+# Deployment
+deploy:
+	ssh xmlp ~/updateDaisyProducer.sh
