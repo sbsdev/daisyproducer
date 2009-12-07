@@ -1,3 +1,4 @@
+from daisyproducer.version import getVersion
 from django.conf import settings
 from os.path import join, basename, splitext
 from shutil import rmtree
@@ -139,7 +140,6 @@ class Liblouis:
 import louis
 import libxml2
 import libxslt
-import string
 import textwrap
 
 class SBSForm:
@@ -184,7 +184,7 @@ class SBSForm:
         kwargs.update([(k, 0) for (k, v) in kwargs.iteritems() if v == False])
         params = dict([(k, "'%s'" % v) for (k, v) in kwargs.iteritems()])
         params["translation_table"] = "'" + Liblouis.contractionMap[kwargs['contraction']] + "'"
-        params["version"] = "'2009-12-04'"
+        params["version"] = "'%s'" % getVersion()
         result = style.applyStylesheet(doc, params)
         style.saveResultToFilename(outputFile, result, 0)
         style.freeStylesheet()
