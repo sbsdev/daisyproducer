@@ -74,7 +74,7 @@ urlpatterns += patterns('',
 )
 
 # static files
-if settings.DEBUG:
+if settings.SERVE_STATIC_FILES:
     urlpatterns += patterns('',
         (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
          {'document_root': os.path.join(PROJECT_DIR, 'public', 'stylesheets')}),
