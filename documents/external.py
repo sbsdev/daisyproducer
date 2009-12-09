@@ -62,6 +62,8 @@ class DaisyPipeline:
     @staticmethod
     def dtbook2xhtml(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to xhtml"""
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
             "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
             "%s/%s" %  (
@@ -69,9 +71,26 @@ class DaisyPipeline:
                 '/scripts/create_distribute/xhtml/DtbookToXhtml.taskScript'),
             "--input=%s" % inputFile,
             "--output=%s" % outputFile,
-            # "--daisyNoterefs=%(daisyNoterefs)s" % kwargs,
-            # "--genToc=%(genToc)s" % kwargs,
+            "--daisyNoterefs=%(daisyNoterefs)s" % kwargs,
+            "--genToc=%(genToc)s" % kwargs,
             # "--genChunks=%(genChunks)s" % kwargs,
+            )
+        call(command)
+
+    @staticmethod
+    def dtbook2rtf(inputFile, outputFile, **kwargs):
+        """Transform a dtbook xml file to rtf"""
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+        command = (
+            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
+            "%s/%s" %  (
+                settings.DAISY_PIPELINE_PATH, 
+                '/scripts/create_distribute/text/DtbookToRtf.taskScript'),
+            "--input=%s" % inputFile,
+            "--output=%s" % outputFile,
+            "--inclTOC=%(inclTOC)s" % kwargs,
+            "--inclPagenum=%(inclPagenum)s" % kwargs,
             )
         call(command)
 
@@ -179,13 +198,13 @@ class SBSForm:
             join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsform.xsl'))
         style = libxslt.parseStylesheetDoc(styledoc)
         doc = libxml2.parseFile(inputFile)
-        # copy the content of kwargs into a new dict map True and False to 1 and 0 and quote the values
-        kwargs.update([(k, 1) for (k, v) in kwargs.iteritems() if v == True])
-        kwargs.update([(k, 0) for (k, v) in kwargs.iteritems() if v == False])
-        params = dict([(k, "'%s'" % v) for (k, v) in kwargs.iteritems()])
-        params["translation_table"] = "'" + Liblouis.contractionMap[kwargs['contraction']] + "'"
-        params["version"] = "'%s'" % getVersion()
-        result = style.applyStylesheet(doc, params)
+        kwargs["translation_table"] = Liblouis.contractionMap[kwargs['contraction']]
+        kwargs["version"] = getVersion()
+        # map True and False to "1" and "0"
+        kwargs.update([(k, 1 if v == True else 0) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+        # and quote the values
+        kwargs.update([(k, "'%s'" % v) for (k, v) in kwargs.iteritems()])
+        result = style.applyStylesheet(doc, kwargs)
         style.saveResultToFilename(outputFile, result, 0)
         style.freeStylesheet()
         doc.freeDoc()

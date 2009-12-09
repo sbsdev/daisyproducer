@@ -123,3 +123,17 @@ class SBSFormForm(forms.Form):
     enable_capitalization = forms.BooleanField(label=_("Enable Capitalization"), required=False)
     detailed_accented_characters = forms.BooleanField(label=_("Detailed Accented Characters"), required=False)
 
+class XHTMLForm(forms.Form):
+    genToc = forms.BooleanField(
+        label=_("Generate a table of contents"), 
+#        help_text=_("Generates a Table of Contents"),
+        required=False)
+    daisyNoterefs = forms.BooleanField(
+        label=_("DAISY 2.02 style noterefs"), 
+#        help_text=_("Put bodyref attributes on note references (required by Daisy 2.02 skippability recommendation)"),
+        required=False)
+
+class RTFForm(forms.Form):
+    inclTOC = forms.BooleanField(label=_("Generate a table of contents"), required=False, initial=True)
+    inclPagenum = forms.BooleanField(label=_("Show original page numbers"), required=False, initial=True)
+

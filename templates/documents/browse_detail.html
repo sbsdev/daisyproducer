@@ -12,6 +12,7 @@
   <a href="#sbsform_view" accesskey="s" >{% trans "View as Braille (SBSForm)" %}</a><br />
   <a href="#braille_view" accesskey="b" >{% trans "View as Braille (liblouis)" %}</a><br />
   <a href="#xhtml_view" accesskey="x" >{% trans "View as XHTML" %}</a><br />
+  <a href="#rtf_view" accesskey="x" >{% trans "View as RTF" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
@@ -32,32 +33,46 @@
       <td class=""><b>{{ object|verbose_name:"source_publisher" }}:</b></td><td class=" ">{{ object.source_publisher }}</td>
     </tr>
   </table>
-  <h3>{% trans "View as PDF" %}</h3>
   <a name="pdf_view"></a>
+  <h3>{% trans "View as PDF" %}</h3>
   <form action="{% url browse_pdf object.id %}" method="POST">
     <table>
       {{ lpform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <h3>{% trans "View as Braille (SBSForm)" %}</h3>
   <a name="sbsform_view"></a>
+  <h3>{% trans "View as Braille (SBSForm)" %}</h3>
   <form action="{% url browse_sbsform object.id %}" method="POST">
     <table>
       {{ sform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <h3>{% trans "View as Braille" %}</h3>
   <a name="braille_view"></a>
+  <h3>{% trans "View as Braille (Liblouis)" %}</h3>
   <form action="{% url browse_brl object.id %}" method="POST">
     <table>
       {{ bform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <h3>{% trans "View as XHTML" %}</h3>
   <a name="xhtml_view"></a>
+  <h3>{% trans "View as XHTML" %}</h3>
+  <form action="{% url browse_xhtml object.id %}" method="POST">
+    <table>
+      {{ xhtmlform.as_table }}
+    </table>
+    <p><input type="submit" value="{% trans 'Download' %}" /></p>
+  </form>
+  <a name="rtf_view"></a>
+  <h3>{% trans "View as RTF" %}</h3>
+  <form action="{% url browse_rtf object.id %}" method="POST">
+    <table>
+      {{ rtfform.as_table }}
+    </table>
+    <p><input type="submit" value="{% trans 'Download' %}" /></p>
+  </form>
 </div>
 {% else %}
 <p class="nodata">{% trans "No data to display" %}</p>

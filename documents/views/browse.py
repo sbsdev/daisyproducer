@@ -1,5 +1,5 @@
 from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm
-from daisyproducer.documents.forms import SBSFormForm
+from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -29,7 +29,9 @@ def detail(request, document_id):
         extra_context = {
             'lpform' : LargePrintProfileForm(),
             'bform' : BrailleProfileForm(),
-            'sform' : SBSFormForm()}
+            'sform' : SBSFormForm(),
+            'xhtmlform' : XHTMLForm(),
+            'rtfform' : RTFForm()}
         )
     return response
 
@@ -73,3 +75,29 @@ def as_sbsform(request, document_id):
     SBSForm.dtbook2sbsform(inputFile, outputFile, **form.cleaned_data)
 
     return render_to_mimetype_response('text/plain', document.title.encode('utf-8'), outputFile)
+
+def as_xhtml(request, document_id):
+    form = XHTMLForm(request.POST)
+
+    if not form.is_valid():
+        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
+
+    document = Document.objects.get(pk=document_id)
+    inputFile = document.latest_version().content.path
+    outputFile = "/tmp/%s.xhtml" % document_id
+    DaisyPipeline.dtbook2xhtml(inputFile, outputFile, **form.cleaned_data)
+
+    return render_to_mimetype_response('text/html', document.title.encode('utf-8'), outputFile)
+
+def as_rtf(request, document_id):
+    form = RTFForm(request.POST)
+
+    if not form.is_valid():
+        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
+
+    document = Document.objects.get(pk=document_id)
+    inputFile = document.latest_version().content.path
+    outputFile = "/tmp/%s.rtf" % document_id
+    DaisyPipeline.dtbook2rtf(inputFile, outputFile, **form.cleaned_data)
+
+    return render_to_mimetype_response('application/rtf', document.title.encode('utf-8'), outputFile)
