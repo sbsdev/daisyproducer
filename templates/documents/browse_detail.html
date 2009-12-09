@@ -12,8 +12,9 @@
   <a href="#sbsform_view" accesskey="s" >{% trans "View as Braille (SBSForm)" %}</a><br />
   <a href="#braille_view" accesskey="b" >{% trans "View as Braille (liblouis)" %}</a><br />
   <a href="#xhtml_view" accesskey="x" >{% trans "View as XHTML" %}</a><br />
-  <a href="#rtf_view" accesskey="x" >{% trans "View as RTF" %}</a><br />
-  <a href="#epub_view" accesskey="x" >{% trans "View as EPUB" %}</a><br />
+  <a href="#rtf_view" accesskey="r" >{% trans "View as RTF" %}</a><br />
+  <a href="#epub_view" accesskey="e" >{% trans "View as EPUB" %}</a><br />
+  <a href="#text_only_fileset_view" accesskey="t" >{% trans "View as  Daisy 2.02 Text-Only fileset" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
@@ -79,6 +80,14 @@
   <form action="{% url browse_epub object.id %}" method="POST">
     <table>
       {{ epubform.as_table }}
+    </table>
+    <p><input type="submit" value="{% trans 'Download' %}" /></p>
+  </form>
+  <a name="text_only_fileset_view"></a>
+  <h3>{% trans "View as Daisy 2.02 Text-Only fileset" %}</h3>
+  <form action="{% url browse_text_only_fileset object.id %}" method="POST">
+    <table>
+      {{ textonlyfilesetform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>

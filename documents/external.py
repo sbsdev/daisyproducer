@@ -109,6 +109,23 @@ class DaisyPipeline:
             command += ("--%s=%s" % (k,v),)
         call(command)
 
+    @staticmethod
+    def dtbook2text_only_fileset(inputFile, outputPath, **kwargs):
+        """Transform a dtbook xml file to a Daisy 2.02 Text-Only fileset"""
+        command = (
+            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
+            "%s/%s" %  (
+                settings.DAISY_PIPELINE_PATH, 
+                '/scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript'),
+            "--input=%s" % inputFile,
+            "--outputPath=%s" % outputPath,
+            )
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+        for k, v in kwargs.iteritems():
+            command += ("--%s=%s" % (k,v),)
+        call(command)
+
 class Liblouis:
 
     contractionMap = {

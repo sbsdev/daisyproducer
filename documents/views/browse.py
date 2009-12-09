@@ -1,5 +1,5 @@
 from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm
-from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm
+from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm, TextOnlyFilesetForm
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,11 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.list_detail import object_list, object_detail
 
 from os import system
+import glob
+import os.path
+import shutil
+import tempfile
+import zipfile
 
 # browse use case
 def index(request):
@@ -31,7 +36,8 @@ def detail(request, document_id):
             'bform' : BrailleProfileForm(),
             'sform' : SBSFormForm(),
             'xhtmlform' : XHTMLForm(),
-            'rtfform' : RTFForm()}
+            'rtfform' : RTFForm(),
+            'textonlyfilesetform' : TextOnlyFilesetForm()}
         )
     return response
 
@@ -122,3 +128,25 @@ def as_epub(request, document_id):
     DaisyPipeline.dtbook2epub(inputFile, outputFile, **defaults)
 
     return render_to_mimetype_response('application/epub+zip', document.title.encode('utf-8'), outputFile)
+
+def as_text_only_fileset(request, document_id):
+    form = TextOnlyFilesetForm(request.POST)
+
+    if not form.is_valid():
+        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
+
+    document = Document.objects.get(pk=document_id)
+    inputFile = document.latest_version().content.path
+    outputDir = tempfile.mkdtemp(prefix="daisyproducer_")
+
+    DaisyPipeline.dtbook2text_only_fileset(inputFile, outputDir, **form.cleaned_data)
+
+    ignore, outputFileName = tempfile.mkstemp(suffix='zip', prefix=document_id)
+    outputFile = zipfile.ZipFile(outputFileName, 'w')
+    for filename in glob.glob(os.path.join(outputDir, '*')):
+        outputFile.write(filename, 
+                         os.path.join(document.title, os.path.basename(filename)))
+    outputFile.close()
+    shutil.rmtree(outputDir)
+    
+    return render_to_mimetype_response('application/zip', "%s.zip" % document.title.encode('utf-8'), outputFileName)
