@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.list_detail import object_list, object_detail
 
 from os import system
-import glob
+import os
 import os.path
 import shutil
 import tempfile
@@ -143,8 +143,8 @@ def as_text_only_fileset(request, document_id):
 
     ignore, outputFileName = tempfile.mkstemp(suffix='zip', prefix=document_id)
     outputFile = zipfile.ZipFile(outputFileName, 'w')
-    for filename in glob.glob(os.path.join(outputDir, '*')):
-        outputFile.write(filename, 
+    for filename in os.listdir(outputDir):
+        outputFile.write(os.path.join(outputDir, filename).encode("latin-1"), 
                          os.path.join(document.title, os.path.basename(filename)))
     outputFile.close()
     shutil.rmtree(outputDir)
