@@ -148,6 +148,8 @@ def as_text_only_fileset(request, document_id):
             # zipFile support in Python has a few weak spots: Older
             # Pythons die if the filename or the arcname that is
             # passed to ZipFile.write is not in the right encoding
+            # FIXME: remove the encode("latin-1") workaround once we
+            # upgrade to 2.6.2
             os.path.join(outputDir, filename).encode("latin-1"), 
             os.path.join(document.title, os.path.basename(filename)).encode("latin-1"))
     outputFile.close()
