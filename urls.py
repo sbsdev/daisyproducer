@@ -19,6 +19,7 @@ urlpatterns = patterns('daisyproducer.documents.views.browse',
     url(r'^(?P<document_id>\d+).sbsform$', 'as_sbsform', name='browse_sbsform'),
     url(r'^(?P<document_id>\d+).xhtml$', 'as_xhtml', name='browse_xhtml'),
     url(r'^(?P<document_id>\d+).rtf$', 'as_rtf', name='browse_rtf'),
+    url(r'^(?P<document_id>\d+).epub$', 'as_epub', name='browse_epub'),
 )
 
 # work on pending documents

@@ -13,6 +13,7 @@
   <a href="#braille_view" accesskey="b" >{% trans "View as Braille (liblouis)" %}</a><br />
   <a href="#xhtml_view" accesskey="x" >{% trans "View as XHTML" %}</a><br />
   <a href="#rtf_view" accesskey="x" >{% trans "View as RTF" %}</a><br />
+  <a href="#epub_view" accesskey="x" >{% trans "View as EPUB" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
@@ -70,6 +71,14 @@
   <form action="{% url browse_rtf object.id %}" method="POST">
     <table>
       {{ rtfform.as_table }}
+    </table>
+    <p><input type="submit" value="{% trans 'Download' %}" /></p>
+  </form>
+  <a name="epub_view"></a>
+  <h3>{% trans "View as EPUB" %}</h3>
+  <form action="{% url browse_epub object.id %}" method="POST">
+    <table>
+      {{ epubform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>

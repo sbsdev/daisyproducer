@@ -137,3 +137,5 @@ class RTFForm(forms.Form):
     inclTOC = forms.BooleanField(label=_("Generate a table of contents"), required=False, initial=True)
     inclPagenum = forms.BooleanField(label=_("Show original page numbers"), required=False, initial=True)
 
+class EPUBForm(forms.Form):
+    pass

@@ -1,5 +1,5 @@
 from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm
-from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm
+from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -101,3 +101,24 @@ def as_rtf(request, document_id):
     DaisyPipeline.dtbook2rtf(inputFile, outputFile, **form.cleaned_data)
 
     return render_to_mimetype_response('application/rtf', document.title.encode('utf-8'), outputFile)
+
+def as_epub(request, document_id):
+    form = EPUBForm(request.POST)
+
+    if not form.is_valid():
+        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
+
+    document = Document.objects.get(pk=document_id)
+    inputFile = document.latest_version().content.path
+    outputFile = "/tmp/%s.epub" % document_id
+    defaults = {
+        "dctitle" : document.title, 
+        "dcidentifier" : document.identifier, 
+        "dclanguage" : document.language, 
+        "dccreator" : document.author, 
+        "dcpublisher" : document.publisher, 
+        "dcdate" : document.date}
+    defaults.update(form.cleaned_data)
+    DaisyPipeline.dtbook2epub(inputFile, outputFile, **defaults)
+
+    return render_to_mimetype_response('application/epub+zip', document.title.encode('utf-8'), outputFile)

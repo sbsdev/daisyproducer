@@ -94,6 +94,21 @@ class DaisyPipeline:
             )
         call(command)
 
+    @staticmethod
+    def dtbook2epub(inputFile, outputFile, **kwargs):
+        """Transform a dtbook xml file to EPUB"""
+        command = (
+            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
+            "%s/%s" %  (
+                settings.DAISY_PIPELINE_PATH, 
+                '/scripts/create_distribute/epub/OPSCreator.taskScript'),
+            "--input=%s" % inputFile,
+            "--output=%s" % outputFile,
+            )
+        for k, v in kwargs.iteritems():
+            command += ("--%s=%s" % (k,v),)
+        call(command)
+
 class Liblouis:
 
     contractionMap = {
