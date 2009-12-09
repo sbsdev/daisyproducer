@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+import os
 
 def render_to_mimetype_response(mimetype, filename, outputFile):
     response = HttpResponse(mimetype=mimetype)
@@ -10,6 +11,9 @@ def render_to_mimetype_response(mimetype, filename, outputFile):
         response.write(content)
     finally:
         f.close()
+
+    # remove the tmp file
+    os.remove(outputFile)
 
     return response
 
