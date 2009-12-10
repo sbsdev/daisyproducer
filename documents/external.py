@@ -55,6 +55,7 @@ class DaisyPipeline:
             latexFileName,
             )
         call(command)
+        call(command) # call LaTeX again to make sure the toc is inserted
         os.rename(pdfFileName, outputFile)
         os.chdir(currentDir)
         rmtree(tmpDir)
