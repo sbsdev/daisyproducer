@@ -35,56 +35,49 @@
       <td class=""><b>{{ object|verbose_name:"source_publisher" }}:</b></td><td class=" ">{{ object.source_publisher }}</td>
     </tr>
   </table>
-  <a name="pdf_view"></a>
-  <h3>{% trans "View as PDF" %}</h3>
+  <h3 id="pdf_view">{% trans "View as PDF" %}</h3>
   <form action="{% url browse_pdf object.id %}" method="POST">
     <table>
       {{ lpform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <a name="sbsform_view"></a>
-  <h3>{% trans "View as Braille (SBSForm)" %}</h3>
+  <h3 id="sbsform_view">{% trans "View as Braille (SBSForm)" %}</h3>
   <form action="{% url browse_sbsform object.id %}" method="POST">
     <table>
       {{ sform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <a name="braille_view"></a>
-  <h3>{% trans "View as Braille (Liblouis)" %}</h3>
+  <h3 id="braille_view">{% trans "View as Braille (Liblouis)" %}</h3>
   <form action="{% url browse_brl object.id %}" method="POST">
     <table>
       {{ bform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <a name="xhtml_view"></a>
-  <h3>{% trans "View as XHTML" %}</h3>
+  <h3 id="xhtml_view">{% trans "View as XHTML" %}</h3>
   <form action="{% url browse_xhtml object.id %}" method="POST">
     <table>
       {{ xhtmlform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <a name="rtf_view"></a>
-  <h3>{% trans "View as RTF" %}</h3>
+  <h3 id="rtf_view">{% trans "View as RTF" %}</h3>
   <form action="{% url browse_rtf object.id %}" method="POST">
     <table>
       {{ rtfform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <a name="epub_view"></a>
-  <h3>{% trans "View as EPUB" %}</h3>
+  <h3 id="epub_view">{% trans "View as EPUB" %}</h3>
   <form action="{% url browse_epub object.id %}" method="POST">
     <table>
       {{ epubform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <a name="text_only_fileset_view"></a>
-  <h3>{% trans "View as Daisy 2.02 Text-Only fileset" %}</h3>
+  <h3 id="text_only_fileset_view">{% trans "View as Daisy 2.02 Text-Only fileset" %}</h3>
   <form action="{% url browse_text_only_fileset object.id %}" method="POST">
     <table>
       {{ textonlyfilesetform.as_table }}
