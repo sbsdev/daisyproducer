@@ -71,10 +71,9 @@ class DaisyPipeline:
                 '/scripts/create_distribute/xhtml/DtbookToXhtml.taskScript'),
             "--input=%s" % inputFile,
             "--output=%s" % outputFile,
-            "--daisyNoterefs=%(daisyNoterefs)s" % kwargs,
-            "--genToc=%(genToc)s" % kwargs,
-            # "--genChunks=%(genChunks)s" % kwargs,
             )
+        for k, v in kwargs.iteritems():
+            command += ("--%s=%s" % (k,v),)
         call(command)
 
     @staticmethod
@@ -89,9 +88,9 @@ class DaisyPipeline:
                 '/scripts/create_distribute/text/DtbookToRtf.taskScript'),
             "--input=%s" % inputFile,
             "--output=%s" % outputFile,
-            "--inclTOC=%(inclTOC)s" % kwargs,
-            "--inclPagenum=%(inclPagenum)s" % kwargs,
             )
+        for k, v in kwargs.iteritems():
+            command += ("--%s=%s" % (k,v),)
         call(command)
 
     @staticmethod
@@ -112,6 +111,8 @@ class DaisyPipeline:
     @staticmethod
     def dtbook2text_only_fileset(inputFile, outputPath, **kwargs):
         """Transform a dtbook xml file to a Daisy 2.02 Text-Only fileset"""
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
             "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
             "%s/%s" %  (
@@ -120,8 +121,6 @@ class DaisyPipeline:
             "--input=%s" % inputFile,
             "--outputPath=%s" % outputPath,
             )
-        # map True and False to "true" and "false"
-        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         for k, v in kwargs.iteritems():
             command += ("--%s=%s" % (k,v),)
         call(command)

@@ -190,5 +190,5 @@ def preview(request, document_id):
     params = {}
     DaisyPipeline.dtbook2xhtml(inputFile, outputFile, **params)
 
-    return render_to_mimetype_response('text/html', document.title.encode('utf-8'), outputFile)
+    return render_to_mimetype_response('text/html', "%s.xhtml" % document.title.encode('utf-8'), outputFile)
 
