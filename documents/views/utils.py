@@ -2,13 +2,17 @@ from django.http import HttpResponse
 import os
 import mimetypes
 
-def render_to_mimetype_response(filename, outputFile, mimetype=None):
-    if mimetype == None:
-        mimetype, ignore = mimetypes.guess_type(filename)
-    assert mimetype != None
+mimetypes.init()
+mimetypes.add_type('application/epub+zip','.epub')
+mimetypes.add_type('text/x-brl','.brl')
+mimetypes.add_type('text/x-sbsform','.b')
+
+def render_to_mimetype_response(mimetype, filename, outputFile):
+    ext = mimetypes.guess_extension(mimetype)
+    assert ext != None
 
     response = HttpResponse(mimetype=mimetype)
-    response['Content-Disposition'] = "attachment; filename=\"%s\"" % (filename)
+    response['Content-Disposition'] = "attachment; filename=\"%s%s\"" % (filename, ext)
 
     f = open(outputFile)
     try:

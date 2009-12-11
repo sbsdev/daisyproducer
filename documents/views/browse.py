@@ -54,7 +54,7 @@ def as_pdf(request, document_id):
     outputFile = "/tmp/%s.pdf" % document_id
     DaisyPipeline.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
 
-    return render_to_mimetype_response(document.title.encode('utf-8') + ".pdf", outputFile)
+    return render_to_mimetype_response('application/pdf', document.title.encode('utf-8'), outputFile)
 
 def as_brl(request, document_id):
     form = BrailleProfileForm(request.POST)
@@ -68,7 +68,7 @@ def as_brl(request, document_id):
     outputFile = "/tmp/%s.brl" % document_id
     Liblouis.dtbook2brl(inputFile, outputFile, **form.cleaned_data)
 
-    return render_to_mimetype_response(document.title.encode('utf-8') + ".brl", outputFile, mimetype='text/plain')
+    return render_to_mimetype_response('text/x-brl', document.title.encode('utf-8'), outputFile)
 
 def as_sbsform(request, document_id):
     form = SBSFormForm(request.POST)
@@ -81,7 +81,7 @@ def as_sbsform(request, document_id):
     outputFile = "/tmp/%s.sbsform" % document_id
     SBSForm.dtbook2sbsform(inputFile, outputFile, **form.cleaned_data)
 
-    return render_to_mimetype_response(document.title.encode('utf-8') + ".b", outputFile, mimetype='text/plain')
+    return render_to_mimetype_response('text/x-sbsform', document.title.encode('utf-8'), outputFile)
 
 def as_xhtml(request, document_id):
     form = XHTMLForm(request.POST)
@@ -94,7 +94,7 @@ def as_xhtml(request, document_id):
     outputFile = "/tmp/%s.xhtml" % document_id
     DaisyPipeline.dtbook2xhtml(inputFile, outputFile, **form.cleaned_data)
 
-    return render_to_mimetype_response(document.title.encode('utf-8') + ".html", outputFile)
+    return render_to_mimetype_response('text/html', document.title.encode('utf-8'), outputFile)
 
 def as_rtf(request, document_id):
     form = RTFForm(request.POST)
@@ -107,7 +107,7 @@ def as_rtf(request, document_id):
     outputFile = "/tmp/%s.rtf" % document_id
     DaisyPipeline.dtbook2rtf(inputFile, outputFile, **form.cleaned_data)
 
-    return render_to_mimetype_response(document.title.encode('utf-8') + ".rtf", outputFile)
+    return render_to_mimetype_response('application/rtf', document.title.encode('utf-8'), outputFile)
 
 def as_epub(request, document_id):
     form = EPUBForm(request.POST)
@@ -128,7 +128,7 @@ def as_epub(request, document_id):
     defaults.update(form.cleaned_data)
     DaisyPipeline.dtbook2epub(inputFile, outputFile, **defaults)
 
-    return render_to_mimetype_response(document.title.encode('utf-8') + ".epub", outputFile, mimetype='application/epub+zip')
+    return render_to_mimetype_response('application/epub+zip', document.title.encode('utf-8'), outputFile)
 
 def zipDirectory(directory, zipFileName, document_title):
     outputFile = zipfile.ZipFile(zipFileName, 'w')
@@ -163,7 +163,7 @@ def as_text_only_fileset(request, document_id):
     zipDirectory(outputDir, zipFileName, document.title)
     shutil.rmtree(outputDir)
     
-    return render_to_mimetype_response(document.title.encode('utf-8') + ".zip", zipFileName)
+    return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFileName)
 
 def as_dtb(request, document_id):
     form = DTBForm(request.POST)
@@ -181,5 +181,5 @@ def as_dtb(request, document_id):
     zipDirectory(outputDir, zipFileName, document.title)
     shutil.rmtree(outputDir)
 
-    return render_to_mimetype_response(document.title.encode('utf-8') + ".zip", zipFileName)
+    return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFileName)
 
