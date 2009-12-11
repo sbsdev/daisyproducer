@@ -15,6 +15,7 @@
   <a href="#rtf_view" accesskey="r" >{% trans "View as RTF" %}</a><br />
   <a href="#epub_view" accesskey="e" >{% trans "View as EPUB" %}</a><br />
   <a href="#text_only_fileset_view" accesskey="t" >{% trans "View as  Daisy 2.02 Text-Only fileset" %}</a><br />
+  <a href="#dtb_view" accesskey="a" >{% trans "View as Full-Text Full-Audio book" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
@@ -81,6 +82,13 @@
   <form action="{% url browse_text_only_fileset object.id %}" method="POST">
     <table>
       {{ textonlyfilesetform.as_table }}
+    </table>
+    <p><input type="submit" value="{% trans 'Download' %}" /></p>
+  </form>
+  <h3 id="dtb_view">{% trans "View as Full-Text Full-Audio book" %}</h3>
+  <form action="{% url browse_dtb object.id %}" method="POST">
+    <table>
+      {{ dtbform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>

@@ -1,5 +1,5 @@
 from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm
-from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm, TextOnlyFilesetForm
+from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm, TextOnlyFilesetForm, DTBForm
 from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -37,7 +37,8 @@ def detail(request, document_id):
             'sform' : SBSFormForm(),
             'xhtmlform' : XHTMLForm(),
             'rtfform' : RTFForm(),
-            'textonlyfilesetform' : TextOnlyFilesetForm()}
+            'textonlyfilesetform' : TextOnlyFilesetForm(),
+            'dtbform' : DTBForm()}
         )
     return response
 
@@ -129,6 +130,23 @@ def as_epub(request, document_id):
 
     return render_to_mimetype_response('application/epub+zip', "%s.epub" % document.title.encode('utf-8'), outputFile)
 
+def zipDirectory(directory, zipFileName, document_title):
+    outputFile = zipfile.ZipFile(zipFileName, 'w')
+    cwd = os.getcwd()
+    os.chdir(directory)
+    for dirpath, dirnames, filenames in os.walk('.'):
+        for filename in filenames:
+            # zipFile support in Python has a few weak spots: Older
+            # Pythons die if the filename or the arcname that is
+            # passed to ZipFile.write is not in the right encoding
+            # FIXME: remove the encode("latin-1") workaround once we
+            # upgrade to 2.6.2
+            outputFile.write(
+                os.path.join(dirpath, filename).encode("latin-1"), 
+                os.path.join(document_title, dirpath, filename).encode("latin-1"))
+    outputFile.close()
+    os.chdir(cwd)
+
 def as_text_only_fileset(request, document_id):
     form = TextOnlyFilesetForm(request.POST)
 
@@ -137,22 +155,31 @@ def as_text_only_fileset(request, document_id):
 
     document = Document.objects.get(pk=document_id)
     inputFile = document.latest_version().content.path
-    outputDir = tempfile.mkdtemp(prefix="daisyproducer_")
+    outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
 
     DaisyPipeline.dtbook2text_only_fileset(inputFile, outputDir, **form.cleaned_data)
 
-    ignore, outputFileName = tempfile.mkstemp(suffix='zip', prefix=document_id)
-    outputFile = zipfile.ZipFile(outputFileName, 'w')
-    for filename in os.listdir(outputDir):
-        outputFile.write(
-            # zipFile support in Python has a few weak spots: Older
-            # Pythons die if the filename or the arcname that is
-            # passed to ZipFile.write is not in the right encoding
-            # FIXME: remove the encode("latin-1") workaround once we
-            # upgrade to 2.6.2
-            os.path.join(outputDir, filename).encode("latin-1"), 
-            os.path.join(document.title, os.path.basename(filename)).encode("latin-1"))
-    outputFile.close()
+    ignore, zipFileName = tempfile.mkstemp(suffix='.zip', prefix=document_id)
+    zipDirectory(outputDir, zipFileName, document.title)
     shutil.rmtree(outputDir)
     
-    return render_to_mimetype_response('application/zip', "%s.zip" % document.title.encode('utf-8'), outputFileName)
+    return render_to_mimetype_response('application/zip', "%s.zip" % document.title.encode('utf-8'), zipFileName)
+
+def as_dtb(request, document_id):
+    form = DTBForm(request.POST)
+
+    if not form.is_valid():
+        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
+
+    document = Document.objects.get(pk=document_id)
+    inputFile = document.latest_version().content.path
+    outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
+
+    DaisyPipeline.dtbook2dtb(inputFile, outputDir, **form.cleaned_data)
+
+    ignore, zipFileName = tempfile.mkstemp(suffix='.zip', prefix=document_id)
+    zipDirectory(outputDir, zipFileName, document.title)
+    shutil.rmtree(outputDir)
+
+    return render_to_mimetype_response('application/zip', "%s.zip" % document.title.encode('utf-8'), zipFileName)
+

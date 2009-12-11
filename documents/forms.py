@@ -154,3 +154,29 @@ class TextOnlyFilesetForm(forms.Form):
         label=_("Sentence detection"), required=False, initial=True)
     doWordDetection = forms.BooleanField(
         label=_("Word detection"), required=False)
+
+class DTBForm(forms.Form):
+    NARRATOR_BITRATE_CHOICES = (
+        (32, _('32 kbit/s')),
+        (48, _('48 kbit/s')),
+        (64, _('64 kbit/s')),
+        (128, _('128 kbit/s')),
+        )
+
+    bitrate = forms.TypedChoiceField(
+        label=_("MP3 Bitrate"), 
+#        help_text=_("Select output MP3 encoding bitrate"),
+        choices=NARRATOR_BITRATE_CHOICES, 
+        coerce=int)
+    doSentDetection = forms.BooleanField(
+        label=_("Sentence detection"), 
+#        help_text=_("Select whether to apply sentence detection"),
+        required=False, initial=True)
+    multiLang = forms.BooleanField(
+        label=_("Multi-language support"), 
+#        help_text=_("Select whether to use different TTS voices depending on the xml:lang attributes"),
+        required=False, initial=True)
+#     dtbookFix = forms.BooleanField(
+#         label=_("DTBook Fix"), 
+# #        help_text=_("Select whether to apply DTBook Fix routines"),
+#         required=False)
