@@ -1,7 +1,12 @@
 from django.http import HttpResponse
 import os
+import mimetypes
 
-def render_to_mimetype_response(mimetype, filename, outputFile):
+def render_to_mimetype_response(filename, outputFile, mimetype=None):
+    if mimetype == None:
+        mimetype, ignore = mimetypes.guess_type(filename)
+    assert mimetype != None
+
     response = HttpResponse(mimetype=mimetype)
     response['Content-Disposition'] = "attachment; filename=\"%s\"" % (filename)
 
