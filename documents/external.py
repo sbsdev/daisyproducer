@@ -3,8 +3,8 @@ from django.conf import settings
 from os.path import join, basename, splitext
 from shutil import rmtree
 from subprocess import call, Popen, PIPE
-from tempfile import mkdtemp, gettempdir
 import os
+import tempfile
 
 class DaisyPipeline:
 
@@ -27,7 +27,7 @@ class DaisyPipeline:
     @staticmethod
     def dtbook2pdf(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to pdf"""
-        tmpDir = mkdtemp()
+        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
         fileBaseName = splitext(basename(inputFile))[0]
         latexFileName = join(tmpDir, fileBaseName + ".tex")
         # Transform to LaTeX using pipeline
@@ -189,20 +189,13 @@ class Liblouis:
             "-CsemanticFiles=dtbook.sem",
             "-CinternetAccess=no",
             )
-        p2 = Popen(command, stdin=p1.stdout, stdout=PIPE, 
+        f = open(outputFile, 'w')
+        p2 = Popen(command, stdin=p1.stdout, stdout=f, 
                    # FIXME: xml2brl creates a temporary file in cwd,
                    # so we have to change directory to a place where
                    # www-data can create temporary files
-                   cwd=gettempdir())
-        # transform to braille
-        command = (
-            "tr",
-            "'[:lower:]'",
-            "'[:upper:]'",
-            )
-        f = open(outputFile, 'w')
-        p3 = Popen(command, stdin=p2.stdout, stdout=f)
-        p3.communicate()
+                   cwd=tempfile.gettempdir())
+        p2.communicate()
         f.close()
 
 import louis
