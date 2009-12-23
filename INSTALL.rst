@@ -42,6 +42,9 @@ Basic requirements
 Required packages
 ~~~~~~~~~~~~~~~~~
 
+Basics
+------
+
 In terms of (Debian/Ubuntu) packages this translates to
 
 - python
@@ -57,11 +60,31 @@ In terms of (Debian/Ubuntu) packages this translates to
 - ttf-tiresias
 - xsltproc
 
+Install the basic packages::
+
+  sudo aptitude install python python-django python-lxml \
+  python-docutils python-libxml2 python-libxslt1 sun-java6-jre \
+  texlive-xetex texlive-latex-extra texlive-latex-recommended \
+  texlive-lang-german ttf-tiresias lmodern xsltproc
+
+Database
+--------
+
 For PostgreSQL
 
 - postgresql
 - postgresql-client
 - python-psycopg2
+
+Install PostgreSQL::
+
+  sudo aptitude install postgresql postgresql-client python-psycopg2
+
+Set up a database, a user and a database::
+
+  sudo -u postgres sh
+  createuser -DRS daisyproducer
+  createdb -O daisyproducer daisyproducer_prod
 
 For MySQL
 
@@ -69,12 +92,65 @@ For MySQL
 - mysql-client
 - python-mysqldb
 
-There is a `Debian package for liblouis`_ which could probably be
-used. The Daisy Pipeline has not been packaged so far and will have to
-be installed somewhere.
+IN case you prefer MySQL::
+
+  sudo aptitude install mysql-server mysql-client python-mysqldb
+
+Again, set up a database, a user and a database::
+
+  mysql --user=root
+  CREATE DATABASE daisyproducer_prod;
+  CREATE USER 'daisyproducer'@'localhost' IDENTIFIED BY 'sekret';
+  GRANT ALL ON daisyproducer_prod.* TO 'daisyproducer'@'localhost';
+
+Liblouis
+--------
+
+There is a `Debian package for liblouis`_ which can be used. If you
+want the newest liblouis I would recommend to install it from source
+as follows::
+
+  # install liblouis dependencies
+  sudo aptitude install pkg-config libxml2-dev
+  # first install liblouis
+  wget http://liblouis.googlecode.com/files/liblouis-1.8.0.tar.gz
+  tar xzf liblouis-1.8.0.tar.gz
+  cd liblouis-1.8.0
+  ./configure --enable-ucs4
+  make
+  sudo make install
+  # also install the python bindings
+  cd python
+  sudo python setup.py install
+  # now install liblouisxml
+  wget http://liblouisxml.googlecode.com/files/liblouisxml-2.1.0.tar.gz
+  tar xzf liblouisxml-2.1.0.tar.gz
+  cd liblouisxml-2.1.0
+  ./configure
+  make
+  sudo make install
 
 .. _Debian package for liblouis: http://packages.debian.org/search?keywords=liblouis&searchon=names&suite=all&section=all
 
+Daisy Pipeline
+--------------
+The Daisy Pipeline has not been packaged so far and will have to be
+installed somewhere::
+
+  cd /opt
+  sudo wget http://downloads.sourceforge.net/daisymfc/pipeline-20090410.zip
+  sudo unzip pipeline-20090410.zip
+  sudo chmod a+x pipeline-20090410/pipeline.sh
+
+The Daisy Pipeline has some dependencies as well, namely lame and
+espeak::
+
+  sudo aptitude install espeak espeak-data
+  # on Debian you might have to enable the http://debian-multimedia.org/ repository
+  sudo aptitude install lame
+
+Then configure the path to lame in
+/opt/pipeline-20090410/pipeline.user.properties and set it to /usr/bin/lame
 
 Deployment requirements
 -----------------------
@@ -83,6 +159,16 @@ Deployment requirements
 
 .. _Apache: http://www.apache.org
 .. _Python WSGI adapter module for Apache: http://code.google.com/p/modwsgi/
+
+Install Apache and WSGI::
+
+  sudo aptitude install apache2 libapache2-mod-wsgi
+
+Enable wsgi for Apache by using a config file in
+/etc/apache2/sites-available along the lines of the one given in the
+apache subdirectory (see also `Apache config file example`_)
+
+.. _Apache config file example: http://github.com/egli/daisy-producer/blob/master/apache/demo.xmlp.sbszh.ch
 
 Optional requirements
 ---------------------
@@ -94,42 +180,68 @@ Optional requirements
 Installation
 ============
 
-The following settings have to be adapted for your site:
+There is currently no released version of Daisy Producer, so you can
+get it directly from the source code repository::
 
-- DATABASE_ENGINE
-- DATABASE_NAME
-- DATABASE_USER
-- DATABASE_PASSWORD
-- DAISY_DEFAULT_PUBLISHER
-- DAISY_PIPELINE_PATH
-- SECRET_KEY
-- TIME_ZONE
-
-When installing under Apache you need to set up URLconf to server the
-media files for the admin site. Add the following to urls.py
-
-  (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-    {'document_root': os.path.join(PROJECT_DIR, 'public', 'media')}),
-
-and add a link under the public directory
-
-  $ cd $DAISYPRODUCER_HOME/public
-  $ ln -s /usr/share/python-support/python-django/django/contrib/admin/media media
-
-Adapt the settings file to your environment.
-
-  $ cd $DAISYPRODUCER_HOME
-  $ emacs settings.py
-
-For the archive create a directory named archive under the
-daisyproducer directory and give www-data write access to it:
-
-  $ cd $DAISYPRODUCER_HOME
-  $ mkdir archive
-  $ chown www-data archive
+  sudo mkdir /srv/demo.daisyproducer.org
+  cd /srv/demo.daisyproducer.org
+  git clone git://github.com/egli/daisy-producer.git daisyproducer
+  sudo aptitude install autoconf automake
+  autoreconf -vfi
+  ./configure
 
 Configuration
 =============
+
+You need to adapt the settings to your environment::
+
+  cd /srv/demo.daisyproducer.org/daisyproducer
+  emacs settings.py
+  
+The following settings have to be adapted for your site:
+
+- DATABASE_ENGINE
+
+  - Needs to be either 'postgresql_psycopg2' or 'mysql'
+
+- DATABASE_NAME
+
+  - set to 'daisyproducer_prod'
+
+- DATABASE_USER
+
+  - set to 'daisyproducer'
+
+- DATABASE_PASSWORD
+
+  - set to 'sekret'
+
+- DAISY_DEFAULT_PUBLISHER
+
+  - set to the name of your organization
+
+- DAISY_PIPELINE_PATH
+
+  - set to os.path.join('/', 'tmp', 'pipeline-20090410')
+
+- SECRET_KEY
+- TIME_ZONE
+- SERVE_STATIC_FILES
+
+  - set to 'False'
+
+For the archive create a directory named archive under the
+daisyproducer directory and give www-data write access to it::
+
+  mkdir archive
+  sudo chown www-data archive
+
+Set ip the initial database tables::
+
+  python manage syncdb
+
+Application setup
+=================
 
 Once the application is installed you will need to configure the
 workflow, the users and the groups. Daisy Producer comes with a
