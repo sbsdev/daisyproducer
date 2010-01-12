@@ -21,8 +21,10 @@ class DaisyPipeline:
                 'scripts/verify/DTBookValidator.taskScript',),
             "--input=%s" % file_path,
             )
-        return filter(lambda line: line.find('ERROR') != -1, 
-                      Popen(command, stdout=PIPE).communicate()[0].splitlines())
+        return map(lambda line: line.replace("file:%s" % file_path, "", 1),
+                   map(lambda line: line.replace("[ERROR, Validator]", "", 1), 
+                       filter(lambda line: line.find('[ERROR, Validator]') != -1, 
+                              Popen(command, stdout=PIPE).communicate()[0].splitlines())))
         
     @staticmethod
     def dtbook2pdf(inputFile, outputFile, **kwargs):
