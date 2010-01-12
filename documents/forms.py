@@ -26,11 +26,11 @@ class PartialVersionForm(ModelForm):
                 "The mime type of the uploaded file must be 'text/xml'")
         # FIXME: test the mime-type with python-magic
         # make sure the uploaded version is valid xml
-        exitMessage = DaisyPipeline.validate(data.temporary_file_path())
-        if exitMessage:
+        exitMessages = DaisyPipeline.validate(data.temporary_file_path())
+        if exitMessages:
             raise forms.ValidationError(
-                "The uploaded file is not a valid DTBook XML document: %s" % 
-                ' '.join(exitMessage))            
+                ["The uploaded file is not a valid DTBook XML document: "] + 
+                exitMessages)            
         # make sure the meta data of the uploaded version corresponds
         # to the meta data in the document
         xmlContent = XMLContent()
