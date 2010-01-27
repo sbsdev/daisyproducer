@@ -6,6 +6,21 @@ from subprocess import call, Popen, PIPE
 import os
 import tempfile
 
+def filterBrlContractionhints(file_path):
+    """Filter all the brl:contractionhints from the given file_path.
+    This is done using an XSLT stylesheet. Return the name of a
+    temporary file that contains the filtered content. The caller is
+    responsible for removing the temporary file."""
+    tmpFile = tempfile.mkstemp(prefix="daisyproducer-")[1]
+    command = (
+        "xsltproc",
+        "--output", tmpFile,
+        join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterBrlContractionhints.xsl'),
+        file_path,
+        )
+    call(command)
+    return tmpFile
+
 class DaisyPipeline:
 
     @staticmethod
@@ -14,17 +29,20 @@ class DaisyPipeline:
         Pipeline. Return an empty string if the validation was
         successful. Return a list of error messages as delivered by
         the Daisy Pipeline otherwise."""
+        tmpFile = filterBrlContractionhints(file_path)
         command = (
             "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
             "%s/%s" %  (
                 settings.DAISY_PIPELINE_PATH, 
                 'scripts/verify/DTBookValidator.taskScript',),
-            "--input=%s" % file_path,
+            "--input=%s" % tmpFile,
             )
-        return map(lambda line: line.replace("file:%s" % file_path, "", 1),
+        result = map(lambda line: line.replace("file:%s" % file_path, "", 1),
                    map(lambda line: line.replace("[ERROR, Validator]", "", 1), 
                        filter(lambda line: line.find('[ERROR, Validator]') != -1, 
                               Popen(command, stdout=PIPE).communicate()[0].splitlines())))
+        os.remove(tmpFile)
+        return result
         
     @staticmethod
     def dtbook2pdf(inputFile, outputFile, **kwargs):
