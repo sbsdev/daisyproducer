@@ -11,7 +11,7 @@ def filterBrlContractionhints(file_path):
     This is done using an XSLT stylesheet. Return the name of a
     temporary file that contains the filtered content. The caller is
     responsible for removing the temporary file."""
-    tmpFile = tempfile.mkstemp(prefix="daisyproducer-")[1]
+    tmpFile = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")[1]
     command = (
         "xsltproc",
         "--output", tmpFile,
@@ -50,13 +50,15 @@ class DaisyPipeline:
         tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
         fileBaseName = splitext(basename(inputFile))[0]
         latexFileName = join(tmpDir, fileBaseName + ".tex")
+
+        tmpFile = filterBrlContractionhints(inputFile)
         # Transform to LaTeX using pipeline
         command = (
             "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
             "%s/%s" %  (
                 settings.DAISY_PIPELINE_PATH, 
                 '/scripts/create_distribute/latex/DTBookToLaTeX.taskScript'),
-            "--input=%s" % inputFile,
+            "--input=%s" % tmpFile,
             "--output=%s" % latexFileName,
             "--fontsize=%(font_size)s" % kwargs,
             "--font=%(font)s" % kwargs,
@@ -65,6 +67,7 @@ class DaisyPipeline:
             "--papersize=%(paper_size)s" % kwargs,
             )
         call(command)
+        os.remove(tmpFile)        
         # Transform to pdf using xelatex
         pdfFileName = join(tmpDir, fileBaseName + ".pdf")
         currentDir = os.getcwd()
@@ -83,6 +86,7 @@ class DaisyPipeline:
     @staticmethod
     def dtbook2xhtml(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to xhtml"""
+        tmpFile = filterBrlContractionhints(inputFile)
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
@@ -90,16 +94,18 @@ class DaisyPipeline:
             "%s/%s" %  (
                 settings.DAISY_PIPELINE_PATH, 
                 '/scripts/create_distribute/xhtml/DtbookToXhtml.taskScript'),
-            "--input=%s" % inputFile,
+            "--input=%s" % tmpFile,
             "--output=%s" % outputFile,
             )
         for k, v in kwargs.iteritems():
             command += ("--%s=%s" % (k,v),)
         call(command)
+        os.remove(tmpFile)
 
     @staticmethod
     def dtbook2rtf(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to rtf"""
+        tmpFile = filterBrlContractionhints(inputFile)
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
@@ -107,31 +113,35 @@ class DaisyPipeline:
             "%s/%s" %  (
                 settings.DAISY_PIPELINE_PATH, 
                 '/scripts/create_distribute/text/DtbookToRtf.taskScript'),
-            "--input=%s" % inputFile,
+            "--input=%s" % tmpFile,
             "--output=%s" % outputFile,
             )
         for k, v in kwargs.iteritems():
             command += ("--%s=%s" % (k,v),)
         call(command)
+        os.remove(tmpFile)
 
     @staticmethod
     def dtbook2epub(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to EPUB"""
+        tmpFile = filterBrlContractionhints(inputFile)
         command = (
             "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
             "%s/%s" %  (
                 settings.DAISY_PIPELINE_PATH, 
                 '/scripts/create_distribute/epub/OPSCreator.taskScript'),
-            "--input=%s" % inputFile,
+            "--input=%s" % tmpFile,
             "--output=%s" % outputFile,
             )
         for k, v in kwargs.iteritems():
             command += ("--%s=%s" % (k,v),)
         call(command)
+        os.remove(tmpFile)
 
     @staticmethod
     def dtbook2text_only_fileset(inputFile, outputPath, **kwargs):
         """Transform a dtbook xml file to a Daisy 2.02 Text-Only fileset"""
+        tmpFile = filterBrlContractionhints(inputFile)
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
@@ -139,16 +149,18 @@ class DaisyPipeline:
             "%s/%s" %  (
                 settings.DAISY_PIPELINE_PATH, 
                 '/scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript'),
-            "--input=%s" % inputFile,
+            "--input=%s" % tmpFile,
             "--outputPath=%s" % outputPath,
             )
         for k, v in kwargs.iteritems():
             command += ("--%s=%s" % (k,v),)
         call(command)
+        os.remove(tmpFile)
 
     @staticmethod
     def dtbook2dtb(inputFile, outputPath, **kwargs):
         """Transform a dtbook xml file to a Daisy Full-Text Full-Audio book"""
+        tmpFile = filterBrlContractionhints(inputFile)
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
@@ -156,12 +168,13 @@ class DaisyPipeline:
             "%s/%s" %  (
                 settings.DAISY_PIPELINE_PATH, 
                 '/scripts/create_distribute/dtb/Narrator-DtbookToDaisy.taskScript'),
-            "--input=%s" % inputFile,
+            "--input=%s" % tmpFile,
             "--outputPath=%s" % outputPath,
             )
         for k, v in kwargs.iteritems():
             command += ("--%s=%s" % (k,v),)
         call(command)
+        os.remove(tmpFile)
 
 class Liblouis:
 
@@ -177,11 +190,12 @@ class Liblouis:
     @staticmethod
     def dtbook2brl(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to brl"""
+        tmpFile = filterBrlContractionhints(inputFile)
         # prepare xml input for liblouis
         command = (
             "xsltproc",
             join(settings.PROJECT_DIR, 'documents', 'xslt', 'brailleSanitize.xsl'),
-            inputFile,
+            tmpFile,
             )
         p1 = Popen(command, stdout=PIPE)
         # transform to braille
@@ -217,6 +231,7 @@ class Liblouis:
                    cwd=tempfile.gettempdir())
         p2.communicate()
         f.close()
+        os.remove(tmpFile)
 
 import louis
 import libxml2
