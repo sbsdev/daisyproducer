@@ -4,6 +4,7 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"	
 		xmlns:louis="http://liblouis.org/liblouis"
+		xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
 		exclude-result-prefixes="dtb louis">
 
   <xsl:output method="text" encoding="utf-8" indent="no"/>
@@ -135,6 +136,19 @@ i j=</xsl:text>
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="dtb:level2">
+    <xsl:text>y LEVEL2b</xsl:text>
+    <!-- invoke a different macro if the first child is a pagenum -->
+    <xsl:if test="name(child::*[1])='pagenum'">
+    <xsl:text>_j</xsl:text>
+    </xsl:if>
+    <xsl:text>
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y LEVEL2e
+</xsl:text>
+  </xsl:template>
+
   <xsl:template match="dtb:p">   
     <xsl:text>y Pb
 </xsl:text>
@@ -166,6 +180,22 @@ y Pe
 </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:h2">
+    <xsl:text>y H2
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:blockquote">
+    <xsl:text>y BLOCKQUOTEb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y BLOCKQUOTEe
 </xsl:text>
   </xsl:template>
 
