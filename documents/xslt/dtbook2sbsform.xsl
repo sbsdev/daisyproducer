@@ -149,6 +149,58 @@ i j=</xsl:text>
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="dtb:level3">
+    <xsl:text>y LEVEL3b</xsl:text>
+    <!-- invoke a different macro if the first child is a pagenum -->
+    <xsl:if test="name(child::*[1])='pagenum'">
+    <xsl:text>_j</xsl:text>
+    </xsl:if>
+    <xsl:text>
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y LEVEL3e
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:level4">
+    <xsl:text>y LEVEL4b</xsl:text>
+    <!-- invoke a different macro if the first child is a pagenum -->
+    <xsl:if test="name(child::*[1])='pagenum'">
+    <xsl:text>_j</xsl:text>
+    </xsl:if>
+    <xsl:text>
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y LEVEL4e
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:level5">
+    <xsl:text>y LEVEL5b</xsl:text>
+    <!-- invoke a different macro if the first child is a pagenum -->
+    <xsl:if test="name(child::*[1])='pagenum'">
+    <xsl:text>_j</xsl:text>
+    </xsl:if>
+    <xsl:text>
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y LEVEL5e
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:level6">
+    <xsl:text>y LEVEL6b</xsl:text>
+    <!-- invoke a different macro if the first child is a pagenum -->
+    <xsl:if test="name(child::*[1])='pagenum'">
+    <xsl:text>_j</xsl:text>
+    </xsl:if>
+    <xsl:text>
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y LEVEL6e
+</xsl:text>
+  </xsl:template>
+
   <xsl:template match="dtb:p">   
     <xsl:text>y Pb
 </xsl:text>
@@ -158,9 +210,22 @@ y Pe
 </xsl:text>
   </xsl:template>
 
-
   <xsl:template match="dtb:list">
-    <!-- ignore for now -->
+    <xsl:text>y PLISTb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+y PLISTe
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:li">
+    <xsl:text>y LIb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+y LIe
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:pagenum">
@@ -191,11 +256,43 @@ y Pe
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="dtb:blockquote">
-    <xsl:text>y BLOCKQUOTEb
+  <xsl:template match="dtb:h3">
+    <xsl:text>y H3
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>y BLOCKQUOTEe
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:h4">
+    <xsl:text>y H4
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:h5">
+    <xsl:text>y H5
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:h6">
+    <xsl:text>y H6
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:blockquote">
+    <xsl:text>y BLQUOb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y BLQUOe
 </xsl:text>
   </xsl:template>
 
@@ -224,7 +321,7 @@ y Pe
   
   <xsl:template match="dtb:acronym">
   </xsl:template>
-  
+
   <xsl:template match="text()">
     <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
   </xsl:template>
