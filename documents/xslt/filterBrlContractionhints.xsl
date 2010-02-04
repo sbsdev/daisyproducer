@@ -19,8 +19,8 @@
     </xsl:element>
   </xsl:template>
 
-  <!-- Drop the brl:contractionhint elements while retaining their content -->
-  <xsl:template match="brl:contractionhint">
+  <!-- Drop the brl:* elements while retaining their content -->
+  <xsl:template match="brl:*">
     <xsl:apply-templates/>
   </xsl:template>
 
