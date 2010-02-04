@@ -322,6 +322,43 @@ y LIe
   <xsl:template match="dtb:acronym">
   </xsl:template>
 
+  <!-- Contraction hints -->
+
+  <xsl:template match="brl:contractionhint[@class='ordinal']">
+    <!-- FIXME: insert the proper table here -->
+    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  </xsl:template>
+
+  <xsl:template match="brl:contractionhint[@class='propername']">
+    <!-- FIXME: insert the proper table here -->
+    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  </xsl:template>
+
+  <xsl:template match="brl:contractionhint[@class='politeform']">
+    <!-- FIXME: insert the proper table here -->
+    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  </xsl:template>
+
+  <xsl:template match="brl:date">
+    <!-- FIXME: What do we do with dates that have no year? -->
+    <xsl:variable name="year" select="substring-before(@iso, '-')"/>
+    <xsl:variable name="month" select="substring-before(substring-after(@iso, '-'),'-')"/>
+    <xsl:variable name="day" select="substring-after(substring-after(@iso, '-'), '-')"/>
+    <xsl:value-of select="concat($year,',',$month,',',$day)"/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="brl:time">
+    <xsl:variable name="hour" select="substring-before(@iso, ':')"/>
+    <xsl:variable name="minute" select="substring-after(@iso, ':')"/>
+    <xsl:value-of select="concat($hour,',',$minute)"/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <!-- Text nodes are translated with liblouis -->
+
   <xsl:template match="text()">
     <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
   </xsl:template>
