@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://www.daisy.org/z3986/2005/dtbook/" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <ref name="dtbook"/>
+  </start>
+  <define name="dtbook">
+    <element name="dtbook">
+      <attribute name="version">
+        <value>2005-3</value>
+      </attribute>
+      <attribute name="xml:lang">
+        <value>de-CH</value>
+      </attribute>
+      <ref name="head"/>
+      <ref name="book"/>
+    </element>
+  </define>
+  <define name="head">
+    <element name="head">
+      <oneOrMore>
+        <ref name="meta"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="meta">
+    <element name="meta">
+      <attribute name="content"/>
+      <attribute name="name">
+        <choice>
+          <value>dtb:uid</value>
+          <value>dc:Title</value>
+          <value>dc:Creator</value>
+          <value>dc:Date</value>
+          <value>dc:Publisher</value>
+          <value>dc:Language</value>
+        </choice>
+      </attribute>
+    </element>
+  </define>
+  <define name="book">
+    <element name="book">
+      <ref name="frontmatter"/>
+      <ref name="bodymatter"/>
+      <ref name="rearmatter"/>
+    </element>
+  </define>
+  <define name="frontmatter">
+    <element name="frontmatter">
+      <element name="doctitle">
+        <text/>
+      </element>
+      <element name="docauthor">
+        <text/>
+      </element>
+      <zeroOrMore>
+        <ref name="level1"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="bodymatter">
+    <element name="bodymatter">
+      <oneOrMore>
+        <ref name="level1"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="rearmatter">
+    <element name="rearmatter">
+      <oneOrMore>
+        <ref name="level1"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="levelcontent">
+    <interleave>
+      <zeroOrMore>
+        <ref name="pagenum"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="p"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="list"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="blockquote"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="contractionhint"/>
+      </zeroOrMore>
+    </interleave>
+  </define>
+  <define name="hcontent">
+    <interleave>
+      <text/>
+      <optional>
+        <ref name="br"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="contractionhint"/>
+      </zeroOrMore>
+    </interleave>
+  </define>
+  <define name="level1">
+    <element name="level1">
+      <interleave>
+        <ref name="levelcontent"/>
+        <optional>
+          <ref name="h1"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="level2"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="h1">
+    <element name="h1">
+      <ref name="hcontent"/>
+    </element>
+  </define>
+  <define name="level2">
+    <element name="level2">
+      <interleave>
+        <ref name="levelcontent"/>
+        <ref name="h2"/>
+        <zeroOrMore>
+          <ref name="level3"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="h2">
+    <element name="h2">
+      <ref name="hcontent"/>
+    </element>
+  </define>
+  <define name="level3">
+    <element name="level3">
+      <interleave>
+        <ref name="levelcontent"/>
+        <ref name="h3"/>
+        <zeroOrMore>
+          <ref name="level4"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="h3">
+    <element name="h3">
+      <ref name="hcontent"/>
+    </element>
+  </define>
+  <define name="level4">
+    <element name="level4">
+      <interleave>
+        <ref name="levelcontent"/>
+        <ref name="h4"/>
+        <zeroOrMore>
+          <ref name="level5"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="h4">
+    <element name="h4">
+      <ref name="hcontent"/>
+    </element>
+  </define>
+  <define name="level5">
+    <element name="level5">
+      <interleave>
+        <ref name="levelcontent"/>
+        <ref name="h5"/>
+        <zeroOrMore>
+          <ref name="level6"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="h5">
+    <element name="h5">
+      <ref name="hcontent"/>
+    </element>
+  </define>
+  <define name="level6">
+    <element name="level6">
+      <interleave>
+        <ref name="levelcontent"/>
+        <ref name="h6"/>
+      </interleave>
+    </element>
+  </define>
+  <define name="h6">
+    <element name="h6">
+      <ref name="hcontent"/>
+    </element>
+  </define>
+  <define name="br">
+    <element name="br">
+      <empty/>
+    </element>
+  </define>
+  <define name="p">
+    <element name="p">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="contractionhint"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="date"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="time"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="em">
+    <element name="em">
+      <interleave>
+        <text/>
+        <optional>
+          <ref name="pagenum"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="contractionhint"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="blockquote">
+    <element name="blockquote">
+      <oneOrMore>
+        <ref name="p"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="list">
+    <element name="list">
+      <attribute name="class">
+        <value>toc</value>
+      </attribute>
+      <attribute name="type">
+        <value>pl</value>
+      </attribute>
+      <interleave>
+        <oneOrMore>
+          <ref name="li"/>
+        </oneOrMore>
+        <oneOrMore>
+          <ref name="pagenum"/>
+        </oneOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="li">
+    <element name="li">
+      <oneOrMore>
+        <ref name="lic"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="lic">
+    <element name="lic">
+      <text/>
+    </element>
+  </define>
+  <define name="pagenum">
+    <element name="pagenum">
+      <attribute name="id">
+        <data type="NCName"/>
+      </attribute>
+      <attribute name="page">
+        <value>normal</value>
+      </attribute>
+      <data type="integer"/>
+    </element>
+  </define>
+  <define name="contractionhint">
+    <element name="brl:contractionhint">
+      <attribute name="class">
+        <choice>
+          <value>ordinal</value>
+          <value>propername</value>
+          <value>politeform</value>
+          <value>homonym</value>
+        </choice>
+      </attribute>
+      <text/>
+    </element>
+  </define>
+  <define name="date">
+    <element name="brl:date">
+      <optional>
+        <attribute name="year">
+          <data type="nonNegativeInteger"/>
+        </attribute>
+      </optional>
+      <attribute name="month">
+        <data type="positiveInteger">
+          <param name="maxInclusive">12</param>
+        </data>
+      </attribute>
+      <attribute name="day">
+        <data type="positiveInteger">
+          <param name="maxInclusive">31</param>
+        </data>
+      </attribute>
+      <text/>
+    </element>
+  </define>
+  <define name="time">
+    <element name="brl:time">
+      <attribute name="hour">
+        <data type="nonNegativeInteger">
+          <param name="maxInclusive">24</param>
+        </data>
+      </attribute>
+      <attribute name="minute">
+        <data type="nonNegativeInteger">
+          <param name="maxInclusive">60</param>
+        </data>
+      </attribute>
+      <optional>
+        <attribute name="second">
+          <data type="nonNegativeInteger">
+            <param name="maxInclusive">60</param>
+          </data>
+        </attribute>
+      </optional>
+      <text/>
+    </element>
+  </define>
+</grammar>

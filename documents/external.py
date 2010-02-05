@@ -3,6 +3,7 @@ from django.conf import settings
 from os.path import join, basename, splitext
 from shutil import rmtree
 from subprocess import call, Popen, PIPE
+from lxml import etree
 import os
 import tempfile
 
@@ -29,6 +30,16 @@ class DaisyPipeline:
         Pipeline. Return an empty string if the validation was
         successful. Return a list of error messages as delivered by
         the Daisy Pipeline otherwise."""
+        
+        relaxng_doc = etree.parse(
+            join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.rng'))
+        relaxng = etree.RelaxNG(relaxng_doc)
+        
+        doc = etree.parse(file_path)
+        if not relaxng.validate(doc):
+            entry = relaxng.error_log[0]
+            return ["%s on line %s" % (entry.message, entry.line)]
+
         tmpFile = filterBrlContractionhints(file_path)
         command = (
             "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
