@@ -71,6 +71,13 @@
       </oneOrMore>
     </element>
   </define>
+  <define name="commonAttributes">
+    <attribute name="brl:grade">
+      <data type="nonNegativeInteger">
+        <param name="maxInclusive">2</param>
+      </data>
+    </attribute>
+  </define>
   <define name="levelcontent">
     <interleave>
       <zeroOrMore>
@@ -85,9 +92,6 @@
       <zeroOrMore>
         <ref name="blockquote"/>
       </zeroOrMore>
-      <zeroOrMore>
-        <ref name="contractionhint"/>
-      </zeroOrMore>
     </interleave>
   </define>
   <define name="hcontent">
@@ -97,12 +101,13 @@
         <ref name="br"/>
       </optional>
       <zeroOrMore>
-        <ref name="contractionhint"/>
+        <ref name="contractionhints"/>
       </zeroOrMore>
     </interleave>
   </define>
   <define name="level1">
     <element name="level1">
+      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <optional>
@@ -121,6 +126,7 @@
   </define>
   <define name="level2">
     <element name="level2">
+      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h2"/>
@@ -137,6 +143,7 @@
   </define>
   <define name="level3">
     <element name="level3">
+      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h3"/>
@@ -153,6 +160,7 @@
   </define>
   <define name="level4">
     <element name="level4">
+      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h4"/>
@@ -169,6 +177,7 @@
   </define>
   <define name="level5">
     <element name="level5">
+      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h5"/>
@@ -185,6 +194,7 @@
   </define>
   <define name="level6">
     <element name="level6">
+      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h6"/>
@@ -203,6 +213,7 @@
   </define>
   <define name="p">
     <element name="p">
+      <ref name="commonAttributes"/>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -212,26 +223,25 @@
           <ref name="em"/>
         </zeroOrMore>
         <zeroOrMore>
-          <ref name="contractionhint"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="date"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="time"/>
+          <ref name="contractionhints"/>
         </zeroOrMore>
       </interleave>
     </element>
   </define>
   <define name="em">
     <element name="em">
+      <optional>
+        <attribute name="role">
+          <value/>
+        </attribute>
+      </optional>
       <interleave>
         <text/>
         <optional>
           <ref name="pagenum"/>
         </optional>
         <zeroOrMore>
-          <ref name="contractionhint"/>
+          <ref name="contractionhints"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -245,9 +255,11 @@
   </define>
   <define name="list">
     <element name="list">
-      <attribute name="class">
-        <value>toc</value>
-      </attribute>
+      <optional>
+        <attribute name="class">
+          <value>toc</value>
+        </attribute>
+      </optional>
       <attribute name="type">
         <value>pl</value>
       </attribute>
@@ -263,14 +275,24 @@
   </define>
   <define name="li">
     <element name="li">
-      <oneOrMore>
-        <ref name="lic"/>
-      </oneOrMore>
+      <interleave>
+        <text/>
+        <ref name="em"/>
+        <oneOrMore>
+          <ref name="lic"/>
+        </oneOrMore>
+      </interleave>
     </element>
   </define>
   <define name="lic">
     <element name="lic">
-      <text/>
+      <interleave>
+        <text/>
+        <ref name="em"/>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="pagenum">
@@ -284,59 +306,119 @@
       <data type="integer"/>
     </element>
   </define>
-  <define name="contractionhint">
-    <element name="brl:contractionhint">
-      <attribute name="class">
+  <define name="contractionhints">
+    <interleave>
+      <zeroOrMore>
+        <ref name="num"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="homograph"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="v-form"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="name"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="place"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="date"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="time"/>
+      </zeroOrMore>
+    </interleave>
+  </define>
+  <define name="num">
+    <element name="brl:num">
+      <attribute name="role">
         <choice>
           <value>ordinal</value>
-          <value>propername</value>
-          <value>politeform</value>
-          <value>homonym</value>
+          <value>roman</value>
+          <value>fraction</value>
+          <value>mixed</value>
+          <value>isbn</value>
+          <value>phone</value>
         </choice>
       </attribute>
       <text/>
     </element>
   </define>
+  <define name="homograph">
+    <element name="brl:homograph">
+      <oneOrMore>
+        <element name="brl:separator">
+          <empty/>
+        </element>
+      </oneOrMore>
+      <text/>
+    </element>
+  </define>
+  <define name="v-form">
+    <element name="brl:v-form">
+      <text/>
+    </element>
+  </define>
+  <define name="name">
+    <element name="brl:name">
+      <text/>
+    </element>
+  </define>
+  <define name="place">
+    <element name="brl:place">
+      <text/>
+    </element>
+  </define>
   <define name="date">
     <element name="brl:date">
-      <optional>
-        <attribute name="year">
-          <data type="nonNegativeInteger"/>
-        </attribute>
-      </optional>
-      <attribute name="month">
-        <data type="positiveInteger">
-          <param name="maxInclusive">12</param>
-        </data>
-      </attribute>
-      <attribute name="day">
-        <data type="positiveInteger">
-          <param name="maxInclusive">31</param>
-        </data>
+      <attribute name="value">
+        <choice>
+          <data type="gMonthDay"/>
+          <data type="date"/>
+        </choice>
       </attribute>
       <text/>
     </element>
   </define>
   <define name="time">
     <element name="brl:time">
-      <attribute name="hour">
-        <data type="nonNegativeInteger">
-          <param name="maxInclusive">24</param>
-        </data>
-      </attribute>
-      <attribute name="minute">
-        <data type="nonNegativeInteger">
-          <param name="maxInclusive">60</param>
-        </data>
-      </attribute>
-      <optional>
-        <attribute name="second">
-          <data type="nonNegativeInteger">
-            <param name="maxInclusive">60</param>
+      <attribute name="value">
+        <choice>
+          <data type="time"/>
+          <data type="string">
+            <param name="pattern">[0-9]{2}:[0-9]{2}</param>
           </data>
-        </attribute>
-      </optional>
+        </choice>
+      </attribute>
       <text/>
+    </element>
+  </define>
+  <define name="toc-line">
+    <element name="brl:toc-line">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="running-line">
+    <element name="brl:running-line">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
 </grammar>
