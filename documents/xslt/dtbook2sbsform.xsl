@@ -324,30 +324,52 @@ y LIe
 
   <!-- Contraction hints -->
 
-  <xsl:template match="brl:contractionhint[@class='ordinal']">
+  <xsl:template match="brl:num[@role='ordinal']">
     <!-- FIXME: insert the proper table here -->
     <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
   </xsl:template>
 
-  <xsl:template match="brl:contractionhint[@class='propername']">
+  <xsl:template match="brl:name">
     <!-- FIXME: insert the proper table here -->
     <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
   </xsl:template>
 
-  <xsl:template match="brl:contractionhint[@class='politeform']">
+  <xsl:template match="brl:place">
     <!-- FIXME: insert the proper table here -->
     <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
   </xsl:template>
 
-  <xsl:template match="brl:date">
-    <!-- FIXME: What do we do with dates that have no year? -->
+  <xsl:template match="brl:v-form">
+    <!-- FIXME: insert the proper table here -->
+    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  </xsl:template>
+
+  <xsl:template match="brl:homonym">
+    <!-- Concat all the text nodes and insert a special marker where the -->
+    <!-- separators are -->
+    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  </xsl:template>
+
+  <xsl:template match="brl:date[not(@year)]">
+    <xsl:value-of select="concat(@month,',',@day)"/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="brl:date[@year]">
     <xsl:value-of select="concat(@year,',',@month,',',@day)"/>
     <xsl:text>
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="brl:time">
+  <xsl:template match="brl:time[not(@second)]">
     <xsl:value-of select="concat(@hour,',',@minute)"/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="brl:time[@second]">
+    <xsl:value-of select="concat(@hour,',',@minute,',',@second)"/>
     <xsl:text>
 </xsl:text>
   </xsl:template>
