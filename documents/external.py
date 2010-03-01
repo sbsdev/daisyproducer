@@ -42,10 +42,9 @@ class DaisyPipeline:
 
         tmpFile = filterBrlContractionhints(file_path)
         command = (
-            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
-            "%s/%s" %  (
-                settings.DAISY_PIPELINE_PATH, 
-                'scripts/verify/DTBookValidator.taskScript',),
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts', 'verify',
+                 'DTBookValidator.taskScript'),
             "--input=%s" % tmpFile,
             )
         result = map(lambda line: line.replace("file:%s" % file_path, "", 1),
@@ -65,10 +64,9 @@ class DaisyPipeline:
         tmpFile = filterBrlContractionhints(inputFile)
         # Transform to LaTeX using pipeline
         command = (
-            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
-            "%s/%s" %  (
-                settings.DAISY_PIPELINE_PATH, 
-                '/scripts/create_distribute/latex/DTBookToLaTeX.taskScript'),
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts',
+                 'create_distribute', 'latex', 'DTBookToLaTeX.taskScript'),
             "--input=%s" % tmpFile,
             "--output=%s" % latexFileName,
             "--fontsize=%(font_size)s" % kwargs,
@@ -101,10 +99,9 @@ class DaisyPipeline:
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
-            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
-            "%s/%s" %  (
-                settings.DAISY_PIPELINE_PATH, 
-                '/scripts/create_distribute/xhtml/DtbookToXhtml.taskScript'),
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts',
+                 'create_distribute', 'xhtml', 'DtbookToXhtml.taskScript'),
             "--input=%s" % tmpFile,
             "--output=%s" % outputFile,
             )
@@ -120,10 +117,9 @@ class DaisyPipeline:
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
-            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
-            "%s/%s" %  (
-                settings.DAISY_PIPELINE_PATH, 
-                '/scripts/create_distribute/text/DtbookToRtf.taskScript'),
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts',
+                 'create_distribute', 'text', 'DtbookToRtf.taskScript'),
             "--input=%s" % tmpFile,
             "--output=%s" % outputFile,
             )
@@ -137,10 +133,9 @@ class DaisyPipeline:
         """Transform a dtbook xml file to EPUB"""
         tmpFile = filterBrlContractionhints(inputFile)
         command = (
-            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
-            "%s/%s" %  (
-                settings.DAISY_PIPELINE_PATH, 
-                '/scripts/create_distribute/epub/OPSCreator.taskScript'),
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts',
+                 'create_distribute', 'epub', 'OPSCreator.taskScript'),
             "--input=%s" % tmpFile,
             "--output=%s" % outputFile,
             )
@@ -156,10 +151,9 @@ class DaisyPipeline:
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
-            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
-            "%s/%s" %  (
-                settings.DAISY_PIPELINE_PATH, 
-                '/scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript'),
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts',
+                 'create_distribute', 'dtb', 'Fileset-DtbookToDaisy202TextOnly.taskScript'),
             "--input=%s" % tmpFile,
             "--outputPath=%s" % outputPath,
             )
@@ -175,10 +169,9 @@ class DaisyPipeline:
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
-            "%s/pipeline.sh" % settings.DAISY_PIPELINE_PATH,
-            "%s/%s" %  (
-                settings.DAISY_PIPELINE_PATH, 
-                '/scripts/create_distribute/dtb/Narrator-DtbookToDaisy.taskScript'),
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts',
+                 'create_distribute', 'dtb', 'Narrator-DtbookToDaisy.taskScript'),
             "--input=%s" % tmpFile,
             "--outputPath=%s" % outputPath,
             )
