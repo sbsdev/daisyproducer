@@ -26,8 +26,9 @@
   <book>
     <frontmatter>
       <doctitle>{{ title }}</doctitle>
-      <level1 class="title_page">
-        <docauthor>{{ author }}</docauthor>
+      <docauthor>{{ author }}</docauthor>
+      <level1>
+	<p></p>
       </level1>
     </frontmatter>
     
