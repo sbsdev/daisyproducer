@@ -9,7 +9,7 @@ DATABASE_NAME = 'daisyproducer_dev'
 DATABASE_USER = 'eglic'
 DATABASE_PASSWORD = ''
 
-DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline-20090410')
+DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline-20100301')
 
 # debug toolbar
 #INSTALLED_APPS +=  ('debug_toolbar',)

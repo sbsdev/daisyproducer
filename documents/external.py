@@ -43,9 +43,19 @@ class DaisyPipeline:
         tmpFile = filterBrlContractionhints(file_path)
         command = (
             join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            # FIXME: This requires a version of the pipeline from
+            # trunk (>= rev 2480). You could argue that it is
+            # pointless to check for a DOCTYPE declaration here as the
+            # filterBrlContractionhints above adds it _anyway_. Well
+            # let's just leave it in here in case the filter code ever
+            # is refactored out.
             join(settings.DAISY_PIPELINE_PATH, 'scripts', 'verify',
-                 'DTBookValidator.taskScript'),
-            "--input=%s" % tmpFile,
+                 'ConfigurableValidator.taskScript'),
+            "--validatorInputFile=%s" % tmpFile,
+            # make sure files with a missing DOCTYPE declaration do
+            # not validate. 
+            "--validatorInputDelegates=%s" %
+            "org.daisy.util.fileset.validation.delegate.impl.NoDocTypeDeclarationDelegate",
             )
         result = map(lambda line: line.replace("file:%s" % file_path, "", 1),
                    map(lambda line: line.replace("[ERROR, Validator]", "", 1), 
