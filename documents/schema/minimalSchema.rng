@@ -30,9 +30,19 @@
           <value>dtb:uid</value>
           <value>dc:Title</value>
           <value>dc:Creator</value>
-          <value>dc:Date</value>
+          <value>dc:Subject</value>
+          <value>dc:Description</value>
           <value>dc:Publisher</value>
+          <value>dc:Date</value>
+          <value>dc:Type</value>
+          <value>dc:Format</value>
+          <value>dc:Identifier</value>
+          <value>dc:Source</value>
           <value>dc:Language</value>
+          <value>dc:Rights</value>
+          <value>dtb:sourceEdition</value>
+          <value>dtb:sourcePublisher</value>
+          <value>dtb:sourceRights</value>
         </choice>
       </attribute>
     </element>
@@ -41,7 +51,9 @@
     <element name="book">
       <ref name="frontmatter"/>
       <ref name="bodymatter"/>
-      <ref name="rearmatter"/>
+      <optional>
+        <ref name="rearmatter"/>
+      </optional>
     </element>
   </define>
   <define name="frontmatter">
@@ -72,11 +84,13 @@
     </element>
   </define>
   <define name="commonAttributes">
-    <attribute name="brl:grade">
-      <data type="nonNegativeInteger">
-        <param name="maxInclusive">2</param>
-      </data>
-    </attribute>
+    <optional>
+      <attribute name="brl:grade">
+        <data type="nonNegativeInteger">
+          <param name="maxInclusive">2</param>
+        </data>
+      </attribute>
+    </optional>
   </define>
   <define name="levelcontent">
     <interleave>
