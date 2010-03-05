@@ -357,11 +357,30 @@ y LIe
   </xsl:template>
 
   <xsl:template match="brl:num[@role='isbn' and ancestor-or-self::*[@xml:lang='de']]">
-    <!-- FIXME: Endet die ISBN-Nummer mit einem Grossbuchstaben, bleibt der ihm vorangehende Bindestrich erhalten. Der Buchstabe wird mit &#x2566; markiert und mit sbs-de-g0-abbr.ctb übersetzt.  -->
-    <xsl:for-each select="str:tokenize(string(.), ' -')">
-      <xsl:value-of select='louis:translate(string(.),string($translation_table))' />
-      <xsl:if test="not(position() = last())">.</xsl:if>
-    </xsl:for-each>
+    <xsl:variable name="lastChar" select="substring(.,string-length(.),1)"/>
+    <xsl:variable name="upperCase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+    <xsl:variable name="secondToLastChar" select="substring(.,string-length(.)-1,1)"/>
+    <xsl:choose>
+      <!-- If the isbn number ends in a capital letter then keep the
+           dash, mark the letter with &#x2566; and translate the
+           letter with sbs-de-g0-abbr.ctb -->
+      <xsl:when test="$secondToLastChar='-' and string(number($lastChar))='NaN' and contains($upperCase, $lastChar)">
+	<xsl:for-each select="str:tokenize(substring(.,1,string-length(.)-2), ' -')">
+	  <xsl:value-of select='louis:translate(string(.),string($translation_table))' />
+	  <xsl:if test="not(position() = last())">.</xsl:if>
+	</xsl:for-each>
+	<xsl:value-of select='louis:translate($secondToLastChar,string($translation_table))'/>
+	<!-- FIXME: mark the letter with &#x2566; -->
+	<!-- concat(&#x2566;,$lastChar)? -->
+	<xsl:value-of select='louis:translate($lastChar,string("sbs-de-g0-abbr.ctb"))'/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:for-each select="str:tokenize(string(.), ' -')">
+	  <xsl:value-of select='louis:translate(string(.),string($translation_table))' />
+	  <xsl:if test="not(position() = last())">.</xsl:if>
+	</xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="brl:name[ancestor-or-self::*[@xml:lang='de']]">
