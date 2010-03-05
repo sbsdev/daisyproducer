@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<xsl:stylesheet version="1.0"
-		xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"	
-		xmlns:louis="http://liblouis.org/liblouis"
-		xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
-		exclude-result-prefixes="dtb louis">
+<xsl:stylesheet 
+    version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"	
+    xmlns:louis="http://liblouis.org/liblouis"
+    xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+    xmlns:str="http://exslt.org/strings"
+    exclude-result-prefixes="dtb louis str">
 
   <xsl:output method="text" encoding="utf-8" indent="no"/>
   <xsl:strip-space elements="*"/>
   <xsl:preserve-space elements="code samp"/>
 	
-  <xsl:param name="translation_table">de-ch-g2.ctb</xsl:param>
+  <xsl:param name="translation_table">sbs-de-g2.ctb</xsl:param>
   <xsl:param name="contraction">0</xsl:param>
   <xsl:param name="version">0</xsl:param>
   <xsl:param name="cells_per_line">40</xsl:param>
   <xsl:param name="lines_per_page">28</xsl:param>
-  <xsl:param name="hyphenation">false</xsl:param>
-  <xsl:param name="generate_toc">false</xsl:param>
-  <xsl:param name="show_original_page_numbers">false</xsl:param>
-  <xsl:param name="enable_capitalization">false</xsl:param>
-  <xsl:param name="detailed_accented_characters">false</xsl:param>
+  <xsl:param name="hyphenation" select="false()"/>
+  <xsl:param name="generate_toc" select="false()"/>
+  <xsl:param name="show_original_page_numbers" select="false()"/>
+  <xsl:param name="show_v-forms" select="true()"/>
+  <xsl:param name="downshift_ordinals" select="true()"/>
+  <xsl:param name="enable_capitalization" select="false()"/>
+  <xsl:param name="detailed_accented_characters" select="false()"/>
 
   <xsl:template match="/">
     <xsl:text>x </xsl:text><xsl:value-of select="//dtb:docauthor"/>
@@ -46,6 +50,12 @@
 </xsl:text>
     <xsl:text>?show_original_page_numbers:</xsl:text>
     <xsl:value-of select="$show_original_page_numbers"/><xsl:text>
+</xsl:text>
+    <xsl:text>?show_v-forms</xsl:text>
+    <xsl:value-of select="$show_v-forms"/><xsl:text>
+</xsl:text>
+    <xsl:text>?downshift_ordinals:</xsl:text>
+    <xsl:value-of select="$downshift_ordinals"/><xsl:text>
 </xsl:text>
     <xsl:text>?enable_capitalization:</xsl:text>
     <xsl:value-of select="$enable_capitalization"/><xsl:text>
@@ -324,52 +334,97 @@ y LIe
 
   <!-- Contraction hints -->
 
-  <xsl:template match="brl:num[@role='ordinal']">
-    <!-- FIXME: insert the proper table here -->
-    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  <xsl:template match="brl:num[@role='ordinal' and ancestor-or-self::*[@xml:lang='de']]">
+    <xsl:choose>
+      <xsl:when test="$downshift_ordinals">
+	<xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="louis:translate(string(translate(.,'.','')),string('sbs-de-g0-numlower.ctb'))"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="brl:name">
-    <!-- FIXME: insert the proper table here -->
-    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  <xsl:template match="brl:num[@role='roman' and ancestor-or-self::*[@xml:lang='de']]">
+    <xsl:value-of select='louis:translate(string(),string("sbs-de-g0-numlower.ctb"))'/>
   </xsl:template>
 
-  <xsl:template match="brl:place">
-    <!-- FIXME: insert the proper table here -->
-    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  <xsl:template match="brl:num[@role='phone' and ancestor-or-self::*[@xml:lang='de']]">
+    <xsl:for-each select="str:tokenize(string(.), ' /')">
+      <xsl:value-of select='louis:translate(string(.),string($translation_table))' />
+      <xsl:if test="not(position() = last())">.</xsl:if>
+    </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="brl:v-form">
-    <!-- FIXME: insert the proper table here -->
-    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  <xsl:template match="brl:num[@role='isbn' and ancestor-or-self::*[@xml:lang='de']]">
+    <!-- FIXME: Endet die ISBN-Nummer mit einem Grossbuchstaben, bleibt der ihm vorangehende Bindestrich erhalten. Der Buchstabe wird mit &#x2566; markiert und mit sbs-de-g0-abbr.ctb übersetzt.  -->
+    <xsl:for-each select="str:tokenize(string(.), ' -')">
+      <xsl:value-of select='louis:translate(string(.),string($translation_table))' />
+      <xsl:if test="not(position() = last())">.</xsl:if>
+    </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="brl:homonym">
-    <!-- Concat all the text nodes and insert a special marker where the -->
-    <!-- separators are -->
-    <xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+  <xsl:template match="brl:name[ancestor-or-self::*[@xml:lang='de']]">
+    <xsl:choose>
+      <xsl:when test="$translation_table='sbs-de-g2.ctb'">
+	<xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select='louis:translate(string(),string("sbs-de-g2-name.ctb"))'/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="brl:date[not(@year)]">
-    <xsl:value-of select="concat(@month,',',@day)"/>
+  <xsl:template match="brl:place[ancestor-or-self::*[@xml:lang='de']]">
+    <xsl:choose>
+      <xsl:when test="$translation_table='sbs-de-g2.ctb'">
+	<xsl:value-of select='louis:translate(string(),string($translation_table))'/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select='louis:translate(string(),string("sbs-de-g2-place.ctb"))'/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="brl:v-form[ancestor-or-self::*[@xml:lang='de']]">
+    <xsl:choose>
+      <xsl:when test="$show_v-forms">
+	<xsl:apply-templates/>
+      </xsl:when>
+      <xsl:when test="$translation_table='sbs-de-g0.ctb'">
+	<xsl:value-of select='louis:translate(string(),string("sbs-de-g0-caps.ctb"))'/>
+      </xsl:when>
+      <xsl:when test="$translation_table='sbs-de-g1.ctb'">
+	<xsl:value-of select='louis:translate(string(),string("sbs-de-g1-caps.ctb"))'/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select='louis:translate(string(),string("sbs-de-g2-place.ctb"))'/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="brl:homograph">
+    <xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="brl:separator">
+    <!-- ignore -->
+  </xsl:template>
+
+  <xsl:template match="brl:date[ancestor-or-self::*[@xml:lang='de']]">
+    <xsl:for-each select="str:tokenize(string(@value), '-')">
+      <xsl:value-of select="louis:translate(string(format-number(.,'#')),string($translation_table))" />
+      <xsl:if test="not(position() = last())">.</xsl:if>
+    </xsl:for-each>
     <xsl:text>
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="brl:date[@year]">
-    <xsl:value-of select="concat(@year,',',@month,',',@day)"/>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="brl:time[not(@second)]">
-    <xsl:value-of select="concat(@hour,',',@minute)"/>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="brl:time[@second]">
-    <xsl:value-of select="concat(@hour,',',@minute,',',@second)"/>
+  <xsl:template match="brl:time[ancestor-or-self::*[@xml:lang='de']]">
+    <xsl:for-each select="str:tokenize(string(@value), ':')">
+      <xsl:value-of select="louis:translate(string(format-number(.,'#')),string($translation_table))" />
+      <xsl:if test="not(position() = last())">.</xsl:if>
+    </xsl:for-each>
     <xsl:text>
 </xsl:text>
   </xsl:template>
