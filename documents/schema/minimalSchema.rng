@@ -291,7 +291,9 @@
     <element name="li">
       <interleave>
         <text/>
-        <ref name="em"/>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
         <oneOrMore>
           <ref name="lic"/>
         </oneOrMore>
@@ -302,7 +304,9 @@
     <element name="lic">
       <interleave>
         <text/>
-        <ref name="em"/>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
         <zeroOrMore>
           <ref name="contractionhints"/>
         </zeroOrMore>
