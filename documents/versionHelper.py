@@ -117,6 +117,6 @@ class XMLContent:
         the text doesn't match the given value. The tuple contains the
         key, the given value and the value of the text node"""
         xpath = "//{%s}%s" % (self.DTBOOK_NAMESPACE, key)
-        return [tuple([key, element.text, value]) for element in self.tree.findall(xpath) if element.text != value]
+        return [tuple([key, element.text, value]) for element in self.tree.findall(xpath) if element.text != value and not (element.text == None and value == '')]
            
         
