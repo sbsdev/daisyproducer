@@ -362,12 +362,14 @@
   </define>
   <define name="homograph">
     <element name="brl:homograph">
-      <oneOrMore>
-        <element name="brl:separator">
-          <empty/>
-        </element>
-      </oneOrMore>
-      <text/>
+      <interleave>
+        <oneOrMore>
+          <element name="brl:separator">
+            <empty/>
+          </element>
+        </oneOrMore>
+        <text/>
+      </interleave>
     </element>
   </define>
   <define name="v-form">
