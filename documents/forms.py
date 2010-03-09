@@ -117,10 +117,18 @@ class SBSFormForm(forms.Form):
         choices=BRAILLE_CONTRACTION_GRADE_CHOICES, 
         coerce=int)
     hyphenation = forms.BooleanField(label=_("Hyphenation"), required=False)
-    generate_toc = forms.BooleanField(label=_("Generate a table of contents"), required=False)
-    show_original_page_numbers = forms.BooleanField(label=_("Show original page numbers"), required=False)
-    enable_capitalization = forms.BooleanField(label=_("Enable Capitalization"), required=False)
-    detailed_accented_characters = forms.BooleanField(label=_("Detailed Accented Characters"), required=False)
+    generate_toc = forms.BooleanField(
+        label=_("Generate a table of contents"), required=False)
+    show_original_page_numbers = forms.BooleanField(
+        label=_("Show original page numbers"), required=False)
+    show_v_forms = forms.BooleanField(
+        label=_("Show V-Forms"), required=False, initial=True)
+    downshift_ordinals = forms.BooleanField(
+        label=_("Downshift Ordinals"), required=False, initial=True)
+    enable_capitalization = forms.BooleanField(
+        label=_("Enable Capitalization"), required=False)
+    detailed_accented_characters = forms.BooleanField(
+        label=_("Detailed Accented Characters"), required=False)
 
 class XHTMLForm(forms.Form):
     genToc = forms.BooleanField(
