@@ -10,8 +10,6 @@
 	      doctype-public="-//NISO//DTD dtbook 2005-3//EN"
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
 
-  <xsl:strip-space elements="*"/>
-
   <!-- Get rid of the brl namespace declaration in the dtbook node -->
   <xsl:template match="dtb:dtbook">
     <xsl:element name="{name()}" namespace="{namespace-uri()}">
