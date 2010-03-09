@@ -21,7 +21,7 @@
   <xsl:param name="hyphenation" select="false()"/>
   <xsl:param name="generate_toc" select="false()"/>
   <xsl:param name="show_original_page_numbers" select="false()"/>
-  <xsl:param name="show_v-forms" select="true()"/>
+  <xsl:param name="show_v_forms" select="true()"/>
   <xsl:param name="downshift_ordinals" select="true()"/>
   <xsl:param name="enable_capitalization" select="false()"/>
   <xsl:param name="detailed_accented_characters" select="false()"/>
@@ -51,8 +51,8 @@
     <xsl:text>?show_original_page_numbers:</xsl:text>
     <xsl:value-of select="$show_original_page_numbers"/><xsl:text>
 </xsl:text>
-    <xsl:text>?show_v-forms</xsl:text>
-    <xsl:value-of select="$show_v-forms"/><xsl:text>
+    <xsl:text>?show_v_forms:</xsl:text>
+    <xsl:value-of select="$show_v_forms"/><xsl:text>
 </xsl:text>
     <xsl:text>?downshift_ordinals:</xsl:text>
     <xsl:value-of select="$downshift_ordinals"/><xsl:text>
@@ -407,7 +407,7 @@ y LIe
 
   <xsl:template match="brl:v-form[ancestor-or-self::*[@xml:lang='de']]">
     <xsl:choose>
-      <xsl:when test="$show_v-forms">
+      <xsl:when test="$show_v_forms">
 	<xsl:apply-templates/>
       </xsl:when>
       <xsl:when test="$translation_table='sbs-de-g0.ctb'">
