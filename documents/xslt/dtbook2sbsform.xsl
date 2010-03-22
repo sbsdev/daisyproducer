@@ -356,6 +356,13 @@ y LIe
     </xsl:for-each>
   </xsl:template>
 
+  <xsl:template match="brl:num[@role='measure' and ancestor-or-self::*[@xml:lang='de']]">
+    <!-- For all number-unit combinations, e.g. 1 kg, 10 km, etc. drop the space -->
+    <xsl:for-each select="str:tokenize(string(.), ' ')">
+      <xsl:value-of select='louis:translate(string(.),string($translation_table))' />
+    </xsl:for-each>
+  </xsl:template>
+
   <xsl:template match="brl:num[@role='isbn' and ancestor-or-self::*[@xml:lang='de']]">
     <xsl:variable name="lastChar" select="substring(.,string-length(.),1)"/>
     <xsl:variable name="upperCase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
