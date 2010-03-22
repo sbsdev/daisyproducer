@@ -359,6 +359,7 @@
           <value>mixed</value>
           <value>isbn</value>
           <value>phone</value>
+          <value>measure</value>
         </choice>
       </attribute>
       <text/>
