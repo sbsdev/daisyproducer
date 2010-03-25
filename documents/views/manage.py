@@ -1,4 +1,4 @@
-from daisyproducer.documents.models import Document, Version, State
+from daisyproducer.documents.models import Document, Version
 from daisyproducer.documents.versionHelper import XMLContent
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
@@ -7,6 +7,7 @@ from django.db import transaction
 from django.forms import ModelForm
 from django.views.generic.create_update import create_object, update_object
 from django.views.generic.list_detail import object_list, object_detail
+
 
 @login_required
 def index(request):

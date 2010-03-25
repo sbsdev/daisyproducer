@@ -2,11 +2,10 @@ from daisyproducer.documents.external import DaisyPipeline
 from daisyproducer.documents.models import Document, Version, Attachment
 from daisyproducer.documents.versionHelper import XMLContent
 from django import forms
-from django.db import models
 from django.core.files.base import ContentFile
 from django.forms import ModelForm
-from django.forms.util import ErrorList
 from django.utils.translation import ugettext_lazy as _
+
 
 class PartialVersionForm(ModelForm):
 

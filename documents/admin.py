@@ -1,6 +1,7 @@
 from daisyproducer.documents.models import Document, Version, Attachment, State
 from django.contrib import admin
 
+
 class VersionInline(admin.TabularInline):
 	model = Version
 

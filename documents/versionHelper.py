@@ -1,7 +1,8 @@
-from datetime import date
+import datetime
+
 from django.template.loader import render_to_string
 from lxml import etree
-import datetime
+
 
 class XMLContent:
     

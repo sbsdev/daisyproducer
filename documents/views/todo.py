@@ -13,6 +13,7 @@ from django.template import RequestContext
 from django.views.generic.list_detail import object_list
 from lxml import etree
 
+
 @login_required
 def index(request):
     """Show all the documents that are relevant for the groups that

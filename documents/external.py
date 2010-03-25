@@ -1,11 +1,17 @@
-from daisyproducer.version import getVersion
-from django.conf import settings
+import os
+import tempfile
+import textwrap
 from os.path import join, basename, splitext
 from shutil import rmtree
 from subprocess import call, Popen, PIPE
+
+import libxml2
+import libxslt
+import louis
+from daisyproducer.version import getVersion
+from django.conf import settings
 from lxml import etree
-import os
-import tempfile
+
 
 def filterBrlContractionhints(file_path):
     """Filter all the brl:contractionhints from the given file_path.
@@ -247,10 +253,6 @@ class Liblouis:
         f.close()
         os.remove(tmpFile)
 
-import louis
-import libxml2
-import libxslt
-import textwrap
 
 class SBSForm:
     wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')

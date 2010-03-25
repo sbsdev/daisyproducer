@@ -1,6 +1,8 @@
-from django.http import HttpResponse
-import os
 import mimetypes
+import os
+
+from django.http import HttpResponse
+
 
 mimetypes.init()
 mimetypes.add_type('application/epub+zip','.epub')

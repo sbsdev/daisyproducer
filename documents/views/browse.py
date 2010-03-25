@@ -1,19 +1,16 @@
-from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm
-from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm, TextOnlyFilesetForm, DTBForm
-from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
-from daisyproducer.documents.views.utils import render_to_mimetype_response
-from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
-from django.views.generic.list_detail import object_list, object_detail
-
-from os import system
-import os
 import os.path
 import shutil
 import tempfile
 import zipfile
+
+from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm
+from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm, TextOnlyFilesetForm, DTBForm
+from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
+from daisyproducer.documents.views.utils import render_to_mimetype_response
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.views.generic.list_detail import object_list, object_detail
+
 
 # browse use case
 def index(request):
