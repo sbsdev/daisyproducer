@@ -1,12 +1,14 @@
+import os.path
+
+from django.conf import settings
 from django.conf.urls.defaults import *
+from django.contrib import admin
 from django.contrib.auth.views import login, logout
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 
-import os.path
+
 PROJECT_DIR = os.path.dirname(__file__)
 
-from django.contrib import admin
 admin.autodiscover()
 
 # browse finished documents
