@@ -117,6 +117,9 @@
       <zeroOrMore>
         <ref name="contractionhints"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="span"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="level1">
@@ -237,17 +240,32 @@
           <ref name="em"/>
         </zeroOrMore>
         <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
         </zeroOrMore>
       </interleave>
     </element>
   </define>
+  <define name="emphasisClassAttribute">
+    <attribute name="class">
+      <choice>
+        <value>foreign</value>
+        <value>quote</value>
+        <value>speech</value>
+        <value>emphasis</value>
+        <value>name</value>
+      </choice>
+    </attribute>
+  </define>
   <define name="em">
     <element name="em">
       <optional>
-        <attribute name="role">
-          <value/>
-        </attribute>
+        <ref name="emphasisClassAttribute"/>
       </optional>
       <interleave>
         <text/>
@@ -257,7 +275,42 @@
         <zeroOrMore>
           <ref name="contractionhints"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
       </interleave>
+    </element>
+  </define>
+  <define name="strong">
+    <element name="strong">
+      <optional>
+        <ref name="emphasisClassAttribute"/>
+      </optional>
+      <interleave>
+        <text/>
+        <optional>
+          <ref name="pagenum"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="abbr">
+    <element name="abbr">
+      <text/>
+    </element>
+  </define>
+  <define name="span">
+    <element name="span">
+      <attribute name="xml:lang">
+        <value>es</value>
+      </attribute>
+      <text/>
     </element>
   </define>
   <define name="blockquote">
@@ -281,9 +334,9 @@
         <oneOrMore>
           <ref name="li"/>
         </oneOrMore>
-        <oneOrMore>
+        <zeroOrMore>
           <ref name="pagenum"/>
-        </oneOrMore>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -309,6 +362,9 @@
         </zeroOrMore>
         <zeroOrMore>
           <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -347,6 +403,9 @@
       <zeroOrMore>
         <ref name="time"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="emph"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="num">
@@ -354,6 +413,7 @@
       <attribute name="role">
         <choice>
           <value>ordinal</value>
+          <value>cardinal</value>
           <value>roman</value>
           <value>fraction</value>
           <value>mixed</value>
@@ -414,6 +474,23 @@
         </choice>
       </attribute>
       <text/>
+    </element>
+  </define>
+  <define name="emph">
+    <element name="brl:emph">
+      <ref name="emphasisClassAttribute"/>
+      <interleave>
+        <text/>
+        <optional>
+          <ref name="pagenum"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="toc-line">
