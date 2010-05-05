@@ -110,6 +110,11 @@ class SBSFormForm(forms.Form):
         ('1', _('Grade 1')),
         ('2', _('Grade 2')),
         )
+    BRAILLE_ACCENTS_CHOICES = (
+        ('de-accents', _('German Accents')),
+        ('de-accents-ch', _('Swiss Accents')),
+        ('de-accents-reduced', _('Reduced Accents')),
+        )
     cells_per_line = forms.IntegerField(label=_("Cells per Line"), initial=40, min_value=1, max_value=255)
     lines_per_page = forms.IntegerField(label=_("Lines per Page"), initial=28, min_value=1, max_value=255)
     contraction = forms.TypedChoiceField(
@@ -127,8 +132,8 @@ class SBSFormForm(forms.Form):
         label=_("Downshift Ordinals"), required=False, initial=True)
     enable_capitalization = forms.BooleanField(
         label=_("Enable Capitalization"), required=False)
-    detailed_accented_characters = forms.BooleanField(
-        label=_("Detailed Accented Characters"), required=False)
+    detailed_accented_characters = forms.ChoiceField(
+        label=_("Detailed Accented Characters"), choices=BRAILLE_ACCENTS_CHOICES)
 
 class XHTMLForm(forms.Form):
     genToc = forms.BooleanField(
