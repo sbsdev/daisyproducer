@@ -266,6 +266,8 @@ class SBSForm:
 
     @staticmethod
     def getTableList(language, grade, options, context):
+        if options == None:
+            options = ""
         tableMap = {("fr", 1) : "fr-fr-g1.utb",
                     ("fr", 2) : "Fr-Fr-g2.ctb",
                     ("fr", 0) : "fr-fr-g1.utb",
@@ -329,7 +331,7 @@ class SBSForm:
             pass
 
         typeform = len(str)*[SBSForm.modeMap[mode]] if mode and (mode == "italic" or mode == "bold") else None
-        translation_tables = SBSForm.getTableList(language, grade, options, context)
+        translation_tables = SBSForm.getTableList(language, int(grade), options, context)
         braille = louis.translate(translation_tables, str.decode('utf-8'), typeform=typeform)[0]
         braille = braille.encode('utf-8')
         return SBSForm.wrapper.fill(braille)
