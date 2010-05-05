@@ -346,7 +346,7 @@ y LIe
 
   <!-- Contraction hints -->
 
-  <xsl:template match="brl:num[@role='ordinal' and ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:num[@role='ordinal' and my:isGerman()]">
     <xsl:choose>
       <xsl:when test="$downshift_ordinals">
 	<xsl:value-of select="louis:translate(string(translate(.,'.','')),'de',string($contraction),'normal',string($options),string('num[ordinal]'))"/>
@@ -357,18 +357,18 @@ y LIe
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="brl:num[@role='roman' and ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:num[@role='roman' and my:isGerman()]">
     <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('num[roman]'))"/>
   </xsl:template>
 
-  <xsl:template match="brl:num[@role='phone' and ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:num[@role='phone' and my:isGerman()]">
     <xsl:for-each select="str:tokenize(string(.), ' /')">
       <xsl:value-of select="louis:translate(string(.),'de',string($contraction),'normal')" />
       <xsl:if test="not(position() = last())">.</xsl:if>
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="brl:num[@role='measure' and ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:num[@role='measure' and my:isGerman()]">
     <!-- For all number-unit combinations, e.g. 1 kg, 10 km, etc. drop the space -->
     <xsl:for-each select="str:tokenize(string(.), ' ')">
       <xsl:choose>
@@ -383,7 +383,7 @@ y LIe
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="brl:num[@role='isbn' and ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:num[@role='isbn' and my:isGerman()]">
     <xsl:variable name="lastChar" select="substring(.,string-length(.),1)"/>
     <xsl:variable name="upperCase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
     <xsl:variable name="secondToLastChar" select="substring(.,string-length(.)-1,1)"/>
@@ -410,15 +410,15 @@ y LIe
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="brl:name[ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:name[my:isGerman()]">
     <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('name'))"/>
   </xsl:template>
 
-  <xsl:template match="brl:place[ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:place[my:isGerman()]">
     <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('place'))"/>
   </xsl:template>
 
-  <xsl:template match="brl:v-form[ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:v-form[my:isGerman()]">
     <xsl:choose>
       <xsl:when test="not($show_v_forms)">
 	<xsl:apply-templates/>
@@ -437,7 +437,7 @@ y LIe
     <!-- ignore -->
   </xsl:template>
 
-  <xsl:template match="brl:date[ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:date[my:isGerman()]">
     <xsl:for-each select="str:tokenize(string(@value), '-')">
       <xsl:choose>
 	<xsl:when test="position() = last()-1">
@@ -456,7 +456,7 @@ y LIe
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="brl:time[ancestor-or-self::*[@xml:lang='de']]">
+  <xsl:template match="brl:time[my:isGerman()]">
     <xsl:variable name="time">
       <xsl:for-each select="str:tokenize(string(@value), ':')">
 	<xsl:value-of select="format-number(.,'#')"/>
