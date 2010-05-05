@@ -265,7 +265,59 @@ class SBSForm:
         'computer_braille' : louis.computer_braille}
 
     @staticmethod
-    def translate(ctx, str, translation_table, mode=None):
+    def getTableList(language, grade, options, context):
+        tableMap = {("fr", 1) : "fr-fr-g1.utb",
+                    ("fr", 2) : "Fr-Fr-g2.ctb",
+                    ("fr", 0) : "fr-fr-g1.utb",
+                    ("it", 1) : "it-it-g1.utb",
+                    ("it", 0) : "it-it-g1.utb",
+                    ("en", 1) : "en-us-g1.ctb",
+                    ("en", 2) : "en-us-g2.ctb",
+                    ("en", 0) : "en-us-g1.ctb"}
+        if (language, grade) in tableMap:
+            return [tableMap[(language, grade)]]
+        elif language == "de":
+            if options.find("accents=de-reduced") != -1:
+                accentsTable = "sbs-de-accents-reduced.cti"
+            elif options.find("accents=de-ch") != -1:
+                accentsTable = "sbs-de-accents-ch.cti"
+            else:
+                accentsTable = "sbs-de-accents.cti"
+            
+                return filter(
+                    None,
+                    ['sbs.dis',
+                     'sbs-de-core6.cti',
+                     accentsTable if context != "date[month]" and context != "date[day]" else None,
+                     'sbs-special.cti',
+                     'sbs-whitespace.mod',
+                     "sbs-de-capsign.mod" if context == "v-form" or context == "name[capitalized]" or \
+                         (grade != 2 and options.find("capitalization=on") != -1 and \
+                              (context == "name" or context == "place" or context == "num[ordinal]")) else None,
+                     'sbs-de-letsign.mod' if grade == 2 and \
+                         context != "date[day]" and context != "date[month]" \
+                         and context != "name[capitalized]" else None,
+                     'sbs-numsign.mod'if context != "date[month]" else None,
+                     'sbs-litdigit-upper.mod' if context != "num[ordinal]" and context != "date[day]" else None,
+                     'sbs-litdigit-lower.mod' if context == "num[ordinal]" or context == "date[day]" else None,
+                     'sbs-de-core.mod' if context != "date[month]" and context != "date[day]" else None,
+                     'sbs-de-g0-core.mod' if context == "name[capitalized]" or context == "abbrev" or \
+                         (grade == 0 and context != "date[day]" and context != "date[month]") else None,
+                     'sbs-de-g1-core.mod' if grade == 1 and \
+                         (context != "name[capitalized]" and context != "abbrev" \
+                              and context != "date[month]" and context != "date[day]") else None,
+                     'sbs-de-g2-place.mod' if grade == 2 and context == "place" else None,
+                     'sbs-de-g2-name.mod' if grade == 2 and (context == "place" or context == "name") else None,
+                     'sbs-de-g2-core.mod' if grade == 2 and \
+                         (context == None or context == "v-form" or \
+                              context == "num[roman]" or context == "num[ordinal]") else None,
+                     'sbs-special.mod'
+                     ])
+        else:
+            return ["en-us-g2.ctb"]
+        
+    @staticmethod
+    def translate(ctx, str, language, grade, mode=None, options=None, context=None):
         global nodeName
         
         try:
@@ -276,8 +328,9 @@ class SBSForm:
         except:
             pass
 
-        typeform = len(str)*[SBSForm.modeMap[mode]] if mode else None
-        braille = louis.translate([translation_table], str.decode('utf-8'), typeform=typeform)[0]
+        typeform = len(str)*[SBSForm.modeMap[mode]] if mode and (mode == "italic" or mode == "bold") else None
+        translation_tables = SBSForm.getTableList(language, grade, options, context)
+        braille = louis.translate(translation_tables, str.decode('utf-8'), typeform=typeform)[0]
         braille = braille.encode('utf-8')
         return SBSForm.wrapper.fill(braille)
 
@@ -289,7 +342,6 @@ class SBSForm:
             join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsform.xsl'))
         style = libxslt.parseStylesheetDoc(styledoc)
         doc = libxml2.parseFile(inputFile)
-        kwargs["translation_table"] = Liblouis.contractionMap[kwargs['contraction']]
         kwargs["version"] = getVersion()
         # map True and False to "1" and "0"
         kwargs.update([(k, 1 if v == True else 0) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
