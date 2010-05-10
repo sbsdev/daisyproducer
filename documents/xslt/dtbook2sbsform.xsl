@@ -9,7 +9,8 @@
     xmlns:str="http://exslt.org/strings"
     xmlns:func="http://exslt.org/functions"
     xmlns:my="http://my-functions"
-    exclude-result-prefixes="dtb louis str func my">
+    exclude-result-prefixes="dtb louis str"
+    extension-element-prefixes=" func my">
 
   <xsl:output method="text" encoding="utf-8" indent="no"/>
   <xsl:strip-space elements="*"/>
@@ -26,17 +27,104 @@
   <xsl:param name="downshift_ordinals" select="true()"/>
   <xsl:param name="enable_capitalization" select="false()"/>
   <xsl:param name="detailed_accented_characters">de-accents</xsl:param>
-  <xsl:variable name="options">
-    <xsl:if test="$enable_capitalization">
-      <xsl:text>capitalization=on</xsl:text>
-    </xsl:if>
-    <xsl:text>accents=</xsl:text>
-    <xsl:value-of select="$detailed_accented_characters"/>
-  </xsl:variable>
 
-  <func:function name="my:isGerman">
-    <func:result select="ancestor-or-self::*[@xml:lang='de' or @xml:lang='de-CH']"/>
+  <func:function name="my:getTable">
+    <xsl:param name="context" select="local-name()"/>
+    <func:result>
+      <xsl:call-template name="getTable">
+  	<xsl:with-param name="context" select="$context"></xsl:with-param>
+      </xsl:call-template>
+    </func:result>
   </func:function>
+
+  <xsl:template name="getTable">
+    <xsl:param name="context" select="local-name()"/>
+    <xsl:choose>
+      <xsl:when test="lang('fr')">
+	<xsl:choose>
+	  <xsl:when test="$contraction = '2'">
+	    <xsl:text>Fr-Fr-g2.ctb</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>fr-fr-g1.utb</xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:when>
+      <xsl:when test="lang('it')">
+	<xsl:text>it-it-g1.utb</xsl:text>
+      </xsl:when>
+      <xsl:when test="lang('en')">
+	<xsl:choose>
+	  <xsl:when test="$contraction = '2'">
+	    <xsl:text>en-us-g2.ctb</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>en-us-g1.ctb</xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:when>
+      <xsl:when test="lang('de')">
+	<xsl:text>sbs.dis,</xsl:text>
+	<xsl:text>sbs-de-core6.cti,</xsl:text>
+	<xsl:if test="$context != 'date_month' and $context != 'date_day'">
+	  <xsl:choose>
+	    <xsl:when test="$detailed_accented_characters = 'de-ch'">
+	      <xsl:text>sbs-de-accents-ch.cti,</xsl:text>
+	    </xsl:when>
+	    <xsl:when test="$detailed_accented_characters = 'de-reduced'">
+	      <xsl:text>sbs-de-accents-reduced.cti,</xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:text>sbs-de-accents.cti,</xsl:text>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:if>
+	<xsl:text>sbs-special.cti,</xsl:text>
+	<xsl:text>sbs-whitespace.mod,</xsl:text>
+	<xsl:if test="$context = 'v-form' or $context = 'name_capitalized' or ($contraction != '2' and $enable_capitalization and ($context = 'name' or $context = 'place' or $context = 'num_ordinal'))">
+	  <xsl:text>sbs-de-capsign.mod,</xsl:text>
+	</xsl:if>
+	<xsl:if test="$contraction = '2' and $context != 'date_month' and $context != 'date_day' and $context !='name_capitalized'">
+	  <xsl:text>sbs-de-letsign.mod,</xsl:text>
+	</xsl:if>
+	<xsl:if test="$context != 'date_month'">
+	  <xsl:text>sbs-numsign.mod,</xsl:text>
+	</xsl:if>
+	<xsl:choose>
+	  <xsl:when test="$context = 'num_ordinal' or $context = 'date_day'">
+	    <xsl:text>sbs-litdigit-lower.mod,</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>sbs-litdigit-upper.mod,</xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
+	<xsl:if test="$context != 'date_month' and $context != 'date_day'">
+	  <xsl:text>sbs-de-core.mod,</xsl:text>
+	</xsl:if>
+	<xsl:if test="$context = 'name_capitalized' or $context = 'abbr' or ($contraction = '0' and $context != 'date_day' and $context != 'date_month')">
+	  <xsl:text>sbs-de-g0-core.mod,</xsl:text>
+	</xsl:if>
+	<xsl:if test="$contraction = '1' and ($context != 'name_capitalized' and $context != 'abbr' and $context != 'date_month' and $context != 'date_day')">
+	  <xsl:text>sbs-de-g1-core.mod,</xsl:text>
+	</xsl:if>
+	<xsl:if test="$contraction = '2'">
+	  <xsl:if test="$context = 'place'">
+	    <xsl:text>sbs-de-g2-place.mod,</xsl:text>
+	  </xsl:if>
+	  <xsl:if test="$context = 'place' or $context = 'name'">
+	    <xsl:text>sbs-de-g2-name.mod,</xsl:text>
+	  </xsl:if>
+	  <xsl:if test="$context != 'name' and $context != 'name_capitalized' and $context != 'place' and $context != 'abbr' and $context != 'date_day' and $context != 'date_month'">
+	    <xsl:text>sbs-de-g2-core.mod,</xsl:text>
+	  </xsl:if>
+	</xsl:if>
+	<xsl:text>sbs-special.mod</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>en-us-g2.ctb</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
   <xsl:template match="/">
     <xsl:text>x </xsl:text><xsl:value-of select="//dtb:docauthor"/>
@@ -45,7 +133,7 @@
     <xsl:text>x Daisy Producer Version: </xsl:text>
     <xsl:value-of select="$version"/><xsl:text>
 </xsl:text>
-    <xsl:text>?grade:</xsl:text>
+    <xsl:text>?contraction:</xsl:text>
     <xsl:value-of select="$contraction"/><xsl:text>
 </xsl:text>
     <xsl:text>?cells_per_line:</xsl:text>
@@ -101,7 +189,7 @@ y TPb
 </xsl:text><xsl:apply-templates select="//dtb:docauthor/text()"/><xsl:text>
 </xsl:text><xsl:apply-templates select="//dtb:doctitle/text()"/><xsl:text>
 </xsl:text>
-<xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(ancestor-or-self::*/@xml:lang),string($contraction),'normal')"/>
+<xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(my:getTable()))"/>
   <xsl:text>
     
 y TPink
@@ -339,7 +427,7 @@ y LIe
   </xsl:template>
 
   <xsl:template match="dtb:abbr">
-    <xsl:value-of select="louis:translate(string(.),'de',string($contraction),'normal',string($options),string('abbrev'))"/>
+    <xsl:value-of select="louis:translate(string(.),string(my:getTable()))"/>
   </xsl:template>
   
   <xsl:template match="dtb:acronym">
@@ -350,7 +438,7 @@ y LIe
   <xsl:template match="brl:num[@role='ordinal' and lang('de')]">
     <xsl:choose>
       <xsl:when test="$downshift_ordinals">
-	<xsl:value-of select="louis:translate(string(translate(.,'.','')),'de',string($contraction),'normal',string($options),string('num[ordinal]'))"/>
+	<xsl:value-of select="louis:translate(string(translate(.,'.','')),string(my:getTable('num_ordinal')))"/>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:apply-templates/>
@@ -359,12 +447,12 @@ y LIe
   </xsl:template>
 
   <xsl:template match="brl:num[@role='roman' and lang('de')]">
-    <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('num[roman]'))"/>
+    <xsl:value-of select="louis:translate(string(),string(my:getTable('num_roman')))"/>
   </xsl:template>
 
   <xsl:template match="brl:num[@role='phone' and lang('de')]">
     <xsl:for-each select="str:tokenize(string(.), ' /')">
-      <xsl:value-of select="louis:translate(string(.),'de',string($contraction),'normal')" />
+      <xsl:value-of select="louis:translate(string(.),string(my:getTable()))" />
       <xsl:if test="not(position() = last())">.</xsl:if>
     </xsl:for-each>
   </xsl:template>
@@ -375,10 +463,10 @@ y LIe
       <xsl:choose>
 	<xsl:when test="not(position() = last())">
 	  <!-- FIXME: do not test for position but whether it is a number -->
-	  <xsl:value-of select="louis:translate(string(.),'de',string($contraction),'normal')"/>
+	  <xsl:value-of select="louis:translate(string(.),string(my:getTable()))"/>
 	</xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="louis:translate(string(.),'de',string($contraction),'normal',string($options),string('abbrev'))"/>
+	<xsl:value-of select="louis:translate(string(.),string(my:getTable('abbr')))"/>
       </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
@@ -394,17 +482,17 @@ y LIe
            letter with sbs-de-g0-abbr.ctb -->
       <xsl:when test="$secondToLastChar='-' and string(number($lastChar))='NaN' and contains($upperCase, $lastChar)">
 	<xsl:for-each select="str:tokenize(substring(.,1,string-length(.)-2), ' -')">
-	  <xsl:value-of select="louis:translate(string(.),'de',string($contraction),'normal')" />
+	  <xsl:value-of select="louis:translate(string(.),string(my:getTable()))" />
 	  <xsl:if test="not(position() = last())">.</xsl:if>
 	</xsl:for-each>
-	<xsl:value-of select="louis:translate($secondToLastChar,'de',string($contraction),'normal')"/>
+	<xsl:value-of select="louis:translate($secondToLastChar,string(my:getTable()))"/>
 	<!-- FIXME: mark the letter with &#x2566; -->
 	<!-- concat(&#x2566;,$lastChar)? -->
-	<xsl:value-of select="louis:translate($lastChar,'de',string($contraction),'normal',string($options),string('abbrev'))"/>
+	<xsl:value-of select="louis:translate($lastChar,string(my:getTable('abbr')))"/>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:for-each select="str:tokenize(string(.), ' -')">
-	  <xsl:value-of select="louis:translate(string(.),'de',string($contraction),'normal')" />
+	  <xsl:value-of select="louis:translate(string(.),string(my:getTable()))" />
 	  <xsl:if test="not(position() = last())">.</xsl:if>
 	</xsl:for-each>
       </xsl:otherwise>
@@ -412,11 +500,11 @@ y LIe
   </xsl:template>
 
   <xsl:template match="brl:name[lang('de')]">
-    <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('name'))"/>
+    <xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
   </xsl:template>
 
   <xsl:template match="brl:place[lang('de')]">
-    <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('place'))"/>
+    <xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
   </xsl:template>
 
   <xsl:template match="brl:v-form[lang('de')]">
@@ -425,7 +513,7 @@ y LIe
 	<xsl:apply-templates/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('v-form'))"/>
+	<xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -442,13 +530,13 @@ y LIe
     <xsl:for-each select="str:tokenize(string(@value), '-')">
       <xsl:choose>
 	<xsl:when test="position() = last()-1">
-	  <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('date[month]'))"/>
+	  <xsl:value-of select="louis:translate(string(),string(my:getTable('date_month')))"/>
 	</xsl:when>
 	<xsl:when test="position() = last()">
-	  <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal',string($options),string('date[day]'))"/>
+	  <xsl:value-of select="louis:translate(string(),string(my:getTable('date_day')))"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:value-of select="louis:translate(string(),'de',string($contraction),'normal')"/>
+	  <xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
 	</xsl:otherwise>	
       </xsl:choose>
       <xsl:if test="not(position() = last())">.</xsl:if>
@@ -464,7 +552,7 @@ y LIe
 	<xsl:if test="not(position() = last())">.</xsl:if>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:value-of select="louis:translate(string($time),'de',string($contraction),'normal')" />
+    <xsl:value-of select="louis:translate(string($time),string(my:getTable()))" />
     <xsl:text>
 </xsl:text>
   </xsl:template>
@@ -472,15 +560,15 @@ y LIe
   <!-- Text nodes are translated with liblouis -->
 
   <xsl:template match="text()">
-    <xsl:value-of select='louis:translate(string(),string(ancestor-or-self::*/@xml:lang),string($contraction),"normal",string($options))'/>
+    <xsl:value-of select='louis:translate(string(),string(my:getTable()))'/>
   </xsl:template>
   
   <xsl:template match="text()" mode="italic">
-    <xsl:value-of select='louis:translate(string(),string(ancestor-or-self::*/@xml:lang),string($contraction),"italic",string($options))'/>
+    <xsl:value-of select='louis:translate(string(),string(my:getTable()),"italic")'/>
   </xsl:template>
   
   <xsl:template match="text()" mode="bold">
-    <xsl:value-of select='louis:translate(string(),string(ancestor-or-self::*/@xml:lang),string($contraction),"bold",string($options))'/>
+    <xsl:value-of select='louis:translate(string(),string(my:getTable()),"bold")'/>
   </xsl:template>
   
   <xsl:template match="dtb:*">
