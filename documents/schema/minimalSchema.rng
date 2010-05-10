@@ -9,7 +9,10 @@
         <value>2005-3</value>
       </attribute>
       <attribute name="xml:lang">
-        <value>de-CH</value>
+        <choice>
+          <value>de-CH</value>
+          <value>de</value>
+        </choice>
       </attribute>
       <ref name="head"/>
       <ref name="book"/>
