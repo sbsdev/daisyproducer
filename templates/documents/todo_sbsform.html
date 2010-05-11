@@ -17,14 +17,14 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form method="post" action="{% url todo_sbsform  document.id %}">
+    <form method="post" action="{% url todo_sbsform document.id %}">
       <p>
 	<table>
 	  {{ form.as_table }}
 	</table>
       <p>
 	<input type="submit" value="{% trans 'Preview' %}" />
-	<a href="{% url todo_detail  document.id %}">{% trans 'Cancel' %}</a>
+	<a href="{% url todo_detail document.id %}">{% trans 'Cancel' %}</a>
       </p>
     </form>
   </div>
