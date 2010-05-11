@@ -15,16 +15,13 @@
   <h3>{% trans "Preview" %}</h3>
   <a href="{% url todo_xhtml document.id %}" accesskey="p" >{% trans "XHTML" %}</a><br />
   <a href="{% url todo_sbsform document.id %}" accesskey="p" >{% trans "Braille (SBSForm)" %}</a><br />
+  <a href="{% url todo_pdf document.id %}" accesskey="p" >{% trans "Large Print" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
 
 {% block content %}
 {% if document %}
-<!-- <div class="contextual"> -->
-<!--   <a href="{% url todo_ocr document.id %}" accesskey="o" class="icon icon-ocr">{% trans "OCR" %}</a> -->
-<!--   <a href="{% url todo_markup document.id %}" accesskey="m" class="icon icon-edit">{% trans "Markup" %}</a> -->
-<!-- </div> -->
 
 <h2>{% trans "Document Details" %}</h2>
 
