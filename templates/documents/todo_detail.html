@@ -8,11 +8,13 @@
 {% block sidebar %}
 {% if document %}
 <div id="sidebar">
-  <h3>{% trans "Document" %}</h3>
-  <a href="{% url todo_ocr document.id %}" accesskey="o" >{% trans "OCR" %}</a><br />
+  <h3>{% trans "Edit" %}</h3>
+  <!-- <a href="{% url todo_ocr document.id %}" accesskey="o" >{% trans "OCR" %}</a><br /> -->
   <a href="{% url todo_markup document.id %}" accesskey="m" >{% trans "Markup" %}</a><br />
   <!-- <a href="{% url todo_markup_xopus document.id %}" accesskey="e" >{% trans "Markup with Xopus" %}</a><br /> -->
-  <a href="{% url todo_preview document.id %}" accesskey="p" >{% trans "Preview" %}</a><br />
+  <h3>{% trans "Preview" %}</h3>
+  <a href="{% url todo_xhtml document.id %}" accesskey="p" >{% trans "XHTML" %}</a><br />
+  <a href="{% url todo_sbsform document.id %}" accesskey="p" >{% trans "Braille (SBSForm)" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
