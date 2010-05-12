@@ -28,6 +28,36 @@
   <xsl:param name="enable_capitalization" select="false()"/>
   <xsl:param name="detailed_accented_characters">de-accents</xsl:param>
 
+  <xsl:variable name="lowerCaseLetters">abcdefghijklmnopqrstuvwxyzäöüéè</xsl:variable>
+  <xsl:variable name="upperCaseLetters">ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜÉÈ</xsl:variable>
+
+  <func:function name="my:isLower">
+    <xsl:param name="char"/>
+    <func:result select="contains($lowerCaseLetters,$char)"/>
+  </func:function>
+
+  <func:function name="my:isUpper">
+    <xsl:param name="char"/>
+    <func:result select="contains($upperCaseLetters,$char)"/>
+  </func:function>
+
+  <func:function name="my:hasSameCase">
+    <xsl:param name="a"/>
+    <xsl:param name="b"/>
+    <func:result select="(my:isLower($a) and my:isLower($b)) or (my:isUpper($a) and my:isUpper($b))"/>
+  </func:function>
+
+  <func:function name="my:tokenizeByCase">
+    <xsl:param name="string"/>
+    <xsl:variable name="temp">
+      <xsl:for-each select="str:tokenize(string(.), '')">
+	<xsl:value-of select="."/>
+	<xsl:if test="not(my:hasSameCase(.,(following-sibling::*)[1]))">,</xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <func:result select="str:tokenize($temp, ',')"/>
+  </func:function>
+
   <func:function name="my:getTable">
     <xsl:param name="context" select="local-name()"/>
     <func:result>
@@ -35,6 +65,11 @@
   	<xsl:with-param name="context" select="$context"></xsl:with-param>
       </xsl:call-template>
     </func:result>
+  </func:function>
+
+  <func:function name="my:containsDot">
+    <xsl:param name="string"/>
+    <func:result select="contains($string,'.')"/>
   </func:function>
 
   <xsl:template name="getTable">
@@ -101,10 +136,10 @@
 	<xsl:if test="$context != 'date_month' and $context != 'date_day'">
 	  <xsl:text>sbs-de-core.mod,</xsl:text>
 	</xsl:if>
-	<xsl:if test="$context = 'name_capitalized' or $context = 'abbr' or ($contraction = '0' and $context != 'date_day' and $context != 'date_month')">
+	<xsl:if test="$context = 'name_capitalized' or ($context = 'abbr' and not(my:containsDot(.))) or ($contraction = '0' and $context != 'date_day' and $context != 'date_month')">
 	  <xsl:text>sbs-de-g0-core.mod,</xsl:text>
 	</xsl:if>
-	<xsl:if test="$contraction = '1' and ($context != 'name_capitalized' and $context != 'abbr' and $context != 'date_month' and $context != 'date_day')">
+	<xsl:if test="$contraction = '1' and ($context != 'name_capitalized' and ($context != 'abbr' or my:containsDot(.)) and $context != 'date_month' and $context != 'date_day')">
 	  <xsl:text>sbs-de-g1-core.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$contraction = '2'">
@@ -114,7 +149,7 @@
 	  <xsl:if test="$context = 'place' or $context = 'name'">
 	    <xsl:text>sbs-de-g2-name.mod,</xsl:text>
 	  </xsl:if>
-	  <xsl:if test="$context != 'name' and $context != 'name_capitalized' and $context != 'place' and $context != 'abbr' and $context != 'date_day' and $context != 'date_month'">
+	  <xsl:if test="$context != 'name' and $context != 'name_capitalized' and $context != 'place' and ($context != 'abbr' or  my:containsDot(.)) and $context != 'date_day' and $context != 'date_month'">
 	    <xsl:text>sbs-de-g2-core.mod,</xsl:text>
 	  </xsl:if>
 	</xsl:if>
@@ -418,6 +453,20 @@ y LIe
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="dtb:strong[lang('de')]|dtb:em[lang('de')]">
+    <!-- FIXME: This is a workaround for a liblouis bug that doesn't
+         correctly announce multi-word emphasis. We do it manually
+         here by counting the words -->
+    <xsl:choose>
+     <xsl:when test="count(str:tokenize(string(.), ' /-')) > 1">
+       <xsl:apply-templates mode="italic"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:apply-templates mode="bold"/>
+     </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template match="dtb:em">
     <xsl:text>
 </xsl:text>
@@ -428,10 +477,38 @@ y LIe
     <xsl:apply-templates mode="bold"/>
   </xsl:template>
 
+  <xsl:template match="dtb:abbr[lang('de')]">
+    <xsl:choose>
+      <xsl:when test="my:containsDot(.)">
+	<xsl:variable name="temp">
+	  <!-- drop all the spaces -->
+	  <xsl:for-each select="str:tokenize(string(.), ' ')">
+	    <xsl:value-of select="." />
+	  </xsl:for-each>
+	</xsl:variable>
+	<xsl:value-of select="louis:translate(string($temp),string(my:getTable()))"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:variable name="temp">
+	  <xsl:for-each select="my:tokenizeByCase(.)">
+	    <!-- prepend more upper case sequences longer than one char with > -->
+	    <xsl:if test="(string-length(.) &gt; 1 or position()=last()) and my:isUpper(substring(.,1,1))"><xsl:text>╦</xsl:text></xsl:if>
+	    <!-- prepend single char upper case with $ (unless it is the last char then prepend with >) -->
+	    <xsl:if test="string-length(.) = 1 and my:isUpper(substring(.,1,1)) and not(position()=last())"><xsl:text>╤</xsl:text></xsl:if>
+	    <!-- prepend the first char with ' if it is lower case -->
+	    <xsl:if test="position()=1 and my:isLower(substring(.,1,1))"><xsl:text>╩</xsl:text></xsl:if>
+	    <!-- prepend any lower case sequences that follow an upper case sequence with ' -->
+	    <xsl:if test="my:isLower(substring(.,1,1)) and string-length((preceding-sibling::*)[1]) &gt; 1 and my:isUpper(substring((preceding-sibling::*)[1],1,1))"><xsl:text>╩</xsl:text></xsl:if>
+	    <xsl:value-of select="."/>
+	  </xsl:for-each>
+	</xsl:variable>
+	<xsl:value-of select="louis:translate(string($temp),string(my:getTable()))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
   <xsl:template match="dtb:abbr">
-    <xsl:text>
-</xsl:text>
-    <xsl:value-of select="louis:translate(string(.),string(my:getTable()))"/>
+    <xsl:apply-templates />
   </xsl:template>
   
   <xsl:template match="dtb:acronym">
@@ -451,10 +528,11 @@ y LIe
   </xsl:template>
 
   <xsl:template match="brl:num[@role='roman' and lang('de')]">
-    <xsl:value-of select="louis:translate(string(),string(my:getTable('num_roman')))"/>
+    <xsl:value-of select="louis:translate(string(),string(my:getTable('abbr')))"/>
   </xsl:template>
 
   <xsl:template match="brl:num[@role='phone' and lang('de')]">
+    <!-- Replace ' ' and '/' with '.' -->
     <xsl:for-each select="str:tokenize(string(.), ' /')">
       <xsl:value-of select="louis:translate(string(.),string(my:getTable()))" />
       <xsl:if test="not(position() = last())">.</xsl:if>
@@ -478,21 +556,18 @@ y LIe
 
   <xsl:template match="brl:num[@role='isbn' and lang('de')]">
     <xsl:variable name="lastChar" select="substring(.,string-length(.),1)"/>
-    <xsl:variable name="upperCase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
     <xsl:variable name="secondToLastChar" select="substring(.,string-length(.)-1,1)"/>
     <xsl:choose>
       <!-- If the isbn number ends in a capital letter then keep the
            dash, mark the letter with &#x2566; and translate the
-           letter with sbs-de-g0-abbr.ctb -->
-      <xsl:when test="$secondToLastChar='-' and string(number($lastChar))='NaN' and contains($upperCase, $lastChar)">
+           letter with abbr -->
+      <xsl:when test="$secondToLastChar='-' and string(number($lastChar))='NaN' and contains($upperCaseLetters, $lastChar)">
 	<xsl:for-each select="str:tokenize(substring(.,1,string-length(.)-2), ' -')">
 	  <xsl:value-of select="louis:translate(string(.),string(my:getTable()))" />
 	  <xsl:if test="not(position() = last())">.</xsl:if>
 	</xsl:for-each>
 	<xsl:value-of select="louis:translate($secondToLastChar,string(my:getTable()))"/>
-	<!-- FIXME: mark the letter with &#x2566; -->
-	<!-- concat(&#x2566;,$lastChar)? -->
-	<xsl:value-of select="louis:translate($lastChar,string(my:getTable('abbr')))"/>
+	<xsl:value-of select="louis:translate(concat('&#x2566;',$lastChar),string(my:getTable('abbr')))"/>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:for-each select="str:tokenize(string(.), ' -')">
