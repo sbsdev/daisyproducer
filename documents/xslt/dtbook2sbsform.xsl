@@ -468,8 +468,6 @@ y LIe
   </xsl:template>
 
   <xsl:template match="dtb:em">
-    <xsl:text>
-</xsl:text>
     <xsl:apply-templates mode="italic"/>
   </xsl:template>
 
@@ -579,32 +577,22 @@ y LIe
   </xsl:template>
 
   <xsl:template match="brl:name[lang('de')]">
-    <xsl:text>
-</xsl:text>
     <xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
   </xsl:template>
 
   <xsl:template match="brl:place[lang('de')]">
-    <xsl:text>
-</xsl:text>
     <xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
   </xsl:template>
 
   <xsl:template match="brl:v-form[lang('de')]">
     <xsl:choose>
-      <xsl:when test="not($show_v_forms)">
-	<xsl:apply-templates/>
+      <xsl:when test="$show_v_forms">
+  	<xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:text>
-</xsl:text>
-	<xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
+  	<xsl:apply-templates/>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template>
-
-  <xsl:template match="brl:homograph">
-    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="brl:separator">
@@ -612,8 +600,6 @@ y LIe
   </xsl:template>
 
   <xsl:template match="brl:date[lang('de')]">
-    <xsl:text>
-</xsl:text>
     <xsl:for-each select="str:tokenize(string(@value), '-')">
       <xsl:choose>
 	<xsl:when test="position() = last()-1">
@@ -631,8 +617,6 @@ y LIe
   </xsl:template>
 
   <xsl:template match="brl:time[lang('de')]">
-    <xsl:text>
-</xsl:text>
     <xsl:variable name="time">
       <xsl:for-each select="str:tokenize(string(@value), ':')">
 	<xsl:value-of select="format-number(.,'#')"/>
