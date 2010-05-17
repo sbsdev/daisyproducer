@@ -7,6 +7,8 @@ from django.core.files.base import ContentFile
 from django.forms import ModelForm
 from django.forms.util import ErrorList
 from django.utils.translation import ugettext_lazy as _
+import tempfile
+import os
 
 class PartialVersionForm(ModelForm):
 
@@ -93,6 +95,39 @@ class MarkupForm(forms.Form):
                 'rows' : "24"}))
     comment = forms.CharField(
         widget=forms.TextInput(attrs={'size':'60'}))
+
+    def getcontentMetaData(self):
+        return self._contentMetaData
+
+    def setcontentMetaData(self, value):
+        self._contentMetaData = value
+
+    contentMetaData = property(getcontentMetaData, setcontentMetaData)
+
+    def clean_data(self):
+        data = self.cleaned_data['data']
+        tmpFile, tmpFileName = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")
+        tmpFile = os.fdopen(tmpFile,'w')
+        tmpFile.write(data.encode('utf-8'))
+        tmpFile.close()
+        # make sure the uploaded version is valid xml
+        exitMessages = DaisyPipeline.validate(tmpFileName)
+        if exitMessages:
+            os.remove(tmpFileName)
+            raise forms.ValidationError(
+                ["The uploaded file is not a valid DTBook XML document: "] + 
+                exitMessages)            
+        # make sure the meta data of the uploaded version corresponds
+        # to the meta data in the document
+        xmlContent = XMLContent()
+        errorList = xmlContent.validateContentMetaData(tmpFileName, **self.contentMetaData)
+        os.remove(tmpFileName)
+        if errorList:
+            raise forms.ValidationError(
+                map(lambda errorTuple : 
+                    "The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple, 
+                    errorList))
+        return data
 
     def save(self, document):
         # create a new version with the new content

@@ -7,6 +7,7 @@ from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -87,7 +88,6 @@ def add_version(request, document_id):
 
     form = PartialVersionForm(request.POST, request.FILES)
     # attach some data to the form for validation        
-    from django.forms.models import model_to_dict
     form.contentMetaData = model_to_dict(document)
 
     if not form.is_valid():
@@ -146,16 +146,23 @@ def markup(request, document_id):
     document = Document.objects.select_related('state').get(pk=document_id)
     if request.method == 'POST':
         form = MarkupForm(request.POST)
+        # attach some data to the form for validation        
+        form.contentMetaData = model_to_dict(document)
         if form.is_valid():
             # create a new version with the given form content
             form.save(document)
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+        else:
+            form.has_errors = True
     else:
         file_field = document.latest_version().content
         file_field.open()
         content = file_field.read()
         file_field.close()
         form = MarkupForm({'data' : content, 'comment' : "Insert a comment here"})
+        # This is a bit of a cheap hack to avoid expensive validation
+        # on initial display of the form
+        form.has_errors = False
 
     return render_to_response('documents/todo_markup.html', locals(),
                               context_instance=RequestContext(request))
