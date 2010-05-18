@@ -46,7 +46,7 @@
       <!-- 	<th>Comment</th> -->
       <!-- 	<th>Created at</th> -->
       <!-- </tr> -->
-      {% for version in document.version_set.all %}
+      {% for version in document.version_set.all|slice:":7" %}
       <tr>
 	<td><a href="{{ version.content.url }}">{{ version.comment }}</a></td>
 	<td>{{ version.created_at|date }}</td>
