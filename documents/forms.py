@@ -10,6 +10,27 @@ from django.utils.translation import ugettext_lazy as _
 import tempfile
 import os
 
+def validate_content(fileName, contentMetaData, removeFile=False):
+    # make sure the uploaded version is valid xml
+    exitMessages = DaisyPipeline.validate(fileName)
+    if exitMessages:
+        if removeFile:
+            os.remove(fileName)
+        raise forms.ValidationError(
+            ["The uploaded file is not a valid DTBook XML document: "] + 
+            exitMessages)            
+    # make sure the meta data of the uploaded version corresponds
+    # to the meta data in the document
+    xmlContent = XMLContent()
+    errorList = xmlContent.validateContentMetaData(fileName , **contentMetaData)
+    if removeFile:
+        os.remove(fileName)
+    if errorList:
+        raise forms.ValidationError(
+            map(lambda errorTuple : 
+                "The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple, 
+                errorList))
+
 class PartialVersionForm(ModelForm):
 
     def getcontentMetaData(self):
@@ -28,21 +49,7 @@ class PartialVersionForm(ModelForm):
                 "The mime type of the uploaded file must be 'text/xml'")
         # FIXME: test the mime-type with python-magic
         # make sure the uploaded version is valid xml
-        exitMessages = DaisyPipeline.validate(data.temporary_file_path())
-        if exitMessages:
-            raise forms.ValidationError(
-                ["The uploaded file is not a valid DTBook XML document: "] + 
-                exitMessages)            
-        # make sure the meta data of the uploaded version corresponds
-        # to the meta data in the document
-        xmlContent = XMLContent()
-        errorList = xmlContent.validateContentMetaData(
-            data.temporary_file_path(), **self.contentMetaData)
-        if errorList:
-            raise forms.ValidationError(
-                map(lambda errorTuple : 
-                    "The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple, 
-                    errorList))
+        validate_content(data.temporary_file_path(), self.contentMetaData)
         return data
 
     class Meta:
@@ -111,22 +118,7 @@ class MarkupForm(forms.Form):
         tmpFile.write(data.encode('utf-8'))
         tmpFile.close()
         # make sure the uploaded version is valid xml
-        exitMessages = DaisyPipeline.validate(tmpFileName)
-        if exitMessages:
-            os.remove(tmpFileName)
-            raise forms.ValidationError(
-                ["The uploaded file is not a valid DTBook XML document: "] + 
-                exitMessages)            
-        # make sure the meta data of the uploaded version corresponds
-        # to the meta data in the document
-        xmlContent = XMLContent()
-        errorList = xmlContent.validateContentMetaData(tmpFileName, **self.contentMetaData)
-        os.remove(tmpFileName)
-        if errorList:
-            raise forms.ValidationError(
-                map(lambda errorTuple : 
-                    "The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple, 
-                    errorList))
+        validate_content(tmpFileName, self.contentMetaData, True)
         return data
 
     def save(self, document):
