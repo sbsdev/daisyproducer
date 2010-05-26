@@ -151,6 +151,8 @@ class SBSFormForm(forms.Form):
     hyphenation = forms.BooleanField(label=_("Hyphenation"), required=False)
     generate_toc = forms.BooleanField(
         label=_("Generate a table of contents"), required=False)
+    include_macros = forms.BooleanField(
+        label=_("Include SBSForm macros"), required=False, initial=True)
     show_original_page_numbers = forms.BooleanField(
         label=_("Show original page numbers"), required=False)
     show_v_forms = forms.BooleanField(
