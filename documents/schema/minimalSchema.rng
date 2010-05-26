@@ -68,15 +68,20 @@
         <text/>
       </element>
       <zeroOrMore>
-        <ref name="level1"/>
+        <ref name="frontmatterLevel1"/>
       </zeroOrMore>
     </element>
   </define>
   <define name="bodymatter">
     <element name="bodymatter">
-      <oneOrMore>
-        <ref name="level1"/>
-      </oneOrMore>
+      <interleave>
+        <oneOrMore>
+          <ref name="level1"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="volume"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="rearmatter">
@@ -86,13 +91,16 @@
       </oneOrMore>
     </element>
   </define>
+  <define name="gradeAttribute">
+    <attribute name="brl:grade">
+      <data type="nonNegativeInteger">
+        <param name="maxInclusive">2</param>
+      </data>
+    </attribute>
+  </define>
   <define name="commonAttributes">
     <optional>
-      <attribute name="brl:grade">
-        <data type="nonNegativeInteger">
-          <param name="maxInclusive">2</param>
-        </data>
-      </attribute>
+      <ref name="gradeAttribute"/>
     </optional>
   </define>
   <define name="levelcontent">
@@ -114,20 +122,45 @@
   <define name="hcontent">
     <interleave>
       <text/>
-      <optional>
-        <ref name="br"/>
-      </optional>
       <zeroOrMore>
         <ref name="contractionhints"/>
       </zeroOrMore>
       <zeroOrMore>
         <ref name="span"/>
       </zeroOrMore>
+      <optional>
+        <ref name="toc-line"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="running-line"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="level1">
     <element name="level1">
       <ref name="commonAttributes"/>
+      <interleave>
+        <ref name="levelcontent"/>
+        <optional>
+          <ref name="h1"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="level2"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="frontmatterLevel1">
+    <element name="level1">
+      <ref name="commonAttributes"/>
+      <optional>
+        <attribute name="class">
+          <choice>
+            <value>titlepage</value>
+            <value>toc</value>
+          </choice>
+        </attribute>
+      </optional>
       <interleave>
         <ref name="levelcontent"/>
         <optional>
@@ -226,14 +259,24 @@
       <ref name="hcontent"/>
     </element>
   </define>
-  <define name="br">
-    <element name="br">
-      <empty/>
-    </element>
-  </define>
   <define name="p">
     <element name="p">
       <ref name="commonAttributes"/>
+      <optional>
+        <!--
+          this is a hack that the Norwegians came up with to work around
+          the lack of a separator element (see
+          http://www.daisy.org/z3986/2011/auth/cm/#z3986.separator) in
+          dtbook xml. They "annotate" the following paragraph with a class
+          attribute that declares a separator or an empty line before it.
+        -->
+        <attribute name="class">
+          <choice>
+            <value>precedingseparator</value>
+            <value>precedingemptyline</value>
+          </choice>
+        </attribute>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -256,12 +299,16 @@
   </define>
   <define name="emphasisClassAttribute">
     <attribute name="class">
+      <data type="string" datatypeLibrary=""/>
+    </attribute>
+  </define>
+  <define name="emphasisRenderAttribute">
+    <attribute name="brl:render">
       <choice>
-        <value>foreign</value>
+        <value>emph</value>
         <value>quote</value>
-        <value>speech</value>
-        <value>emphasis</value>
-        <value>name</value>
+        <value>singlequote</value>
+        <value>ignore</value>
       </choice>
     </attribute>
   </define>
@@ -269,6 +316,9 @@
     <element name="em">
       <optional>
         <ref name="emphasisClassAttribute"/>
+      </optional>
+      <optional>
+        <ref name="emphasisRenderAttribute"/>
       </optional>
       <interleave>
         <text/>
@@ -288,6 +338,9 @@
     <element name="strong">
       <optional>
         <ref name="emphasisClassAttribute"/>
+      </optional>
+      <optional>
+        <ref name="emphasisRenderAttribute"/>
       </optional>
       <interleave>
         <text/>
@@ -481,7 +534,12 @@
   </define>
   <define name="emph">
     <element name="brl:emph">
-      <ref name="emphasisClassAttribute"/>
+      <optional>
+        <ref name="emphasisClassAttribute"/>
+      </optional>
+      <optional>
+        <ref name="emphasisRenderAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <optional>
@@ -494,6 +552,11 @@
           <ref name="abbr"/>
         </zeroOrMore>
       </interleave>
+    </element>
+  </define>
+  <define name="volume">
+    <element name="brl:volume">
+      <ref name="gradeAttribute"/>
     </element>
   </define>
   <define name="toc-line">
@@ -511,6 +574,9 @@
   </define>
   <define name="running-line">
     <element name="brl:running-line">
+      <optional>
+        <ref name="gradeAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
