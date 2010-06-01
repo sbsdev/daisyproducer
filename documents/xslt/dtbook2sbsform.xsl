@@ -346,6 +346,26 @@ i j=</xsl:text>
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="dtb:p[@class='precedingseparator']">   
+    <xsl:text>y SEPARATOR
+y Pb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+y Pe
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:p[@class='precedingemptyline']">   
+    <xsl:text>y BLANK
+y Pb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+y Pe
+</xsl:text>
+  </xsl:template>
+
   <xsl:template match="dtb:p">   
     <xsl:text>y Pb
 </xsl:text>
