@@ -441,6 +441,30 @@ y LIe
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="dtb:poem">
+    <xsl:text>y POEMb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y POEMe
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:linegroup">
+    <xsl:text>y LINEGROUPb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y LINEGROUPe
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:line">
+    <xsl:text>y LINEb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y LINEe
+</xsl:text>
+  </xsl:template>
+
   <xsl:template match="dtb:br">
     <!-- ignore for now -->
   </xsl:template>

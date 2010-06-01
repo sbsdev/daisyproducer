@@ -117,6 +117,9 @@
       <zeroOrMore>
         <ref name="blockquote"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="poem"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="hcontent">
@@ -146,6 +149,9 @@
         </optional>
         <zeroOrMore>
           <ref name="level2"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="volume"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -434,6 +440,47 @@
         <value>normal</value>
       </attribute>
       <data type="integer"/>
+    </element>
+  </define>
+  <define name="poem">
+    <element name="poem">
+      <interleave>
+        <oneOrMore>
+          <ref name="linegroup"/>
+        </oneOrMore>
+        <oneOrMore>
+          <ref name="line"/>
+        </oneOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="linegroup">
+    <element name="linegroup">
+      <oneOrMore>
+        <ref name="line"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="line">
+    <element name="line">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="contractionhints">
