@@ -142,6 +142,15 @@ class SBSFormForm(forms.Form):
         ('de-accents-ch', _('Swiss Accents')),
         ('de-accents-reduced', _('Reduced Accents')),
         )
+    BRAILLE_TOC_DEPTH_CHOICES = (
+        ('0', 0),
+        ('1', 1),
+        ('2', 2),
+        ('3', 3),
+        ('4', 4),
+        ('5', 5),
+        ('6', 6),
+        )
     cells_per_line = forms.IntegerField(label=_("Cells per Line"), initial=40, min_value=1, max_value=255)
     lines_per_page = forms.IntegerField(label=_("Lines per Page"), initial=28, min_value=1, max_value=255)
     contraction = forms.TypedChoiceField(
@@ -149,8 +158,10 @@ class SBSFormForm(forms.Form):
         choices=BRAILLE_CONTRACTION_GRADE_CHOICES, 
         coerce=int)
     hyphenation = forms.BooleanField(label=_("Hyphenation"), required=False)
-    generate_toc = forms.BooleanField(
-        label=_("Generate a table of contents"), required=False)
+    toc_level = forms.TypedChoiceField(
+        label=_("Depth of table of contents"), 
+        choices=BRAILLE_TOC_DEPTH_CHOICES, 
+        coerce=int)
     include_macros = forms.BooleanField(
         label=_("Include SBSForm macros"), required=False, initial=True)
     show_original_page_numbers = forms.BooleanField(

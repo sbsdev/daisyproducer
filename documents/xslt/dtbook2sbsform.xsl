@@ -21,12 +21,17 @@
   <xsl:param name="cells_per_line">40</xsl:param>
   <xsl:param name="lines_per_page">28</xsl:param>
   <xsl:param name="hyphenation" select="false()"/>
-  <xsl:param name="generate_toc" select="false()"/>
+  <xsl:param name="toc_level">0</xsl:param>
   <xsl:param name="show_original_page_numbers" select="false()"/>
   <xsl:param name="show_v_forms" select="true()"/>
   <xsl:param name="downshift_ordinals" select="true()"/>
   <xsl:param name="enable_capitalization" select="false()"/>
   <xsl:param name="detailed_accented_characters">de-accents</xsl:param>
+
+  <xsl:variable name="volumes">
+    <xsl:value-of select=
+		  "count(//brl:volume[@brl:grade=$contraction]) + 1" />
+  </xsl:variable>
 
   <xsl:variable name="lowerCaseLetters">abcdefghijklmnopqrstuvwxyzäöüéè</xsl:variable>
   <xsl:variable name="upperCaseLetters">ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜÉÈ</xsl:variable>
@@ -161,6 +166,729 @@
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template name="sbsform-macros">
+    <xsl:text>
+x ======================= ANFANG SBSFORM.MAK =========================
+x Bei Aenderungen den ganzen Block in separate Makrodatei auslagern.
+    </xsl:text>
+
+    <xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxx book, body, rear xxxxxxxxxxxxxxxxxxxxxxxxxx
+
+y b BOOKb ; Anfang des Buches: Globale Einstellungen
+z
+i b=</xsl:text><xsl:value-of select="$cells_per_line"/>
+<xsl:text>
+i s=</xsl:text><xsl:value-of select="$lines_per_page"/>
+<xsl:text>
+y e BOOKb
+
+y b BOOKe ; Ende des Buches, evtl. Inhaltsverzeichnis
+y EndBook
+</xsl:text>
+<xsl:if test="$toc_level &gt; 0">
+  <xsl:text>y Inhaltsv
+</xsl:text>
+</xsl:if>
+<xsl:text>
+y e BOOKe
+
+y b BODYb ; Bodymatter
+R=X
+Y
+</xsl:text>
+<xsl:if test="$show_original_page_numbers">
+  <xsl:text>RX
+  </xsl:text>
+</xsl:if>
+<xsl:text>y e BODYb
+y b BODYe
+y e BODYe
+</xsl:text>
+
+<xsl:if test="//rearmatter">
+  <xsl:text>y b REARb ; Rearmatter
+z
+  </xsl:text>
+  <xsl:if test="$toc_level &gt; 0">
+    <xsl:text>H`lm1
+</xsl:text>
+  </xsl:if>
+  <xsl:text>y e REARb
+y b REARe
+y e REARe
+  </xsl:text>
+</xsl:if>
+
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxx Levels und Headings xxxxxxxxxxxxxxxxxxxxxxxxx
+y b LEVEL1
+p
+Y
+y e LEVEL1
+y b H1
+L
+i f=3 l=1
+t
+Y
+u-
+</xsl:text>
+<xsl:if test="$toc_level &gt; 0">
+<xsl:text>H`B+
+H`i F=1
+Y
+H`B-
+</xsl:text>
+</xsl:if>
+<xsl:text>Y
+lm1
+y e H1
+</xsl:text>
+
+<xsl:if test="//level2">
+<xsl:text>y b LEVEL2
+lm2
+n10
+Y
+y e LEVEL2
+y b H2
+lm2
+i f=3 l=1
+w
+Y
+u
+</xsl:text>
+  <xsl:if test="$toc_level &gt; 1">
+<xsl:text>H`B+
+H`i F=3
+Y
+H`B-
+</xsl:text>
+  </xsl:if>
+<xsl:text>Y
+lm1
+y e H2
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//level3">
+<xsl:text>y b LEVEL3
+lm1
+n6
+Y
+y e LEVEL3
+y b H3
+lm1
+i f=3 l=1
+w
+Y
+u,
+</xsl:text>
+  <xsl:if test="$toc_level &gt; 2">
+<xsl:text>H`B+
+H`i F=5
+Y
+H`B-
+</xsl:text>
+  </xsl:if>
+<xsl:text>Y
+y e H3
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//level4">
+<xsl:text>y b LEVEL4
+lm1
+Y
+y e LEVEL4
+y b H4
+lm1
+Y
+y e H4
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//level5">
+<xsl:text>y b LEVEL5
+lm1
+Y
+y e LEVEL5
+y b H5
+lm1
+Y
+y e H5
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//level6">
+<xsl:text>y b LEVEL6
+lm1
+Y
+y e LEVEL6
+y b H6
+lm1
+Y
+y e H6
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//p">
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxx Absatz, Leerzeile, Separator xxxxxxxxxxxxxxxxxxxx
+y b Pb
+i f=3 l=1
+y e Pb
+y b Pe
+y e Pe
+</xsl:text>
+</xsl:if>
+<xsl:if test="//p[@class='leftalign']">
+<xsl:text>y b Pb_left
+i f=1 l=1
+y e Pb_left
+y b Pe_left
+y e Pe_left
+</xsl:text>
+</xsl:if>
+<xsl:if test="//p[@class='rightalign']">
+<xsl:text>y b Pb_right
+r
+y e Pb_right
+y b Pe_right
+y e Pe_right
+</xsl:text>
+</xsl:if>
+<xsl:if test="//p[@class='precedingemptyline']">
+<xsl:text>y b BLANK
+lm1
+n2
+y e BLANK
+</xsl:text>
+</xsl:if>
+<xsl:if test="//p[@class='precedingseparator']">
+<xsl:text>y b SEPARATOR
+lm1
+t::::::
+lm1
+y e SEPARATOR
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//blockquote">
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxx Blockquote xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+y b BLQUOb
+lm1
+n2
+i A=3
+y e BLQUOb
+y b BLQUOe
+i A=1
+lm1
+n2
+y e BLQUOe
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//poem">
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Poem xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+y b POEMb
+lm1
+n2
+i A=3
+y e POEMb
+y b POEMe
+i A=1
+lm1
+n2
+y e POEMe
+
+y b LINEb
+i f=1 l=3
+B+
+y e LINEb
+y b LINEe
+B-
+y e LINEe
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//linegroup">
+<xsl:text>
+y b LINEGROUPb
+lm1
+n2
+y e LINEGROUPb
+y b LINEGROUPe
+y e LINEGROUPe
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//list">
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Listen xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+y b PLISTb ; Vorformatierte Liste
+lm1
+i f=1 l=3
+n2
+y e PLISTb
+y b PLISTe
+i f=3 l=1
+lm1
+n2
+y e PLISTe
+</xsl:text>
+<xsl:text>y b LIb
+a
+y e LIb
+y b LIe
+y e LIe
+</xsl:text>
+</xsl:if>
+
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxxx Bandeinteilung xxxxxxxxxxxxxxxxxxxxxxxxxxx
+y b BrlVol
+?vol:vol+1
+y Titlepage
+y e BrlVol
+</xsl:text>
+
+<xsl:if test="//brl:volume">
+<xsl:text>y b EndVol
+B+
+L
+tCCCCCCCCCCCC
+t
+</xsl:text>
+<xsl:value-of select='louis:translate("Ende des",string(my:getTable()))'/>
+<xsl:choose>
+  <xsl:when test="$volumes &gt; 12">
+<xsl:text>" %B
+</xsl:text>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:choose>
+      <xsl:when test="$contraction='2'">
+<xsl:text>" %BC
+</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+<xsl:text>" %BEN
+</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:otherwise>
+</xsl:choose>
+<xsl:value-of select='louis:translate("Bandes",string(my:getTable()))'/>
+<xsl:text>B-
+y e EndVol
+</xsl:text>
+</xsl:if>
+
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxxxx Hilfsmakros xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</xsl:text>
+<xsl:if test="$toc_level &gt; 0">
+<xsl:text>y b Inhaltsv
+E
+P1
+~~
+I ~=j
+L
+t~
+</xsl:text>
+<xsl:value-of select='louis:translate("Inhaltsverzeichnis",string(my:getTable()))'/>
+<xsl:text>u-
+lm1
+y e Inhaltsv
+</xsl:text>
+</xsl:if>
+
+<xsl:text>y b EndBook
+lm1
+B+
+L
+tCCCCCCCCCCCC
+t
+</xsl:text>
+<xsl:value-of select='louis:translate("Ende des Buches",string(my:getTable()))'/>
+<xsl:text>
+t======
+B-
+y e EndBook
+</xsl:text>
+
+<xsl:if test="$volumes &gt; 1">
+  <xsl:text>y b Volumes
+lv16
+t
+  </xsl:text>
+  <xsl:value-of select='louis:translate("In",string(my:getTable()))'/>
+  <xsl:choose>
+    <xsl:when test="$volumes &lt; 13">
+      <xsl:choose>
+        <xsl:when test="$volumes = 2">
+	  <xsl:value-of select='louis:translate("zwei",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 3">
+	  <xsl:value-of select='louis:translate("drei",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 4">
+	  <xsl:value-of select='louis:translate("vier",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 5">
+	  <xsl:value-of select='louis:translate("fünf",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 6">
+	  <xsl:value-of select='louis:translate("sechs",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 7">
+	  <xsl:value-of select='louis:translate("sieben",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 8">
+	  <xsl:value-of select='louis:translate("acht",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 9">
+	  <xsl:value-of select='louis:translate("neun",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 10">
+	  <xsl:value-of select='louis:translate("zehn",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 11">
+	  <xsl:value-of select='louis:translate("elf",string(my:getTable()))'/>
+        </xsl:when>
+        <xsl:when test="$volumes = 12">
+	  <xsl:value-of select='louis:translate("zwölf",string(my:getTable()))'/>
+        </xsl:when>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select='louis:translate($volumes,string(my:getTable()))'/>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:value-of select='louis:translate("Braille-Bänden",string(my:getTable()))'/>
+  <xsl:text>t
+</xsl:text>
+  <xsl:choose>
+    <xsl:when test="$volumes &lt; 13">
+      <!-- bis zu zwölf Bänden in Worten -->
+      <xsl:text>?vol=1
++R=B</xsl:text>
+      <xsl:value-of select='louis:translate("erst",string(my:getTable()))'/>
+      <xsl:text>
+?vol=2
++R=B</xsl:text>
+      <xsl:value-of select='louis:translate("zweit",string(my:getTable()))'/>
+      <xsl:if test="$volumes &gt; 2">
+	<xsl:text>
+?vol=3
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("dritt",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 3">
+	<xsl:text>
+?vol=4
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("viert",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 4">
+	<xsl:text>
+?vol=5
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("fünft",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 5">
+	<xsl:text>
+?vol=6
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("sechst",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 6">
+	<xsl:text>
+?vol=7
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("siebt",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 7">
+	<xsl:text>
+?vol=8
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("acht",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 8">
+	<xsl:text>
+?vol=9
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("neunt",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 9">
+	<xsl:text>
+?vol=10
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("zehnt",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 10">
+	<xsl:text>
+?vol=11
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("elft",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 11">
+	<xsl:text>
+?vol=12
++R=B</xsl:text>
+	<xsl:value-of select='louis:translate("zwölft",string(my:getTable()))'/>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="$contraction='2'">
+	  <xsl:text>
+" %B7
+</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+	  <xsl:text>
+" %BER
+</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- Vereinfachen mit translate() -->
+      <xsl:text>?vol=1
++R=B#,
+?vol=2
++R=B#;
+</xsl:text>
+      <xsl:if test="$volumes &gt; 2">
+	<xsl:text>?vol=3
++R=B#:
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 3">
+	<xsl:text>?vol=4
++R=B#/
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 4">
+	<xsl:text>?vol=5
++R=B#?
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 5">
+	<xsl:text>?vol=6
++R=B#+
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 6">
+	<xsl:text>?vol=7
++R=B#=
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 7">
+	<xsl:text>?vol=8
++R=B#(
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 8">
+	<xsl:text>?vol=9
++R=B#*
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 9">
+	<xsl:text>?vol=10
++R=B#,)
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 10">
+	<xsl:text>?vol=11
++R=B#,,
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 11">
+	<xsl:text>?vol=12
++R=B#,;
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 12">
+	<xsl:text>?vol=13
++R=B#,:
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 13">
+	<xsl:text>?vol=14
++R=B#,/
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 14">
+	<xsl:text>?vol=15
++R=B#,?
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 15">
+	<xsl:text>?vol=16
++R=B#,+
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 16">
+	<xsl:text>?vol=17
++R=B#,=
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 17">
+	<xsl:text>?vol=18
++R=B#,(
+</xsl:text>
+      </xsl:if>
+      <xsl:if test="$volumes &gt; 18">
+	<xsl:text>?vol=19
++R=B#,*
+</xsl:text>
+      </xsl:if>
+      <xsl:text>" %B
+      </xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:value-of select='louis:translate("Band",string(my:getTable()))'/>
+  <xsl:text>y e Volumes
+  </xsl:text>
+</xsl:if>
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxxxx Titelblatt xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+y b Titlepage
+O
+bb
+L5
+t
+</xsl:text>
+<xsl:apply-templates select="//dtb:docauthor/text()"/>
+<xsl:text>
+l2
+t
+</xsl:text>
+<xsl:apply-templates select="//dtb:doctitle/text()"/>
+<xsl:text>
+u-
+</xsl:text>
+<xsl:if test="//brl:volume">
+<xsl:text>y Volumes
+</xsl:text>
+</xsl:if>
+<xsl:choose>
+  <xsl:when test="$contraction='2'">
+<xsl:text>lv23
+</xsl:text>
+  </xsl:when>
+  <xsl:otherwise>
+<xsl:text>lv22
+</xsl:text>
+  </xsl:otherwise>
+</xsl:choose>
+<xsl:text>t
+</xsl:text>
+<xsl:value-of select='louis:translate("Schweizerische Bibliothek",string(my:getTable()))'/>
+<xsl:text>
+t
+</xsl:text>
+<xsl:value-of select='louis:translate("für Blinde, Seh- und",string(my:getTable()))'/>
+<xsl:if test="not($contraction='2')">
+<xsl:text>
+t
+</xsl:text>
+</xsl:if>
+<xsl:value-of select='louis:translate("Lesebehinderte",string(my:getTable()))'/>
+<xsl:text>
+l
+t
+</xsl:text>
+<xsl:value-of select='louis:translate("SBS",string(my:getTable("abbr")))'/>
+<xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(my:getTable()))"/>
+<xsl:text>
+p
+L
+i f=1 l=1
+</xsl:text>
+<xsl:value-of select='louis:translate("Dieses Punktschrift-Buch ist die ausschließlich",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("für die Nutzung durch Lesebehinderte Menschen",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("bestimmte zugängliche Version eines urheberrechtlich",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("geschützten Werks. ",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("Sie",string(my:getTable("v-form")))'/>
+<xsl:value-of select='louis:translate("können",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("es im Rahmen des Urheberrechts persönlich nutzen",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("dürfen es aber nicht weiter verbreiten oder öffentlich",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("zugänglich machen",string(my:getTable()))'/>
+<xsl:choose>
+  <xsl:when test="$contraction='2'">
+<xsl:text>
+lv21
+</xsl:text>
+  </xsl:when>
+  <xsl:otherwise>
+<xsl:text>
+lv20
+</xsl:text>
+  </xsl:otherwise>
+</xsl:choose>
+<xsl:value-of select='louis:translate("Verlag, Satz und Druck",string(my:getTable()))'/>
+<xsl:text>
+a
+</xsl:text>
+<xsl:value-of select='louis:translate("Schweizerische Bibliothek",string(my:getTable()))'/>
+<xsl:text>
+a
+</xsl:text>
+<xsl:value-of select='louis:translate("für Blinde, Seh- und",string(my:getTable()))'/>
+<xsl:if test="not($contraction='2')">
+<xsl:text>
+a
+</xsl:text>
+</xsl:if>
+<xsl:value-of select='louis:translate("Lesebehinderte",string(my:getTable()))'/>
+<xsl:text>
+a
+</xsl:text>
+<xsl:value-of select='louis:translate("SBS",string(my:getTable("abbr")))'/>
+<xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(my:getTable()))"/>
+<xsl:text>
+l
+</xsl:text>
+<xsl:value-of select='louis:translate("www.sbs-online.ch",string(my:getTable()))'/>
+<xsl:text>
+p
+L5
+</xsl:text>
+<xsl:apply-templates select="//dtb:docauthor/text()"/>
+<xsl:text>
+l2
+</xsl:text>
+<xsl:apply-templates select="//dtb:doctitle/text()"/>
+<xsl:text>
+u-
+l
+</xsl:text>
+<xsl:apply-templates select="//dtb:frontmatter/dtb:level1[@class='titlepage']" mode='titlepage'/>
+<xsl:text>
+b
+O
+y e Titlepage
+</xsl:text>
+<xsl:text>
+y BrlVol
+xxxxxxxxxxxxxxxxxxxxxxxxxx Klappentext etc. xxxxxxxxxxxxxxxxxxxxxxxxxx
+O
+</xsl:text>
+<xsl:apply-templates select="//dtb:frontmatter/dtb:level1[not(@class) or (@class!='titlepage' and @class!='toc')]"/>
+<xsl:text>O
+xxx ====================== ENDE SBSFORM.MAK ====================== xxx
+</xsl:text>
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</xsl:text>
+
+</xsl:template>
+
   <xsl:template match="/">
     <xsl:text>x </xsl:text><xsl:value-of select="//dtb:docauthor"/>
     <xsl:text>: </xsl:text><xsl:value-of select="//dtb:doctitle"/><xsl:text>
@@ -168,44 +896,43 @@
     <xsl:text>x Daisy Producer Version: </xsl:text>
     <xsl:value-of select="$version"/><xsl:text>
 </xsl:text>
-    <xsl:text>?contraction:</xsl:text>
+    <xsl:text>x contraction:</xsl:text>
     <xsl:value-of select="$contraction"/><xsl:text>
 </xsl:text>
-    <xsl:text>?cells_per_line:</xsl:text>
+    <xsl:text>x cells_per_line:</xsl:text>
     <xsl:value-of select="$cells_per_line"/><xsl:text>
 </xsl:text>
-    <xsl:text>?lines_per_page:</xsl:text>
+    <xsl:text>x lines_per_page:</xsl:text>
     <xsl:value-of select="$lines_per_page"/><xsl:text>
 </xsl:text>
-    <xsl:text>?hyphenation:</xsl:text>
+    <xsl:text>x hyphenation:</xsl:text>
     <xsl:value-of select="$hyphenation"/><xsl:text>
 </xsl:text>
-    <xsl:text>?generate_toc:</xsl:text>
-    <xsl:value-of select="$generate_toc"/><xsl:text>
+    <xsl:text>x toc_level:</xsl:text>
+    <xsl:value-of select="$toc_level"/><xsl:text>
 </xsl:text>
-    <xsl:text>?show_original_page_numbers:</xsl:text>
+    <xsl:text>x show_original_page_numbers:</xsl:text>
     <xsl:value-of select="$show_original_page_numbers"/><xsl:text>
 </xsl:text>
-    <xsl:text>?show_v_forms:</xsl:text>
+    <xsl:text>x show_v_forms:</xsl:text>
     <xsl:value-of select="$show_v_forms"/><xsl:text>
 </xsl:text>
-    <xsl:text>?downshift_ordinals:</xsl:text>
+    <xsl:text>x downshift_ordinals:</xsl:text>
     <xsl:value-of select="$downshift_ordinals"/><xsl:text>
 </xsl:text>
-    <xsl:text>?enable_capitalization:</xsl:text>
+    <xsl:text>x enable_capitalization:</xsl:text>
     <xsl:value-of select="$enable_capitalization"/><xsl:text>
 </xsl:text>
-    <xsl:text>?detailed_accented_characters:</xsl:text>
+    <xsl:text>x detailed_accented_characters:</xsl:text>
     <xsl:value-of select="$detailed_accented_characters"/><xsl:text>
 </xsl:text>
-    <xsl:text>U dtbook.sbf
-</xsl:text>
-    <xsl:text>x ---------------------------------------------------------------------------
+  <xsl:text>x ---------------------------------------------------------------------------
 </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:dtbook">
+    <xsl:call-template name="sbsform-macros"/>
     <xsl:apply-templates/>
   </xsl:template>
 
@@ -219,19 +946,6 @@
   
   <xsl:template match="dtb:book">
     <xsl:text>y BOOKb
-y b Titlepage
-y TPb
-</xsl:text><xsl:apply-templates select="//dtb:docauthor/text()"/><xsl:text>
-</xsl:text><xsl:apply-templates select="//dtb:doctitle/text()"/><xsl:text>
-</xsl:text>
-<xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(my:getTable()))"/>
-  <xsl:text>
-    
-y TPink
-</xsl:text>
-    <xsl:apply-templates select="//dtb:frontmatter/dtb:level1[1]"/>
-<xsl:text>y Tpe
-y e Titlepage
 </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>y BOOKe
@@ -239,12 +953,6 @@ y e Titlepage
   </xsl:template>
 
   <xsl:template match="dtb:frontmatter">
-    <xsl:text>y BrlVol
-y FRONTb
-</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>y FRONTe
-</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:bodymatter">
@@ -364,6 +1072,10 @@ y Pb
     <xsl:text>
 y Pe
 </xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:p" mode='titlepage'>   
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:p">   
