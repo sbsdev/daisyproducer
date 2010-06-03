@@ -358,22 +358,6 @@ y b Pe
 y e Pe
 </xsl:text>
 </xsl:if>
-<xsl:if test="//dtb:p[@class='leftalign']">
-  <xsl:text>y b Pb_left
-i f=1 l=1
-y e Pb_left
-y b Pe_left
-y e Pe_left
-</xsl:text>
-</xsl:if>
-<xsl:if test="//dtb:p[@class='rightalign']">
-  <xsl:text>y b Pb_right
-r
-y e Pb_right
-y b Pe_right
-y e Pe_right
-</xsl:text>
-</xsl:if>
 <xsl:if test="//dtb:p[@class='precedingemptyline']">
 <xsl:text>y b BLANK
 lm1
