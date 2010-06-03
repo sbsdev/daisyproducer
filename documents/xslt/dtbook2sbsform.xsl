@@ -28,6 +28,7 @@
   <xsl:param name="downshift_ordinals" select="true()"/>
   <xsl:param name="enable_capitalization" select="false()"/>
   <xsl:param name="detailed_accented_characters">de-accents</xsl:param>
+  <xsl:param name="include_macros">true()</xsl:param>
 
   <xsl:variable name="volumes">
     <xsl:value-of select=
@@ -182,7 +183,7 @@
     <number value="12">zwölf</number>
   </data:volumeNumberMapping>
 
-  <xsl:template name="sbsform-macros">
+  <xsl:template name="sbsform-macro-definitions">
     <xsl:text>
 x ======================= ANFANG SBSFORM.MAK =========================
 x Bei Aenderungen den ganzen Block in separate Makrodatei auslagern.
@@ -894,13 +895,25 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
     <xsl:text>x detailed_accented_characters:</xsl:text>
     <xsl:value-of select="$detailed_accented_characters"/><xsl:text>
 </xsl:text>
+    <xsl:text>x include_macros:</xsl:text>
+    <xsl:value-of select="$include_macros"/><xsl:text>
+</xsl:text>
   <xsl:text>x ---------------------------------------------------------------------------
 </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:dtbook">
-    <xsl:call-template name="sbsform-macros"/>
+    <xsl:choose>
+      <xsl:when test="$include_macros">
+	<xsl:call-template name="sbsform-macro-definitions"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>
+U dtbook.sbf
+</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates/>
   </xsl:template>
 
