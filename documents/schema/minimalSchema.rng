@@ -62,10 +62,32 @@
   <define name="frontmatter">
     <element name="frontmatter">
       <element name="doctitle">
-        <text/>
+        <interleave>
+          <text/>
+          <zeroOrMore>
+            <ref name="abbr"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="em"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="contractionhints"/>
+          </zeroOrMore>
+        </interleave>
       </element>
       <element name="docauthor">
-        <text/>
+        <interleave>
+          <text/>
+          <zeroOrMore>
+            <ref name="abbr"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="em"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="contractionhints"/>
+          </zeroOrMore>
+        </interleave>
       </element>
       <zeroOrMore>
         <ref name="frontmatterLevel1"/>
