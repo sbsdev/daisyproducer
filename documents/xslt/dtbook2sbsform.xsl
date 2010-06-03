@@ -186,7 +186,7 @@
     <xsl:text>
 x ======================= ANFANG SBSFORM.MAK =========================
 x Bei Aenderungen den ganzen Block in separate Makrodatei auslagern.
-    </xsl:text>
+</xsl:text>
 
     <xsl:text>
 xxxxxxxxxxxxxxxxxxxxxxxxxx book, body, rear xxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -222,7 +222,7 @@ y b BODYe
 y e BODYe
 </xsl:text>
 
-<xsl:if test="//rearmatter">
+<xsl:if test="//dtb:rearmatter">
   <xsl:text>y b REARb ; Rearmatter
 z
   </xsl:text>
@@ -261,7 +261,7 @@ lm1
 y e H1
 </xsl:text>
 
-<xsl:if test="//level2">
+<xsl:if test="//dtb:level2">
 <xsl:text>y b LEVEL2
 lm2
 n10
@@ -287,7 +287,7 @@ y e H2
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//level3">
+<xsl:if test="//dtb:level3">
 <xsl:text>y b LEVEL3
 lm1
 n6
@@ -312,7 +312,7 @@ y e H3
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//level4">
+<xsl:if test="//dtb:level4">
 <xsl:text>y b LEVEL4
 lm1
 Y
@@ -324,8 +324,8 @@ y e H4
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//level5">
-<xsl:text>y b LEVEL5
+<xsl:if test="//dtb:level5">
+  <xsl:text>y b LEVEL5
 lm1
 Y
 y e LEVEL5
@@ -336,8 +336,8 @@ y e H5
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//level6">
-<xsl:text>y b LEVEL6
+<xsl:if test="//dtb:level6">
+  <xsl:text>y b LEVEL6
 lm1
 Y
 y e LEVEL6
@@ -348,8 +348,8 @@ y e H6
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//p">
-<xsl:text>
+<xsl:if test="//dtb:p">
+  <xsl:text>
 xxxxxxxxxxxxxxxxxxxx Absatz, Leerzeile, Separator xxxxxxxxxxxxxxxxxxxx
 y b Pb
 i f=3 l=1
@@ -358,30 +358,30 @@ y b Pe
 y e Pe
 </xsl:text>
 </xsl:if>
-<xsl:if test="//p[@class='leftalign']">
-<xsl:text>y b Pb_left
+<xsl:if test="//dtb:p[@class='leftalign']">
+  <xsl:text>y b Pb_left
 i f=1 l=1
 y e Pb_left
 y b Pe_left
 y e Pe_left
 </xsl:text>
 </xsl:if>
-<xsl:if test="//p[@class='rightalign']">
-<xsl:text>y b Pb_right
+<xsl:if test="//dtb:p[@class='rightalign']">
+  <xsl:text>y b Pb_right
 r
 y e Pb_right
 y b Pe_right
 y e Pe_right
 </xsl:text>
 </xsl:if>
-<xsl:if test="//p[@class='precedingemptyline']">
+<xsl:if test="//dtb:p[@class='precedingemptyline']">
 <xsl:text>y b BLANK
 lm1
 n2
 y e BLANK
 </xsl:text>
 </xsl:if>
-<xsl:if test="//p[@class='precedingseparator']">
+<xsl:if test="//dtb:p[@class='precedingseparator']">
 <xsl:text>y b SEPARATOR
 lm1
 t::::::
@@ -390,7 +390,7 @@ y e SEPARATOR
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//blockquote">
+<xsl:if test="//dtb:blockquote">
 <xsl:text>
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx Blockquote xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 y b BLQUOb
@@ -406,7 +406,7 @@ y e BLQUOe
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//poem">
+<xsl:if test="dtb://poem">
 <xsl:text>
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Poem xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 y b POEMb
@@ -430,7 +430,7 @@ y e LINEe
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//linegroup">
+<xsl:if test="//dtb:linegroup">
 <xsl:text>
 y b LINEGROUPb
 lm1
@@ -441,7 +441,7 @@ y e LINEGROUPe
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="//list">
+<xsl:if test="//dtb:list">
 <xsl:text>
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Listen xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -517,7 +517,8 @@ L
 t~
 </xsl:text>
 <xsl:value-of select='louis:translate("Inhaltsverzeichnis",string(my:getTable()))'/>
-<xsl:text>u-
+<xsl:text>
+u-
 lm1
 y e Inhaltsv
 </xsl:text>
