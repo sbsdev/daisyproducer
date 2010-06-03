@@ -300,6 +300,12 @@
         <zeroOrMore>
           <ref name="span"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="author"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="byline"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -377,9 +383,43 @@
   </define>
   <define name="blockquote">
     <element name="blockquote">
-      <oneOrMore>
-        <ref name="p"/>
-      </oneOrMore>
+      <interleave>
+        <oneOrMore>
+          <ref name="p"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="author"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="byline"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="author">
+    <element name="author">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="byline">
+    <element name="byline">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="list">
@@ -445,6 +485,12 @@
   <define name="poem">
     <element name="poem">
       <interleave>
+        <zeroOrMore>
+          <ref name="author"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="byline"/>
+        </zeroOrMore>
         <oneOrMore>
           <ref name="linegroup"/>
         </oneOrMore>

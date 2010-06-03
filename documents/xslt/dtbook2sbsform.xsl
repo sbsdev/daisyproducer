@@ -1164,6 +1164,22 @@ y LIe
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="dtb:author">
+    <xsl:text>y AUTHORb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y AUTHORe
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:byline">
+    <xsl:text>y BYLINEb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>y BYLINEe
+</xsl:text>
+  </xsl:template>
+
   <xsl:template match="dtb:linegroup">
     <xsl:text>y LINEGROUPb
 </xsl:text>
