@@ -162,6 +162,10 @@ class SBSFormForm(forms.Form):
         label=_("Depth of table of contents"), 
         choices=BRAILLE_TOC_DEPTH_CHOICES, 
         coerce=int)
+    footer_level = forms.TypedChoiceField(
+        label=_("Footer up to level"), 
+        choices=BRAILLE_TOC_DEPTH_CHOICES, 
+        coerce=int)
     include_macros = forms.BooleanField(
         label=_("Include SBSForm macros"), required=False, initial=True)
     show_original_page_numbers = forms.BooleanField(

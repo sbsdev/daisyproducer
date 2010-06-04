@@ -23,6 +23,7 @@
   <xsl:param name="lines_per_page">28</xsl:param>
   <xsl:param name="hyphenation" select="false()"/>
   <xsl:param name="toc_level">0</xsl:param>
+  <xsl:param name="footer_level">0</xsl:param>
   <xsl:param name="show_original_page_numbers" select="false()"/>
   <xsl:param name="show_v_forms" select="true()"/>
   <xsl:param name="downshift_ordinals" select="true()"/>
@@ -258,8 +259,11 @@ Y
 H`B-
 </xsl:text>
 </xsl:if>
-<xsl:text>Y
-lm1
+<xsl:if test="$footer_level &gt; 0">
+  <xsl:text>Y
+</xsl:text>
+</xsl:if>
+<xsl:text>lm1
 y e H1
 </xsl:text>
 
@@ -283,8 +287,11 @@ Y
 H`B-
 </xsl:text>
   </xsl:if>
-<xsl:text>Y
-lm1
+<xsl:if test="$footer_level &gt; 1">
+  <xsl:text>Y
+</xsl:text>
+</xsl:if>
+<xsl:text>lm1
 y e H2
 </xsl:text>
 </xsl:if>
@@ -309,8 +316,11 @@ Y
 H`B-
 </xsl:text>
   </xsl:if>
-<xsl:text>Y
-y e H3
+  <xsl:if test="$footer_level &gt; 2">
+  <xsl:text>Y
+</xsl:text>
+  </xsl:if>
+<xsl:text>y e H3
 </xsl:text>
 </xsl:if>
 
@@ -322,7 +332,19 @@ y e LEVEL4
 y b H4
 lm1
 Y
-y e H4
+</xsl:text>
+  <xsl:if test="$toc_level &gt; 3">
+<xsl:text>H`B+
+H`i F=7
+Y
+H`B-
+</xsl:text>
+  </xsl:if>
+  <xsl:if test="$footer_level &gt; 3">
+  <xsl:text>Y
+</xsl:text>
+  </xsl:if>
+  <xsl:text>y e H4
 </xsl:text>
 </xsl:if>
 
@@ -334,7 +356,19 @@ y e LEVEL5
 y b H5
 lm1
 Y
-y e H5
+</xsl:text>
+  <xsl:if test="$toc_level &gt; 4">
+<xsl:text>H`B+
+H`i F=9
+Y
+H`B-
+</xsl:text>
+  </xsl:if>
+  <xsl:if test="$footer_level &gt; 4">
+  <xsl:text>Y
+</xsl:text>
+  </xsl:if>
+  <xsl:text>y e H5
 </xsl:text>
 </xsl:if>
 
@@ -346,7 +380,19 @@ y e LEVEL6
 y b H6
 lm1
 Y
-y e H6
+</xsl:text>
+  <xsl:if test="$toc_level &gt; 5">
+<xsl:text>H`B+
+H`i F=11
+Y
+H`B-
+</xsl:text>
+  </xsl:if>
+  <xsl:if test="$footer_level &gt; 5">
+  <xsl:text>Y
+</xsl:text>
+  </xsl:if>
+  <xsl:text>y e H6
 </xsl:text>
 </xsl:if>
 
@@ -404,7 +450,7 @@ y e BLQUOe
 </xsl:text>
 </xsl:if>
 
-<xsl:if test="dtb://poem">
+<xsl:if test="//dtb:poem">
 <xsl:text>
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Poem xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 y b POEMb
@@ -969,87 +1015,78 @@ i j=</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:level1">
-    <xsl:text>y LEVEL1b</xsl:text>
-    <!-- invoke a different macro if the first child is a pagenum -->
-    <xsl:choose>
-      <xsl:when test="name(child::*[1])='pagenum'">
-	<xsl:text>
-j </xsl:text><xsl:apply-templates select="dtb:pagenum[1]"/><xsl:text>
+    <xsl:text>y LEVEL1b
 </xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:text>
-.xNOPAGENUM
+    <!-- add a comment if the first child is not a pagenum -->
+      <xsl:if test="not(name(child::*[1])='pagenum')">
+	<xsl:text>.xNOPAGENUM
 </xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:text>
-</xsl:text>
+      </xsl:if>
     <xsl:apply-templates/>
     <xsl:text>y LEVEL1e
 </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:level2">
-    <xsl:text>y LEVEL2b</xsl:text>
-    <!-- invoke a different macro if the first child is a pagenum -->
-    <xsl:if test="name(child::*[1])='pagenum'">
-    <xsl:text>_j</xsl:text>
-    </xsl:if>
-    <xsl:text>
+    <xsl:text>y LEVEL2b
 </xsl:text>
+    <!-- add a comment if the first child is not a pagenum -->
+      <xsl:if test="not(name(child::*[1])='pagenum')">
+	<xsl:text>.xNOPAGENUM
+</xsl:text>
+      </xsl:if>
     <xsl:apply-templates/>
     <xsl:text>y LEVEL2e
 </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:level3">
-    <xsl:text>y LEVEL3b</xsl:text>
-    <!-- invoke a different macro if the first child is a pagenum -->
-    <xsl:if test="name(child::*[1])='pagenum'">
-    <xsl:text>_j</xsl:text>
-    </xsl:if>
-    <xsl:text>
+    <xsl:text>y LEVEL3b
 </xsl:text>
+    <!-- add a comment if the first child is not a pagenum -->
+      <xsl:if test="not(name(child::*[1])='pagenum')">
+	<xsl:text>.xNOPAGENUM
+</xsl:text>
+      </xsl:if>
     <xsl:apply-templates/>
     <xsl:text>y LEVEL3e
 </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:level4">
-    <xsl:text>y LEVEL4b</xsl:text>
-    <!-- invoke a different macro if the first child is a pagenum -->
-    <xsl:if test="name(child::*[1])='pagenum'">
-    <xsl:text>_j</xsl:text>
-    </xsl:if>
-    <xsl:text>
+    <xsl:text>y LEVEL4b
 </xsl:text>
+    <!-- add a comment if the first child is not a pagenum -->
+      <xsl:if test="not(name(child::*[1])='pagenum')">
+	<xsl:text>.xNOPAGENUM
+</xsl:text>
+      </xsl:if>
     <xsl:apply-templates/>
     <xsl:text>y LEVEL4e
 </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:level5">
-    <xsl:text>y LEVEL5b</xsl:text>
-    <!-- invoke a different macro if the first child is a pagenum -->
-    <xsl:if test="name(child::*[1])='pagenum'">
-    <xsl:text>_j</xsl:text>
-    </xsl:if>
-    <xsl:text>
+    <xsl:text>y LEVEL5b
 </xsl:text>
+    <!-- add a comment if the first child is not a pagenum -->
+      <xsl:if test="not(name(child::*[1])='pagenum')">
+	<xsl:text>.xNOPAGENUM
+</xsl:text>
+      </xsl:if>
     <xsl:apply-templates/>
     <xsl:text>y LEVEL5e
 </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:level6">
-    <xsl:text>y LEVEL6b</xsl:text>
-    <!-- invoke a different macro if the first child is a pagenum -->
-    <xsl:if test="name(child::*[1])='pagenum'">
-    <xsl:text>_j</xsl:text>
-    </xsl:if>
-    <xsl:text>
+    <xsl:text>y LEVEL6b
 </xsl:text>
+    <!-- add a comment if the first child is not a pagenum -->
+      <xsl:if test="not(name(child::*[1])='pagenum')">
+	<xsl:text>.xNOPAGENUM
+</xsl:text>
+      </xsl:if>
     <xsl:apply-templates/>
     <xsl:text>y LEVEL6e
 </xsl:text>
@@ -1106,50 +1143,35 @@ y PLISTe
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="dtb:h1">
-    <xsl:text>y H1
+  <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
+    <xsl:variable name="level" select="substring(local-name(), 2)"/>
+    <xsl:text>y H</xsl:text><xsl:value-of select="$level"/><xsl:text>
 </xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="dtb:h2">
-    <xsl:text>y H2
-</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="dtb:h3">
-    <xsl:text>y H3
-</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="dtb:h4">
-    <xsl:text>y H4
-</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="dtb:h5">
-    <xsl:text>y H5
-</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="dtb:h6">
-    <xsl:text>y H6
-</xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']"/>
+    <xsl:if test="$toc_level &gt;= $level">
+      <xsl:text>
+H</xsl:text>
+      <xsl:choose>
+	<xsl:when test="brl:toc-line">
+	  <xsl:apply-templates select="brl:toc-line"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
+    <xsl:if test="$footer_level &gt;= $level">
+      <xsl:text>
+~</xsl:text>
+      <xsl:choose>
+	<xsl:when test="brl:running-line[not(@brl:grade) or @brl:grade = $contraction]">
+	  <xsl:apply-templates select="brl:running-line[not(@brl:grade)]|brl:running-line[@brl:grade = $contraction]"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
     <xsl:text>
 </xsl:text>
   </xsl:template>
