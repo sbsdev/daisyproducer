@@ -123,7 +123,7 @@
 	</xsl:if>
 	<xsl:text>sbs-special.cti,</xsl:text>
 	<xsl:text>sbs-whitespace.mod,</xsl:text>
-	<xsl:if test="$context = 'v-form' or $context = 'name_capitalized' or ($contraction != '2' and $enable_capitalization and ($context = 'name' or $context = 'place' or $context = 'num_ordinal'))">
+	<xsl:if test="$context = 'v-form' or $context = 'name_capitalized' or ($contraction != '2' and $enable_capitalization)">
 	  <xsl:text>sbs-de-capsign.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$contraction = '2' and $context != 'date_month' and $context != 'date_day' and $context !='name_capitalized'">
@@ -218,7 +218,8 @@ Y
   <xsl:text>RX
   </xsl:text>
 </xsl:if>
-<xsl:text>y e BODYb
+<xsl:text>
+y e BODYb
 y b BODYe
 y e BODYe
 </xsl:text>
@@ -352,11 +353,9 @@ y e H6
 <xsl:if test="//dtb:p">
   <xsl:text>
 xxxxxxxxxxxxxxxxxxxx Absatz, Leerzeile, Separator xxxxxxxxxxxxxxxxxxxx
-y b Pb
+y b P
 i f=3 l=1
-y e Pb
-y b Pe
-y e Pe
+y e P
 </xsl:text>
 </xsl:if>
 <xsl:if test="//dtb:p[@class='precedingemptyline']">
@@ -372,6 +371,20 @@ lm1
 t::::::
 lm1
 y e SEPARATOR
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//dtb:author">
+<xsl:text>y b AUTHOR
+r
+y e AUTHOR
+</xsl:text>
+</xsl:if>
+
+<xsl:if test="//dtb:byline">
+<xsl:text>y b BYLINE
+r
+y e BYLINE
 </xsl:text>
 </xsl:if>
 
@@ -441,11 +454,9 @@ lm1
 n2
 y e PLISTe
 </xsl:text>
-<xsl:text>y b LIb
+<xsl:text>y b LI
 a
-y e LIb
-y b LIe
-y e LIe
+y e LI
 </xsl:text>
 </xsl:if>
 
@@ -910,7 +921,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
       </xsl:when>
       <xsl:otherwise>
 	<xsl:text>
-U dtbook.sbf
+U dtbook.mak
 </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
@@ -960,9 +971,18 @@ i j=</xsl:text>
   <xsl:template match="dtb:level1">
     <xsl:text>y LEVEL1b</xsl:text>
     <!-- invoke a different macro if the first child is a pagenum -->
-    <xsl:if test="name(child::*[1])='pagenum'">
-    <xsl:text>_j</xsl:text>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="name(child::*[1])='pagenum'">
+	<xsl:text>
+j </xsl:text><xsl:apply-templates select="dtb:pagenum[1]"/><xsl:text>
+</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>
+.xNOPAGENUM
+</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>
 </xsl:text>
     <xsl:apply-templates/>
@@ -1037,22 +1057,16 @@ i j=</xsl:text>
 
   <xsl:template match="dtb:p[@class='precedingseparator']">   
     <xsl:text>y SEPARATOR
-y Pb
+y P
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>
-y Pe
-</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:p[@class='precedingemptyline']">   
     <xsl:text>y BLANK
-y Pb
+y P
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>
-y Pe
-</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:p" mode='titlepage'>   
@@ -1060,12 +1074,9 @@ y Pe
   </xsl:template>
 
   <xsl:template match="dtb:p">   
-    <xsl:text>y Pb
+    <xsl:text>y P
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>
-y Pe
-</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:list">
@@ -1078,12 +1089,9 @@ y PLISTe
   </xsl:template>
 
   <xsl:template match="dtb:li">
-    <xsl:text>y LIb
+    <xsl:text>y LI
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>
-y LIe
-</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:pagenum">
@@ -1163,19 +1171,15 @@ y LIe
   </xsl:template>
 
   <xsl:template match="dtb:author">
-    <xsl:text>y AUTHORb
+    <xsl:text>y AUTHOR
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>y AUTHORe
-</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:byline">
-    <xsl:text>y BYLINEb
+    <xsl:text>y BYLINE
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>y BYLINEe
-</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:linegroup">
