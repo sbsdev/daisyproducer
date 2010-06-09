@@ -70,7 +70,8 @@ class Document(models.Model):
         max_length=10, 
         help_text=_("A reference to a resource (e.g., a print original, ebook, etc.) from which the DTB is derived. Best practice is to use the ISBN when available"), 
         blank=True)
-    language_choices = (('de-CH', 'de-CH',),)
+    language_choices = (('de', 'de'),
+                        ('de-CH', 'de-CH',),)
     language = models.CharField(
         _("Language"),
         max_length=10,
