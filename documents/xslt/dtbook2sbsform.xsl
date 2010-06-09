@@ -29,7 +29,7 @@
   <xsl:param name="downshift_ordinals" select="true()"/>
   <xsl:param name="enable_capitalization" select="false()"/>
   <xsl:param name="detailed_accented_characters">de-accents</xsl:param>
-  <xsl:param name="include_macros">true()</xsl:param>
+  <xsl:param name="include_macros" select="true()"/>
 
   <xsl:variable name="volumes">
     <xsl:value-of select=
@@ -124,7 +124,7 @@
 	</xsl:if>
 	<xsl:text>sbs-special.cti,</xsl:text>
 	<xsl:text>sbs-whitespace.mod,</xsl:text>
-	<xsl:if test="$context = 'v-form' or $context = 'name_capitalized' or ($contraction != '2' and $enable_capitalization)">
+	<xsl:if test="$context = 'v-form' or $context = 'name_capitalized' or ($contraction != '2' and $enable_capitalization = '1')">
 	  <xsl:text>sbs-de-capsign.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$contraction = '2' and $context != 'date_month' and $context != 'date_day' and $context !='name_capitalized'">
@@ -215,7 +215,7 @@ y b BODYb ; Bodymatter
 R=X
 Y
 </xsl:text>
-<xsl:if test="$show_original_page_numbers">
+<xsl:if test="$show_original_page_numbers = '1'">
   <xsl:text>RX
   </xsl:text>
 </xsl:if>
@@ -979,7 +979,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   <xsl:template match="dtb:dtbook">
     <xsl:choose>
-      <xsl:when test="$include_macros">
+      <xsl:when test="$include_macros = '1'">
 	<xsl:call-template name="sbsform-macro-definitions"/>
       </xsl:when>
       <xsl:otherwise>
@@ -1321,7 +1321,7 @@ y BLQUOe
 
   <xsl:template match="brl:num[@role='ordinal' and lang('de')]">
     <xsl:choose>
-      <xsl:when test="$downshift_ordinals">
+      <xsl:when test="$downshift_ordinals = '1'">
 	<xsl:value-of select="louis:translate(string(translate(.,'.','')),string(my:getTable('num_ordinal')))"/>
       </xsl:when>
       <xsl:otherwise>
@@ -1391,7 +1391,7 @@ y BLQUOe
 
   <xsl:template match="brl:v-form[lang('de')]">
     <xsl:choose>
-      <xsl:when test="$show_v_forms">
+      <xsl:when test="$show_v_forms = '1'">
   	<xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
       </xsl:when>
       <xsl:otherwise>
