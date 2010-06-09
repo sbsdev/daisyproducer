@@ -169,7 +169,7 @@ class SBSFormForm(forms.Form):
     include_macros = forms.BooleanField(
         label=_("Include SBSForm macros"), required=False, initial=True)
     show_original_page_numbers = forms.BooleanField(
-        label=_("Show original page numbers"), required=True)
+        label=_("Show original page numbers"), required=False, initial=True)
     show_v_forms = forms.BooleanField(
         label=_("Show V-Forms"), required=False, initial=True)
     downshift_ordinals = forms.BooleanField(
