@@ -138,9 +138,9 @@ class SBSFormForm(forms.Form):
         ('2', _('Grade 2')),
         )
     BRAILLE_ACCENTS_CHOICES = (
-        ('de-accents', _('German Accents')),
-        ('de-accents-ch', _('Swiss Accents')),
-        ('de-accents-reduced', _('Reduced Accents')),
+        ('de-accents-ch', _('Swiss')),
+        ('de-accents', _('Yes')),
+        ('de-accents-reduced', _('No')),
         )
     BRAILLE_TOC_DEPTH_CHOICES = (
         ('0', 0),
@@ -151,13 +151,13 @@ class SBSFormForm(forms.Form):
         ('5', 5),
         ('6', 6),
         )
-    cells_per_line = forms.IntegerField(label=_("Cells per Line"), initial=40, min_value=1, max_value=255)
+    cells_per_line = forms.IntegerField(label=_("Cells per Line"), initial=28, min_value=1, max_value=255)
     lines_per_page = forms.IntegerField(label=_("Lines per Page"), initial=28, min_value=1, max_value=255)
     contraction = forms.TypedChoiceField(
         label=_("Contraction"), 
         choices=BRAILLE_CONTRACTION_GRADE_CHOICES, 
         coerce=int)
-    hyphenation = forms.BooleanField(label=_("Hyphenation"), required=False)
+    hyphenation = forms.BooleanField(label=_("Hyphenation"), required=False, initial=True)
     toc_level = forms.TypedChoiceField(
         label=_("Depth of table of contents"), 
         choices=BRAILLE_TOC_DEPTH_CHOICES, 
@@ -169,7 +169,7 @@ class SBSFormForm(forms.Form):
     include_macros = forms.BooleanField(
         label=_("Include SBSForm macros"), required=False, initial=True)
     show_original_page_numbers = forms.BooleanField(
-        label=_("Show original page numbers"), required=False)
+        label=_("Show original page numbers"), required=True)
     show_v_forms = forms.BooleanField(
         label=_("Show V-Forms"), required=False, initial=True)
     downshift_ordinals = forms.BooleanField(
