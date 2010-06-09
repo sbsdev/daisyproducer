@@ -241,10 +241,12 @@ y e REARe
 
 <xsl:text>
 xxxxxxxxxxxxxxxxxxxxxxxx Levels und Headings xxxxxxxxxxxxxxxxxxxxxxxxx
-y b LEVEL1
+y b LEVEL1b
 p
 Y
-y e LEVEL1
+y e LEVEL1b
+y b LEVEL1e
+y e LEVEL1e
 y b H1
 L
 i f=3 l=1
@@ -268,11 +270,14 @@ y e H1
 </xsl:text>
 
 <xsl:if test="//dtb:level2">
-<xsl:text>y b LEVEL2
+<xsl:text>
+y b LEVEL2b
 lm2
 n10
 Y
-y e LEVEL2
+y e LEVEL2b
+y b LEVEL2e
+y e LEVEL2e
 y b H2
 lm2
 i f=3 l=1
@@ -297,11 +302,14 @@ y e H2
 </xsl:if>
 
 <xsl:if test="//dtb:level3">
-<xsl:text>y b LEVEL3
+<xsl:text>
+y b LEVEL3b
 lm1
 n6
 Y
-y e LEVEL3
+y e LEVEL3b
+y b LEVEL3e
+y e LEVEL3e
 y b H3
 lm1
 i f=3 l=1
@@ -325,10 +333,13 @@ H`B-
 </xsl:if>
 
 <xsl:if test="//dtb:level4">
-<xsl:text>y b LEVEL4
+<xsl:text>
+y b LEVEL4b
 lm1
 Y
-y e LEVEL4
+y e LEVEL4b
+y b LEVEL4e
+y e LEVEL4e
 y b H4
 lm1
 Y
@@ -349,10 +360,13 @@ H`B-
 </xsl:if>
 
 <xsl:if test="//dtb:level5">
-  <xsl:text>y b LEVEL5
+  <xsl:text>
+y b LEVEL5b
 lm1
 Y
-y e LEVEL5
+y e LEVEL5b
+y b LEVEL5e
+y e LEVEL5e
 y b H5
 lm1
 Y
@@ -373,10 +387,13 @@ H`B-
 </xsl:if>
 
 <xsl:if test="//dtb:level6">
-  <xsl:text>y b LEVEL6
+  <xsl:text>
+y b LEVEL6b
 lm1
 Y
-y e LEVEL6
+y e LEVEL6b
+y b LEVEL6e
+y e LEVEL6e
 y b H6
 lm1
 Y
@@ -1023,7 +1040,8 @@ i j=</xsl:text>
 </xsl:text>
       </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>y LEVEL1e
+    <xsl:text>
+y LEVEL1e
 </xsl:text>
   </xsl:template>
 
@@ -1036,7 +1054,8 @@ i j=</xsl:text>
 </xsl:text>
       </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>y LEVEL2e
+    <xsl:text>
+y LEVEL2e
 </xsl:text>
   </xsl:template>
 
@@ -1049,7 +1068,8 @@ i j=</xsl:text>
 </xsl:text>
       </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>y LEVEL3e
+    <xsl:text>
+y LEVEL3e
 </xsl:text>
   </xsl:template>
 
@@ -1062,7 +1082,8 @@ i j=</xsl:text>
 </xsl:text>
       </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>y LEVEL4e
+    <xsl:text>
+y LEVEL4e
 </xsl:text>
   </xsl:template>
 
@@ -1075,7 +1096,8 @@ i j=</xsl:text>
 </xsl:text>
       </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>y LEVEL5e
+    <xsl:text>
+y LEVEL5e
 </xsl:text>
   </xsl:template>
 
@@ -1088,7 +1110,8 @@ i j=</xsl:text>
 </xsl:text>
       </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>y LEVEL6e
+    <xsl:text>
+y LEVEL6e
 </xsl:text>
   </xsl:template>
 
@@ -1111,7 +1134,8 @@ y P
   </xsl:template>
 
   <xsl:template match="dtb:p">   
-    <xsl:text>y P
+    <xsl:text>
+y P
 </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
@@ -1177,10 +1201,12 @@ H</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:blockquote">
-    <xsl:text>y BLQUOb
+    <xsl:text>
+y BLQUOb
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>y BLQUOe
+    <xsl:text>
+y BLQUOe
 </xsl:text>
   </xsl:template>
 
