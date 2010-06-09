@@ -174,8 +174,8 @@ class SBSFormForm(forms.Form):
         label=_("Show V-Forms"), required=False, initial=True)
     downshift_ordinals = forms.BooleanField(
         label=_("Downshift Ordinals"), required=False, initial=True)
-    enable_capitalization = forms.BooleanField(
-        label=_("Enable Capitalization"), required=False)
+    # enable_capitalization = forms.BooleanField(
+    #     label=_("Enable Capitalization"), required=False)
     detailed_accented_characters = forms.ChoiceField(
         label=_("Detailed Accented Characters"), choices=BRAILLE_ACCENTS_CHOICES)
 
