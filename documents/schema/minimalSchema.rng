@@ -142,6 +142,12 @@
       <zeroOrMore>
         <ref name="poem"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="author"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="byline"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="hcontent">
@@ -299,10 +305,15 @@
           attribute that declares a separator or an empty line before it.
         -->
         <attribute name="class">
-          <choice>
-            <value>precedingseparator</value>
-            <value>precedingemptyline</value>
-          </choice>
+          <list>
+            <oneOrMore>
+              <choice>
+                <value>precedingseparator</value>
+                <value>precedingemptyline</value>
+                <value>noindent</value>
+              </choice>
+            </oneOrMore>
+          </list>
         </attribute>
       </optional>
       <interleave>
@@ -321,12 +332,6 @@
         </zeroOrMore>
         <zeroOrMore>
           <ref name="span"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="author"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="byline"/>
         </zeroOrMore>
       </interleave>
     </element>
