@@ -198,6 +198,12 @@ z
 i b=</xsl:text><xsl:value-of select="$cells_per_line"/>
 <xsl:text>
 i s=</xsl:text><xsl:value-of select="$lines_per_page"/>
+<xsl:if test="$footer_level &gt; 0">
+  <xsl:text>
+I ~=j
+i k=0
+</xsl:text>
+</xsl:if>
 <xsl:text>
 y e BOOKb
 
