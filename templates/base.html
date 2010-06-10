@@ -42,7 +42,9 @@
 
     <div id="main-menu">
       <ul>
+	{% if perms.documents %}
 	<li><a href="{% url manage_index %}" accesskey="7"{% block tab-manage %}{% endblock %}>{% trans "Manage" %}</a></li>
+	{% endif %}
 	<li><a href="{% url todo_index %}"{% block tab-todo %}{% endblock %}>{% trans "TODO" %}</a></li>
 	<li><a href="{% url browse_index %}"{% block tab-browse %}{% endblock %}>{% trans "Browse" %}</a></li>
       </ul>
