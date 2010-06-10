@@ -5,11 +5,26 @@
     groups: []
     is_active: true
     is_staff: true
-    is_superuser: true
+    is_superuser: false
+    last_login: 2009-06-05 13:40:16.359746
+    last_name: ''
+    password: sha1$7f9bd$3f462bde23be3160689297043812e1fc68b88729
+    user_permissions: [4]
+    username: testuser
+  model: auth.user
+  pk: 1
+- fields:
+    date_joined: 2009-06-05 11:44:21.521730
+    email: lowly@test.com
+    first_name: 'Lowly'
+    groups: []
+    is_active: true
+    is_staff: true
+    is_superuser: false
     last_login: 2009-06-05 13:40:16.359746
     last_name: ''
     password: sha1$7f9bd$3f462bde23be3160689297043812e1fc68b88729
     user_permissions: []
-    username: testuser
+    username: lowly
   model: auth.user
-  pk: 1
+  pk: 2

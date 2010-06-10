@@ -185,21 +185,6 @@
 - fields: {codename: delete_site, content_type: 14, name: Can delete site}
   model: auth.permission
   pk: 42
-- fields:
-    date_joined: 2009-06-05 11:44:21.521730
-    email: christian.egli@sbszh.ch
-    first_name: ''
-    groups: []
-    is_active: true
-    is_staff: true
-    is_superuser: true
-    last_login: 2009-06-05 13:40:16.359746
-    last_name: ''
-    password: sha1$7f9bd$3f462bde23be3160689297043812e1fc68b88729
-    user_permissions: []
-    username: eglic
-  model: auth.user
-  pk: 1
 - fields: {app_label: documents, model: attachment, name: attachment}
   model: contenttypes.contenttype
   pk: 4
