@@ -31,6 +31,18 @@ class ManageViewTest(TestCase):
         self.assertTemplateNotUsed(response, 'documents/manage_index.html')
         self.failIfEqual(response.status_code, 200)
 
+    def test_manage_index_user_without_perms(self):
+        """Check if mana tab is visible w/o permissions"""
+        self.client.login(username='lowly', password='foobar')
+        response = self.client.get(reverse('todo_index'))
+        self.assertNotContains(response, "Manage")
+
+    def test_manage_index_user_with_perms(self):
+        """Check if mana tab is visible with permissions"""
+        self.client.login(username='testuser', password='foobar')
+        response = self.client.get(reverse('todo_index'))
+        self.assertContains(response, "Manage")
+
     def test_manage_details_no_user(self):
         """Check if access w/o login fails"""
         response = self.client.get(reverse('manage_detail', args=[self.document.pk]))
