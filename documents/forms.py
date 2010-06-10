@@ -138,9 +138,9 @@ class SBSFormForm(forms.Form):
         ('2', _('Grade 2')),
         )
     BRAILLE_ACCENTS_CHOICES = (
-        ('de-accents-ch', _('Swiss')),
         ('de-accents', _('Yes')),
         ('de-accents-reduced', _('No')),
+        ('de-accents-ch', _('Swiss')),
         )
     BRAILLE_TOC_DEPTH_CHOICES = (
         ('0', 0),
@@ -156,6 +156,7 @@ class SBSFormForm(forms.Form):
     contraction = forms.TypedChoiceField(
         label=_("Contraction"), 
         choices=BRAILLE_CONTRACTION_GRADE_CHOICES, 
+        initial='2',
         coerce=int)
     hyphenation = forms.BooleanField(label=_("Hyphenation"), required=False, initial=True)
     toc_level = forms.TypedChoiceField(
@@ -177,7 +178,10 @@ class SBSFormForm(forms.Form):
     # enable_capitalization = forms.BooleanField(
     #     label=_("Enable Capitalization"), required=False)
     detailed_accented_characters = forms.ChoiceField(
-        label=_("Detailed Accented Characters"), choices=BRAILLE_ACCENTS_CHOICES)
+        label=_("Detailed Accented Characters"), 
+        choices=BRAILLE_ACCENTS_CHOICES,
+        initial='de-accents-ch'
+)
 
 class XHTMLForm(forms.Form):
     genToc = forms.BooleanField(
