@@ -253,7 +253,6 @@ import libxslt
 import textwrap
 
 class SBSForm:
-    wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
 
     nodeName = None
 
@@ -279,8 +278,7 @@ class SBSForm:
         typeform = len(str)*[SBSForm.modeMap[mode]] if mode else None
         braille = louis.translate(translation_tables.split(','), 
                                   str.decode('utf-8'), typeform=typeform)[0]
-        braille = braille.encode('utf-8')
-        return SBSForm.wrapper.fill(braille)
+        return braille.encode('utf-8')
 
 
     @staticmethod
@@ -296,9 +294,17 @@ class SBSForm:
         # and quote the values
         kwargs.update([(k, "'%s'" % v) for (k, v) in kwargs.iteritems()])
         result = style.applyStylesheet(doc, kwargs)
-        style.saveResultToFilename(outputFile, result, 0)
+        stringval = style.saveResultToString(result)
         style.freeStylesheet()
         doc.freeDoc()
         result.freeDoc()
+        
+        f = open(outputFile, 'w')
+        wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
+        for line in stringval.splitlines(True):
+            if line.startswith(' '):
+                line = wrapper.fill(line[1:]) + '\n'
+            f.write(line)
+        f.close()
 
 libxslt.registerExtModuleFunction("translate", "http://liblouis.org/liblouis", SBSForm.translate)

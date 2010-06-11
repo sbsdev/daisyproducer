@@ -549,7 +549,7 @@ B+
 L
 tCCCCCCCCCCCC
 t
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("Ende des",string(my:getTable()))'/>
 <xsl:choose>
   <xsl:when test="$volumes &gt; 12">
@@ -586,7 +586,7 @@ P1
 I ~=j
 L
 t~
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("Inhaltsverzeichnis",string(my:getTable()))'/>
 <xsl:text>
 u-
@@ -601,7 +601,7 @@ B+
 L
 tCCCCCCCCCCCC
 t
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("Ende des Buches",string(my:getTable()))'/>
 <xsl:text>
 t======
@@ -817,12 +817,12 @@ O
 bb
 L5
 t
-</xsl:text>
+ </xsl:text>
 <xsl:apply-templates select="//dtb:docauthor/text()"/>
 <xsl:text>
 l2
 t
-</xsl:text>
+ </xsl:text>
 <xsl:apply-templates select="//dtb:doctitle/text()"/>
 <xsl:text>
 u-
@@ -842,29 +842,29 @@ u-
   </xsl:otherwise>
 </xsl:choose>
 <xsl:text>t
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("Schweizerische Bibliothek",string(my:getTable()))'/>
 <xsl:text>
 t
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("für Blinde, Seh- und",string(my:getTable()))'/>
 <xsl:if test="not($contraction='2')">
 <xsl:text>
 t
-</xsl:text>
+ </xsl:text>
 </xsl:if>
 <xsl:value-of select='louis:translate("Lesebehinderte",string(my:getTable()))'/>
 <xsl:text>
 l
 t
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("SBS",string(my:getTable("abbr")))'/>
 <xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(my:getTable()))"/>
 <xsl:text>
 p
 L
 i f=1 l=1
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("Dieses Punktschrift-Buch ist die ausschließlich",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("für die Nutzung durch Lesebehinderte Menschen",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("bestimmte zugängliche Version eines urheberrechtlich",string(my:getTable()))'/>
@@ -878,46 +878,46 @@ i f=1 l=1
   <xsl:when test="$contraction='2'">
 <xsl:text>
 lv21
-</xsl:text>
+ </xsl:text>
   </xsl:when>
   <xsl:otherwise>
 <xsl:text>
 lv20
-</xsl:text>
+ </xsl:text>
   </xsl:otherwise>
 </xsl:choose>
 <xsl:value-of select='louis:translate("Verlag, Satz und Druck",string(my:getTable()))'/>
 <xsl:text>
 a
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("Schweizerische Bibliothek",string(my:getTable()))'/>
 <xsl:text>
 a
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("für Blinde, Seh- und",string(my:getTable()))'/>
 <xsl:if test="not($contraction='2')">
 <xsl:text>
 a
-</xsl:text>
+ </xsl:text>
 </xsl:if>
 <xsl:value-of select='louis:translate("Lesebehinderte",string(my:getTable()))'/>
 <xsl:text>
 a
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("SBS",string(my:getTable("abbr")))'/>
 <xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(my:getTable()))"/>
 <xsl:text>
 l
-</xsl:text>
+ </xsl:text>
 <xsl:value-of select='louis:translate("www.sbs-online.ch",string(my:getTable()))'/>
 <xsl:text>
 p
 L5
-</xsl:text>
+ </xsl:text>
 <xsl:apply-templates select="//dtb:docauthor/text()"/>
 <xsl:text>
 l2
-</xsl:text>
+ </xsl:text>
 <xsl:apply-templates select="//dtb:doctitle/text()"/>
 <xsl:text>
 u-
@@ -1130,34 +1130,34 @@ y LEVEL6e
   <xsl:template match="dtb:p[contains(@class, 'precedingseparator') and contains(@class, 'noindent')]" priority="100">   
     <xsl:text>y SEPARATOR
 y P_noi
-</xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:p[contains(@class, 'precedingseparator')]" priority="0">   
     <xsl:text>y SEPARATOR
 y P
-</xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:p[contains(@class, 'precedingemptyline')]" priority="0">   
     <xsl:text>y BLANK
 y P
-</xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:p[contains(@class, 'precedingemptyline') and contains(@class, 'noindent')]" priority="100">   
     <xsl:text>y BLANK
 y P_noi
-</xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:p[contains(@class, 'noindent')]" priority="0">   
     <xsl:text>y P_noi
-</xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
@@ -1168,7 +1168,7 @@ y P_noi
   <xsl:template match="dtb:p">   
     <xsl:text>
 y P
-</xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
@@ -1197,6 +1197,10 @@ y PLISTe
     <xsl:value-of select="text()"/>
     <xsl:text>
 </xsl:text>
+    <!-- add a space if we're inside a p -->
+    <xsl:if test="name(..) = 'p'">
+      <xsl:text> </xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
