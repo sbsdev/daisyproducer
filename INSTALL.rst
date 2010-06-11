@@ -260,4 +260,11 @@ pending jobs in that particular state.
 Lastly you will have to assign your users to particular groups to make
 sure they see the pending jobs that they are responsible for.
 
+You will also to have to give permission to add documents to some
+users. This will allow these dedicated users to create new documents
+that will have to worked on. Use the admin interface to either assign
+the permission directly to the user or create a specific group (say
+"Managers") which has the permission to add documents and assign users
+to this group. The demo user has permission to add documents.
+
  .. _admin interface: http://127.0.0.1:8000/admin/
