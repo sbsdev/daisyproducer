@@ -31,13 +31,13 @@ class DaisyPipeline:
         successful. Return a list of error messages as delivered by
         the Daisy Pipeline otherwise."""
         
-        relaxng_doc = etree.parse(
-            join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.rng'))
-        relaxng = etree.RelaxNG(relaxng_doc)
+        xmlschema_doc = etree.parse(
+            join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.xsd'))
+        xmlschema = etree.XMLSchema(xmlschema_doc)
         
         doc = etree.parse(file_path)
-        if not relaxng.validate(doc):
-            entry = relaxng.error_log[0]
+        if not xmlschema.validate(doc):
+            entry = xmlschema.error_log[0]
             return ["%s on line %s" % (entry.message, entry.line)]
 
         tmpFile = filterBrlContractionhints(file_path)
