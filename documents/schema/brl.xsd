@@ -96,6 +96,8 @@
         <xs:element ref="dtbook:em"/>
         <xs:element ref="dtbook:strong"/>
         <xs:group ref="dtbook:contractionhints"/>
+        <xs:element ref="dtbook:abbr"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -105,6 +107,8 @@
         <xs:element ref="dtbook:em"/>
         <xs:element ref="dtbook:strong"/>
         <xs:group ref="dtbook:contractionhints"/>
+        <xs:element ref="dtbook:abbr"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
       <xs:attribute ref="brl:grade"/>
     </xs:complexType>

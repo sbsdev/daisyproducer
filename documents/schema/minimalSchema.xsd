@@ -15,7 +15,7 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
-      <xs:attributeGroup ref="xml:lang"/>
+      <xs:attribute ref="xml:lang" use="required"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="head">
@@ -116,6 +116,7 @@
         <xs:element ref="dtbook:p"/>
         <xs:element ref="dtbook:list"/>
         <xs:element ref="dtbook:blockquote"/>
+        <xs:element ref="dtbook:epigraph"/>
         <xs:element ref="dtbook:poem"/>
         <xs:element ref="dtbook:author"/>
         <xs:element ref="dtbook:byline"/>
@@ -286,13 +287,32 @@
   <xs:element name="abbr" type="xs:string"/>
   <xs:element name="span">
     <xs:complexType mixed="true">
-      <xs:attributeGroup ref="xml:lang1"/>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="dtbook:pagenum"/>
+        <xs:element ref="dtbook:em"/>
+        <xs:element ref="dtbook:strong"/>
+        <xs:element ref="dtbook:abbr"/>
+        <xs:group ref="dtbook:contractionhints"/>
+      </xs:choice>
+      <xs:attribute ref="brl:grade"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="blockquote">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:p"/>
+        <xs:element ref="dtbook:author"/>
+        <xs:element ref="dtbook:byline"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="epigraph">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:choice>
+          <xs:element ref="dtbook:p"/>
+          <xs:element ref="dtbook:poem"/>
+        </xs:choice>
         <xs:element ref="dtbook:author"/>
         <xs:element ref="dtbook:byline"/>
       </xs:choice>
@@ -341,6 +361,9 @@
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:em"/>
         <xs:element ref="dtbook:strong"/>
+        <xs:group ref="dtbook:contractionhints"/>
+        <xs:element ref="dtbook:abbr"/>
+        <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:lic"/>
       </xs:choice>
     </xs:complexType>
@@ -351,6 +374,7 @@
         <xs:element ref="dtbook:em"/>
         <xs:element ref="dtbook:strong"/>
         <xs:group ref="dtbook:contractionhints"/>
+        <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:span"/>
       </xs:choice>
     </xs:complexType>

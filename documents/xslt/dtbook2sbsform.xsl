@@ -481,6 +481,22 @@ y e BLQUOe
 </xsl:text>
 </xsl:if>
 
+<xsl:if test="//dtb:epigraph">
+<xsl:text>
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxx Epigraph xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+y b EPIGRb
+lm1
+n2
+i A=5
+y e EPIGRb
+y b EPIGRe
+i A=1
+lm1
+n2
+y e EPIGRe
+</xsl:text>
+</xsl:if>
+
 <xsl:if test="//dtb:poem">
 <xsl:text>
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Poem xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -1245,6 +1261,16 @@ y BLQUOb
     <xsl:apply-templates/>
     <xsl:text>
 y BLQUOe
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:epigraph">
+    <xsl:text>
+y EPIGRb
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>
+y EPIGRe
 </xsl:text>
   </xsl:template>
 
