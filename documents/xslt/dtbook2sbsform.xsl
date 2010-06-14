@@ -1444,13 +1444,13 @@ y BLQUOe
     <xsl:for-each select="str:tokenize(string(@value), '-')">
       <xsl:choose>
 	<xsl:when test="position() = last()-1">
-	  <xsl:value-of select="louis:translate(string(),string(my:getTable('date_month')))"/>
+	  <xsl:value-of select="louis:translate(format-number(.,'#'),string(my:getTable('date_month')))"/>
 	</xsl:when>
 	<xsl:when test="position() = last()">
-	  <xsl:value-of select="louis:translate(string(),string(my:getTable('date_day')))"/>
+	  <xsl:value-of select="louis:translate(format-number(.,'#'),string(my:getTable('date_day')))"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:value-of select="louis:translate(string(),string(my:getTable()))"/>
+	  <xsl:value-of select="louis:translate(format-number(.,'#'),string(my:getTable()))"/>
 	</xsl:otherwise>	
       </xsl:choose>
       <xsl:if test="not(position() = last())">.</xsl:if>
