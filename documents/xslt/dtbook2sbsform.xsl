@@ -21,7 +21,6 @@
   <xsl:param name="version">0</xsl:param>
   <xsl:param name="cells_per_line">40</xsl:param>
   <xsl:param name="lines_per_page">28</xsl:param>
-  <xsl:param name="hyphenation" select="false()"/>
   <xsl:param name="toc_level">0</xsl:param>
   <xsl:param name="footer_level">0</xsl:param>
   <xsl:param name="show_original_page_numbers" select="false()"/>
@@ -883,14 +882,14 @@ p
 L
 i f=1 l=1
  </xsl:text>
-<xsl:value-of select='louis:translate("Dieses Punktschrift-Buch ist die ausschließlich",string(my:getTable()))'/>
-<xsl:value-of select='louis:translate("für die Nutzung durch Lesebehinderte Menschen",string(my:getTable()))'/>
-<xsl:value-of select='louis:translate("bestimmte zugängliche Version eines urheberrechtlich",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("Dieses Punktschrift-Buch ist die ausschließlich ",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("für die Nutzung durch Lesebehinderte Menschen ",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("bestimmte zugängliche Version eines urheberrechtlich ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("geschützten Werks. ",string(my:getTable()))'/>
-<xsl:value-of select='louis:translate("Sie",string(my:getTable("v-form")))'/>
-<xsl:value-of select='louis:translate("können",string(my:getTable()))'/>
-<xsl:value-of select='louis:translate("es im Rahmen des Urheberrechts persönlich nutzen",string(my:getTable()))'/>
-<xsl:value-of select='louis:translate("dürfen es aber nicht weiter verbreiten oder öffentlich",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("Sie ",string(my:getTable("v-form")))'/>
+<xsl:value-of select='louis:translate("können ",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("es im Rahmen des Urheberrechts persönlich nutzen ",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("dürfen es aber nicht weiter verbreiten oder öffentlich ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("zugänglich machen",string(my:getTable()))'/>
 <xsl:choose>
   <xsl:when test="$contraction='2'">
@@ -940,7 +939,7 @@ l2
 <xsl:text>
 u-
 l
-</xsl:text>
+ </xsl:text>
 <xsl:apply-templates select="//dtb:frontmatter/dtb:level1[@class='titlepage']" mode='titlepage'/>
 <xsl:text>
 b
@@ -977,9 +976,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 </xsl:text>
     <xsl:text>x lines_per_page:</xsl:text>
     <xsl:value-of select="$lines_per_page"/><xsl:text>
-</xsl:text>
-    <xsl:text>x hyphenation:</xsl:text>
-    <xsl:value-of select="$hyphenation"/><xsl:text>
 </xsl:text>
     <xsl:text>x toc_level:</xsl:text>
     <xsl:value-of select="$toc_level"/><xsl:text>
@@ -1180,6 +1176,8 @@ y P_noi
   </xsl:template>
 
   <xsl:template match="dtb:p" mode='titlepage'>   
+    <xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
