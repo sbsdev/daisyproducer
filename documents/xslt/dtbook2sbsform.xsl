@@ -148,6 +148,7 @@
 	  <xsl:text>sbs-de-g0-core.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$contraction = '1' and ($context != 'name_capitalized' and ($context != 'abbr' or my:containsDot(.)) and $context != 'date_month' and $context != 'date_day')">
+	  <xsl:text>sbs-de-g1-white.mod,</xsl:text>
 	  <xsl:text>sbs-de-g1-core.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$contraction = '2'">
@@ -158,6 +159,7 @@
 	    <xsl:text>sbs-de-g2-name.mod,</xsl:text>
 	  </xsl:if>
 	  <xsl:if test="$context != 'name' and $context != 'name_capitalized' and $context != 'place' and ($context != 'abbr' or  my:containsDot(.)) and $context != 'date_day' and $context != 'date_month'">
+	    <xsl:text>sbs-de-g2-white.mod,</xsl:text>
 	    <xsl:text>sbs-de-g2-core.mod,</xsl:text>
 	  </xsl:if>
 	</xsl:if>
