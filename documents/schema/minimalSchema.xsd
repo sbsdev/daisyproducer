@@ -400,8 +400,10 @@
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:author"/>
         <xs:element ref="dtbook:byline"/>
-        <xs:element ref="dtbook:linegroup"/>
-        <xs:element ref="dtbook:line"/>
+        <xs:choice>
+          <xs:element ref="dtbook:linegroup"/>
+          <xs:element ref="dtbook:line"/>
+        </xs:choice>
       </xs:choice>
     </xs:complexType>
   </xs:element>
