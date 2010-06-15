@@ -1468,6 +1468,8 @@ y EPIGRe
 
   <xsl:template match="brl:date[lang('de')]">
     <xsl:for-each select="str:tokenize(string(@value), '-')">
+      <!-- reverse the order, so we have day, month, year -->
+      <xsl:sort select="position()" order="descending" data-type="number"/>
       <xsl:choose>
 	<xsl:when test="position() = last()-1">
 	  <xsl:value-of select="louis:translate(format-number(.,'#'),string(my:getTable('date_month')))"/>
