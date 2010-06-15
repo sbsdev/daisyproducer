@@ -22,6 +22,9 @@
     <xsl:apply-templates/>
   </xsl:template>
 
+  <!-- Drop the brl:* attributes -->
+  <xsl:template match="@brl:*"/>
+
   <!-- Copy all other elements and attributes -->
   <xsl:template match="node()|@*">
     <xsl:copy>
