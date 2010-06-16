@@ -1397,29 +1397,34 @@ y EPIGRe
   </xsl:template>
 
   <xsl:template match="brl:num[@role='phone' and lang('de')]">
+    <xsl:variable name="table" select="string(my:getTable())"/>
     <!-- Replace ' ' and '/' with '.' -->
     <xsl:for-each select="str:tokenize(string(.), ' /')">
-      <xsl:value-of select="louis:translate(string(.),string(my:getTable()))" />
+      <xsl:value-of select="louis:translate(string(.),$table)" />
       <xsl:if test="not(position() = last())">.</xsl:if>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template match="brl:num[@role='measure' and lang('de')]">
+    <xsl:variable name="table" select="string(my:getTable())"/>
+    <xsl:variable name="abbr_table" select="string(my:getTable('abbr'))"/>
     <!-- For all number-unit combinations, e.g. 1 kg, 10 km, etc. drop the space -->
     <xsl:for-each select="str:tokenize(string(.), ' ')">
       <xsl:choose>
 	<xsl:when test="not(position() = last())">
 	  <!-- FIXME: do not test for position but whether it is a number -->
-	  <xsl:value-of select="louis:translate(string(.),string(my:getTable()))"/>
+	  <xsl:value-of select="louis:translate(string(.),$table)"/>
 	</xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="louis:translate(string(.),string(my:getTable('abbr')))"/>
+	<xsl:value-of select="louis:translate(string(.),$abbr_table)"/>
       </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template match="brl:num[@role='isbn' and lang('de')]">
+    <xsl:variable name="table" select="string(my:getTable())"/>
+    <xsl:variable name="abbr_table" select="string(my:getTable('abbr'))"/>
     <xsl:variable name="lastChar" select="substring(.,string-length(.),1)"/>
     <xsl:variable name="secondToLastChar" select="substring(.,string-length(.)-1,1)"/>
     <xsl:choose>
@@ -1427,18 +1432,24 @@ y EPIGRe
            dash, mark the letter with &#x2566; and translate the
            letter with abbr -->
       <xsl:when test="$secondToLastChar='-' and string(number($lastChar))='NaN' and contains($upperCaseLetters, $lastChar)">
-	<xsl:for-each select="str:tokenize(substring(.,1,string-length(.)-2), ' -')">
-	  <xsl:value-of select="louis:translate(string(.),string(my:getTable()))" />
-	  <xsl:if test="not(position() = last())">.</xsl:if>
-	</xsl:for-each>
-	<xsl:value-of select="louis:translate($secondToLastChar,string(my:getTable()))"/>
-	<xsl:value-of select="louis:translate(concat('&#x2566;',$lastChar),string(my:getTable('abbr')))"/>
+	<xsl:variable name="clean_number">
+	  <xsl:for-each select="str:tokenize(substring(.,1,string-length(.)-2), ' -')">
+	    <xsl:value-of select="string(.)" />
+	    <xsl:if test="not(position() = last())">.</xsl:if>
+	  </xsl:for-each>
+	</xsl:variable>
+	<xsl:value-of select="louis:translate(string($clean_number),$table)" />
+	<xsl:value-of select="louis:translate($secondToLastChar,$table)"/>
+	<xsl:value-of select="louis:translate(concat('&#x2566;',$lastChar),$abbr_table)"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:for-each select="str:tokenize(string(.), ' -')">
-	  <xsl:value-of select="louis:translate(string(.),string(my:getTable()))" />
-	  <xsl:if test="not(position() = last())">.</xsl:if>
-	</xsl:for-each>
+	<xsl:variable name="clean_number">
+	  <xsl:for-each select="str:tokenize(string(.), ' -')">
+	    <xsl:value-of select="string(.)"/>
+	    <xsl:if test="not(position() = last())">.</xsl:if>
+	  </xsl:for-each>
+	</xsl:variable>
+	<xsl:value-of select="louis:translate(string($clean_number),$table)" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
