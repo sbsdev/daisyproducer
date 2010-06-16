@@ -1467,21 +1467,23 @@ y EPIGRe
   </xsl:template>
 
   <xsl:template match="brl:date[lang('de')]">
+    <xsl:variable name="table" select="string(my:getTable())"/>
+    <xsl:variable name="day_table" select="string(my:getTable('date_day'))"/>
+    <xsl:variable name="month_table" select="string(my:getTable('date_month'))"/>
     <xsl:for-each select="str:tokenize(string(@value), '-')">
       <!-- reverse the order, so we have day, month, year -->
       <xsl:sort select="position()" order="descending" data-type="number"/>
       <xsl:choose>
-	<xsl:when test="position() = last()-1">
-	  <xsl:value-of select="louis:translate(format-number(.,'#'),string(my:getTable('date_month')))"/>
+	<xsl:when test="position() = 1">
+	  <xsl:value-of select="louis:translate(format-number(.,'#'),$day_table)"/>
 	</xsl:when>
-	<xsl:when test="position() = last()">
-	  <xsl:value-of select="louis:translate(format-number(.,'#'),string(my:getTable('date_day')))"/>
+	<xsl:when test="position() = 2">
+	  <xsl:value-of select="louis:translate(format-number(.,'#'),$month_table)"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:value-of select="louis:translate(format-number(.,'#'),string(my:getTable()))"/>
+	  <xsl:value-of select="louis:translate(format-number(.,'#'),$table)"/>
 	</xsl:otherwise>	
       </xsl:choose>
-      <xsl:if test="not(position() = last())">.</xsl:if>
     </xsl:for-each>
   </xsl:template>
 
