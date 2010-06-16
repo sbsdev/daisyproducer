@@ -303,7 +303,7 @@ class SBSForm:
         wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
         for line in stringval.splitlines(True):
             if line.startswith(' '):
-                line = wrapper.fill(line[1:]) + '\n'
+                line = wrapper.fill(line.strip()) + '\n'
             f.write(line)
         f.close()
 

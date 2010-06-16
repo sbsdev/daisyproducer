@@ -15,7 +15,7 @@
 
   <xsl:output method="text" encoding="utf-8" indent="no"/>
   <xsl:strip-space elements="*"/>
-  <xsl:preserve-space elements="code samp"/>
+  <xsl:preserve-space elements="dtb:p code samp"/>
 	
   <xsl:param name="contraction">0</xsl:param>
   <xsl:param name="version">0</xsl:param>
@@ -1273,7 +1273,8 @@ y EPIGRe
   </xsl:template>
 
   <xsl:template match="dtb:poem">
-    <xsl:text>y POEMb
+    <xsl:text>
+y POEMb
 </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>y POEMe
@@ -1281,14 +1282,16 @@ y EPIGRe
   </xsl:template>
 
   <xsl:template match="dtb:author">
-    <xsl:text>y AUTHOR
-</xsl:text>
+    <xsl:text>
+y AUTHOR
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:byline">
-    <xsl:text>y BYLINE
-</xsl:text>
+    <xsl:text>
+y BYLINE
+ </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
@@ -1302,9 +1305,10 @@ y EPIGRe
 
   <xsl:template match="dtb:line">
     <xsl:text>y LINEb
-</xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>y LINEe
+    <xsl:text>
+y LINEe
 </xsl:text>
   </xsl:template>
 
