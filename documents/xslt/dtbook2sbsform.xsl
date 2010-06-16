@@ -1397,7 +1397,17 @@ y LINEe
   </xsl:template>
 
   <xsl:template match="brl:num[@role='roman' and lang('de')]">
-    <xsl:value-of select="louis:translate(string(),string(my:getTable('abbr')))"/>
+    <xsl:choose>
+      <xsl:when test="my:isUpper(substring(.,1,1))">
+	<!-- we assume that if the first char is uppercase the rest is also uppercase -->
+	<xsl:value-of select="louis:translate(concat('&#x2566;',string()),string(my:getTable('abbr')))"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<!-- presumably the roman number is in lower case -->
+	<xsl:value-of select="louis:translate(concat('&#x2569;',string()),string(my:getTable('abbr')))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+
   </xsl:template>
 
   <xsl:template match="brl:num[@role='phone' and lang('de')]">
