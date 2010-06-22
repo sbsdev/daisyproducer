@@ -1325,15 +1325,23 @@ y LINEe
   </xsl:template>
 
   <xsl:template match="dtb:strong[lang('de')]|dtb:em[lang('de')]">
-    <!-- FIXME: This is a workaround for a liblouis bug that doesn't
-         correctly announce multi-word emphasis. We do it manually
-         here by counting the words -->
+    <!-- Since we send every (text) node to liblouis separately, it
+         has no means to know when an empasis starts and when it ends.
+         For that reason we do the announcing here in xslt. This also
+         neatly works around a bug where liblouis doesn't correctly
+         announce multi-word emphasis -->
     <xsl:choose>
      <xsl:when test="count(str:tokenize(string(.), ' /-')) > 1">
-       <xsl:apply-templates mode="italic"/>
+       <!-- There are multiple words. Insert a multiple word announcement -->
+       <xsl:value-of select="louis:translate('&#x2560;',string(my:getTable()))"/>
+       <xsl:apply-templates/>
+       <!-- Announce the end of emphasis -->
+       <xsl:value-of select="louis:translate('&#x2563;',string(my:getTable()))"/>
      </xsl:when>
      <xsl:otherwise>
-       <xsl:apply-templates mode="bold"/>
+       <!-- Its a single word. Insert a single word announcement -->
+       <xsl:value-of select="louis:translate('&#x255F;',string(my:getTable()))"/>
+       <xsl:apply-templates/>
      </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
