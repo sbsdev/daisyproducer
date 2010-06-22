@@ -1,5 +1,6 @@
 from daisyproducer.documents.models import Document, Version
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 from django.test import TestCase
 import os
 
@@ -137,10 +138,13 @@ class ManageViewTest(TestCase):
         document.source_publisher = "Diogenes"
         document.save()
 
+        user = User.objects.get(pk=1)
+
         versionFile = File(open(os.path.join(TEST_DATA_DIR, 'test.xml')))
         version = Version.objects.create(
             comment = "testing 123",
-            document = document)
+            document = document,
+            created_by = user)
         version.content.save("updated_version.xml", versionFile)
         versionFile.close()
 
