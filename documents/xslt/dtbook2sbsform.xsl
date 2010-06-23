@@ -1448,10 +1448,13 @@ y LINEe
   <xsl:template match="brl:num[@role='phone' and lang('de')]">
     <xsl:variable name="table" select="string(my:getTable())"/>
     <!-- Replace ' ' and '/' with '.' -->
-    <xsl:for-each select="str:tokenize(string(.), ' /')">
-      <xsl:value-of select="louis:translate(string(.),$table)" />
-      <xsl:if test="not(position() = last())">.</xsl:if>
-    </xsl:for-each>
+    <xsl:variable name="clean_number">
+      <xsl:for-each select="str:tokenize(string(.), ' /')">
+	<xsl:value-of select="."/>
+	<xsl:if test="not(position() = last())">.</xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:value-of select="louis:translate(string($clean_number),$table)" />
   </xsl:template>
 
   <xsl:template match="brl:num[@role='measure' and lang('de')]">
