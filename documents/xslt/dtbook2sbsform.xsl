@@ -129,11 +129,11 @@
 	<xsl:if test="$contraction = '2' and not($context = 'abbr' and not(my:containsDot(.))) and $context != 'date_month' and $context != 'date_day' and $context !='name_capitalized'">
 	  <xsl:text>sbs-de-letsign.mod,</xsl:text>
 	</xsl:if>
-	<xsl:if test="$context != 'date_month'">
+	<xsl:if test="$context != 'date_month' and $context != 'denominator'">
 	  <xsl:text>sbs-numsign.mod,</xsl:text>
 	</xsl:if>
 	<xsl:choose>
-	  <xsl:when test="$context = 'num_ordinal' or $context = 'date_day'">
+	  <xsl:when test="$context = 'num_ordinal' or $context = 'date_day' or $context = 'denominator'">
 	    <xsl:text>sbs-litdigit-lower.mod,</xsl:text>
 	  </xsl:when>
 	  <xsl:otherwise>
@@ -1455,6 +1455,15 @@ y LINEe
       </xsl:for-each>
     </xsl:variable>
     <xsl:value-of select="louis:translate(string($clean_number),$table)" />
+  </xsl:template>
+
+  <xsl:template match="brl:num[@role='fraction' and lang('de')]">
+    <xsl:variable name="table" select="string(my:getTable())"/>
+    <xsl:variable name="downshift_table" select="string(my:getTable('denominator'))"/>
+    <xsl:variable name="numerator" select="(str:tokenize(string(.), ' /'))[position()=1]"/>
+    <xsl:variable name="denominator" select="(str:tokenize(string(.), ' /'))[position()=2]"/>
+    <xsl:value-of select="louis:translate(string($numerator),$table)"/>
+    <xsl:value-of select="louis:translate(string($denominator),$downshift_table)"/>
   </xsl:template>
 
   <xsl:template match="brl:num[@role='measure' and lang('de')]">
