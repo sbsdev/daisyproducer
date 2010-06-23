@@ -134,6 +134,7 @@ class Version(models.Model):
     comment = models.CharField(max_length=255)
     document = models.ForeignKey(Document)
     content = models.FileField(upload_to=get_version_path)
+    created_by = models.ForeignKey(User, verbose_name=_("Created by"))
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -156,6 +157,7 @@ class Attachment(models.Model):
     mime_type = models.CharField(max_length=32, choices=MIME_TYPE_CHOICES)
     document = models.ForeignKey(Document)
     content = models.FileField(upload_to=get_attachment_path)
+    created_by = models.ForeignKey(User, verbose_name=_("Created by"))
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

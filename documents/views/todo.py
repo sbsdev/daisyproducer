@@ -72,7 +72,8 @@ def add_attachment(request, document_id):
     attachment = Attachment.objects.create(
         comment=form.cleaned_data['comment'], 
         document=document,
-        mime_type=form.content_type)
+        mime_type=form.content_type,
+        created_by=request.user)
     content_file = request.FILES['content']
     attachment.content.save(content_file.name, content_file)
 
@@ -86,10 +87,8 @@ def add_version(request, document_id):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
-    form = PartialVersionForm(request.POST, request.FILES)
-    # attach some data to the form for validation        
-    form.contentMetaData = model_to_dict(document)
-
+    form = PartialVersionForm(request.POST, request.FILES, 
+                              contentMetaData=model_to_dict(document))
     if not form.is_valid():
         versionForm = form
         attachmentForm = PartialAttachmentForm()
@@ -103,7 +102,8 @@ def add_version(request, document_id):
     # can save the content file under /document_id/versions/version_id
     version = Version.objects.create(
         comment=form.cleaned_data['comment'], 
-        document=document)
+        document=document,
+        created_by=request.user)
     content_file = request.FILES['content']
     version.content.save(content_file.name, content_file)
 
@@ -145,12 +145,11 @@ def ocr(request, document_id):
 def markup(request, document_id):
     document = Document.objects.select_related('state').get(pk=document_id)
     if request.method == 'POST':
-        form = MarkupForm(request.POST)
-        # attach some data to the form for validation        
-        form.contentMetaData = model_to_dict(document)
+        form = MarkupForm(request.POST, 
+                          document=document, user=request.user)
         if form.is_valid():
             # create a new version with the given form content
-            form.save(document)
+            form.save()
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
         else:
             form.has_errors = True
@@ -181,7 +180,8 @@ def markup_xopus(request, document_id):
                            xml_declaration=True))
         version = Version.objects.create(
             comment="Changed with Xopus", 
-            document=document)
+            document=document,
+            created_by=request.user)
         version.content.save("initial_version.xml", content)
         return HttpResponse("success")
     else:

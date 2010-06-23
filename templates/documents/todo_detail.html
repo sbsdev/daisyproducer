@@ -44,11 +44,13 @@
     <table style="width:100%">
       <!-- <tr> -->
       <!-- 	<th>Comment</th> -->
+      <!-- 	<th>Created by</th> -->
       <!-- 	<th>Created at</th> -->
       <!-- </tr> -->
       {% for version in document.version_set.all|slice:":7" %}
       <tr>
 	<td><a href="{{ version.content.url }}">{{ version.comment }}</a></td>
+	<td>{{ version.created_by.get_full_name }}</td>
 	<td>{{ version.created_at|date }}</td>
 	<!-- <td> -->
 	<!--   <a href="#" title="Delete relation"> -->
@@ -91,6 +93,7 @@
 	<td><a href="{{ attachment.content.url }}">{{ attachment.content.name|basename }}</a></td>
 	<td>{{ attachment.comment }}</td>
 	<td>{{ attachment.mime_type }}</td>
+	<td>{{ attachment.created_by.get_full_name }}</td>
 	<td>{{ attachment.created_at|date }}</td>
 	<!-- <td> -->
 	<!--   <a href="#" title="Delete relation"> -->

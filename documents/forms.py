@@ -9,6 +9,7 @@ from django.forms.util import ErrorList
 from django.utils.translation import ugettext_lazy as _
 import tempfile
 import os
+from django.forms.models import model_to_dict
 
 def validate_content(fileName, contentMetaData, removeFile=False):
     # make sure the uploaded version is valid xml
@@ -33,13 +34,9 @@ def validate_content(fileName, contentMetaData, removeFile=False):
 
 class PartialVersionForm(ModelForm):
 
-    def getcontentMetaData(self):
-        return self._contentMetaData
-
-    def setcontentMetaData(self, value):
-        self._contentMetaData = value
-
-    contentMetaData = property(getcontentMetaData, setcontentMetaData)
+    def __init__(self, *args, **kwargs):
+        self.contentMetaData = kwargs.pop('contentMetaData', None)
+        super(PartialVersionForm, self).__init__(*args, **kwargs) 
 
     def clean_content(self):
         data = self.files['content']
@@ -103,13 +100,10 @@ class MarkupForm(forms.Form):
     comment = forms.CharField(
         widget=forms.TextInput(attrs={'size':'60'}))
 
-    def getcontentMetaData(self):
-        return self._contentMetaData
-
-    def setcontentMetaData(self, value):
-        self._contentMetaData = value
-
-    contentMetaData = property(getcontentMetaData, setcontentMetaData)
+    def __init__(self, *args, **kwargs):
+        self.document = kwargs.pop('document', None)
+        self.user = kwargs.pop('user', None)
+        super(MarkupForm, self).__init__(*args, **kwargs) 
 
     def clean_data(self):
         data = self.cleaned_data['data']
@@ -118,16 +112,17 @@ class MarkupForm(forms.Form):
         tmpFile.write(data.encode('utf-8'))
         tmpFile.close()
         # make sure the uploaded version is valid xml
-        validate_content(tmpFileName, self.contentMetaData, True)
+        validate_content(tmpFileName, model_to_dict(self.document), True)
         return data
 
-    def save(self, document):
+    def save(self):
         # create a new version with the new content
         contentString = self.cleaned_data['data']
         content = ContentFile(contentString.encode("utf-8"))
         version = Version.objects.create(
             comment = self.cleaned_data['comment'],
-            document = document)
+            document = self.document,
+            created_by = self.user)
         version.content.save("updated_version.xml", content)
 
 

@@ -4,12 +4,10 @@
 {% block title %}{{ block.super }} - {% trans "Update Document Details" %}{% endblock %}
 
 {% block content %}
-{% if object %}
+{% if document %}
 <h2>{% trans "Update Document Details" %}</h2>
 <form action="" method="POST">
-  <table>
-    {{ form.as_table }}
-    </table>
+    {% include "documents/simpleTableForm.html" %}
     <p><input type="submit" value="{% trans 'Update' %}" /></p>
 </form>
 

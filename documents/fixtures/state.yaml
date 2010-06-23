@@ -49,7 +49,7 @@
   model: documents.document
   pk: 1
 - fields: {comment: Initial version created from meta data, content: 1/versions/1__.xml,
-    created_at: !!timestamp '2009-06-05 11:45:24.245310', document: 1}
+    created_at: !!timestamp '2009-06-05 11:45:24.245310', document: 1, created_by: 1}
   model: documents.version
   pk: 1
 - fields: {codename: add_logentry, content_type: 7, name: Can add log entry}

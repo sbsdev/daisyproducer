@@ -1,6 +1,7 @@
 from daisyproducer.documents.models import Document, Version
 from daisyproducer.documents.versionHelper import XMLContent
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -14,13 +15,15 @@ class BrowseViewTest(TestCase):
         os.rename(settings.MEDIA_ROOT, settings.MEDIA_ROOT + '.old')
         os.mkdir(settings.MEDIA_ROOT)
         
+        user = User.objects.get(pk=1)
         self.document = Document()
         self.document.save()
         contentString  = XMLContent.getInitialContent(self.document)
         content = ContentFile(contentString)
         v = Version.objects.create(
             comment = "Initial version created from meta data",
-            document = self.document)
+            document = self.document,
+            created_by=user)
         v.content.save("initial_version.xml", content)
 
     def tearDown(self):
