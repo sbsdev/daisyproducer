@@ -1466,6 +1466,17 @@ y LINEe
     <xsl:value-of select="louis:translate(string($denominator),$downshift_table)"/>
   </xsl:template>
 
+  <xsl:template match="brl:num[@role='mixed' and lang('de')]">
+    <xsl:variable name="table" select="string(my:getTable())"/>
+    <xsl:variable name="downshift_table" select="string(my:getTable('denominator'))"/>
+    <xsl:variable name="number" select="(str:tokenize(string(.), ' /'))[position()=1]"/>
+    <xsl:variable name="numerator" select="(str:tokenize(string(.), ' /'))[position()=2]"/>
+    <xsl:variable name="denominator" select="(str:tokenize(string(.), ' /'))[position()=3]"/>
+    <xsl:value-of select="louis:translate(string($number),$table)"/>
+    <xsl:value-of select="louis:translate(string($numerator),$table)"/>
+    <xsl:value-of select="louis:translate(string($denominator),$downshift_table)"/>
+  </xsl:template>
+
   <xsl:template match="brl:num[@role='measure' and lang('de')]">
     <xsl:variable name="table" select="string(my:getTable())"/>
     <xsl:variable name="abbr_table" select="string(my:getTable('abbr'))"/>
