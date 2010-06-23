@@ -126,7 +126,7 @@
 	<xsl:if test="$context = 'v-form' or $context = 'name_capitalized' or ($contraction != '2' and $enable_capitalization = '1')">
 	  <xsl:text>sbs-de-capsign.mod,</xsl:text>
 	</xsl:if>
-	<xsl:if test="$contraction = '2' and $context != 'date_month' and $context != 'date_day' and $context !='name_capitalized'">
+	<xsl:if test="$contraction = '2' and not($context = 'abbr' and not(my:containsDot(.))) and $context != 'date_month' and $context != 'date_day' and $context !='name_capitalized'">
 	  <xsl:text>sbs-de-letsign.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$context != 'date_month'">
