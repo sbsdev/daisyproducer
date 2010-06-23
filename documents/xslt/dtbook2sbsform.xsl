@@ -57,7 +57,7 @@
   <func:function name="my:tokenizeByCase">
     <xsl:param name="string"/>
     <xsl:variable name="temp">
-      <xsl:for-each select="str:tokenize(string(.), '')">
+      <xsl:for-each select="str:tokenize(string($string), '')">
 	<xsl:value-of select="."/>
 	<xsl:if test="not(my:hasSameCase(.,(following-sibling::*)[1]))">,</xsl:if>
       </xsl:for-each>
@@ -1375,20 +1375,22 @@ y LINEe
     <xsl:apply-templates mode="bold"/>
   </xsl:template>
 
-  <xsl:template match="dtb:abbr[lang('de')]">
+  <xsl:template name="handle_abbr">
+    <xsl:param name="context" select="local-name()"/>
+    <xsl:param name="content" select="."/>
     <xsl:choose>
-      <xsl:when test="my:containsDot(.)">
+      <xsl:when test="my:containsDot($content)">
 	<xsl:variable name="temp">
 	  <!-- drop all the spaces -->
-	  <xsl:for-each select="str:tokenize(string(.), ' ')">
+	  <xsl:for-each select="str:tokenize(string($content), ' ')">
 	    <xsl:value-of select="." />
 	  </xsl:for-each>
 	</xsl:variable>
-	<xsl:value-of select="louis:translate(string($temp),string(my:getTable()))"/>
+	<xsl:value-of select="louis:translate(string($temp),string(my:getTable($context)))"/>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:variable name="temp">
-	  <xsl:for-each select="my:tokenizeByCase(.)">
+	  <xsl:for-each select="my:tokenizeByCase($content)">
 	    <!-- prepend more upper case sequences longer than one char with > -->
 	    <xsl:if test="(string-length(.) &gt; 1 or position()=last()) and my:isUpper(substring(.,1,1))"><xsl:text>╦</xsl:text></xsl:if>
 	    <!-- prepend single char upper case with $ (unless it is the last char then prepend with >) -->
@@ -1400,9 +1402,13 @@ y LINEe
 	    <xsl:value-of select="."/>
 	  </xsl:for-each>
 	</xsl:variable>
-	<xsl:value-of select="louis:translate(string($temp),string(my:getTable()))"/>
+	<xsl:value-of select="louis:translate(string($temp),string(my:getTable($context)))"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="dtb:abbr[lang('de')]">
+    <xsl:call-template name="handle_abbr"/>
   </xsl:template>
   
   <xsl:template match="dtb:abbr">
@@ -1452,17 +1458,17 @@ y LINEe
     <xsl:variable name="table" select="string(my:getTable())"/>
     <xsl:variable name="abbr_table" select="string(my:getTable('abbr'))"/>
     <!-- For all number-unit combinations, e.g. 1 kg, 10 km, etc. drop the space -->
+    <xsl:variable name="measure" select="(str:tokenize(string(.), ' '))[position()=last()]"/>
     <xsl:for-each select="str:tokenize(string(.), ' ')">
-      <xsl:choose>
-	<xsl:when test="not(position() = last())">
-	  <!-- FIXME: do not test for position but whether it is a number -->
-	  <xsl:value-of select="louis:translate(string(.),$table)"/>
-	</xsl:when>
-      <xsl:otherwise>
-	<xsl:value-of select="louis:translate(string(.),$abbr_table)"/>
-      </xsl:otherwise>
-      </xsl:choose>
+      <xsl:if test="not(position() = last())">
+	<!-- FIXME: do not test for position but whether it is a number -->
+	<xsl:value-of select="louis:translate(string(.),$table)"/>
+      </xsl:if>
     </xsl:for-each>
+    <xsl:call-template name="handle_abbr">
+      <xsl:with-param name="context" select="'abbr'"/>
+      <xsl:with-param name="content" select="$measure"/>
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="brl:num[@role='isbn' and lang('de')]">
