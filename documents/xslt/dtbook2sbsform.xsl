@@ -968,6 +968,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
     <xsl:text>x Daisy Producer Version: </xsl:text>
     <xsl:value-of select="$version"/><xsl:text>
 </xsl:text>
+    <xsl:text>x SBS Braille Tables Version: </xsl:text>
+    <xsl:value-of select='louis:translate("{{sbs-braille-tables-version}}","sbs-version.utb")'/><xsl:text>
+</xsl:text>
     <xsl:text>x contraction:</xsl:text>
     <xsl:value-of select="$contraction"/><xsl:text>
 </xsl:text>
