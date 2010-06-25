@@ -12,4 +12,4 @@ def getVersion():
         os.chdir(cwd)
     except OSError:
         result = settings.PACKAGE_VERSION
-    return result
+    return result.strip()
