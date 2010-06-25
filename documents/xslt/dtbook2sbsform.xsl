@@ -106,6 +106,17 @@
 	</xsl:choose>
       </xsl:when>
       <xsl:when test="lang('de')">
+	<!-- handle explicit setting of the contraction -->
+	<xsl:variable name="actual_contraction">
+	  <xsl:choose>
+	    <xsl:when test="ancestor-or-self::dtb:span[@brl:grade and @brl:grade &lt; $contraction]">
+	      <xsl:value-of select="ancestor-or-self::dtb:span/@brl:grade"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="$contraction"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
 	<xsl:text>sbs.dis,</xsl:text>
 	<xsl:text>sbs-de-core6.cti,</xsl:text>
 	<xsl:if test="$context != 'date_month' and $context != 'date_day'">
@@ -123,10 +134,10 @@
 	</xsl:if>
 	<xsl:text>sbs-special.cti,</xsl:text>
 	<xsl:text>sbs-whitespace.mod,</xsl:text>
-	<xsl:if test="$context = 'v-form' or $context = 'name_capitalized' or ($contraction != '2' and $enable_capitalization = '1')">
+	<xsl:if test="$context = 'v-form' or $context = 'name_capitalized' or ($actual_contraction != '2' and $enable_capitalization = '1')">
 	  <xsl:text>sbs-de-capsign.mod,</xsl:text>
 	</xsl:if>
-	<xsl:if test="$contraction = '2' and not($context = 'abbr' and not(my:containsDot(.))) and $context != 'date_month' and $context != 'date_day' and $context !='name_capitalized'">
+	<xsl:if test="$actual_contraction = '2' and not($context = 'abbr' and not(my:containsDot(.))) and $context != 'date_month' and $context != 'date_day' and $context !='name_capitalized'">
 	  <xsl:text>sbs-de-letsign.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$context != 'date_month' and $context != 'denominator'">
@@ -143,14 +154,14 @@
 	<xsl:if test="$context != 'date_month' and $context != 'date_day'">
 	  <xsl:text>sbs-de-core.mod,</xsl:text>
 	</xsl:if>
-	<xsl:if test="$context = 'name_capitalized' or ($context = 'abbr' and not(my:containsDot(.))) or ($contraction = '0' and $context != 'date_day' and $context != 'date_month')">
+	<xsl:if test="$context = 'name_capitalized' or ($context = 'abbr' and not(my:containsDot(.))) or ($actual_contraction = '0' and $context != 'date_day' and $context != 'date_month')">
 	  <xsl:text>sbs-de-g0-core.mod,</xsl:text>
 	</xsl:if>
-	<xsl:if test="$contraction = '1' and ($context != 'name_capitalized' and ($context != 'abbr' or my:containsDot(.)) and $context != 'date_month' and $context != 'date_day')">
+	<xsl:if test="$actual_contraction = '1' and ($context != 'name_capitalized' and ($context != 'abbr' or my:containsDot(.)) and $context != 'date_month' and $context != 'date_day')">
 	  <!-- <xsl:text>sbs-de-g1-white.mod,</xsl:text> -->
 	  <xsl:text>sbs-de-g1-core.mod,</xsl:text>
 	</xsl:if>
-	<xsl:if test="$contraction = '2'">
+	<xsl:if test="$actual_contraction = '2'">
 	  <xsl:if test="$context = 'place'">
 	    <xsl:text>sbs-de-g2-place.mod,</xsl:text>
 	  </xsl:if>
@@ -969,6 +980,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
     <xsl:value-of select="$version"/><xsl:text>
 </xsl:text>
     <xsl:text>x SBS Braille Tables Version: </xsl:text>
+    <!-- Use a special table to query the version of the SBS-specific (German) tables -->
     <xsl:value-of select='louis:translate("{{sbs-braille-tables-version}}","sbs-version.utb")'/><xsl:text>
 </xsl:text>
     <xsl:text>x contraction:</xsl:text>
@@ -1419,6 +1431,31 @@ y LINEe
   </xsl:template>
   
   <xsl:template match="dtb:acronym">
+  </xsl:template>
+
+  <xsl:template match="dtb:span[lang('de') and @brl:grade]">
+    <!-- announce explicit setting of the contraction -->
+    <xsl:choose>
+      <xsl:when test="$contraction = '2' and @brl:grade &lt; $contraction">
+	<xsl:choose>
+	  <xsl:when test="count(str:tokenize(string(.), ' /-')) > 1">
+	    <!-- There are multiple words. Insert an announcement for a multiple word grade change -->
+	    <xsl:value-of select="louis:translate('&#x255A;',string(my:getTable()))"/>
+	    <xsl:apply-templates/>
+	    <!-- Announce the end of grade change -->
+	    <xsl:value-of select="louis:translate('&#x255D;',string(my:getTable()))"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <!-- Its a single word. Insert an announcement for a single word grade change -->
+	    <xsl:value-of select="louis:translate('&#x2559;',string(my:getTable()))"/>
+	    <xsl:apply-templates/>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!-- Contraction hints -->
