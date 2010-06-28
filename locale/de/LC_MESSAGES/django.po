@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-28 11:02+0200\n"
-"PO-Revision-Date: 2010-06-28 11:24+0200\n"
+"PO-Revision-Date: 2010-06-28 13:49+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr "Hilfe"
 
 #: urls.py:68 templates/base.html:29
 msgid "About"
-msgstr ""
+msgstr "Impressum"
 
 #: documents/forms.py:89
 msgid "Data from scan"
@@ -78,15 +78,15 @@ msgstr ""
 
 #: documents/forms.py:165
 msgid "Include SBSForm macros"
-msgstr ""
+msgstr "SBSForm Makros mitliefern"
 
 #: documents/forms.py:167 documents/forms.py:192 documents/models.py:179
 msgid "Show original page numbers"
-msgstr ""
+msgstr "Schwarzschrift Seitenzahlen anzeigen"
 
 #: documents/forms.py:169
 msgid "Show V-Forms"
-msgstr ""
+msgstr "Höflichkeitsformen anzeigen"
 
 #: documents/forms.py:171
 msgid "Downshift Ordinals"
@@ -126,31 +126,31 @@ msgstr ""
 
 #: documents/forms.py:208 documents/forms.py:226
 msgid "Sentence detection"
-msgstr ""
+msgstr "Satzerkennung"
 
 #: documents/forms.py:210
 msgid "Word detection"
-msgstr ""
+msgstr "Worterkennung"
 
 #: documents/forms.py:214
 msgid "32 kbit/s"
-msgstr ""
+msgstr "32 kbit/s"
 
 #: documents/forms.py:215
 msgid "48 kbit/s"
-msgstr ""
+msgstr "48 kbit/s"
 
 #: documents/forms.py:216
 msgid "64 kbit/s"
-msgstr ""
+msgstr "64 kbit/s"
 
 #: documents/forms.py:217
 msgid "128 kbit/s"
-msgstr ""
+msgstr "128 kbit/s"
 
 #: documents/forms.py:221
 msgid "MP3 Bitrate"
-msgstr ""
+msgstr "MP3 Bitrate"
 
 #: documents/forms.py:230
 msgid "Multi-language support"
@@ -176,7 +176,7 @@ msgstr ""
 
 #: documents/models.py:47
 msgid "Subject"
-msgstr ""
+msgstr "Subjekt"
 
 #: documents/models.py:49
 msgid "The topic of the content of the publication"
@@ -397,29 +397,29 @@ msgstr "Dokumente"
 
 #: templates/documents/browse_detail.html:11
 msgid "PDF"
-msgstr ""
+msgstr "PDF"
 
 #: templates/documents/browse_detail.html:12
 #: templates/documents/todo_detail.html:17
 msgid "Braille (SBSForm)"
-msgstr ""
+msgstr "Braille (SBSForm)"
 
 #: templates/documents/browse_detail.html:13
 msgid "Braille (liblouis)"
-msgstr ""
+msgstr "Braille (liblouis)"
 
 #: templates/documents/browse_detail.html:14
 #: templates/documents/todo_detail.html:16
 msgid "XHTML"
-msgstr ""
+msgstr "XHTML"
 
 #: templates/documents/browse_detail.html:15
 msgid "RTF"
-msgstr ""
+msgstr "RTF"
 
 #: templates/documents/browse_detail.html:16
 msgid "EPUB"
-msgstr ""
+msgstr "EPUB"
 
 #: templates/documents/browse_detail.html:17
 msgid "Daisy 2.02 Text-Only fileset"
@@ -427,7 +427,7 @@ msgstr ""
 
 #: templates/documents/browse_detail.html:18
 msgid "Full-Text Full-Audio book"
-msgstr "Volltext Audio Buch"
+msgstr "Volltext Audio-Buch"
 
 #: templates/documents/browse_detail.html:39
 msgid "View as PDF"
@@ -442,27 +442,27 @@ msgstr ""
 #: templates/documents/browse_detail.html:86
 #: templates/documents/browse_detail.html:93
 msgid "Download"
-msgstr ""
+msgstr "Herunterladen"
 
 #: templates/documents/browse_detail.html:46
 msgid "View as Braille (SBSForm)"
-msgstr ""
+msgstr "als Braille (SBSForm)"
 
 #: templates/documents/browse_detail.html:53
 msgid "View as Braille (Liblouis)"
-msgstr ""
+msgstr "als Braille (Liblouis)"
 
 #: templates/documents/browse_detail.html:60
 msgid "View as XHTML"
-msgstr ""
+msgstr "als XHTML"
 
 #: templates/documents/browse_detail.html:67
 msgid "View as RTF"
-msgstr ""
+msgstr "als RTF"
 
 #: templates/documents/browse_detail.html:74
 msgid "View as EPUB"
-msgstr ""
+msgstr "als EPUB"
 
 #: templates/documents/browse_detail.html:81
 msgid "View as Daisy 2.02 Text-Only fileset"
@@ -470,7 +470,7 @@ msgstr ""
 
 #: templates/documents/browse_detail.html:88
 msgid "View as Full-Text Full-Audio book"
-msgstr ""
+msgstr "als Volltext Audio-Buch"
 
 #: templates/documents/browse_detail.html:97
 #: templates/documents/browse_index.html:31
@@ -484,7 +484,7 @@ msgstr ""
 #: templates/documents/todo_ocr.html:36 templates/documents/todo_pdf.html:33
 #: templates/documents/todo_sbsform.html:33
 msgid "No data to display"
-msgstr ""
+msgstr "Keine Daten vorhanden"
 
 #: templates/documents/browse_index.html:5
 #: templates/documents/browse_index.html:9
@@ -517,7 +517,7 @@ msgstr "Aktualisieren"
 #: templates/documents/manage_index.html:5
 #: templates/documents/manage_index.html:8
 msgid "Manage documents"
-msgstr ""
+msgstr "Alle Dokumente"
 
 #: templates/documents/manage_update.html:4
 #: templates/documents/manage_update.html:8
@@ -566,7 +566,7 @@ msgstr "Angehängte Dateien"
 
 #: templates/documents/todo_detail.html:127
 msgid "Transition"
-msgstr ""
+msgstr "Übergeben"
 
 #: templates/documents/todo_index.html:5 templates/documents/todo_index.html:8
 msgid "Pending documents"
