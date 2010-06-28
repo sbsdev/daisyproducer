@@ -3,6 +3,9 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
+from os.path import join
+from shutil import rmtree
+
 import uuid
 
 class StateError(Exception):
@@ -127,6 +130,12 @@ class Document(models.Model):
             self.identifier = "ch-sbs-%s" % str(uuid.uuid4())
         super(Document, self).save()
 
+    def delete(self, *args, **kwargs):
+        old_id = self.id
+        super(Document, self).delete(*args, **kwargs)
+        # remove the folders for versions and attachments on the file system
+        rmtree(join(settings.MEDIA_ROOT, str(old_id)))
+
 def get_version_path(instance, filename):
         return '%s/versions/%s.xml' % (instance.document_id, instance.id)
     
@@ -165,6 +174,11 @@ class Attachment(models.Model):
     created_by = models.ForeignKey(User, verbose_name=_("Created by"))
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def delete(self, *args, **kwargs):
+        super(Attachment, self).delete(*args, **kwargs)
+        # remove the files on the file system
+        content.delete()
+        
     class Meta:
         ordering = ['-created_at']
 
