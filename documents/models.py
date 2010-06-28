@@ -137,6 +137,11 @@ class Version(models.Model):
     created_by = models.ForeignKey(User, verbose_name=_("Created by"))
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def delete(self, *args, **kwargs):
+        super(Version, self).delete(*args, **kwargs)
+        # remove the files on the file system
+        content.delete()
+        
     class Meta:
         get_latest_by = "created_at"
         ordering = ['-created_at']
