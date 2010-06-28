@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-28 11:02+0200\n"
-"PO-Revision-Date: 2010-06-28 13:49+0200\n"
+"PO-Revision-Date: 2010-06-28 14:00+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -423,7 +423,7 @@ msgstr "EPUB"
 
 #: templates/documents/browse_detail.html:17
 msgid "Daisy 2.02 Text-Only fileset"
-msgstr ""
+msgstr "Daisy 2.02 Text-Only"
 
 #: templates/documents/browse_detail.html:18
 msgid "Full-Text Full-Audio book"
@@ -431,7 +431,7 @@ msgstr "Volltext Audio-Buch"
 
 #: templates/documents/browse_detail.html:39
 msgid "View as PDF"
-msgstr ""
+msgstr "Ansicht als PDF"
 
 #: templates/documents/browse_detail.html:44
 #: templates/documents/browse_detail.html:51
@@ -446,31 +446,31 @@ msgstr "Herunterladen"
 
 #: templates/documents/browse_detail.html:46
 msgid "View as Braille (SBSForm)"
-msgstr "als Braille (SBSForm)"
+msgstr "Ansicht als Braille (SBSForm)"
 
 #: templates/documents/browse_detail.html:53
 msgid "View as Braille (Liblouis)"
-msgstr "als Braille (Liblouis)"
+msgstr "Ansicht als Braille (Liblouis)"
 
 #: templates/documents/browse_detail.html:60
 msgid "View as XHTML"
-msgstr "als XHTML"
+msgstr "Ansicht als XHTML"
 
 #: templates/documents/browse_detail.html:67
 msgid "View as RTF"
-msgstr "als RTF"
+msgstr "Ansicht als RTF"
 
 #: templates/documents/browse_detail.html:74
 msgid "View as EPUB"
-msgstr "als EPUB"
+msgstr "Ansicht als EPUB"
 
 #: templates/documents/browse_detail.html:81
 msgid "View as Daisy 2.02 Text-Only fileset"
-msgstr ""
+msgstr "Ansicht als Daisy 2.02 Text-Only"
 
 #: templates/documents/browse_detail.html:88
 msgid "View as Full-Text Full-Audio book"
-msgstr "als Volltext Audio-Buch"
+msgstr "Ansicht als Volltext Audio-Buch"
 
 #: templates/documents/browse_detail.html:97
 #: templates/documents/browse_index.html:31
@@ -566,7 +566,7 @@ msgstr "Angehängte Dateien"
 
 #: templates/documents/todo_detail.html:127
 msgid "Transition"
-msgstr "Übergeben"
+msgstr "Weitergeben"
 
 #: templates/documents/todo_index.html:5 templates/documents/todo_index.html:8
 msgid "Pending documents"
