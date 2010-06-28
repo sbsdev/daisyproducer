@@ -8,13 +8,153 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-18 16:08+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2010-06-28 11:02+0200\n"
+"PO-Revision-Date: 2010-06-28 11:24+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: urls.py:61 templates/base.html:28
+msgid "Help"
+msgstr "Hilfe"
+
+#: urls.py:68 templates/base.html:29
+msgid "About"
+msgstr ""
+
+#: documents/forms.py:89
+msgid "Data from scan"
+msgstr ""
+
+#: documents/forms.py:90
+msgid "The image files that resulted from the scan"
+msgstr ""
+
+#: documents/forms.py:131 documents/models.py:170
+msgid "Grade 0"
+msgstr "Vollschrift"
+
+#: documents/forms.py:132 documents/models.py:171
+msgid "Grade 1"
+msgstr "Basisschrift"
+
+#: documents/forms.py:133 documents/models.py:172
+msgid "Grade 2"
+msgstr "Kurzschrift"
+
+#: documents/forms.py:136
+msgid "Yes"
+msgstr "Ja"
+
+#: documents/forms.py:137
+msgid "No"
+msgstr "Nein"
+
+#: documents/forms.py:138
+msgid "Swiss"
+msgstr "Schweiz"
+
+#: documents/forms.py:149 documents/models.py:175
+msgid "Cells per Line"
+msgstr "Zellen pro Zeile"
+
+#: documents/forms.py:150 documents/models.py:176
+msgid "Lines per Page"
+msgstr "Zeilen pro Seite"
+
+#: documents/forms.py:152 documents/models.py:177
+msgid "Contraction"
+msgstr "Kürzung"
+
+#: documents/forms.py:157
+msgid "Depth of table of contents"
+msgstr ""
+
+#: documents/forms.py:161
+msgid "Footer up to level"
+msgstr ""
+
+#: documents/forms.py:165
+msgid "Include SBSForm macros"
+msgstr ""
+
+#: documents/forms.py:167 documents/forms.py:192 documents/models.py:179
+msgid "Show original page numbers"
+msgstr ""
+
+#: documents/forms.py:169
+msgid "Show V-Forms"
+msgstr ""
+
+#: documents/forms.py:171
+msgid "Downshift Ordinals"
+msgstr ""
+
+#: documents/forms.py:175 documents/models.py:181
+msgid "Detailed Accented Characters"
+msgstr ""
+
+#: documents/forms.py:182 documents/forms.py:191
+msgid "Generate a table of contents"
+msgstr ""
+
+#: documents/forms.py:186
+msgid "DAISY 2.02 style noterefs"
+msgstr ""
+
+#: documents/forms.py:199
+msgid "utf-8"
+msgstr ""
+
+#: documents/forms.py:200
+msgid "iso-8859-1"
+msgstr ""
+
+#: documents/forms.py:201
+msgid "Shift_JIS"
+msgstr ""
+
+#: documents/forms.py:204
+msgid "Output encoding"
+msgstr ""
+
+#: documents/forms.py:206
+msgid "Abbreviation and acronym detection"
+msgstr ""
+
+#: documents/forms.py:208 documents/forms.py:226
+msgid "Sentence detection"
+msgstr ""
+
+#: documents/forms.py:210
+msgid "Word detection"
+msgstr ""
+
+#: documents/forms.py:214
+msgid "32 kbit/s"
+msgstr ""
+
+#: documents/forms.py:215
+msgid "48 kbit/s"
+msgstr ""
+
+#: documents/forms.py:216
+msgid "64 kbit/s"
+msgstr ""
+
+#: documents/forms.py:217
+msgid "128 kbit/s"
+msgstr ""
+
+#: documents/forms.py:221
+msgid "MP3 Bitrate"
+msgstr ""
+
+#: documents/forms.py:230
+msgid "Multi-language support"
+msgstr ""
 
 #: documents/models.py:38
 msgid "Title"
@@ -44,7 +184,7 @@ msgstr ""
 
 #: documents/models.py:52
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: documents/models.py:53
 msgid "Plain text describing the publication's content"
@@ -76,7 +216,7 @@ msgstr ""
 
 #: documents/models.py:69
 msgid "Source"
-msgstr ""
+msgstr "Quelle"
 
 #: documents/models.py:71
 msgid ""
@@ -84,153 +224,125 @@ msgid ""
 "the DTB is derived. Best practice is to use the ISBN when available"
 msgstr ""
 
-#: documents/models.py:75
+#: documents/models.py:76
 msgid "Language"
 msgstr "Sprache"
 
-#: documents/models.py:78
+#: documents/models.py:79
 msgid "Language of the content of the publication"
 msgstr ""
 
-#: documents/models.py:80
+#: documents/models.py:81
 msgid "Rights"
 msgstr "Rechte"
 
-#: documents/models.py:82
+#: documents/models.py:83
 msgid "Information about rights held in and over the DTB"
 msgstr ""
 
-#: documents/models.py:86
+#: documents/models.py:87
 msgid "Source Date"
 msgstr ""
 
-#: documents/models.py:87
+#: documents/models.py:88
 msgid ""
 "Date of publication of the resource (e.g., a print original, ebook, etc.) "
 "from which the DTB is derived"
 msgstr ""
 
-#: documents/models.py:90
+#: documents/models.py:91
 msgid "Source Edition"
 msgstr ""
 
-#: documents/models.py:92
+#: documents/models.py:93
 msgid ""
 "A string describing the edition of the resource (e.g., a print original, "
 "ebook, etc.) from which the DTB is derived"
 msgstr ""
 
-#: documents/models.py:95
+#: documents/models.py:96
 msgid "Source Publisher"
 msgstr "Herausgeber"
 
-#: documents/models.py:97
+#: documents/models.py:98
 msgid ""
 "The agency responsible for making available the resource (e.g., a print "
 "original, ebook, etc.) from which the DTB is derived"
 msgstr ""
 
-#: documents/models.py:100
+#: documents/models.py:101
 msgid "Source Rights"
 msgstr ""
 
-#: documents/models.py:102
+#: documents/models.py:103
 msgid ""
 "Information about rights held in and over the resource (e.g., a print "
 "original, ebook, etc.) from which the DTB is derived"
 msgstr ""
 
-#: documents/models.py:105 templates/documents/todo_detail.html:115
+#: documents/models.py:106 templates/documents/todo_detail.html:121
 msgid "State"
 msgstr "Status"
 
-#: documents/models.py:106
+#: documents/models.py:107
 msgid "Assigned to"
 msgstr "Zugewiesen an"
 
-#: documents/models.py:107
+#: documents/models.py:108
 msgid "Created"
 msgstr "Erstellt am"
 
-#: documents/models.py:108
+#: documents/models.py:109
 msgid "Last Modified"
 msgstr "Letzte Änderung"
 
-#: documents/models.py:167
-msgid "Grade 0"
-msgstr "Vollschrift"
+#: documents/models.py:137 documents/models.py:160
+msgid "Created by"
+msgstr "Erstellt von"
 
-#: documents/models.py:168
-msgid "Grade 1"
-msgstr "Basisschrift"
-
-#: documents/models.py:169
-msgid "Grade 2"
-msgstr "Kurzschrift"
-
-#: documents/models.py:172
-msgid "Cells per Line"
-msgstr "Zellen pro Zeile"
-
-#: documents/models.py:173
-msgid "Lines per Page"
-msgstr "Zeilen pro Seite"
-
-#: documents/models.py:174
-msgid "Contraction"
-msgstr "Kürzung"
-
-#: documents/models.py:175
+#: documents/models.py:178
 msgid "Hyphenation"
-msgstr ""
+msgstr "Trennung"
 
-#: documents/models.py:176
-msgid "Show original page numbers"
-msgstr ""
-
-#: documents/models.py:177
+#: documents/models.py:180
 msgid "Enable Capitalization"
 msgstr ""
 
-#: documents/models.py:178
-msgid "Detailed Accented Characters"
-msgstr ""
-
-#: documents/models.py:200
+#: documents/models.py:203
 msgid "Plain"
 msgstr "Einfach"
 
-#: documents/models.py:201
+#: documents/models.py:204
 msgid "With original page numbers"
 msgstr "Mit original Seitenzahlen"
 
-#: documents/models.py:202
+#: documents/models.py:205
 msgid "Scientific"
 msgstr "Wissenschaftlich"
 
-#: documents/models.py:206
+#: documents/models.py:209
 msgid "justified"
 msgstr "Blocksatz"
 
-#: documents/models.py:207
+#: documents/models.py:210
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: documents/models.py:215
+#: documents/models.py:218
 msgid "Fontsize"
-msgstr ""
-
-#: documents/models.py:216
-msgid "Font"
-msgstr ""
-
-#: documents/models.py:217
-msgid "Page style"
-msgstr ""
+msgstr "Fontgrösse"
 
 #: documents/models.py:219
+msgid "Font"
+msgstr "Font"
+
+#: documents/models.py:220
+msgid "Page style"
+msgstr "Seitenstil"
+
+#: documents/models.py:222
 msgid "Papersize"
-msgstr ""
+msgstr "Papiergrösse"
 
 #: templates/base.html:17
 msgid "Sign out"
@@ -249,66 +361,135 @@ msgstr "Einloggen"
 msgid "Administration"
 msgstr "Administration"
 
-#: templates/base.html:28
-msgid "Help"
-msgstr "Hilfe"
-
-#: templates/base.html:44
-msgid "TODO"
-msgstr ""
-
-#: templates/base.html:45
-msgid "Browse"
-msgstr ""
-
 #: templates/base.html:46
 msgid "Manage"
 msgstr ""
 
-#: templates/base.html:60
+#: templates/base.html:48
+msgid "TODO"
+msgstr ""
+
+#: templates/base.html:49
+msgid "Browse"
+msgstr ""
+
+#: templates/base.html:63 templates/documents/todo_markup_xopus.html:37
 msgid "Powered by"
 msgstr ""
 
-#: templates/base.html:60
+#: templates/base.html:63 templates/documents/todo_markup_xopus.html:37
 msgid "Swiss Library for the Blind and Visually Impaired"
 msgstr "Schweizerische Bibliothek für Blinde und Sehbehinderte"
 
 #: templates/documents/browse_detail.html:5
-#: templates/documents/browse_detail.html:9
+#: templates/documents/browse_detail.html:25
 #: templates/documents/manage_detail.html:5
-#: templates/documents/manage_detail.html:13
+#: templates/documents/manage_detail.html:22
 #: templates/documents/todo_detail.html:6
-#: templates/documents/todo_detail.html:10
+#: templates/documents/todo_detail.html:26
 msgid "Document Details"
 msgstr "Dokumentdetails"
 
-#: templates/documents/browse_detail.html:22
+#: templates/documents/browse_detail.html:10
+#: templates/documents/manage_detail.html:10
+msgid "Document"
+msgstr "Dokumente"
+
+#: templates/documents/browse_detail.html:11
+msgid "PDF"
+msgstr ""
+
+#: templates/documents/browse_detail.html:12
+#: templates/documents/todo_detail.html:17
+msgid "Braille (SBSForm)"
+msgstr ""
+
+#: templates/documents/browse_detail.html:13
+msgid "Braille (liblouis)"
+msgstr ""
+
+#: templates/documents/browse_detail.html:14
+#: templates/documents/todo_detail.html:16
+msgid "XHTML"
+msgstr ""
+
+#: templates/documents/browse_detail.html:15
+msgid "RTF"
+msgstr ""
+
+#: templates/documents/browse_detail.html:16
+msgid "EPUB"
+msgstr ""
+
+#: templates/documents/browse_detail.html:17
+msgid "Daisy 2.02 Text-Only fileset"
+msgstr ""
+
+#: templates/documents/browse_detail.html:18
+msgid "Full-Text Full-Audio book"
+msgstr "Volltext Audio Buch"
+
+#: templates/documents/browse_detail.html:39
 msgid "View as PDF"
 msgstr ""
 
-#: templates/documents/browse_detail.html:27
-#: templates/documents/browse_detail.html:34
+#: templates/documents/browse_detail.html:44
+#: templates/documents/browse_detail.html:51
+#: templates/documents/browse_detail.html:58
+#: templates/documents/browse_detail.html:65
+#: templates/documents/browse_detail.html:72
+#: templates/documents/browse_detail.html:79
+#: templates/documents/browse_detail.html:86
+#: templates/documents/browse_detail.html:93
 msgid "Download"
 msgstr ""
 
-#: templates/documents/browse_detail.html:29
-msgid "View as Braille"
+#: templates/documents/browse_detail.html:46
+msgid "View as Braille (SBSForm)"
 msgstr ""
 
-#: templates/documents/browse_detail.html:38
+#: templates/documents/browse_detail.html:53
+msgid "View as Braille (Liblouis)"
+msgstr ""
+
+#: templates/documents/browse_detail.html:60
+msgid "View as XHTML"
+msgstr ""
+
+#: templates/documents/browse_detail.html:67
+msgid "View as RTF"
+msgstr ""
+
+#: templates/documents/browse_detail.html:74
+msgid "View as EPUB"
+msgstr ""
+
+#: templates/documents/browse_detail.html:81
+msgid "View as Daisy 2.02 Text-Only fileset"
+msgstr ""
+
+#: templates/documents/browse_detail.html:88
+msgid "View as Full-Text Full-Audio book"
+msgstr ""
+
+#: templates/documents/browse_detail.html:97
 #: templates/documents/browse_index.html:31
-#: templates/documents/manage_detail.html:36
+#: templates/documents/manage_detail.html:45
 #: templates/documents/manage_index.html:38
-#: templates/documents/manage_update.html:17
-#: templates/documents/todo_detail.html:127
+#: templates/documents/manage_update.html:15
+#: templates/documents/todo_detail.html:133
 #: templates/documents/todo_index.html:32
+#: templates/documents/todo_markup.html:39
+#: templates/documents/todo_markup_xopus.html:33
+#: templates/documents/todo_ocr.html:36 templates/documents/todo_pdf.html:33
+#: templates/documents/todo_sbsform.html:33
 msgid "No data to display"
 msgstr ""
 
 #: templates/documents/browse_index.html:5
 #: templates/documents/browse_index.html:9
 msgid "Finished documents"
-msgstr ""
+msgstr "Fertiggestellte Dokumente"
 
 #: templates/documents/manage.html:8
 msgid "Documents"
@@ -327,10 +508,11 @@ msgstr "Ein neues Dokument erstellen"
 msgid "Create"
 msgstr "Erstellen"
 
-#: templates/documents/manage_detail.html:10
-#: templates/documents/manage_update.html:13
+#: templates/documents/manage_detail.html:11
+#: templates/documents/manage_detail.html:19
+#: templates/documents/manage_update.html:11
 msgid "Update"
-msgstr ""
+msgstr "Aktualisieren"
 
 #: templates/documents/manage_index.html:5
 #: templates/documents/manage_index.html:8
@@ -340,25 +522,80 @@ msgstr ""
 #: templates/documents/manage_update.html:4
 #: templates/documents/manage_update.html:8
 msgid "Update Document Details"
-msgstr ""
+msgstr "Dokument Details Aktualisieren"
 
-#: templates/documents/todo_detail.html:40
+#: templates/documents/todo_detail.html:11
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: templates/documents/todo_detail.html:12
+#: templates/documents/todo_ocr.html:29
+msgid "OCR"
+msgstr "OCR"
+
+#: templates/documents/todo_detail.html:13
+msgid "Markup"
+msgstr "Auszeichnen"
+
+#: templates/documents/todo_detail.html:14
+msgid "Markup with Xopus"
+msgstr "Auszeichen mit Xopus"
+
+#: templates/documents/todo_detail.html:15
+#: templates/documents/todo_pdf.html:26
+#: templates/documents/todo_sbsform.html:26
+msgid "Preview"
+msgstr "Vorschau"
+
+#: templates/documents/todo_detail.html:18
+msgid "Large Print"
+msgstr "Grossdruck"
+
+#: templates/documents/todo_detail.html:43
 msgid "Versions"
-msgstr ""
+msgstr "Versionen"
 
-#: templates/documents/todo_detail.html:66
-#: templates/documents/todo_detail.html:107
+#: templates/documents/todo_detail.html:71
+#: templates/documents/todo_detail.html:113
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
-#: templates/documents/todo_detail.html:78
+#: templates/documents/todo_detail.html:83
 msgid "Attachments"
-msgstr ""
+msgstr "Angehängte Dateien"
 
-#: templates/documents/todo_detail.html:121
+#: templates/documents/todo_detail.html:127
 msgid "Transition"
 msgstr ""
 
 #: templates/documents/todo_index.html:5 templates/documents/todo_index.html:8
 msgid "Pending documents"
-msgstr ""
+msgstr "Hängige Dokumente"
+
+#: templates/documents/todo_markup.html:6
+#: templates/documents/todo_markup.html:11
+msgid "Document Markup"
+msgstr "Dokumentauszeichnung"
+
+#: templates/documents/todo_markup.html:32
+msgid "Save"
+msgstr "Speichern"
+
+#: templates/documents/todo_markup.html:33
+#: templates/documents/todo_ocr.html:30 templates/documents/todo_pdf.html:27
+#: templates/documents/todo_sbsform.html:27
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: templates/documents/todo_ocr.html:6 templates/documents/todo_ocr.html:11
+msgid "Document OCR"
+msgstr "Dokumente OCR"
+
+#: templates/documents/todo_pdf.html:6 templates/documents/todo_pdf.html:11
+msgid "Preview Large Print"
+msgstr "Vorschau Grossdruck"
+
+#: templates/documents/todo_sbsform.html:6
+#: templates/documents/todo_sbsform.html:11
+msgid "Preview Braille"
+msgstr "Vorschau Braille"
