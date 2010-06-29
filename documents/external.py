@@ -35,10 +35,17 @@ class DaisyPipeline:
             join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.xsd'))
         xmlschema = etree.XMLSchema(xmlschema_doc)
         
-        doc = etree.parse(file_path)
+        etree.clear_error_log()
+        try:
+            doc = etree.parse(file_path)
+        except etree.XMLSyntaxError, e:
+            entries = e.error_log.filter_from_level(etree.ErrorLevels.FATAL)
+            return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
+
         if not xmlschema.validate(doc):
-            entry = xmlschema.error_log[0]
-            return ["%s on line %s" % (entry.message, entry.line)]
+            entries = xmlschema.error_log
+            print entries
+            return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
 
         tmpFile = filterBrlContractionhints(file_path)
         command = (
