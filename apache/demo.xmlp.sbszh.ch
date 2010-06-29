@@ -34,6 +34,7 @@
     </Directory>
 
     Alias /archive/ /srv/demo.xmlp.sbszh.ch/daisyproducer/archive/
+    Alias /schema/  /srv/demo.xmlp.sbszh.ch/daisyproducer/documents/schema/
 
 
     WSGIScriptAlias / /srv/demo.xmlp.sbszh.ch/daisyproducer/daisyproducer.wsgi
