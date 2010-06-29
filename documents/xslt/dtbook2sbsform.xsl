@@ -1256,7 +1256,7 @@ y PLISTe
     <xsl:variable name="level" select="substring(local-name(), 2)"/>
     <xsl:text>y H</xsl:text><xsl:value-of select="$level"/><xsl:text>
  </xsl:text>
-    <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']"/>
+    <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']|text()"/>
     <xsl:if test="$toc_level &gt;= $level">
       <xsl:text>
 H</xsl:text>
