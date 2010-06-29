@@ -367,6 +367,7 @@
         <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:lic"/>
+        <xs:element ref="dtbook:pagenum"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
