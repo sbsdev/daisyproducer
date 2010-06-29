@@ -492,10 +492,10 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxx Blockquote xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 y b BLQUOb
 lm1
 n2
-i A=3
+i A=2
 y e BLQUOb
 y b BLQUOe
-i A=1
+i A=0
 lm1
 n2
 y e BLQUOe
@@ -508,10 +508,10 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxx Epigraph xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 y b EPIGRb
 lm1
 n2
-i A=5
+i A=4
 y e EPIGRb
 y b EPIGRe
-i A=1
+i A=0
 lm1
 n2
 y e EPIGRe
@@ -524,10 +524,10 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Poem xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 y b POEMb
 lm1
 n2
-i A=3
+i A=2
 y e POEMb
 y b POEMe
-i A=1
+i A=0
 lm1
 n2
 y e POEMe
@@ -897,7 +897,11 @@ t
 l
 t
  </xsl:text>
-<xsl:value-of select='louis:translate("SBS",string(my:getTable("abbr")))'/>
+ <xsl:call-template name="handle_abbr">
+   <xsl:with-param name="context" select="'abbr'"/>
+   <xsl:with-param name="content" select="'SBS'"/>
+ </xsl:call-template>
+ <xsl:text> </xsl:text>
 <xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(my:getTable()))"/>
 <xsl:text>
 p
@@ -943,7 +947,11 @@ a
 <xsl:text>
 a
  </xsl:text>
-<xsl:value-of select='louis:translate("SBS",string(my:getTable("abbr")))'/>
+<xsl:call-template name="handle_abbr">
+  <xsl:with-param name="context" select="'abbr'"/>
+  <xsl:with-param name="content" select="'SBS'"/>
+</xsl:call-template>
+<xsl:text> </xsl:text>
 <xsl:value-of select="louis:translate(string(substring-before(//dtb:meta[@name='dc:Date']/@content,'-')),string(my:getTable()))"/>
 <xsl:text>
 l
@@ -969,6 +977,7 @@ O
 y e Titlepage
 </xsl:text>
 <xsl:text>
+y BOOKb
 y BrlVol
 xxxxxxxxxxxxxxxxxxxxxxxxxx Klappentext etc. xxxxxxxxxxxxxxxxxxxxxxxxxx
 O
@@ -1052,8 +1061,6 @@ U dtbook.mak
   </xsl:template>
   
   <xsl:template match="dtb:book">
-    <xsl:text>y BOOKb
-</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>y BOOKe
 </xsl:text>
