@@ -291,6 +291,8 @@ class SBSForm:
         kwargs["version"] = getVersion()
         # map True and False to "1" and "0"
         kwargs.update([(k, 1 if v == True else 0) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+        # coerce Unicode strings into non-Unicode strings
+        kwargs.update([(k, str(v)) for (k, v) in kwargs.iteritems() if isinstance(v, unicode)])
         # and quote the values
         kwargs.update([(k, "'%s'" % v) for (k, v) in kwargs.iteritems()])
         result = style.applyStylesheet(doc, kwargs)
