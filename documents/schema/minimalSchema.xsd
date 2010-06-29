@@ -106,6 +106,9 @@
   <xs:attributeGroup name="gradeAttribute">
     <xs:attribute ref="brl:grade" use="required"/>
   </xs:attributeGroup>
+  <xs:attributeGroup name="accentsAttribute">
+    <xs:attribute ref="brl:accents" use="required"/>
+  </xs:attributeGroup>
   <xs:attributeGroup name="commonAttributes">
     <xs:attribute ref="brl:grade"/>
   </xs:attributeGroup>
@@ -295,6 +298,7 @@
         <xs:group ref="dtbook:contractionhints"/>
       </xs:choice>
       <xs:attribute ref="brl:grade"/>
+      <xs:attribute ref="brl:accents"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="blockquote">

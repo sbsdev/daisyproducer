@@ -126,6 +126,14 @@
       </data>
     </attribute>
   </define>
+  <define name="accentsAttribute">
+    <attribute name="brl:accents">
+      <choice>
+        <value>detailed</value>
+        <value>reduced</value>
+      </choice>
+    </attribute>
+  </define>
   <define name="commonAttributes">
     <optional>
       <ref name="gradeAttribute"/>
@@ -420,9 +428,12 @@
   </define>
   <define name="span">
     <element name="span">
-      <optional>
-        <ref name="gradeAttribute"/>
-      </optional>
+      <oneOrMore>
+        <choice>
+          <ref name="gradeAttribute"/>
+          <ref name="accentsAttribute"/>
+        </choice>
+      </oneOrMore>
       <interleave>
         <text/>
         <zeroOrMore>

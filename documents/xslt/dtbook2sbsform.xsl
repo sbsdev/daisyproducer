@@ -27,7 +27,7 @@
   <xsl:param name="show_v_forms" select="true()"/>
   <xsl:param name="downshift_ordinals" select="true()"/>
   <xsl:param name="enable_capitalization" select="false()"/>
-  <xsl:param name="detailed_accented_characters">de-accents</xsl:param>
+  <xsl:param name="detailed_accented_characters">de-accents-ch</xsl:param>
   <xsl:param name="include_macros" select="true()"/>
 
   <xsl:variable name="volumes">
@@ -121,14 +121,25 @@
 	<xsl:text>sbs-de-core6.cti,</xsl:text>
 	<xsl:if test="$context != 'date_month' and $context != 'date_day'">
 	  <xsl:choose>
-	    <xsl:when test="$detailed_accented_characters = 'de-ch'">
-	      <xsl:text>sbs-de-accents-ch.cti,</xsl:text>
-	    </xsl:when>
-	    <xsl:when test="$detailed_accented_characters = 'de-reduced'">
+	    <xsl:when test="ancestor-or-self::dtb:span[@brl:accents = 'reduced']">
 	      <xsl:text>sbs-de-accents-reduced.cti,</xsl:text>
 	    </xsl:when>
-	    <xsl:otherwise>
+	    <xsl:when test="ancestor-or-self::dtb:span[@brl:accents = 'detailed']">
 	      <xsl:text>sbs-de-accents.cti,</xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <!-- no local accents are defined -->
+	      <xsl:choose>
+		<xsl:when test="$detailed_accented_characters = 'de-accents-ch'">
+		  <xsl:text>sbs-de-accents-ch.cti,</xsl:text>
+		</xsl:when>
+		<xsl:when test="$detailed_accented_characters = 'de-accents-reduced'">
+		  <xsl:text>sbs-de-accents-reduced.cti,</xsl:text>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:text>sbs-de-accents.cti,</xsl:text>
+		</xsl:otherwise>
+	      </xsl:choose>
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</xsl:if>
@@ -1432,22 +1443,29 @@ y LINEe
   
   <xsl:template match="dtb:acronym">
   </xsl:template>
-
-  <xsl:template match="dtb:span[lang('de') and @brl:grade]">
-    <!-- announce explicit setting of the contraction -->
+  
+  <xsl:template match="dtb:span[lang('de')]">
     <xsl:choose>
-      <xsl:when test="$contraction = '2' and @brl:grade &lt; $contraction">
+      <xsl:when test="@brl:grade">
+	<!-- announce explicit setting of the contraction -->
 	<xsl:choose>
-	  <xsl:when test="count(str:tokenize(string(.), ' /-')) > 1">
-	    <!-- There are multiple words. Insert an announcement for a multiple word grade change -->
-	    <xsl:value-of select="louis:translate('&#x255A;',string(my:getTable()))"/>
-	    <xsl:apply-templates/>
-	    <!-- Announce the end of grade change -->
-	    <xsl:value-of select="louis:translate('&#x255D;',string(my:getTable()))"/>
+	  <xsl:when test="$contraction = '2' and @brl:grade &lt; $contraction">
+	    <xsl:choose>
+	      <xsl:when test="count(str:tokenize(string(.), ' /-')) > 1">
+		<!-- There are multiple words. Insert an announcement for a multiple word grade change -->
+		<xsl:value-of select="louis:translate('&#x255A;',string(my:getTable()))"/>
+		<xsl:apply-templates/>
+		<!-- Announce the end of grade change -->
+		<xsl:value-of select="louis:translate('&#x255D;',string(my:getTable()))"/>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<!-- Its a single word. Insert an announcement for a single word grade change -->
+		<xsl:value-of select="louis:translate('&#x2559;',string(my:getTable()))"/>
+		<xsl:apply-templates/>
+	      </xsl:otherwise>
+	    </xsl:choose>
 	  </xsl:when>
 	  <xsl:otherwise>
-	    <!-- Its a single word. Insert an announcement for a single word grade change -->
-	    <xsl:value-of select="louis:translate('&#x2559;',string(my:getTable()))"/>
 	    <xsl:apply-templates/>
 	  </xsl:otherwise>
 	</xsl:choose>

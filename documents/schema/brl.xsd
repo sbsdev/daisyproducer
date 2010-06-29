@@ -9,6 +9,14 @@
       </xs:restriction>
     </xs:simpleType>
   </xs:attribute>
+  <xs:attribute name="accents">
+    <xs:simpleType>
+      <xs:restriction base="xs:token">
+        <xs:enumeration value="detailed"/>
+        <xs:enumeration value="reduced"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
   <xs:attribute name="render">
     <xs:simpleType>
       <xs:restriction base="xs:token">
