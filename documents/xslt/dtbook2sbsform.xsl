@@ -1245,7 +1245,7 @@ H</xsl:text>
 	  <xsl:apply-templates select="brl:toc-line"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']"/>
+	  <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']|text()"/>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -1257,7 +1257,7 @@ H</xsl:text>
 	  <xsl:apply-templates select="brl:running-line[not(@brl:grade)]|brl:running-line[@brl:grade = $contraction]"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']"/>
+	  <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']|text()"/>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:if>
