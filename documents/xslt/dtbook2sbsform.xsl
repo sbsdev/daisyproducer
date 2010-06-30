@@ -1174,50 +1174,33 @@ y LEVEL6e
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="dtb:p[contains(@class, 'precedingseparator') and contains(@class, 'noindent')]" priority="100">   
-    <xsl:text>y SEPARATOR
-y P_noi
- </xsl:text>
-    <xsl:apply-templates/>
-  </xsl:template>
-
-  <xsl:template match="dtb:p[contains(@class, 'precedingseparator')]" priority="0">   
-    <xsl:text>y SEPARATOR
-y P
- </xsl:text>
-    <xsl:apply-templates/>
-  </xsl:template>
-
-  <xsl:template match="dtb:p[contains(@class, 'precedingemptyline')]" priority="0">   
-    <xsl:text>y BLANK
-y P
- </xsl:text>
-    <xsl:apply-templates/>
-  </xsl:template>
-
-  <xsl:template match="dtb:p[contains(@class, 'precedingemptyline') and contains(@class, 'noindent')]" priority="100">   
-    <xsl:text>y BLANK
-y P_noi
- </xsl:text>
-    <xsl:apply-templates/>
-  </xsl:template>
-
-  <xsl:template match="dtb:p[contains(@class, 'noindent')]" priority="0">   
-    <xsl:text>y P_noi
- </xsl:text>
-    <xsl:apply-templates/>
-  </xsl:template>
-
   <xsl:template match="dtb:p" mode='titlepage'>   
     <xsl:text>
  </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
-  <xsl:template match="dtb:p">   
+  <xsl:template match="dtb:p">
     <xsl:text>
-y P
+</xsl:text>
+    <xsl:if test="contains(@class, 'precedingseparator')">
+      <xsl:text>y SEPARATOR
+</xsl:text>
+    </xsl:if>
+    <xsl:if test="contains(@class, 'precedingemptyline')">
+      <xsl:text>y BLANK
+</xsl:text>
+    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="contains(@class, 'noindent')">
+	<xsl:text>y P_noi
  </xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>y P
+ </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates/>
   </xsl:template>
 
