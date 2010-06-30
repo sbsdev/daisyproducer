@@ -1215,8 +1215,15 @@ y PLISTe
 
   <xsl:template match="dtb:li">
     <xsl:text>y LI
-</xsl:text>
+ </xsl:text>
     <xsl:apply-templates/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:lic">
+    <xsl:apply-templates/>
+    <xsl:text> </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:pagenum">
