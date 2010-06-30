@@ -44,7 +44,6 @@ class DaisyPipeline:
 
         if not xmlschema.validate(doc):
             entries = xmlschema.error_log
-            print entries
             return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
 
         tmpFile = filterBrlContractionhints(file_path)
