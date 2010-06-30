@@ -886,7 +886,7 @@ u-
 <xsl:text>
 t
  </xsl:text>
-<xsl:value-of select='louis:translate("für Blinde, Seh- und",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("für Blinde, Seh- und ",string(my:getTable()))'/>
 <xsl:if test="not($contraction='2')">
 <xsl:text>
 t
@@ -937,7 +937,7 @@ a
 <xsl:text>
 a
  </xsl:text>
-<xsl:value-of select='louis:translate("für Blinde, Seh- und",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("für Blinde, Seh- und ",string(my:getTable()))'/>
 <xsl:if test="not($contraction='2')">
 <xsl:text>
 a
