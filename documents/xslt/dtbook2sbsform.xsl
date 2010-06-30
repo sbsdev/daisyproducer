@@ -1220,12 +1220,8 @@ y PLISTe
   </xsl:template>
 
   <xsl:template match="dtb:pagenum">
-    <!-- add a line feed if we're inside a p -->
-    <xsl:if test="name(..) = 'p'">
       <xsl:text>
-</xsl:text>
-    </xsl:if>
-    <xsl:text>j </xsl:text>
+j </xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>
 </xsl:text>
