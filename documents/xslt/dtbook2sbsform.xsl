@@ -21,6 +21,7 @@
   <xsl:param name="version">0</xsl:param>
   <xsl:param name="cells_per_line">40</xsl:param>
   <xsl:param name="lines_per_page">28</xsl:param>
+  <xsl:param name="hyphenation" select="false()"/>
   <xsl:param name="toc_level">0</xsl:param>
   <xsl:param name="footer_level">0</xsl:param>
   <xsl:param name="show_original_page_numbers" select="false()"/>
@@ -169,7 +170,9 @@
 	  <xsl:text>sbs-de-g0-core.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$actual_contraction = '1' and ($context != 'name_capitalized' and ($context != 'abbr' or my:containsDot(.)) and $context != 'date_month' and $context != 'date_day')">
-	  <!-- <xsl:text>sbs-de-g1-white.mod,</xsl:text> -->
+	  <xsl:if test="$hyphenation = '1'">
+	    <xsl:text>sbs-de-g1-white.mod,</xsl:text>
+	  </xsl:if>
 	  <xsl:text>sbs-de-g1-core.mod,</xsl:text>
 	</xsl:if>
 	<xsl:if test="$actual_contraction = '2'">
@@ -180,7 +183,12 @@
 	    <xsl:text>sbs-de-g2-name.mod,</xsl:text>
 	  </xsl:if>
 	  <xsl:if test="$context != 'name' and $context != 'name_capitalized' and $context != 'place' and ($context != 'abbr' or  my:containsDot(.)) and $context != 'date_day' and $context != 'date_month'">
-	    <!-- <xsl:text>sbs-de-g2-white.mod,</xsl:text> -->
+	  <xsl:if test="$hyphenation = '1'">
+	    <xsl:text>sbs-de-g2-white.mod,</xsl:text>
+	  </xsl:if>
+	    <!-- <xsl:if test="$hyphenation = '1'"> -->
+	    <!--   <xsl:text>sbs-de-g2-white.mod,</xsl:text> -->
+	    <!-- </xsl:if> -->
 	    <xsl:text>sbs-de-g2-core.mod,</xsl:text>
 	  </xsl:if>
 	</xsl:if>
@@ -1011,6 +1019,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 </xsl:text>
     <xsl:text>x lines_per_page:</xsl:text>
     <xsl:value-of select="$lines_per_page"/><xsl:text>
+</xsl:text>
+    <xsl:text>x hyphenation:</xsl:text>
+    <xsl:value-of select="$hyphenation"/><xsl:text>
 </xsl:text>
     <xsl:text>x toc_level:</xsl:text>
     <xsl:value-of select="$toc_level"/><xsl:text>

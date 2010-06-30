@@ -153,6 +153,9 @@ class SBSFormForm(forms.Form):
         choices=BRAILLE_CONTRACTION_GRADE_CHOICES, 
         initial='2',
         coerce=int)
+    hyphenation = forms.BooleanField(
+        label=_("Hyphenation"), 
+        required=False, initial=False)
     toc_level = forms.TypedChoiceField(
         label=_("Depth of table of contents"), 
         choices=BRAILLE_TOC_DEPTH_CHOICES, 
