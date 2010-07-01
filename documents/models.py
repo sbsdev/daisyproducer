@@ -1,12 +1,13 @@
+import uuid
+from os.path import join
+from shutil import rmtree
+
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
-from os.path import join
-from shutil import rmtree
 
-import uuid
 
 class StateError(Exception):
     def __init__(self, value):
