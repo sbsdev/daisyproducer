@@ -1,11 +1,12 @@
-import uuid
-
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
+from os.path import join
+from shutil import rmtree
 
+import uuid
 
 class StateError(Exception):
     def __init__(self, value):
@@ -72,7 +73,8 @@ class Document(models.Model):
         max_length=10, 
         help_text=_("A reference to a resource (e.g., a print original, ebook, etc.) from which the DTB is derived. Best practice is to use the ISBN when available"), 
         blank=True)
-    language_choices = (('de-CH', 'de-CH',),)
+    language_choices = (('de', 'de'),
+                        ('de-CH', 'de-CH',),)
     language = models.CharField(
         _("Language"),
         max_length=10,
@@ -128,6 +130,12 @@ class Document(models.Model):
             self.identifier = "ch-sbs-%s" % str(uuid.uuid4())
         super(Document, self).save()
 
+    def delete(self, *args, **kwargs):
+        old_id = self.id
+        super(Document, self).delete(*args, **kwargs)
+        # remove the folders for versions and attachments on the file system
+        rmtree(join(settings.MEDIA_ROOT, str(old_id)))
+
 def get_version_path(instance, filename):
         return '%s/versions/%s.xml' % (instance.document_id, instance.id)
     
@@ -135,8 +143,14 @@ class Version(models.Model):
     comment = models.CharField(max_length=255)
     document = models.ForeignKey(Document)
     content = models.FileField(upload_to=get_version_path)
+    created_by = models.ForeignKey(User, verbose_name=_("Created by"))
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def delete(self, *args, **kwargs):
+        super(Version, self).delete(*args, **kwargs)
+        # remove the files on the file system
+        content.delete()
+        
     class Meta:
         get_latest_by = "created_at"
         ordering = ['-created_at']
@@ -157,8 +171,14 @@ class Attachment(models.Model):
     mime_type = models.CharField(max_length=32, choices=MIME_TYPE_CHOICES)
     document = models.ForeignKey(Document)
     content = models.FileField(upload_to=get_attachment_path)
+    created_by = models.ForeignKey(User, verbose_name=_("Created by"))
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def delete(self, *args, **kwargs):
+        super(Attachment, self).delete(*args, **kwargs)
+        # remove the files on the file system
+        content.delete()
+        
     class Meta:
         ordering = ['-created_at']
 

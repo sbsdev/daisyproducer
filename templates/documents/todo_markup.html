@@ -19,7 +19,7 @@
   <div id="relations">
     <form method="post" action="{% url todo_markup  document.id %}">
       <p>
-	{% if form.errors %}
+	{% if form.has_errors %}
 	<div class="errorExplanation" id="errorExplanation">
 	  <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span>
 	  {{ form.errors }}
@@ -30,7 +30,6 @@
       </p>
       <p>
 	<input type="submit" value="{% trans 'Save' %}" />
-	<input type="submit" value="{% trans 'Preview' %}" />
 	<a href="{% url todo_detail  document.id %}">{% trans 'Cancel' %}</a>
       </p>
     </form>

@@ -9,7 +9,10 @@
         <value>2005-3</value>
       </attribute>
       <attribute name="xml:lang">
-        <value>de-CH</value>
+        <choice>
+          <value>de-CH</value>
+          <value>de</value>
+        </choice>
       </attribute>
       <ref name="head"/>
       <ref name="book"/>
@@ -59,21 +62,54 @@
   <define name="frontmatter">
     <element name="frontmatter">
       <element name="doctitle">
-        <text/>
+        <interleave>
+          <text/>
+          <zeroOrMore>
+            <ref name="abbr"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="em"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="strong"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="contractionhints"/>
+          </zeroOrMore>
+        </interleave>
       </element>
       <element name="docauthor">
-        <text/>
+        <interleave>
+          <text/>
+          <zeroOrMore>
+            <ref name="abbr"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="em"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="strong"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="contractionhints"/>
+          </zeroOrMore>
+        </interleave>
       </element>
       <zeroOrMore>
-        <ref name="level1"/>
+        <ref name="frontmatterLevel1"/>
       </zeroOrMore>
     </element>
   </define>
   <define name="bodymatter">
     <element name="bodymatter">
-      <oneOrMore>
-        <ref name="level1"/>
-      </oneOrMore>
+      <interleave>
+        <oneOrMore>
+          <ref name="level1"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="volume"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="rearmatter">
@@ -83,13 +119,24 @@
       </oneOrMore>
     </element>
   </define>
+  <define name="gradeAttribute">
+    <attribute name="brl:grade">
+      <data type="nonNegativeInteger">
+        <param name="maxInclusive">2</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="accentsAttribute">
+    <attribute name="brl:accents">
+      <choice>
+        <value>detailed</value>
+        <value>reduced</value>
+      </choice>
+    </attribute>
+  </define>
   <define name="commonAttributes">
     <optional>
-      <attribute name="brl:grade">
-        <data type="nonNegativeInteger">
-          <param name="maxInclusive">2</param>
-        </data>
-      </attribute>
+      <ref name="gradeAttribute"/>
     </optional>
   </define>
   <define name="levelcontent">
@@ -106,22 +153,71 @@
       <zeroOrMore>
         <ref name="blockquote"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="epigraph"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="poem"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="author"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="byline"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="hcontent">
     <interleave>
       <text/>
-      <optional>
-        <ref name="br"/>
-      </optional>
       <zeroOrMore>
         <ref name="contractionhints"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="span"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="em"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="strong"/>
+      </zeroOrMore>
+      <optional>
+        <ref name="toc-line"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="running-line"/>
       </zeroOrMore>
     </interleave>
   </define>
   <define name="level1">
     <element name="level1">
       <ref name="commonAttributes"/>
+      <interleave>
+        <ref name="levelcontent"/>
+        <optional>
+          <ref name="h1"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="level2"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="volume"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="frontmatterLevel1">
+    <element name="level1">
+      <ref name="commonAttributes"/>
+      <optional>
+        <attribute name="class">
+          <choice>
+            <value>titlepage</value>
+            <value>toc</value>
+          </choice>
+        </attribute>
+      </optional>
       <interleave>
         <ref name="levelcontent"/>
         <optional>
@@ -220,14 +316,29 @@
       <ref name="hcontent"/>
     </element>
   </define>
-  <define name="br">
-    <element name="br">
-      <empty/>
-    </element>
-  </define>
   <define name="p">
     <element name="p">
       <ref name="commonAttributes"/>
+      <optional>
+        <!--
+          this is a hack that the Norwegians came up with to work around
+          the lack of a separator element (see
+          http://www.daisy.org/z3986/2011/auth/cm/#z3986.separator) in
+          dtbook xml. They "annotate" the following paragraph with a class
+          attribute that declares a separator or an empty line before it.
+        -->
+        <attribute name="class">
+          <list>
+            <oneOrMore>
+              <choice>
+                <value>precedingseparator</value>
+                <value>precedingemptyline</value>
+                <value>noindent</value>
+              </choice>
+            </oneOrMore>
+          </list>
+        </attribute>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -237,17 +348,42 @@
           <ref name="em"/>
         </zeroOrMore>
         <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
         </zeroOrMore>
       </interleave>
     </element>
   </define>
+  <define name="emphasisClassAttribute">
+    <attribute name="class">
+      <data type="string" datatypeLibrary=""/>
+    </attribute>
+  </define>
+  <define name="emphasisRenderAttribute">
+    <attribute name="brl:render">
+      <choice>
+        <value>emph</value>
+        <value>quote</value>
+        <value>singlequote</value>
+        <value>ignore</value>
+      </choice>
+    </attribute>
+  </define>
   <define name="em">
     <element name="em">
       <optional>
-        <attribute name="role">
-          <value/>
-        </attribute>
+        <ref name="emphasisClassAttribute"/>
+      </optional>
+      <optional>
+        <ref name="emphasisRenderAttribute"/>
       </optional>
       <interleave>
         <text/>
@@ -257,14 +393,130 @@
         <zeroOrMore>
           <ref name="contractionhints"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="strong">
+    <element name="strong">
+      <optional>
+        <ref name="emphasisClassAttribute"/>
+      </optional>
+      <optional>
+        <ref name="emphasisRenderAttribute"/>
+      </optional>
+      <interleave>
+        <text/>
+        <optional>
+          <ref name="pagenum"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="abbr">
+    <element name="abbr">
+      <text/>
+    </element>
+  </define>
+  <define name="span">
+    <element name="span">
+      <oneOrMore>
+        <choice>
+          <ref name="gradeAttribute"/>
+          <ref name="accentsAttribute"/>
+        </choice>
+      </oneOrMore>
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
   <define name="blockquote">
     <element name="blockquote">
-      <oneOrMore>
-        <ref name="p"/>
-      </oneOrMore>
+      <interleave>
+        <oneOrMore>
+          <ref name="p"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="author"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="byline"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="epigraph">
+    <element name="epigraph">
+      <interleave>
+        <choice>
+          <oneOrMore>
+            <ref name="p"/>
+          </oneOrMore>
+          <ref name="poem"/>
+        </choice>
+        <zeroOrMore>
+          <ref name="author"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="byline"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="author">
+    <element name="author">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="byline">
+    <element name="byline">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="list">
@@ -281,9 +533,9 @@
         <oneOrMore>
           <ref name="li"/>
         </oneOrMore>
-        <oneOrMore>
+        <zeroOrMore>
           <ref name="pagenum"/>
-        </oneOrMore>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -294,9 +546,24 @@
         <zeroOrMore>
           <ref name="em"/>
         </zeroOrMore>
-        <oneOrMore>
+        <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="lic"/>
-        </oneOrMore>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -308,7 +575,16 @@
           <ref name="em"/>
         </zeroOrMore>
         <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -322,6 +598,58 @@
         <value>normal</value>
       </attribute>
       <data type="integer"/>
+    </element>
+  </define>
+  <define name="poem">
+    <element name="poem">
+      <interleave>
+        <zeroOrMore>
+          <ref name="author"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="byline"/>
+        </zeroOrMore>
+        <choice>
+          <oneOrMore>
+            <ref name="linegroup"/>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="line"/>
+          </oneOrMore>
+        </choice>
+      </interleave>
+    </element>
+  </define>
+  <define name="linegroup">
+    <element name="linegroup">
+      <oneOrMore>
+        <ref name="line"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="line">
+    <element name="line">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="contractionhints">
@@ -347,6 +675,9 @@
       <zeroOrMore>
         <ref name="time"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="emph"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="num">
@@ -354,11 +685,13 @@
       <attribute name="role">
         <choice>
           <value>ordinal</value>
+          <value>cardinal</value>
           <value>roman</value>
           <value>fraction</value>
           <value>mixed</value>
           <value>isbn</value>
           <value>phone</value>
+          <value>measure</value>
         </choice>
       </attribute>
       <text/>
@@ -415,6 +748,33 @@
       <text/>
     </element>
   </define>
+  <define name="emph">
+    <element name="brl:emph">
+      <optional>
+        <ref name="emphasisClassAttribute"/>
+      </optional>
+      <optional>
+        <ref name="emphasisRenderAttribute"/>
+      </optional>
+      <interleave>
+        <text/>
+        <optional>
+          <ref name="pagenum"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="volume">
+    <element name="brl:volume">
+      <ref name="gradeAttribute"/>
+    </element>
+  </define>
   <define name="toc-line">
     <element name="brl:toc-line">
       <interleave>
@@ -423,20 +783,41 @@
           <ref name="em"/>
         </zeroOrMore>
         <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
         </zeroOrMore>
       </interleave>
     </element>
   </define>
   <define name="running-line">
     <element name="brl:running-line">
+      <optional>
+        <ref name="gradeAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
           <ref name="em"/>
         </zeroOrMore>
         <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
         </zeroOrMore>
       </interleave>
     </element>

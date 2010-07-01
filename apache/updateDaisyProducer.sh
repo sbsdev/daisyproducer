@@ -10,4 +10,5 @@ INSTALL_DIR=/srv/demo.xmlp.sbszh.ch/daisyproducer
 
 cd $INSTALL_DIR
 git pull
+make locale/de/LC_MESSAGES/django.mo
 sudo /etc/init.d/apache2 restart

@@ -1,12 +1,13 @@
-from daisyproducer.documents.external import DaisyPipeline
-from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm
-from daisyproducer.documents.models import Document, Version, Attachment
+from daisyproducer.documents.external import DaisyPipeline, SBSForm
+from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm, SBSFormForm
+from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -72,7 +73,8 @@ def add_attachment(request, document_id):
     attachment = Attachment.objects.create(
         comment=form.cleaned_data['comment'], 
         document=document,
-        mime_type=form.content_type)
+        mime_type=form.content_type,
+        created_by=request.user)
     content_file = request.FILES['content']
     attachment.content.save(content_file.name, content_file)
 
@@ -86,11 +88,8 @@ def add_version(request, document_id):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
-    form = PartialVersionForm(request.POST, request.FILES)
-    # attach some data to the form for validation        
-    from django.forms.models import model_to_dict
-    form.contentMetaData = model_to_dict(document)
-
+    form = PartialVersionForm(request.POST, request.FILES, 
+                              contentMetaData=model_to_dict(document))
     if not form.is_valid():
         versionForm = form
         attachmentForm = PartialAttachmentForm()
@@ -104,7 +103,8 @@ def add_version(request, document_id):
     # can save the content file under /document_id/versions/version_id
     version = Version.objects.create(
         comment=form.cleaned_data['comment'], 
-        document=document)
+        document=document,
+        created_by=request.user)
     content_file = request.FILES['content']
     version.content.save(content_file.name, content_file)
 
@@ -146,17 +146,23 @@ def ocr(request, document_id):
 def markup(request, document_id):
     document = Document.objects.select_related('state').get(pk=document_id)
     if request.method == 'POST':
-        form = MarkupForm(request.POST)
+        form = MarkupForm(request.POST, 
+                          document=document, user=request.user)
         if form.is_valid():
             # create a new version with the given form content
-            form.save(document)
+            form.save()
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+        else:
+            form.has_errors = True
     else:
         file_field = document.latest_version().content
         file_field.open()
         content = file_field.read()
         file_field.close()
         form = MarkupForm({'data' : content, 'comment' : "Insert a comment here"})
+        # This is a bit of a cheap hack to avoid expensive validation
+        # on initial display of the form
+        form.has_errors = False
 
     return render_to_response('documents/todo_markup.html', locals(),
                               context_instance=RequestContext(request))
@@ -175,7 +181,8 @@ def markup_xopus(request, document_id):
                            xml_declaration=True))
         version = Version.objects.create(
             comment="Changed with Xopus", 
-            document=document)
+            document=document,
+            created_by=request.user)
         version.content.save("initial_version.xml", content)
         return HttpResponse("success")
     else:
@@ -183,7 +190,7 @@ def markup_xopus(request, document_id):
                                   context_instance=RequestContext(request))
 
 @login_required
-def preview(request, document_id):
+def preview_xhtml(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     inputFile = document.latest_version().content.path
@@ -191,5 +198,42 @@ def preview(request, document_id):
     params = {}
     DaisyPipeline.dtbook2xhtml(inputFile, outputFile, **params)
 
-    return render_to_mimetype_response('text/html', document.title.encode('utf-8'), outputFile)
+    return render_to_mimetype_response('text/html', 
+                                       document.title.encode('utf-8'), outputFile)
+
+@login_required
+def preview_sbsform(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    if request.method == 'POST':
+        form = SBSFormForm(request.POST)
+        if form.is_valid():
+            inputFile = document.latest_version().content.path
+            outputFile = "/tmp/%s.sbsform" % document_id
+            SBSForm.dtbook2sbsform(inputFile, outputFile, **form.cleaned_data)
+            return render_to_mimetype_response('text/x-sbsform', 
+                                               document.title.encode('utf-8'), outputFile)
+    else:
+        form = SBSFormForm()
+
+    return render_to_response('documents/todo_sbsform.html', locals(),
+                              context_instance=RequestContext(request))
+
+@login_required
+def preview_pdf(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    if request.method == 'POST':
+        form = LargePrintProfileForm(request.POST)
+        if form.is_valid():
+            inputFile = document.latest_version().content.path
+            outputFile = "/tmp/%s.pdf" % document_id
+            DaisyPipeline.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
+            return render_to_mimetype_response('application/pdf', 
+                                               document.title.encode('utf-8'), outputFile)
+    else:
+        form = LargePrintProfileForm()
+
+    return render_to_response('documents/todo_pdf.html', locals(),
+                              context_instance=RequestContext(request))
 

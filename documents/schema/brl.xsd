@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.daisy.org/z3986/2009/braille/" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/">
+  <xs:import namespace="http://www.daisy.org/z3986/2005/dtbook/" schemaLocation="minimalSchema.xsd"/>
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <xs:attribute name="grade">
+    <xs:simpleType>
+      <xs:restriction base="xs:nonNegativeInteger">
+        <xs:maxInclusive value="2"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+  <xs:attribute name="accents">
+    <xs:simpleType>
+      <xs:restriction base="xs:token">
+        <xs:enumeration value="detailed"/>
+        <xs:enumeration value="reduced"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+  <xs:attribute name="render">
+    <xs:simpleType>
+      <xs:restriction base="xs:token">
+        <xs:enumeration value="emph"/>
+        <xs:enumeration value="quote"/>
+        <xs:enumeration value="singlequote"/>
+        <xs:enumeration value="ignore"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+  <xs:element name="num">
+    <xs:complexType mixed="true">
+      <xs:attribute name="role" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="ordinal"/>
+            <xs:enumeration value="cardinal"/>
+            <xs:enumeration value="roman"/>
+            <xs:enumeration value="fraction"/>
+            <xs:enumeration value="mixed"/>
+            <xs:enumeration value="isbn"/>
+            <xs:enumeration value="phone"/>
+            <xs:enumeration value="measure"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="homograph">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="brl:separator"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="separator">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="v-form" type="xs:string"/>
+  <xs:element name="name" type="xs:string"/>
+  <xs:element name="place" type="xs:string"/>
+  <xs:element name="date">
+    <xs:complexType mixed="true">
+      <xs:attribute name="value" use="required">
+        <xs:simpleType>
+          <xs:union memberTypes="xs:gMonthDay xs:date"/>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="time">
+    <xs:complexType mixed="true">
+      <xs:attribute name="value" use="required">
+        <xs:simpleType>
+          <xs:union memberTypes="xs:time">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:pattern value="\d\d:\d\d"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:union>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="emph">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="dtbook:pagenum"/>
+        <xs:group ref="dtbook:contractionhints"/>
+        <xs:element ref="dtbook:abbr"/>
+      </xs:choice>
+      <xs:attribute name="class" type="xs:string"/>
+      <xs:attribute ref="brl:render"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="volume">
+    <xs:complexType>
+      <xs:attributeGroup ref="dtbook:gradeAttribute"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="toc-line">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="dtbook:em"/>
+        <xs:element ref="dtbook:strong"/>
+        <xs:group ref="dtbook:contractionhints"/>
+        <xs:element ref="dtbook:abbr"/>
+        <xs:element ref="dtbook:span"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="running-line">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="dtbook:em"/>
+        <xs:element ref="dtbook:strong"/>
+        <xs:group ref="dtbook:contractionhints"/>
+        <xs:element ref="dtbook:abbr"/>
+        <xs:element ref="dtbook:span"/>
+      </xs:choice>
+      <xs:attribute ref="brl:grade"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

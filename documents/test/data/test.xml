@@ -15,7 +15,6 @@
     <meta name="dc:Language" content="de-CH" />
     <meta name="dc:Rights" content="" />
     <meta name="dtb:uid" content="ch-sbs-1" />
-    <meta name="dtb:sourceDate" content="" />
     <meta name="dtb:sourceEdition" content="" />
     <meta name="dtb:sourcePublisher" content="Diogenes" />
     <meta name="dtb:sourceRights" content="" />
@@ -24,9 +23,7 @@
   <book>
     <frontmatter>
       <doctitle>Wachtmeister Studer</doctitle>
-      <level1 class="title_page">
-        <docauthor>Friedrich Glauser</docauthor>
-      </level1>
+      <docauthor>Friedrich Glauser</docauthor>
     </frontmatter>
     
     <bodymatter>

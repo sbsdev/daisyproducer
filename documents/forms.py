@@ -5,17 +5,37 @@ from django import forms
 from django.core.files.base import ContentFile
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
+import tempfile
+import os
+from django.forms.models import model_to_dict
+
+def validate_content(fileName, contentMetaData, removeFile=False):
+    # make sure the uploaded version is valid xml
+    exitMessages = DaisyPipeline.validate(fileName)
+    if exitMessages:
+        if removeFile:
+            os.remove(fileName)
+        raise forms.ValidationError(
+            ["The uploaded file is not a valid DTBook XML document: "] + 
+            exitMessages)            
+    # make sure the meta data of the uploaded version corresponds
+    # to the meta data in the document
+    xmlContent = XMLContent()
+    errorList = xmlContent.validateContentMetaData(fileName , **contentMetaData)
+    if removeFile:
+        os.remove(fileName)
+    if errorList:
+        raise forms.ValidationError(
+            map(lambda errorTuple : 
+                "The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple, 
+                errorList))
 
 
 class PartialVersionForm(ModelForm):
 
-    def getcontentMetaData(self):
-        return self._contentMetaData
-
-    def setcontentMetaData(self, value):
-        self._contentMetaData = value
-
-    contentMetaData = property(getcontentMetaData, setcontentMetaData)
+    def __init__(self, *args, **kwargs):
+        self.contentMetaData = kwargs.pop('contentMetaData', None)
+        super(PartialVersionForm, self).__init__(*args, **kwargs) 
 
     def clean_content(self):
         data = self.files['content']
@@ -25,21 +45,7 @@ class PartialVersionForm(ModelForm):
                 "The mime type of the uploaded file must be 'text/xml'")
         # FIXME: test the mime-type with python-magic
         # make sure the uploaded version is valid xml
-        exitMessages = DaisyPipeline.validate(data.temporary_file_path())
-        if exitMessages:
-            raise forms.ValidationError(
-                ["The uploaded file is not a valid DTBook XML document: "] + 
-                exitMessages)            
-        # make sure the meta data of the uploaded version corresponds
-        # to the meta data in the document
-        xmlContent = XMLContent()
-        errorList = xmlContent.validateContentMetaData(
-            data.temporary_file_path(), **self.contentMetaData)
-        if errorList:
-            raise forms.ValidationError(
-                map(lambda errorTuple : 
-                    "The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple, 
-                    errorList))
+        validate_content(data.temporary_file_path(), self.contentMetaData)
         return data
 
     class Meta:
@@ -93,13 +99,29 @@ class MarkupForm(forms.Form):
     comment = forms.CharField(
         widget=forms.TextInput(attrs={'size':'60'}))
 
-    def save(self, document):
+    def __init__(self, *args, **kwargs):
+        self.document = kwargs.pop('document', None)
+        self.user = kwargs.pop('user', None)
+        super(MarkupForm, self).__init__(*args, **kwargs) 
+
+    def clean_data(self):
+        data = self.cleaned_data['data']
+        tmpFile, tmpFileName = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")
+        tmpFile = os.fdopen(tmpFile,'w')
+        tmpFile.write(data.encode('utf-8'))
+        tmpFile.close()
+        # make sure the uploaded version is valid xml
+        validate_content(tmpFileName, model_to_dict(self.document), True)
+        return data
+
+    def save(self):
         # create a new version with the new content
         contentString = self.cleaned_data['data']
         content = ContentFile(contentString.encode("utf-8"))
         version = Version.objects.create(
             comment = self.cleaned_data['comment'],
-            document = document)
+            document = self.document,
+            created_by = self.user)
         version.content.save("updated_version.xml", content)
 
 
@@ -109,25 +131,53 @@ class SBSFormForm(forms.Form):
         ('1', _('Grade 1')),
         ('2', _('Grade 2')),
         )
-    cells_per_line = forms.IntegerField(label=_("Cells per Line"), initial=40, min_value=1, max_value=255)
+    BRAILLE_ACCENTS_CHOICES = (
+        ('de-accents', _('Detailed')),
+        ('de-accents-reduced', _('Reduced')),
+        ('de-accents-ch', _('Swiss')),
+        )
+    BRAILLE_TOC_DEPTH_CHOICES = (
+        ('0', 0),
+        ('1', 1),
+        ('2', 2),
+        ('3', 3),
+        ('4', 4),
+        ('5', 5),
+        ('6', 6),
+        )
+    cells_per_line = forms.IntegerField(label=_("Cells per Line"), initial=28, min_value=1, max_value=255)
     lines_per_page = forms.IntegerField(label=_("Lines per Page"), initial=28, min_value=1, max_value=255)
     contraction = forms.TypedChoiceField(
         label=_("Contraction"), 
         choices=BRAILLE_CONTRACTION_GRADE_CHOICES, 
+        initial='2',
         coerce=int)
-    hyphenation = forms.BooleanField(label=_("Hyphenation"), required=False)
-    generate_toc = forms.BooleanField(
-        label=_("Generate a table of contents"), required=False)
+    hyphenation = forms.BooleanField(
+        label=_("Hyphenation"), 
+        required=False, initial=False)
+    toc_level = forms.TypedChoiceField(
+        label=_("Depth of table of contents"), 
+        choices=BRAILLE_TOC_DEPTH_CHOICES, 
+        coerce=int)
+    footer_level = forms.TypedChoiceField(
+        label=_("Footer up to level"), 
+        choices=BRAILLE_TOC_DEPTH_CHOICES, 
+        coerce=int)
+    include_macros = forms.BooleanField(
+        label=_("Include SBSForm macros"), required=False, initial=True)
     show_original_page_numbers = forms.BooleanField(
-        label=_("Show original page numbers"), required=False)
+        label=_("Show original page numbers"), required=False, initial=True)
     show_v_forms = forms.BooleanField(
         label=_("Show V-Forms"), required=False, initial=True)
     downshift_ordinals = forms.BooleanField(
         label=_("Downshift Ordinals"), required=False, initial=True)
-    enable_capitalization = forms.BooleanField(
-        label=_("Enable Capitalization"), required=False)
-    detailed_accented_characters = forms.BooleanField(
-        label=_("Detailed Accented Characters"), required=False)
+    # enable_capitalization = forms.BooleanField(
+    #     label=_("Enable Capitalization"), required=False)
+    detailed_accented_characters = forms.ChoiceField(
+        label=_("Detailed Accented Characters"), 
+        choices=BRAILLE_ACCENTS_CHOICES,
+        initial='de-accents-ch'
+)
 
 class XHTMLForm(forms.Form):
     genToc = forms.BooleanField(
