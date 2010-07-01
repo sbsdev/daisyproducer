@@ -1,4 +1,5 @@
 # Generate a ERP Diagram from the database schema
+
 DOT=/usr/bin/dot
 AUTODOC=/usr/bin/postgresql_autodoc
 
@@ -10,7 +11,11 @@ DOTS_GENERATED = $(addsuffix .dot,$(filter-out stateMachine,$(DOCUMENTS)))
 PDFS = $(addsuffix .pdf,$(DOCUMENTS))
 PNGS = $(addsuffix .png,$(DOCUMENTS))
 
-EXTRA_DIST = $(PDFS) $(PNGS) stateMachine.dot
+# Only generate a ERP Diagram from the database schema if configure found the POSTGRESQL_AUTODOC tool
+if HAVE_POSTGRESQL_AUTODOC
+  EXTRA_DIST = $(PDFS) $(PNGS) stateMachine.dot
+  all: $(PDFS) $(PNGS)
+endif
 
 %.dot:
 	$(AUTODOC) -d $(DATABASE) -t dot --table=$(TABLES)
@@ -23,8 +28,6 @@ EXTRA_DIST = $(PDFS) $(PNGS) stateMachine.dot
 
 %.pdf: %.dot
 	$(DOT) -Tpdf $< > $@
-
-all: $(PDFS) $(PNGS)
 
 clean-local:
 	rm -rf $(PDFS) $(PNGS) $(DOTS_GENERATED)

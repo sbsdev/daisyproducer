@@ -21,6 +21,10 @@ fi
 AC_MSG_CHECKING([if web site deployment should be enabled])
 AC_MSG_RESULT($enable_deploy)
 
+# autodoc generation
+AC_CHECK_PROG([POSTGRESQL_AUTODOC], [postgresql_autodoc], [postgresql_autodoc])
+AM_CONDITIONAL([HAVE_POSTGRESQL_AUTODOC], [test x$POSTGRESQL_AUTODOC = xpostgresql_autodoc])
+
 AC_CONFIG_FILES([
 	Makefile
 	doc/Makefile
