@@ -173,8 +173,13 @@ apache subdirectory (see also `Apache config file example`_)
 Optional requirements
 ---------------------
 - autodoc_ (package postgresql-autodoc) if you want to generate the ER
-  diagrams.
+  diagrams. Note however that autodoc only works if you are sing
+  PostgreSQL as a database.
 
+- python-yaml_ When running the tests (make check) , fixtures will be
+  loaded using yaml.
+
+.. _python-yaml: http://pyyaml.org/
 .. _autodoc: http://www.rbt.ca/autodoc/
 
 Installation
