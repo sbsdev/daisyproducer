@@ -1270,26 +1270,32 @@ y H</xsl:text><xsl:value-of select="$level"/><xsl:text>
     <xsl:if test="$toc_level &gt;= $level">
       <xsl:text>
 H</xsl:text>
-      <xsl:choose>
-	<xsl:when test="brl:toc-line">
-	  <xsl:apply-templates select="brl:toc-line"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']|text()"/>
-	</xsl:otherwise>
-      </xsl:choose>
+      <xsl:variable name="toc-line">
+	<xsl:choose>
+	  <xsl:when test="brl:toc-line">
+	    <xsl:apply-templates select="brl:toc-line"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']|text()"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:variable>
+      <xsl:value-of select="normalize-space(string($toc-line))"/>
     </xsl:if>
     <xsl:if test="$footer_level &gt;= $level">
       <xsl:text>
 ~</xsl:text>
-      <xsl:choose>
-	<xsl:when test="brl:running-line[not(@brl:grade) or @brl:grade = $contraction]">
-	  <xsl:apply-templates select="brl:running-line[not(@brl:grade)]|brl:running-line[@brl:grade = $contraction]"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']|text()"/>
-	</xsl:otherwise>
-      </xsl:choose>
+      <xsl:variable name="running-line">
+	<xsl:choose>
+	  <xsl:when test="brl:running-line[not(@brl:grade) or @brl:grade = $contraction]">
+	    <xsl:apply-templates select="brl:running-line[not(@brl:grade)]|brl:running-line[@brl:grade = $contraction]"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:apply-templates select="*[local-name() != 'toc-line' and local-name() != 'running-line']|text()"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:variable>
+      <xsl:value-of select="translate(normalize-space(string($running-line)),' ','s')"/>
     </xsl:if>
     <xsl:text>
 </xsl:text>
