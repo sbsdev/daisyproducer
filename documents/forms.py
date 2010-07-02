@@ -132,9 +132,9 @@ class SBSFormForm(forms.Form):
         ('2', _('Grade 2')),
         )
     BRAILLE_ACCENTS_CHOICES = (
-        ('de-accents', _('Detailed')),
-        ('de-accents-reduced', _('Reduced')),
-        ('de-accents-ch', _('Swiss')),
+        ('de-accents', _('All Accents Detailed')),
+        ('de-accents-reduced', _('All Accents Reduced')),
+        ('de-accents-ch', _('Only Swiss Accents Detailed')),
         )
     BRAILLE_TOC_DEPTH_CHOICES = (
         ('0', 0),
@@ -174,7 +174,7 @@ class SBSFormForm(forms.Form):
     # enable_capitalization = forms.BooleanField(
     #     label=_("Enable Capitalization"), required=False)
     detailed_accented_characters = forms.ChoiceField(
-        label=_("Detailed Accented Characters"), 
+        label=_("Accented Characters"), 
         choices=BRAILLE_ACCENTS_CHOICES,
         initial='de-accents-ch'
 )

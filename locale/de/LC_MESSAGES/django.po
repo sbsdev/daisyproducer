@@ -8,339 +8,355 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-29 12:11+0200\n"
-"PO-Revision-Date: 2010-06-29 12:17+0200\n"
+"POT-Creation-Date: 2010-07-02 15:13+0200\n"
+"PO-Revision-Date: 2010-07-02 15:22+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: urls.py:61 templates/base.html:28
+#: urls.py:63 templates/base.html:28
 msgid "Help"
 msgstr "Hilfe"
 
-#: urls.py:68 templates/base.html:29
+#: urls.py:70 templates/base.html:29
 msgid "About"
 msgstr "Impressum"
 
-#: documents/forms.py:89
+#: documents/forms.py:88
 msgid "Data from scan"
-msgstr ""
+msgstr "Eingescannte Daten"
 
-#: documents/forms.py:90
+#: documents/forms.py:89
 msgid "The image files that resulted from the scan"
-msgstr ""
+msgstr "Eingescannte Bilddateien"
 
-#: documents/forms.py:131 documents/models.py:189
+#: documents/forms.py:130 documents/models.py:190
 msgid "Grade 0"
-msgstr "Vollschrift"
-
-#: documents/forms.py:132 documents/models.py:190
-msgid "Grade 1"
 msgstr "Basisschrift"
 
-#: documents/forms.py:133 documents/models.py:191
+#: documents/forms.py:131 documents/models.py:191
+msgid "Grade 1"
+msgstr "Vollschrift"
+
+#: documents/forms.py:132 documents/models.py:192
 msgid "Grade 2"
 msgstr "Kurzschrift"
 
+#: documents/forms.py:135
+msgid "All Accents Detailed"
+msgstr "Alle ausführlich"
+
 #: documents/forms.py:136
-msgid "Detailed"
-msgstr "Ausführlich"
+msgid "All Accents Reduced"
+msgstr "Alle nur mit Grundbuchstaben"
 
 #: documents/forms.py:137
-msgid "Reduced"
-msgstr "Keine"
+msgid "Only Swiss Accents Detailed"
+msgstr "Nur Schweizer Akzente ausführlich"
 
-#: documents/forms.py:138
-msgid "Swiss"
-msgstr "Schweiz"
-
-#: documents/forms.py:149 documents/models.py:194
+#: documents/forms.py:148 documents/models.py:195
 msgid "Cells per Line"
 msgstr "Zellen pro Zeile"
 
-#: documents/forms.py:150 documents/models.py:195
+#: documents/forms.py:149 documents/models.py:196
 msgid "Lines per Page"
 msgstr "Zeilen pro Seite"
 
-#: documents/forms.py:152 documents/models.py:196
+#: documents/forms.py:151 documents/models.py:197
 msgid "Contraction"
-msgstr "Kürzung"
+msgstr "Kürzungsgrad"
 
-#: documents/forms.py:157
+#: documents/forms.py:156 documents/models.py:198
+msgid "Hyphenation"
+msgstr "Silbentrennung"
+
+#: documents/forms.py:159
 msgid "Depth of table of contents"
-msgstr ""
+msgstr "Angezeigte Ebenen im Inhaltsverzeichnis"
 
-#: documents/forms.py:161
+#: documents/forms.py:163
 msgid "Footer up to level"
-msgstr ""
+msgstr "Angezeigte Ebenen im Laufindex"
 
-#: documents/forms.py:165
+#: documents/forms.py:167
 msgid "Include SBSForm macros"
-msgstr "SBSForm Makros mitliefern"
+msgstr "SBSForm-Makros mitliefern"
 
-#: documents/forms.py:167 documents/forms.py:192 documents/models.py:198
+#: documents/forms.py:169 documents/forms.py:194 documents/models.py:199
 msgid "Show original page numbers"
-msgstr "Schwarzschrift Seitenzahlen anzeigen"
+msgstr "Schwarzschrift-Seitenzahlen anzeigen"
 
-#: documents/forms.py:169
+#: documents/forms.py:171
 msgid "Show V-Forms"
 msgstr "Höflichkeitsformen anzeigen"
 
-#: documents/forms.py:171
+#: documents/forms.py:173
 msgid "Downshift Ordinals"
-msgstr ""
+msgstr "Ordnungszahlen herabsetzen"
 
-#: documents/forms.py:175 documents/models.py:200
-msgid "Detailed Accented Characters"
-msgstr ""
+#: documents/forms.py:177
+msgid "Accented Characters"
+msgstr "Akzentbuchstaben"
 
-#: documents/forms.py:182 documents/forms.py:191
+#: documents/forms.py:184 documents/forms.py:193
 msgid "Generate a table of contents"
-msgstr ""
+msgstr "Inhaltsverzeichnis erzeugen"
 
-#: documents/forms.py:186
+#: documents/forms.py:188
 msgid "DAISY 2.02 style noterefs"
 msgstr ""
 
-#: documents/forms.py:199
+#: documents/forms.py:201
 msgid "utf-8"
 msgstr ""
 
-#: documents/forms.py:200
+#: documents/forms.py:202
 msgid "iso-8859-1"
 msgstr ""
 
-#: documents/forms.py:201
+#: documents/forms.py:203
 msgid "Shift_JIS"
 msgstr ""
 
-#: documents/forms.py:204
+#: documents/forms.py:206
 msgid "Output encoding"
 msgstr ""
 
-#: documents/forms.py:206
+#: documents/forms.py:208
 msgid "Abbreviation and acronym detection"
-msgstr ""
+msgstr "Abkürzungs- und Akronym-Erkennung"
 
-#: documents/forms.py:208 documents/forms.py:226
+#: documents/forms.py:210 documents/forms.py:228
 msgid "Sentence detection"
 msgstr "Satzerkennung"
 
-#: documents/forms.py:210
+#: documents/forms.py:212
 msgid "Word detection"
 msgstr "Worterkennung"
 
-#: documents/forms.py:214
+#: documents/forms.py:216
 msgid "32 kbit/s"
 msgstr "32 kbit/s"
 
-#: documents/forms.py:215
+#: documents/forms.py:217
 msgid "48 kbit/s"
 msgstr "48 kbit/s"
 
-#: documents/forms.py:216
+#: documents/forms.py:218
 msgid "64 kbit/s"
 msgstr "64 kbit/s"
 
-#: documents/forms.py:217
+#: documents/forms.py:219
 msgid "128 kbit/s"
 msgstr "128 kbit/s"
 
-#: documents/forms.py:221
+#: documents/forms.py:223
 msgid "MP3 Bitrate"
 msgstr "MP3 Bitrate"
 
-#: documents/forms.py:230
+#: documents/forms.py:232
 msgid "Multi-language support"
-msgstr ""
+msgstr "Unterstützung von mehreren Sprachen"
 
-#: documents/models.py:41
+#: documents/models.py:42
 msgid "Title"
 msgstr "Titel"
 
-#: documents/models.py:43
+#: documents/models.py:44
 msgid "The title of the DTB, including any subtitles"
-msgstr ""
+msgstr "Titel des DTBs einschliesslich aller Untertitel"
 
-#: documents/models.py:45
+#: documents/models.py:46
 msgid "Author"
 msgstr "Autor"
 
-#: documents/models.py:47
+#: documents/models.py:48
 msgid ""
 "Names of primary author or creator of the intellectual content of the "
 "publication"
 msgstr ""
+"Namen des Hauptautors oder Urhebers des geistigen Inhalts der Publikation"
 
-#: documents/models.py:50
+#: documents/models.py:51
 msgid "Subject"
-msgstr "Subjekt"
+msgstr "Thema"
 
-#: documents/models.py:52
+#: documents/models.py:53
 msgid "The topic of the content of the publication"
-msgstr ""
+msgstr "Das inhaltliche Thema der Publikation"
 
-#: documents/models.py:55
+#: documents/models.py:56
 msgid "Description"
 msgstr "Beschreibung"
 
-#: documents/models.py:56
+#: documents/models.py:57
 msgid "Plain text describing the publication's content"
-msgstr ""
+msgstr "Beschreibung des Inhalts der Publikation"
 
-#: documents/models.py:59
+#: documents/models.py:60
 msgid "Publisher"
 msgstr "Herausgeber"
 
-#: documents/models.py:62
+#: documents/models.py:63
 msgid "The agency responsible for making the DTB available"
 msgstr ""
 
-#: documents/models.py:64
+#: documents/models.py:65
 msgid "Date"
 msgstr "Datum"
 
-#: documents/models.py:66
+#: documents/models.py:67
 msgid "Date of publication of the DTB"
-msgstr ""
+msgstr "Publikationsdatum des DTBs"
 
-#: documents/models.py:68
+#: documents/models.py:69
 msgid "Identifier"
-msgstr ""
+msgstr "Kennung"
 
-#: documents/models.py:70
+#: documents/models.py:71
 msgid "A string or number identifying the DTB"
 msgstr ""
 
-#: documents/models.py:72
+#: documents/models.py:73
 msgid "Source"
 msgstr "Quelle"
 
-#: documents/models.py:74
+#: documents/models.py:75
 msgid ""
 "A reference to a resource (e.g., a print original, ebook, etc.) from which "
 "the DTB is derived. Best practice is to use the ISBN when available"
 msgstr ""
+"Ein Hinweis auf eine Quelle (z.B. gedrucktes Original, eBook, etc.), welche "
+"dem DTB zugrunde liegt. Optimalerweise wird die ISBN verwendet, falls "
+"vorhanden"
 
-#: documents/models.py:79
+#: documents/models.py:80
 msgid "Language"
 msgstr "Sprache"
 
-#: documents/models.py:82
+#: documents/models.py:83
 msgid "Language of the content of the publication"
-msgstr ""
+msgstr "Sprache, in welcher die Publikation geschrieben ist"
 
-#: documents/models.py:84
+#: documents/models.py:85
 msgid "Rights"
 msgstr "Rechte"
 
-#: documents/models.py:86
+#: documents/models.py:87
 msgid "Information about rights held in and over the DTB"
 msgstr ""
 
-#: documents/models.py:90
-msgid "Source Date"
-msgstr ""
-
 #: documents/models.py:91
+msgid "Source Date"
+msgstr "Datum der Quelle"
+
+#: documents/models.py:92
 msgid ""
 "Date of publication of the resource (e.g., a print original, ebook, etc.) "
 "from which the DTB is derived"
 msgstr ""
+"Publikationsdatum der Quelle (z.B. gedrucktes Original, eBook, etc.), welche "
+"dem DTB zugrunde liegt"
 
-#: documents/models.py:94
+#: documents/models.py:95
 msgid "Source Edition"
-msgstr ""
+msgstr "Auflage der Quelle"
 
-#: documents/models.py:96
+#: documents/models.py:97
 msgid ""
 "A string describing the edition of the resource (e.g., a print original, "
 "ebook, etc.) from which the DTB is derived"
 msgstr ""
+"Eine Zeichenkette, welche die dem DTB zugrunde liegende Auflage der Quelle "
+"(z.B. gedrucktes Original, eBook, etc.) beschreibt"
 
-#: documents/models.py:99
+#: documents/models.py:100
 msgid "Source Publisher"
 msgstr "Herausgeber"
 
-#: documents/models.py:101
+#: documents/models.py:102
 msgid ""
 "The agency responsible for making available the resource (e.g., a print "
 "original, ebook, etc.) from which the DTB is derived"
 msgstr ""
+"Verantwortliches Organ für die Bereitstellung der Quelle (z.B. gedrucktes "
+"Original, eBook, etc.), welche dem DTB zugrunde liegt"
 
-#: documents/models.py:104
+#: documents/models.py:105
 msgid "Source Rights"
 msgstr ""
 
-#: documents/models.py:106
+#: documents/models.py:107
 msgid ""
 "Information about rights held in and over the resource (e.g., a print "
 "original, ebook, etc.) from which the DTB is derived"
 msgstr ""
+"Informationen über rechtliche Aspekte der Quelle (z.B. gedrucktes Original, "
+"eBook, etc.), welche dem DTB zugrunde liegt"
 
-#: documents/models.py:109 templates/documents/todo_detail.html:121
+#: documents/models.py:110 templates/documents/todo_detail.html:121
 msgid "State"
 msgstr "Status"
 
-#: documents/models.py:110
+#: documents/models.py:111
 msgid "Assigned to"
 msgstr "Zugewiesen an"
 
-#: documents/models.py:111
+#: documents/models.py:112
 msgid "Created"
 msgstr "Erstellt am"
 
-#: documents/models.py:112
+#: documents/models.py:113
 msgid "Last Modified"
 msgstr "Letzte Änderung"
 
-#: documents/models.py:146 documents/models.py:174
+#: documents/models.py:147 documents/models.py:175
 msgid "Created by"
 msgstr "Erstellt von"
 
-#: documents/models.py:197
-msgid "Hyphenation"
-msgstr "Trennung"
-
-#: documents/models.py:199
+#: documents/models.py:200
 msgid "Enable Capitalization"
+msgstr "Grossschreibung einschalten"
+
+#: documents/models.py:201
+msgid "Detailed Accented Characters"
 msgstr ""
 
-#: documents/models.py:222
+#: documents/models.py:223
 msgid "Plain"
 msgstr "Einfach"
 
-#: documents/models.py:223
-msgid "With original page numbers"
-msgstr "Mit original Seitenzahlen"
-
 #: documents/models.py:224
+msgid "With original page numbers"
+msgstr "Mit Original-Seitenzahlen"
+
+#: documents/models.py:225
 msgid "Scientific"
 msgstr "Wissenschaftlich"
 
-#: documents/models.py:228
+#: documents/models.py:229
 msgid "justified"
 msgstr "Blocksatz"
 
-#: documents/models.py:229
+#: documents/models.py:230
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: documents/models.py:237
+#: documents/models.py:238
 msgid "Fontsize"
 msgstr "Fontgrösse"
 
-#: documents/models.py:238
+#: documents/models.py:239
 msgid "Font"
 msgstr "Font"
 
-#: documents/models.py:239
+#: documents/models.py:240
 msgid "Page style"
 msgstr "Seitenstil"
 
-#: documents/models.py:241
+#: documents/models.py:242
 msgid "Papersize"
 msgstr "Papiergrösse"
 
@@ -377,9 +393,9 @@ msgstr ""
 msgid "Powered by"
 msgstr ""
 
-#: templates/base.html:63 templates/documents/todo_markup_xopus.html:37
+#: templates/base.html:63
 msgid "Swiss Library for the Blind and Visually Impaired"
-msgstr "Schweizerische Bibliothek für Blinde und Sehbehinderte"
+msgstr "Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
 #: templates/documents/browse_detail.html:5
 #: templates/documents/browse_detail.html:25
@@ -522,7 +538,7 @@ msgstr "Alle Dokumente"
 #: templates/documents/manage_update.html:4
 #: templates/documents/manage_update.html:8
 msgid "Update Document Details"
-msgstr "Dokument Details Aktualisieren"
+msgstr "Dokumentdetails Aktualisieren"
 
 #: templates/documents/todo_detail.html:11
 msgid "Edit"
@@ -535,11 +551,11 @@ msgstr "OCR"
 
 #: templates/documents/todo_detail.html:13
 msgid "Markup"
-msgstr "Auszeichnen"
+msgstr "Markup"
 
 #: templates/documents/todo_detail.html:14
 msgid "Markup with Xopus"
-msgstr "Auszeichen mit Xopus"
+msgstr "Markup mit Xopus"
 
 #: templates/documents/todo_detail.html:15
 #: templates/documents/todo_pdf.html:26
@@ -570,12 +586,12 @@ msgstr "Weitergeben"
 
 #: templates/documents/todo_index.html:5 templates/documents/todo_index.html:8
 msgid "Pending documents"
-msgstr "Hängige Dokumente"
+msgstr "Pendente Dokumente"
 
 #: templates/documents/todo_markup.html:6
 #: templates/documents/todo_markup.html:11
 msgid "Document Markup"
-msgstr "Dokumentauszeichnung"
+msgstr "Dokument-Markup"
 
 #: templates/documents/todo_markup.html:32
 msgid "Save"
@@ -586,6 +602,10 @@ msgstr "Speichern"
 #: templates/documents/todo_sbsform.html:27
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: templates/documents/todo_markup_xopus.html:37
+msgid "Swiss Library for the Blind, Visually Impaired and Print Disabled"
+msgstr "Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
 #: templates/documents/todo_ocr.html:6 templates/documents/todo_ocr.html:11
 msgid "Document OCR"
