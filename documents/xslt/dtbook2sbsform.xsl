@@ -854,7 +854,8 @@ t
     </xsl:otherwise>
   </xsl:choose>
   <xsl:value-of select='louis:translate("Band",string(my:getTable()))'/>
-  <xsl:text>y e Volumes
+  <xsl:text>
+y e Volumes
   </xsl:text>
 </xsl:if>
 <xsl:text>
@@ -875,7 +876,8 @@ t
 u-
 </xsl:text>
 <xsl:if test="//brl:volume">
-<xsl:text>y Volumes
+<xsl:text>
+y Volumes
 </xsl:text>
 </xsl:if>
 <xsl:choose>
@@ -1073,7 +1075,8 @@ U dtbook.mak
   
   <xsl:template match="dtb:book">
     <xsl:apply-templates/>
-    <xsl:text>y BOOKe
+    <xsl:text>
+y BOOKe
 </xsl:text>
   </xsl:template>
 
@@ -1081,7 +1084,8 @@ U dtbook.mak
   </xsl:template>
 
   <xsl:template match="dtb:bodymatter">
-    <xsl:text>y BODYb
+    <xsl:text>
+y BODYb
 i j=</xsl:text>
     <!-- value of first pagenum within body -->
     <xsl:value-of select="descendant::dtb:pagenum[1]/text()"/>
@@ -1089,7 +1093,8 @@ i j=</xsl:text>
 </xsl:text>
 
     <xsl:apply-templates/>
-    <xsl:text>y BODYe
+    <xsl:text>
+y BODYe
 </xsl:text>
   </xsl:template>
 
@@ -1102,7 +1107,8 @@ i j=</xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:level1">
-    <xsl:text>y LEVEL1b
+    <xsl:text>
+y LEVEL1b
 </xsl:text>
     <!-- add a comment if the first child is not a pagenum -->
       <xsl:if test="not(name(child::*[1])='pagenum')">
@@ -1116,7 +1122,8 @@ y LEVEL1e
   </xsl:template>
 
   <xsl:template match="dtb:level2">
-    <xsl:text>y LEVEL2b
+    <xsl:text>
+y LEVEL2b
 </xsl:text>
     <!-- add a comment if the first child is not a pagenum -->
       <xsl:if test="not(name(child::*[1])='pagenum')">
@@ -1130,7 +1137,8 @@ y LEVEL2e
   </xsl:template>
 
   <xsl:template match="dtb:level3">
-    <xsl:text>y LEVEL3b
+    <xsl:text>
+y LEVEL3b
 </xsl:text>
     <!-- add a comment if the first child is not a pagenum -->
       <xsl:if test="not(name(child::*[1])='pagenum')">
@@ -1144,7 +1152,8 @@ y LEVEL3e
   </xsl:template>
 
   <xsl:template match="dtb:level4">
-    <xsl:text>y LEVEL4b
+    <xsl:text>
+y LEVEL4b
 </xsl:text>
     <!-- add a comment if the first child is not a pagenum -->
       <xsl:if test="not(name(child::*[1])='pagenum')">
@@ -1158,7 +1167,8 @@ y LEVEL4e
   </xsl:template>
 
   <xsl:template match="dtb:level5">
-    <xsl:text>y LEVEL5b
+    <xsl:text>
+y LEVEL5b
 </xsl:text>
     <!-- add a comment if the first child is not a pagenum -->
       <xsl:if test="not(name(child::*[1])='pagenum')">
@@ -1172,7 +1182,8 @@ y LEVEL5e
   </xsl:template>
 
   <xsl:template match="dtb:level6">
-    <xsl:text>y LEVEL6b
+    <xsl:text>
+y LEVEL6b
 </xsl:text>
     <!-- add a comment if the first child is not a pagenum -->
       <xsl:if test="not(name(child::*[1])='pagenum')">
@@ -1216,7 +1227,8 @@ y LEVEL6e
   </xsl:template>
 
   <xsl:template match="dtb:list">
-    <xsl:text>y PLISTb
+    <xsl:text>
+y PLISTb
 </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>
@@ -1225,7 +1237,8 @@ y PLISTe
   </xsl:template>
 
   <xsl:template match="dtb:li">
-    <xsl:text>y LI
+    <xsl:text>
+y LI
  </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>
@@ -1243,10 +1256,8 @@ j </xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>
 </xsl:text>
-    <!-- add a space if we're inside a p -->
-    <xsl:if test="name(..) = 'p'">
+    <!-- add a space for the following inline elements -->
       <xsl:text> </xsl:text>
-    </xsl:if>
   </xsl:template>
 
   <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
@@ -1308,7 +1319,8 @@ y EPIGRe
 y POEMb
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>y POEMe
+    <xsl:text>
+y POEMe
 </xsl:text>
   </xsl:template>
 
@@ -1327,15 +1339,18 @@ y BYLINE
   </xsl:template>
 
   <xsl:template match="dtb:linegroup">
-    <xsl:text>y LINEGROUPb
+    <xsl:text>
+y LINEGROUPb
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>y LINEGROUPe
+    <xsl:text>
+y LINEGROUPe
 </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:line">
-    <xsl:text>y LINEb
+    <xsl:text>
+y LINEb
  </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>
@@ -1348,10 +1363,12 @@ y LINEe
   </xsl:template>
   
   <xsl:template match="dtb:rearmatter">
-    <xsl:text>y REARb
+    <xsl:text>
+y REARb
 </xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>y REARe
+    <xsl:text>
+y REARe
 </xsl:text>
   </xsl:template>
 
