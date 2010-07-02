@@ -183,12 +183,9 @@
 	    <xsl:text>sbs-de-g2-name.mod,</xsl:text>
 	  </xsl:if>
 	  <xsl:if test="$context != 'name' and $context != 'name_capitalized' and $context != 'place' and ($context != 'abbr' or  my:containsDot(.)) and $context != 'date_day' and $context != 'date_month'">
-	  <xsl:if test="$hyphenation = '1'">
-	    <xsl:text>sbs-de-g2-white.mod,</xsl:text>
-	  </xsl:if>
-	    <!-- <xsl:if test="$hyphenation = '1'"> -->
-	    <!--   <xsl:text>sbs-de-g2-white.mod,</xsl:text> -->
-	    <!-- </xsl:if> -->
+	    <xsl:if test="$hyphenation = '1'">
+	      <xsl:text>sbs-de-g2-white.mod,</xsl:text>
+	    </xsl:if>
 	    <xsl:text>sbs-de-g2-core.mod,</xsl:text>
 	  </xsl:if>
 	</xsl:if>
