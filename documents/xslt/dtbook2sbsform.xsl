@@ -200,21 +200,6 @@
     </xsl:choose>
   </xsl:template>
 
-  <data:volumeNumberMapping>
-    <number value="1">eins</number>
-    <number value="2">zwei</number>
-    <number value="3">drei</number>
-    <number value="4">vier</number>
-    <number value="5">fünf</number>
-    <number value="6">sechs</number>
-    <number value="7">sieben</number>
-    <number value="8">acht</number>
-    <number value="9">neun</number>
-    <number value="10">zehn</number>
-    <number value="11">elf</number>
-    <number value="12">zwölf</number>
-  </data:volumeNumberMapping>
-
   <xsl:template name="sbsform-macro-definitions">
     <xsl:text>
 x ======================= ANFANG SBSFORM.MAK =========================
@@ -661,18 +646,32 @@ y e EndBook
   <xsl:text>y b Volumes
 lv16
 t
-  </xsl:text>
-  <xsl:value-of select='louis:translate("In",string(my:getTable()))'/>
+ </xsl:text>
+  <xsl:value-of select='louis:translate("In ",string(my:getTable()))'/>
   <xsl:choose>
     <xsl:when test="$volumes &lt; 13">
-      <xsl:variable name="number" select="document('')/*/data:volumeNumberMapping[@value=$volumes]"/>
-      <xsl:value-of select='louis:translate($number,string(my:getTable()))'/>
+      <xsl:variable name="number">
+	<xsl:choose>
+	  <xsl:when test="$volumes = '2'">zwei</xsl:when>
+	  <xsl:when test="$volumes = '3'">drei</xsl:when>
+	  <xsl:when test="$volumes = '4'">vier</xsl:when>
+	  <xsl:when test="$volumes = '5'">fünf</xsl:when>
+	  <xsl:when test="$volumes = '6'">sechs</xsl:when>
+	  <xsl:when test="$volumes = '7'">sieben</xsl:when>
+	  <xsl:when test="$volumes = '8'">acht</xsl:when>
+	  <xsl:when test="$volumes = '9'">neun</xsl:when>
+	  <xsl:when test="$volumes = '10'">zehn</xsl:when>
+	  <xsl:when test="$volumes = '11'">elf</xsl:when>
+	  <xsl:when test="$volumes = '12'">zwölf</xsl:when>
+	</xsl:choose>
+      </xsl:variable>
+      <xsl:value-of select='louis:translate(string($number),string(my:getTable()))'/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select='louis:translate($volumes,string(my:getTable()))'/>
+      <xsl:value-of select='louis:translate(string($volumes),string(my:getTable()))'/>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:value-of select='louis:translate("Braille-Bänden",string(my:getTable()))'/>
+  <xsl:value-of select='louis:translate(" Braillebänden",string(my:getTable()))'/>
   <xsl:text>t
 </xsl:text>
   <xsl:choose>
@@ -854,6 +853,7 @@ t
       </xsl:text>
     </xsl:otherwise>
   </xsl:choose>
+  <xsl:text> </xsl:text>
   <xsl:value-of select='louis:translate("Band",string(my:getTable()))'/>
   <xsl:text>
 y e Volumes
