@@ -299,7 +299,8 @@ H`B-
 </xsl:text>
 </xsl:if>
 <xsl:if test="$footer_level &gt; 0">
-  <xsl:text>Y
+  <xsl:text>~~
+Y
 </xsl:text>
 </xsl:if>
 <xsl:text>lm1
