@@ -247,7 +247,7 @@ y e BODYe
 <xsl:if test="//dtb:rearmatter">
   <xsl:text>y b REARb ; Rearmatter
 z
-  </xsl:text>
+</xsl:text>
   <xsl:if test="$toc_level &gt; 0">
     <xsl:text>H`lm1
 </xsl:text>
