@@ -295,6 +295,7 @@ class SBSForm:
         styledoc = libxml2.parseFile(
             join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsform.xsl'))
         style = libxslt.parseStylesheetDoc(styledoc)
+        libxml2.substituteEntitiesDefault(1) # resolve entities. See http://xmlsoft.org/entities.html
         doc = libxml2.parseFile(inputFile)
         kwargs["version"] = getVersion()
         # map True and False to "1" and "0"
