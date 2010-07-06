@@ -15,7 +15,8 @@
 
   <xsl:output method="text" encoding="utf-8" indent="no"/>
   <xsl:strip-space elements="*"/>
-  <xsl:preserve-space elements="dtb:p code samp"/>
+  <xsl:preserve-space 
+      elements="dtb:p dtb:byline dtb:author dtb:li dtb:lic dtb:doctitle dtb:docauthor dtb:span dtb:line dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6"/>
 	
   <xsl:param name="contraction">0</xsl:param>
   <xsl:param name="version">0</xsl:param>
