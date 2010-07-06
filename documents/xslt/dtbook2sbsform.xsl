@@ -670,7 +670,8 @@ t
     </xsl:otherwise>
   </xsl:choose>
   <xsl:value-of select='louis:translate(" Braillebänden",string(my:getTable()))'/>
-  <xsl:text>t
+  <xsl:text>
+t
 </xsl:text>
   <xsl:choose>
     <xsl:when test="$volumes &lt; 13">
@@ -917,7 +918,7 @@ p
 L
 i f=1 l=1
  </xsl:text>
-<xsl:value-of select='louis:translate("Dieses Punktschrift-Buch ist die ausschließlich ",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("Dieses Braillebuch ist die ausschließlich ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("für die Nutzung durch Lesebehinderte Menschen ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("bestimmte zugängliche Version eines urheberrechtlich ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("geschützten Werks. ",string(my:getTable()))'/>
@@ -925,7 +926,7 @@ i f=1 l=1
 <xsl:value-of select='louis:translate("können ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("es im Rahmen des Urheberrechts persönlich nutzen ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("dürfen es aber nicht weiter verbreiten oder öffentlich ",string(my:getTable()))'/>
-<xsl:value-of select='louis:translate("zugänglich machen",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("zugänglich machen.",string(my:getTable()))'/>
 <xsl:choose>
   <xsl:when test="$contraction='2'">
 <xsl:text>
@@ -1666,6 +1667,14 @@ y REARe
       </xsl:for-each>
     </xsl:variable>
     <xsl:value-of select="louis:translate(string($time),string(my:getTable()))" />
+  </xsl:template>
+
+  <xsl:template match="brl:volume[lang('de')]">
+    <xsl:if test="@brl:grade = $contraction">
+      <xsl:text>
+y BrlVol
+</xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <!-- Text nodes are translated with liblouis -->
