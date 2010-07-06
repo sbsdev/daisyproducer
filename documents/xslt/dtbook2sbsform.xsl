@@ -1253,10 +1253,13 @@ y LI
       <xsl:text>
 j </xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>
-</xsl:text>
-    <!-- add a space for the following inline elements -->
-      <xsl:text> </xsl:text>
+    <!-- Add a newline unless the following node is another pagenum -->
+    <!-- FIXME: this doesn't properly handle comment nodes -->
+    <xsl:if test="not(following-sibling::node()[position() = 1 and local-name() = 'pagenum'])">
+      <!-- add a space for the following inline elements -->
+      <xsl:text>
+ </xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
