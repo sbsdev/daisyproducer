@@ -317,8 +317,7 @@ H`B-
   <xsl:text>Y
 </xsl:text>
 </xsl:if>
-<xsl:text>lm1
-y e H2
+<xsl:text>y e H2
 </xsl:text>
 </xsl:if>
 
