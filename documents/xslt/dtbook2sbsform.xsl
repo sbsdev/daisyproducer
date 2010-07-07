@@ -1385,15 +1385,15 @@ y REARe
     <xsl:choose>
     <xsl:when test="@brl:render = 'singlequote'">
       <!-- render the emphasis using singlequotes -->
-      <xsl:value-of select="louis:translate('&#8249;',string(my:getTable()))"/>
-      <xsl:apply-templates/>
       <xsl:value-of select="louis:translate('&#8250;',string(my:getTable()))"/>
+      <xsl:apply-templates/>
+      <xsl:value-of select="louis:translate('&#8249;',string(my:getTable()))"/>
     </xsl:when>
     <xsl:when test="@brl:render = 'quote'">
       <!-- render the emphasis using quotes -->
-      <xsl:value-of select="louis:translate('&#x00AB;',string(my:getTable()))"/>
-      <xsl:apply-templates/>
       <xsl:value-of select="louis:translate('&#x00BB;',string(my:getTable()))"/>
+      <xsl:apply-templates/>
+      <xsl:value-of select="louis:translate('&#x00AB;',string(my:getTable()))"/>
     </xsl:when>
     <xsl:when test="@brl:render = 'ignore'">
       <!-- ignore the emphasis for braille -->
