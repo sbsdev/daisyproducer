@@ -327,6 +327,7 @@
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:abbr"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -337,6 +338,7 @@
         <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:em"/>
         <xs:element ref="dtbook:strong"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -431,6 +433,19 @@
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:span"/>
       </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="noteref">
+    <xs:complexType mixed="true">
+      <xs:attribute name="idref" use="required" type="xs:IDREF"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="note">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="dtbook:p"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:ID"/>
     </xs:complexType>
   </xs:element>
   <xs:group name="contractionhints">

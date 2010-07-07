@@ -497,6 +497,9 @@
         <zeroOrMore>
           <ref name="abbr"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -515,6 +518,9 @@
         </zeroOrMore>
         <zeroOrMore>
           <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -650,6 +656,24 @@
           <ref name="span"/>
         </zeroOrMore>
       </interleave>
+    </element>
+  </define>
+  <define name="noteref">
+    <element name="noteref">
+      <attribute name="idref">
+        <data type="IDREF"/>
+      </attribute>
+      <text/>
+    </element>
+  </define>
+  <define name="note">
+    <element name="note">
+      <attribute name="id">
+        <data type="ID"/>
+      </attribute>
+      <oneOrMore>
+        <ref name="p"/>
+      </oneOrMore>
     </element>
   </define>
   <define name="contractionhints">
