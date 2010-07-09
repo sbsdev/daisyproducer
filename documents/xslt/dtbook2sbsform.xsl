@@ -583,24 +583,28 @@ t
 <xsl:value-of select='louis:translate("Ende des",string(my:getTable()))'/>
 <xsl:choose>
   <xsl:when test="$volumes &gt; 12">
-<xsl:text>" %B
+<xsl:text>
+" %B
 </xsl:text>
   </xsl:when>
   <xsl:otherwise>
     <xsl:choose>
       <xsl:when test="$contraction='2'">
-<xsl:text>" %BC
+<xsl:text>
+" %BC
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-<xsl:text>" %BEN
+<xsl:text>
+" %BEN
 </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:otherwise>
 </xsl:choose>
 <xsl:value-of select='louis:translate("Bandes",string(my:getTable()))'/>
-<xsl:text>B-
+<xsl:text>
+B-
 y e EndVol
 </xsl:text>
 </xsl:if>
@@ -1671,6 +1675,7 @@ y REARe
   <xsl:template match="brl:volume[lang('de')]">
     <xsl:if test="@brl:grade = $contraction">
       <xsl:text>
+y EndVol
 y BrlVol
 </xsl:text>
     </xsl:if>
