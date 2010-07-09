@@ -585,19 +585,19 @@ t
   <xsl:when test="$volumes &gt; 12">
 <xsl:text>
 " %B
-</xsl:text>
+ </xsl:text>
   </xsl:when>
   <xsl:otherwise>
     <xsl:choose>
       <xsl:when test="$contraction='2'">
 <xsl:text>
 " %BC
-</xsl:text>
+ </xsl:text>
       </xsl:when>
       <xsl:otherwise>
 <xsl:text>
 " %BEN
-</xsl:text>
+ </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:otherwise>
