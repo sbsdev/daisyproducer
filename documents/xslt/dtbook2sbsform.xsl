@@ -570,8 +570,27 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxx Bandeinteilung xxxxxxxxxxxxxxxxxxxxxxxxxxx
 y b BrlVol
 ?vol:vol+1
 y Titlepage
+</xsl:text>
+<xsl:if test="$volumes &gt; 1 and $toc_level &gt; 0">
+  <xsl:text>
+xy InhTit
+H`lm1
+H`n5
+</xsl:text>
+  <xsl:choose>
+    <xsl:when test="$volumes &lt; 13">
+      <xsl:text>"H`t%B</xsl:text>
+  <xsl:value-of select='louis:translate("er",string(my:getTable()))'/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>"H`t%B</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:value-of select='louis:translate(" Band",string(my:getTable()))'/>
+  <xsl:text>
 y e BrlVol
 </xsl:text>
+</xsl:if>
 
 <xsl:if test="//brl:volume">
 <xsl:text>y b EndVol
@@ -642,6 +661,23 @@ t======
 B-
 y e EndBook
 </xsl:text>
+
+<xsl:if test="$volumes &gt; 1 and $toc_level &gt; 0">
+  <xsl:text>
+y b InhTit	; Hilfsmakro zum Inhaltsverzeichnis der Einzelbände
+H`z
+H`P1
+I ~=j
+i k=0
+H`L
+H`t~~</xsl:text>
+<xsl:value-of select='louis:translate("Inhaltsverzeichnis",string(my:getTable()))'/>
+<xsl:text>
+H`u-
+H`lm1
+y e InhTit
+  </xsl:text>
+</xsl:if>
 
 <xsl:if test="$volumes &gt; 1">
   <!-- FIXME: numbers should be translated with liblouis -->
