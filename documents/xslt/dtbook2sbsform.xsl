@@ -644,6 +644,33 @@ y e EndBook
 </xsl:text>
 
 <xsl:if test="$volumes &gt; 1">
+  <!-- FIXME: numbers should be translated with liblouis -->
+  <xsl:text>
+y b Ziff   ; Hilfsmakro zum Übersetzen der (tiefgestellten) Ziffern
+?z=0
++R=Z)
+?z=1
++R=Z,
+?z=2
++R=Z;
+?z=3
++R=Z:
+?z=4
++R=Z/
+?z=5
++R=Z?
+?z=6
++R=Z+
+?z=7
++R=Z=
+?z=8
++R=Z(
+?z=9
++R=B*
+"R=B%B%Z
+y e Ziff
+  </xsl:text>
+
   <xsl:text>y b Volumes
 lv16
 t
@@ -760,99 +787,16 @@ t
       </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
-      <!-- Vereinfachen mit translate() -->
-      <xsl:text>?vol=1
-+R=B#,
-?vol=2
-+R=B#;
+      <xsl:text>
+xxx Zahl einfügen (herabgesetzt) - Maximal 99
+R=B#
+?z:vol/10
+?z>0
++y Ziff
+?z:vol%10
+y Ziff
+" %B
 </xsl:text>
-      <xsl:if test="$volumes &gt; 2">
-	<xsl:text>?vol=3
-+R=B#:
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 3">
-	<xsl:text>?vol=4
-+R=B#/
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 4">
-	<xsl:text>?vol=5
-+R=B#?
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 5">
-	<xsl:text>?vol=6
-+R=B#+
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 6">
-	<xsl:text>?vol=7
-+R=B#=
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 7">
-	<xsl:text>?vol=8
-+R=B#(
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 8">
-	<xsl:text>?vol=9
-+R=B#*
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 9">
-	<xsl:text>?vol=10
-+R=B#,)
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 10">
-	<xsl:text>?vol=11
-+R=B#,,
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 11">
-	<xsl:text>?vol=12
-+R=B#,;
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 12">
-	<xsl:text>?vol=13
-+R=B#,:
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 13">
-	<xsl:text>?vol=14
-+R=B#,/
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 14">
-	<xsl:text>?vol=15
-+R=B#,?
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 15">
-	<xsl:text>?vol=16
-+R=B#,+
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 16">
-	<xsl:text>?vol=17
-+R=B#,=
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 17">
-	<xsl:text>?vol=18
-+R=B#,(
-</xsl:text>
-      </xsl:if>
-      <xsl:if test="$volumes &gt; 18">
-	<xsl:text>?vol=19
-+R=B#,*
-</xsl:text>
-      </xsl:if>
-      <xsl:text>" %B
-      </xsl:text>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:text> </xsl:text>
