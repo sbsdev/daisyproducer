@@ -917,7 +917,7 @@ i f=1 l=1
 <xsl:value-of select='louis:translate("geschützten Werks. ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("Sie ",string(my:getTable("v-form")))'/>
 <xsl:value-of select='louis:translate("können ",string(my:getTable()))'/>
-<xsl:value-of select='louis:translate("es im Rahmen des Urheberrechts persönlich nutzen ",string(my:getTable()))'/>
+<xsl:value-of select='louis:translate("es im Rahmen des Urheberrechts persönlich nutzen, ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("dürfen es aber nicht weiter verbreiten oder öffentlich ",string(my:getTable()))'/>
 <xsl:value-of select='louis:translate("zugänglich machen.",string(my:getTable()))'/>
 <xsl:choose>
