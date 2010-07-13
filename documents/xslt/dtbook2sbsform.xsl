@@ -1673,8 +1673,8 @@ y BrlVol
 
   <!-- Text nodes are translated with liblouis -->
 
-  <!-- Handle punctuation after a number -->
-  <xsl:template match="text()[lang('de') and my:ends-with-number(string(preceding::text()[1])) and my:starts-with-punctuation(string())]">
+  <!-- Handle punctuation after a number and after ordinals -->
+  <xsl:template match="text()[lang('de') and (my:ends-with-number(string(preceding::text()[1])) or preceding::*[position()=1 and local-name()='num' and @role='ordinal']) and my:starts-with-punctuation(string())]">
       <xsl:value-of select="louis:translate(concat('&#x00B7;',string()),string(my:getTable()))"/>
   </xsl:template>
 
