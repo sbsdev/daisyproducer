@@ -123,6 +123,7 @@
         <xs:element ref="dtbook:poem"/>
         <xs:element ref="dtbook:author"/>
         <xs:element ref="dtbook:byline"/>
+        <xs:element ref="brl:volume"/>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -144,7 +145,6 @@
             <xs:group ref="dtbook:levelcontent"/>
             <xs:element ref="dtbook:h1"/>
             <xs:element ref="dtbook:level2"/>
-            <xs:element ref="brl:volume"/>
           </xs:choice>
           <xs:attributeGroup ref="dtbook:commonAttributes"/>
         </xs:complexType>
