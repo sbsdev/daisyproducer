@@ -81,6 +81,16 @@
     <func:result select="contains($string,'.')"/>
   </func:function>
 
+  <func:function name="my:ends-with-number">
+    <xsl:param name="string"/>
+    <func:result select="string(number(substring($string, (string-length($string))))) != 'NaN'"/>
+  </func:function>
+
+  <func:function name="my:starts-with-punctuation">
+    <xsl:param name="string"/>
+    <func:result select="starts-with($string,';') or starts-with($string,':') or starts-with($string,'?') or starts-with($string,'!') or starts-with($string,'\)') or starts-with($string,'*')"/>
+  </func:function>
+
   <xsl:template name="getTable">
     <xsl:param name="context" select="local-name()"/>
     <xsl:choose>
@@ -1662,6 +1672,11 @@ y BrlVol
   </xsl:template>
 
   <!-- Text nodes are translated with liblouis -->
+
+  <!-- Handle punctuation after a number -->
+  <xsl:template match="text()[lang('de') and my:ends-with-number(string(preceding::text()[1])) and my:starts-with-punctuation(string())]">
+      <xsl:value-of select="louis:translate(concat('&#x00B7;',string()),string(my:getTable()))"/>
+  </xsl:template>
 
   <xsl:template match="text()">
     <xsl:value-of select='louis:translate(string(),string(my:getTable()))'/>
