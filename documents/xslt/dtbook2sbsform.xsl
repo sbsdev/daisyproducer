@@ -1246,10 +1246,13 @@ y LI
   <xsl:template match="dtb:pagenum">
       <xsl:text>
 j </xsl:text>
+      
     <xsl:value-of select="text()"/>
-    <!-- Add a newline unless the following node is another pagenum -->
+    <!-- Add a newline unless the following node is another pagenum
+         (ignore intermediate empty text nodes and comment nodes -->
+    <xsl:variable name="following-nodes" select="following-sibling::* | following-sibling::text()[normalize-space(.)]"/>
     <!-- FIXME: this doesn't properly handle comment nodes -->
-    <xsl:if test="not(following-sibling::node()[position() = 1 and local-name() = 'pagenum'])">
+    <xsl:if test="not($following-nodes[position() = 1 and local-name() = 'pagenum'])">
       <!-- add a space for the following inline elements -->
       <xsl:text>
  </xsl:text>
