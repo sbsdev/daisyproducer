@@ -598,9 +598,12 @@ H`n5
   </xsl:choose>
   <xsl:value-of select='louis:translate(" Band",string(my:getTable()))'/>
   <xsl:text>
-y e BrlVol
+H`lm1
 </xsl:text>
 </xsl:if>
+<xsl:text>
+y e BrlVol
+</xsl:text>
 
 <xsl:if test="//brl:volume">
 <xsl:text>y b EndVol
@@ -674,7 +677,7 @@ y e EndBook
 
 <xsl:if test="$volumes &gt; 1 and $toc_level &gt; 0">
   <xsl:text>
-y b InhTit	; Hilfsmakro zum Inhaltsverzeichnis der Einzelbände
+y b InhTit                   ; Hilfsmakro zum Inhaltsverzeichnis der Einzelbaende
 H`z
 H`P1
 I ~=j
@@ -689,10 +692,10 @@ y e InhTit
   </xsl:text>
 </xsl:if>
 
-<xsl:if test="$volumes &gt; 1">
+<xsl:if test="$volumes &gt; 12">
   <!-- FIXME: numbers should be translated with liblouis -->
   <xsl:text>
-y b Ziff   ; Hilfsmakro zum Übersetzen der (tiefgestellten) Ziffern
+y b Ziff   ; Hilfsmakro zum Uebersetzen der (tiefgestellten) Ziffern
 ?z=0
 +R=Z)
 ?z=1
@@ -715,8 +718,10 @@ y b Ziff   ; Hilfsmakro zum Übersetzen der (tiefgestellten) Ziffern
 +R=B*
 "R=B%B%Z
 y e Ziff
-  </xsl:text>
+</xsl:text>
+</xsl:if>
 
+<xsl:if test="$volumes &gt; 1">
   <xsl:text>y b Volumes
 lv16
 t
@@ -834,7 +839,7 @@ t
     </xsl:when>
     <xsl:otherwise>
       <xsl:text>
-xxx Zahl einfügen (herabgesetzt) - Maximal 99
+xxx Zahl einfuegen (herabgesetzt) - Maximal 99
 R=B#
 ?z:vol/10
 ?z>0
@@ -868,7 +873,7 @@ t
 <xsl:text>
 u-
 </xsl:text>
-<xsl:if test="//brl:volume">
+<xsl:if test="$volumes &gt; 1">
 <xsl:text>
 y Volumes
 </xsl:text>
