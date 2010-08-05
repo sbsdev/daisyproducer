@@ -311,11 +311,7 @@ class SBSForm:
         result.freeDoc()
         
         f = open(outputFile, 'w')
-        # break_on_hyphens=True (as is the default) has the negative
-        # side effect to break on '*' or any non-word character which
-        # we don't want
-        wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ', 
-                                       break_long_words=False, break_on_hyphens=False)
+        wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
         for line in stringval.splitlines(True):
             if line.startswith(' '):
                 line = wrapper.fill(line.strip()) + '\n'
