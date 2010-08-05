@@ -864,12 +864,12 @@ bb
 L5
 t
  </xsl:text>
-<xsl:apply-templates select="//dtb:docauthor/text()"/>
+<xsl:apply-templates select="//dtb:docauthor"/>
 <xsl:text>
 l2
 t
  </xsl:text>
-<xsl:apply-templates select="//dtb:doctitle/text()"/>
+<xsl:apply-templates select="//dtb:doctitle"/>
 <xsl:text>
 u-
 </xsl:text>
@@ -969,11 +969,11 @@ l
 p
 L5
  </xsl:text>
-<xsl:apply-templates select="//dtb:docauthor/text()"/>
+<xsl:apply-templates select="//dtb:docauthor"/>
 <xsl:text>
 l2
  </xsl:text>
-<xsl:apply-templates select="//dtb:doctitle/text()"/>
+<xsl:apply-templates select="//dtb:doctitle"/>
 <xsl:text>
 u-
 l
@@ -1097,11 +1097,11 @@ y BODYe
   </xsl:template>
 
   <xsl:template match="dtb:doctitle">
-    <!-- ignore -->
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:docauthor">
-    <!-- ignore -->
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="dtb:level1">
