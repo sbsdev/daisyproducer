@@ -63,10 +63,18 @@ class XMLContent:
             None, 
             # validate author
             self._validateMetaAttribute("dc:Creator", author) +
-            self._validateMetaElement("docauthor", author) +
+            # FIXME: It would be nice to check the docauthor element,
+            # however it can contain (almost arbitrary) tags such as
+            # <em>, <abbr> or any contraction hint. If we want to
+            # check we need to strip the tags first.
+#            self._validateMetaElement("docauthor", author) +
             # validate title
             self._validateMetaAttribute("dc:Title", title) +
-            self._validateMetaElement("doctitle", title) +
+            # FIXME: It would be nice to check the doctitle element,
+            # however it can contain (almost arbitrary) tags such as
+            # <em>, <abbr> or any contraction hint. If we want to
+            # check we need to strip the tags first.
+#            self._validateMetaElement("doctitle", title) +
             # validate sourcePublisher
             self._validateMetaAttribute("dtb:sourcePublisher", source_publisher) +
             # validate subject
