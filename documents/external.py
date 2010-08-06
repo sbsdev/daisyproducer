@@ -4,6 +4,7 @@ import textwrap
 from os.path import join, basename, splitext
 from shutil import rmtree
 from subprocess import call, Popen, PIPE
+import re
 
 import libxml2
 import libxslt
@@ -311,6 +312,14 @@ class SBSForm:
         result.freeDoc()
         
         f = open(outputFile, 'w')
+        # FIXME: Do a little monkey patching to make sure the
+        # TextWrapper doesn't break ASCIIBraille (which contains
+        # non-word characters such as '*' and '-' inside words). Once
+        # we move to Python2.6 this isn't needed anymore. All you do
+        # then is to invoke the TextWrapper as follows:
+        # wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ', 
+        #                                break_long_words=False, break_on_hyphens=False)
+        textwrap.TextWrapper.wordsep_re = re.compile(r'(\s+)')
         wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
         for line in stringval.splitlines(True):
             if line.startswith(' '):
