@@ -50,6 +50,11 @@
     <func:result select="contains($upperCaseLetters,$char)"/>
   </func:function>
 
+  <func:function name="my:isNumber">
+    <xsl:param name="number"/>
+    <func:result select="number($number)=number($number)"/>
+  </func:function>
+
   <func:function name="my:hasSameCase">
     <xsl:param name="a"/>
     <xsl:param name="b"/>
@@ -1450,13 +1455,21 @@ y REARe
 	<xsl:variable name="temp">
 	  <xsl:for-each select="my:tokenizeByCase($content)">
 	    <!-- prepend more upper case sequences longer than one char with > -->
-	    <xsl:if test="(string-length(.) &gt; 1 or position()=last()) and my:isUpper(substring(.,1,1))"><xsl:text>╦</xsl:text></xsl:if>
+	    <xsl:if test="(string-length(.) &gt; 1 or (position()=last()) and my:isUpper(substring(.,1,1))) or my:isNumber((following-sibling::*)[1])">
+	      <xsl:text>╦</xsl:text>
+	    </xsl:if>
 	    <!-- prepend single char upper case with $ (unless it is the last char then prepend with >) -->
-	    <xsl:if test="string-length(.) = 1 and my:isUpper(substring(.,1,1)) and not(position()=last())"><xsl:text>╤</xsl:text></xsl:if>
+	    <xsl:if test="string-length(.) = 1 and my:isUpper(substring(.,1,1)) and not(position()=last()) and not(my:isNumber((following-sibling::*)[1]))">
+	      <xsl:text>╤</xsl:text>
+	    </xsl:if>
 	    <!-- prepend the first char with ' if it is lower case -->
-	    <xsl:if test="position()=1 and my:isLower(substring(.,1,1))"><xsl:text>╩</xsl:text></xsl:if>
+	    <xsl:if test="position()=1 and my:isLower(substring(.,1,1))">
+	      <xsl:text>╩</xsl:text>
+	    </xsl:if>
 	    <!-- prepend any lower case sequences that follow an upper case sequence with ' -->
-	    <xsl:if test="my:isLower(substring(.,1,1)) and string-length((preceding-sibling::*)[1]) &gt; 1 and my:isUpper(substring((preceding-sibling::*)[1],1,1))"><xsl:text>╩</xsl:text></xsl:if>
+	    <xsl:if test="my:isLower(substring(.,1,1)) and string-length((preceding-sibling::*)[1]) &gt; 1 and my:isUpper(substring((preceding-sibling::*)[1],1,1))">
+	      <xsl:text>╩</xsl:text>
+	    </xsl:if>
 	    <xsl:value-of select="."/>
 	  </xsl:for-each>
 	</xsl:variable>
