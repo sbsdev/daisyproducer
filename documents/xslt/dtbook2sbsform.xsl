@@ -91,6 +91,18 @@
     <func:result select="string(number(substring($string, (string-length($string))))) != 'NaN'"/>
   </func:function>
 
+  <xsl:variable name="non-word"><xsl:text> ,.:;'"?!&#x000D;&#x000A;&#x0009;</xsl:text></xsl:variable>
+
+  <func:function name="my:ends-with-non-word">
+    <xsl:param name="string"/>
+    <func:result select="contains($non-word, substring($string, string-length($string)))"/>
+  </func:function>
+
+  <func:function name="my:starts-with-non-word">
+    <xsl:param name="string"/>
+    <func:result select="contains($non-word, substring($string, 1,1))"/>
+  </func:function>
+
   <func:function name="my:starts-with-punctuation">
     <xsl:param name="string"/>
     <func:result select="starts-with($string,';') or starts-with($string,':') or starts-with($string,'?') or starts-with($string,'!') or starts-with($string,'\)') or starts-with($string,'*')"/>
@@ -1421,9 +1433,30 @@ y REARe
 	  <xsl:value-of select="louis:translate('&#x2563;',string(my:getTable()))"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <!-- Its a single word. Insert a single word announcement -->
-	  <xsl:value-of select="louis:translate('&#x255F;',string(my:getTable()))"/>
-	  <xsl:apply-templates/>
+	  <!-- Its a single word. Insert a single word announcement unless it is within a word -->
+	  <xsl:choose>
+	    <!-- emph is at the beginning of the word -->
+	    <xsl:when test="my:ends-with-non-word(preceding-sibling::text()[1]) and not(my:starts-with-non-word(following-sibling::text()[1]))">
+	      <xsl:value-of select="louis:translate('&#x255F;',string(my:getTable()))"/>
+	      <xsl:apply-templates/>
+	      <xsl:value-of select="louis:translate('&#x2563;',string(my:getTable()))"/>
+	    </xsl:when>
+	    <!-- emph is at the end of the word -->
+	    <xsl:when test="not(my:ends-with-non-word(preceding-sibling::text()[1])) and my:starts-with-non-word(following-sibling::text()[1])">
+	      <xsl:value-of select="louis:translate('&#x2561;',string(my:getTable()))"/>
+	      <xsl:apply-templates/>
+	    </xsl:when>
+	    <!-- emph is inside the word -->
+	    <xsl:when test="not(my:ends-with-non-word(preceding-sibling::text()[1])) and not(my:starts-with-non-word(following-sibling::text()[1]))">
+	      <xsl:value-of select="louis:translate('&#x2561;',string(my:getTable()))"/>
+	      <xsl:apply-templates/>
+	      <xsl:value-of select="louis:translate('&#x2563;',string(my:getTable()))"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="louis:translate('&#x255F;',string(my:getTable()))"/>
+	      <xsl:apply-templates/>
+	    </xsl:otherwise>
+	  </xsl:choose>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
