@@ -706,7 +706,7 @@ H`t~~</xsl:text>
 H`u-
 H`lm1
 y e InhTit
-  </xsl:text>
+</xsl:text>
 </xsl:if>
 
 <xsl:if test="$volumes &gt; 12">
