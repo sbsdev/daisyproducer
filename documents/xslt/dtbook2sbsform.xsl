@@ -1488,7 +1488,7 @@ y REARe
 	<xsl:variable name="temp">
 	  <xsl:for-each select="my:tokenizeByCase($content)">
 	    <!-- prepend more upper case sequences longer than one char with > -->
-	    <xsl:if test="(string-length(.) &gt; 1 or (position()=last()) and my:isUpper(substring(.,1,1))) or my:isNumber((following-sibling::*)[1])">
+	    <xsl:if test="((string-length(.) &gt; 1 or (position()=last())) and my:isUpper(substring(.,1,1))) or my:isNumber((following-sibling::*)[1])">
 	      <xsl:text>╦</xsl:text>
 	    </xsl:if>
 	    <!-- prepend single char upper case with $ (unless it is the last char then prepend with >) -->
