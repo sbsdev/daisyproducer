@@ -285,8 +285,16 @@ class SBSForm:
             pass
 
         typeform = len(str)*[SBSForm.modeMap[mode]] if mode else None
+        str = str.decode('utf-8')
+        # FIXME: The following is a workaround for a bug in liblouis.
+        # We want consequtive white space merged into one. The Braille
+        # tables have a rule that should do this, but it only seems to
+        # work up to 32 spaces. For that reason we introduce the
+        # following piece of code, which basically does a
+        # normalize-space without stripping leading and trailing space.
+        str = re.sub('\s+', ' ', str)
         braille = louis.translate(translation_tables.split(','), 
-                                  str.decode('utf-8'), typeform=typeform)[0]
+                                  str, typeform=typeform)[0]
         return braille.encode('utf-8')
 
 
