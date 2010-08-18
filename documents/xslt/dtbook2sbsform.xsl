@@ -1067,6 +1067,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Buchinhalt xxxxxxxxxxxxxxxxxxxxxxxxxxxx
   </xsl:template>
 
   <xsl:template match="dtb:dtbook">
+    <xsl:if test="//dtb:note">
+      <xsl:call-template name="insert_footnotes"/>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="$include_macros = '1'">
 	<xsl:call-template name="sbsform-macro-definitions"/>
@@ -1217,6 +1220,22 @@ y LEVEL6e
     <xsl:apply-templates/>
   </xsl:template>
 
+  <xsl:template match="dtb:note/dtb:p">   
+    <xsl:text>
+</xsl:text>
+    <xsl:choose>
+      <xsl:when test="position()=1">
+	<xsl:text>p </xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>w </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>
+ </xsl:text>
+    <xsl:apply-templates/>
+  </xsl:template>
+
   <xsl:template match="dtb:p">
     <xsl:text>
 </xsl:text>
@@ -1349,6 +1368,40 @@ y POEMb
     <xsl:text>
 y POEMe
 </xsl:text>
+  </xsl:template>
+
+  <xsl:template name="insert_footnotes">
+    <xsl:text>
+i b=</xsl:text><xsl:value-of select="$cells_per_line"/>
+<xsl:text>
+i s=</xsl:text><xsl:value-of select="$lines_per_page"/>
+    <xsl:text>
+"N %Y.nf
+O
+I L=n
+i f=1 l=3 w=5</xsl:text>
+    <xsl:for-each select="//dtb:note">
+      <xsl:apply-templates/>
+    </xsl:for-each>
+    <xsl:text>
+O
+"N %Y.f
+I *=j L=j
+i f=3 l=1
+"* %Y.nf
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="dtb:note">
+    <!-- Ignore notes. Place them at the beginning or with each chapter -->
+  </xsl:template>
+
+  <xsl:template match="dtb:noteref">
+    <!-- Prepend an asterisk to the noteref to announce it -->
+    <xsl:value-of select="louis:translate(concat('*',string(.)),string(my:getTable()))"/>
+    <xsl:text>
+* 
+ </xsl:text>
   </xsl:template>
 
   <xsl:template match="dtb:author">

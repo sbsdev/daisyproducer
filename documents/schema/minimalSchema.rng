@@ -160,6 +160,9 @@
         <ref name="poem"/>
       </zeroOrMore>
       <zeroOrMore>
+        <ref name="note"/>
+      </zeroOrMore>
+      <zeroOrMore>
         <ref name="author"/>
       </zeroOrMore>
       <zeroOrMore>
@@ -184,6 +187,9 @@
       </zeroOrMore>
       <zeroOrMore>
         <ref name="strong"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="noteref"/>
       </zeroOrMore>
       <optional>
         <ref name="toc-line"/>
@@ -359,6 +365,9 @@
         <zeroOrMore>
           <ref name="span"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="noteref"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -396,6 +405,9 @@
         <zeroOrMore>
           <ref name="abbr"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="noteref"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -417,6 +429,9 @@
         </zeroOrMore>
         <zeroOrMore>
           <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="noteref"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -450,6 +465,9 @@
         </zeroOrMore>
         <zeroOrMore>
           <ref name="contractionhints"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="noteref"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -500,6 +518,9 @@
         <zeroOrMore>
           <ref name="span"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="noteref"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -521,6 +542,9 @@
         </zeroOrMore>
         <zeroOrMore>
           <ref name="span"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="noteref"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -569,6 +593,9 @@
         </zeroOrMore>
         <zeroOrMore>
           <ref name="pagenum"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="noteref"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -655,13 +682,16 @@
         <zeroOrMore>
           <ref name="span"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="noteref"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
   <define name="noteref">
     <element name="noteref">
       <attribute name="idref">
-        <data type="IDREF"/>
+        <data type="string" datatypeLibrary=""/>
       </attribute>
       <text/>
     </element>

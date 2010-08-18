@@ -121,6 +121,7 @@
         <xs:element ref="dtbook:blockquote"/>
         <xs:element ref="dtbook:epigraph"/>
         <xs:element ref="dtbook:poem"/>
+        <xs:element ref="dtbook:note"/>
         <xs:element ref="dtbook:author"/>
         <xs:element ref="dtbook:byline"/>
         <xs:element ref="brl:volume"/>
@@ -133,6 +134,7 @@
       <xs:element ref="dtbook:span"/>
       <xs:element ref="dtbook:em"/>
       <xs:element ref="dtbook:strong"/>
+      <xs:element ref="dtbook:noteref"/>
       <xs:element ref="brl:toc-line"/>
       <xs:element ref="brl:running-line"/>
     </xs:choice>
@@ -237,6 +239,7 @@
         <xs:element ref="dtbook:abbr"/>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:span"/>
+        <xs:element ref="dtbook:noteref"/>
       </xs:choice>
       <xs:attributeGroup ref="dtbook:commonAttributes"/>
       <xs:attribute name="class">
@@ -271,6 +274,7 @@
         <xs:element ref="dtbook:pagenum"/>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:abbr"/>
+        <xs:element ref="dtbook:noteref"/>
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>
@@ -282,6 +286,7 @@
         <xs:element ref="dtbook:pagenum"/>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:abbr"/>
+        <xs:element ref="dtbook:noteref"/>
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>
@@ -296,6 +301,7 @@
         <xs:element ref="dtbook:strong"/>
         <xs:element ref="dtbook:abbr"/>
         <xs:group ref="dtbook:contractionhints"/>
+        <xs:element ref="dtbook:noteref"/>
       </xs:choice>
       <xs:attribute ref="brl:grade"/>
       <xs:attribute ref="brl:accents"/>
@@ -328,6 +334,7 @@
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:span"/>
+        <xs:element ref="dtbook:noteref"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -339,6 +346,7 @@
         <xs:element ref="dtbook:em"/>
         <xs:element ref="dtbook:strong"/>
         <xs:element ref="dtbook:span"/>
+        <xs:element ref="dtbook:noteref"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -374,6 +382,7 @@
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:lic"/>
         <xs:element ref="dtbook:pagenum"/>
+        <xs:element ref="dtbook:noteref"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -432,12 +441,13 @@
         <xs:element ref="dtbook:abbr"/>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:span"/>
+        <xs:element ref="dtbook:noteref"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
   <xs:element name="noteref">
     <xs:complexType mixed="true">
-      <xs:attribute name="idref" use="required" type="xs:IDREF"/>
+      <xs:attribute name="idref" use="required" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="note">
