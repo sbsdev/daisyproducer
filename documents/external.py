@@ -287,7 +287,7 @@ class SBSForm:
         typeform = len(str)*[SBSForm.modeMap[mode]] if mode else None
         str = str.decode('utf-8')
         # FIXME: The following is a workaround for a bug in liblouis.
-        # We want consequtive white space merged into one. The Braille
+        # We want consecutive white space merged into one. The Braille
         # tables have a rule that should do this, but it only seems to
         # work up to 32 spaces. For that reason we introduce the
         # following piece of code, which basically does a
