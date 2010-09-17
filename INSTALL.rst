@@ -65,7 +65,7 @@ Install the basic packages::
   sudo aptitude install python python-django python-lxml \
   python-docutils python-libxml2 python-libxslt1 sun-java6-jre \
   texlive-xetex texlive-latex-extra texlive-latex-recommended \
-  texlive-lang-german ttf-tiresias lmodern xsltproc
+  texlive-lang-german ttf-tiresias lmodern xsltproc unzip
 
 Database
 --------
@@ -83,8 +83,10 @@ Install PostgreSQL::
 Set up a database, a user and a database::
 
   sudo -u postgres sh
-  createuser -DRS daisyproducer
+  createuser -DRSP daisyproducer
+  # enter the password "sekret" at the prompt
   createdb -O daisyproducer daisyproducer_prod
+  # adapt pg_hba so that the user daisyproducer can log in with a password
 
 For MySQL
 
@@ -113,9 +115,9 @@ as follows::
   # install liblouis dependencies
   sudo aptitude install pkg-config libxml2-dev
   # first install liblouis
-  wget http://liblouis.googlecode.com/files/liblouis-1.8.0.tar.gz
-  tar xzf liblouis-1.8.0.tar.gz
-  cd liblouis-1.8.0
+  wget http://liblouis.googlecode.com/files/liblouis-2.1.1.tar.gz
+  tar xzf liblouis-2.1.1.tar.gz
+  cd liblouis-2.1.1
   ./configure --enable-ucs4
   make
   sudo make install
@@ -123,6 +125,7 @@ as follows::
   cd python
   sudo python setup.py install
   # now install liblouisxml
+  cd
   wget http://liblouisxml.googlecode.com/files/liblouisxml-2.1.0.tar.gz
   tar xzf liblouisxml-2.1.0.tar.gz
   cd liblouisxml-2.1.0
@@ -138,9 +141,9 @@ The Daisy Pipeline has not been packaged so far and will have to be
 installed somewhere::
 
   cd /opt
-  sudo wget http://downloads.sourceforge.net/daisymfc/pipeline-20090410.zip
-  sudo unzip pipeline-20090410.zip
-  sudo chmod a+x pipeline-20090410/pipeline.sh
+  sudo wget http://downloads.sourceforge.net/daisymfc/pipeline-20100125.zip
+  sudo unzip pipeline-20100125.zip
+  sudo chmod a+x pipeline-20100125/pipeline.sh
 
 The Daisy Pipeline has some dependencies as well, namely lame and
 espeak::
@@ -189,9 +192,11 @@ There is currently no released version of Daisy Producer, so you can
 get it directly from the source code repository::
 
   sudo mkdir /srv/demo.daisyproducer.org
+  sudo chown dpadmin:dpadmin /srv/demo.daisyproducer.org/
   cd /srv/demo.daisyproducer.org
+  sudo aptitude install git-core autoconf automake
   git clone git://github.com/egli/daisy-producer.git daisyproducer
-  sudo aptitude install autoconf automake
+  cd daisyproducer
   autoreconf -vfi
   ./configure
 
@@ -227,7 +232,7 @@ The following settings have to be adapted for your site:
 
 - DAISY_PIPELINE_PATH
 
-  - set to os.path.join('/', 'tmp', 'pipeline-20090410')
+  - set to os.path.join('/', 'opt', 'pipeline-20100125')
 
 - SECRET_KEY
 - TIME_ZONE
