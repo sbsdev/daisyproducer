@@ -1762,7 +1762,8 @@ y REARe
   <xsl:template match="brl:time[lang('de')]">
     <xsl:variable name="time">
       <xsl:for-each select="str:tokenize(string(@value), ':')">
-	<xsl:value-of select="format-number(.,'#')"/>
+	<!-- we expect the time values to contain two digits based on the schema -->
+	<xsl:value-of select="format-number(.,'00')"/>
 	<xsl:if test="not(position() = last())">.</xsl:if>
       </xsl:for-each>
     </xsl:variable>
