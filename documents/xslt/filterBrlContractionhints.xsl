@@ -17,6 +17,9 @@
     </xsl:element>
   </xsl:template>
 
+  <!-- Drop the brl:running-line elements without retaining their content -->
+  <xsl:template match="brl:running-line"/>
+
   <!-- Drop the brl:* elements while retaining their content -->
   <xsl:template match="brl:*">
     <xsl:apply-templates/>
