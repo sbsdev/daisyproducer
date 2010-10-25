@@ -1670,7 +1670,7 @@ y REARe
     <xsl:variable name="table" select="string(my:getTable())"/>
     <xsl:variable name="abbr_table" select="string(my:getTable('abbr'))"/>
     <!-- For all number-unit combinations, e.g. 1 kg, 10 km, etc. drop the space -->
-    <xsl:variable name="measure" select="(str:tokenize(string(.), ' '))[position()=last()]"/>
+    <xsl:variable name="measure" select="(str:tokenize(normalize-space(string(.)), ' '))[position()=last()]"/>
     <xsl:for-each select="str:tokenize(string(.), ' ')">
       <xsl:if test="not(position() = last())">
 	<!-- FIXME: do not test for position but whether it is a number -->
