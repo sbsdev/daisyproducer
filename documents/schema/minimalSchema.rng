@@ -408,6 +408,9 @@
         <zeroOrMore>
           <ref name="noteref"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
