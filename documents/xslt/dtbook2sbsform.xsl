@@ -1738,6 +1738,19 @@ y REARe
     <!-- ignore -->
   </xsl:template>
 
+  <xsl:template match="brl:homograph">
+    <!-- Join all text elements with a special marker (U+x00A6) and
+         send the whole string to liblouis -->
+    <xsl:variable name="text">
+      <xsl:for-each select="text()">
+	<!-- simply ignore the separator elements -->
+	<xsl:value-of select="string(.)"/>
+	<xsl:if test="not(position() = last())">¦</xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:value-of select="louis:translate(string($text),string(my:getTable()))"/>
+  </xsl:template>
+
   <xsl:template match="brl:date[lang('de')]">
     <xsl:variable name="table" select="string(my:getTable())"/>
     <xsl:variable name="day_table" select="string(my:getTable('date_day'))"/>
