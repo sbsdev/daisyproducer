@@ -47,6 +47,8 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
     url(r'^manage/(?P<document_id>\d+)/$', 'detail', name='manage_detail'),
     url(r'^manage/create/$', 'create', name='manage_create'),
     url(r'^manage/(?P<document_id>\d+)/update/$', 'update', name='manage_update'),
+    url(r'^manage/upload_metadata_csv/$', 'upload_metadata_csv', name='upload_metadata_csv'),
+    url(r'^manage/import_metadata_csv/$', 'import_metadata_csv', name='import_metadata_csv'),
 )
 
 # help and about

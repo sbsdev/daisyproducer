@@ -1,3 +1,6 @@
+import csv
+
+from daisyproducer.documents.forms import CSVUploadForm
 from daisyproducer.documents.models import Document, Version
 from daisyproducer.documents.versionHelper import XMLContent
 from django.contrib.auth.decorators import login_required, permission_required
@@ -5,6 +8,7 @@ from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.forms import ModelForm
+from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.views.generic.create_update import create_object, update_object
 from django.views.generic.list_detail import object_list, object_detail
@@ -96,3 +100,56 @@ def update(request, document_id):
 
     return render_to_response('documents/manage_update.html', locals(),
                               context_instance=RequestContext(request))
+
+@login_required
+@permission_required("documents.add_document")
+@transaction.commit_on_success
+def upload_metadata_csv(request):
+
+    if request.method != 'POST':
+        form = CSVUploadForm()
+        return render_to_response('documents/manage_upload_metadata_csv.html', locals(), 
+                                  context_instance=RequestContext(request))
+
+    form = CSVUploadForm(request.POST, request.FILES)
+    if not form.is_valid():
+        return render_to_response('documents/manage_upload_metadata_csv.html', locals(), 
+                                  context_instance=RequestContext(request))
+            
+    csv_file = request.FILES['csv']
+    reader = csv.reader(open(csv_file.temporary_file_path()))
+    initial = [{'title': row[0], 'author': row[1], 'language': row[7]} for row in reader]
+    DocumentFormSet = modelformset_factory(Document, 
+                                           fields=('title', 'author', 'language'), 
+                                           extra=len(initial), can_delete=True)
+    formset = DocumentFormSet(queryset=Document.objects.none(), initial=initial)
+    return render_to_response('documents/manage_import_metadata_csv.html', locals(),
+                              context_instance=RequestContext(request))
+
+@login_required
+@permission_required("documents.add_document")
+@transaction.commit_on_success
+def import_metadata_csv(request):
+
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('upload_metadata_csv'))
+
+    DocumentFormSet = modelformset_factory(Document, 
+                                           fields=('title', 'author', 'language'), 
+                                           can_delete=True)
+    formset = DocumentFormSet(request.POST)
+    if not formset.is_valid():
+        return render_to_response('documents/manage_import_metadata_csv.html', locals(),
+                                  context_instance=RequestContext(request))
+    instances = formset.save()
+    for instance in instances:
+        if instance.version_set.count() == 0:
+            # create an initial version
+            contentString  = XMLContent.getInitialContent(instance)
+            content = ContentFile(contentString)
+            version = Version.objects.create(
+                comment = "Initial version created from meta data",
+                document = instance,
+                created_by = request.user)
+            version.content.save("initial_version.xml", content)
+    return HttpResponseRedirect(reverse('manage_index'))

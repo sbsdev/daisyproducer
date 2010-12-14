@@ -236,3 +236,9 @@ class DTBForm(forms.Form):
 #         label=_("DTBook Fix"), 
 # #        help_text=_("Select whether to apply DTBook Fix routines"),
 #         required=False)
+
+class CSVUploadForm(forms.Form):
+    csv = forms.FileField(
+        label = _("CSV File"), 
+        help_text = _("CSV File containing document meta data"))
+

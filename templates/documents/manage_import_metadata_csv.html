@@ -1,0 +1,38 @@
+{% extends "documents/manage.html" %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Bulk import documents" %}{% endblock %}
+
+{% block content %}
+<h2>{% trans "Bulk import documents" %}</h2>
+<form action="{% url import_metadata_csv %}" method="post">
+  {{ formset.management_form }}
+  <table>
+    {% for form in formset.forms %}
+    	{% if forloop.first %}
+    	<tr>
+	  {% for field in form.visible_fields %}
+          <th>{{ field.label }}</th>
+	  {% endfor %}
+    	</tr>
+    	{% endif %}
+       <tr id="{{ form.id.html_name }}">
+	 {% for field in form.visible_fields %}
+         <td>{{ field }}</td>
+	 {% endfor %}
+	 {% if form.errors %}
+	 <td>
+	   <div class="errorExplanation" id="errorExplanation">
+	     <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span>
+	     {{ form.errors }}
+	   </div>
+	 </td>
+	 {% endif %}
+       </tr>
+    {% endfor %}
+  </table>
+  <input type="submit" value="{% trans 'Import' %}" />
+  <a href="{% url manage_index %}">{% trans 'Cancel' %}</a>
+</form>
+
+{% endblock %}
