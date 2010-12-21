@@ -10,8 +10,8 @@
       </attribute>
       <attribute name="xml:lang">
         <choice>
-          <value>de-CH</value>
           <value>de</value>
+          <value>de-1901</value>
         </choice>
       </attribute>
       <ref name="head"/>

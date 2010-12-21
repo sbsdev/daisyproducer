@@ -5,8 +5,8 @@
   <xs:attribute name="lang">
     <xs:simpleType>
       <xs:restriction base="xs:token">
-        <xs:enumeration value="de-CH"/>
         <xs:enumeration value="de"/>
+        <xs:enumeration value="de-1901"/>
       </xs:restriction>
     </xs:simpleType>
   </xs:attribute>
