@@ -120,7 +120,8 @@ def upload_metadata_csv(request):
     reader = csv.reader(open(csv_file.temporary_file_path()))
     initial = [{'title': row[0], 'author': row[1], 'language': row[7]} for row in reader]
     DocumentFormSet = modelformset_factory(Document, 
-                                           fields=('title', 'author', 'language'), 
+#                                           fields=('title', 'author', 'language'), 
+                                           exclude=('publisher', 'date', 'state', 'assigned_to'), 
                                            extra=len(initial), can_delete=True)
     formset = DocumentFormSet(queryset=Document.objects.none(), initial=initial)
     return render_to_response('documents/manage_import_metadata_csv.html', locals(),
@@ -135,7 +136,7 @@ def import_metadata_csv(request):
         return HttpResponseRedirect(reverse('upload_metadata_csv'))
 
     DocumentFormSet = modelformset_factory(Document, 
-                                           fields=('title', 'author', 'language'), 
+                                           exclude=('publisher', 'date', 'state', 'assigned_to'), 
                                            can_delete=True)
     formset = DocumentFormSet(request.POST)
     if not formset.is_valid():
