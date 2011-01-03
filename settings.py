@@ -10,6 +10,7 @@ DATABASE_USER = 'eglic'
 DATABASE_PASSWORD = ''
 
 DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline-20100301')
+DTBOOK2SBSFORM_PATH = os.path.join(PROJECT_DIR, '..', '..', 'workspace', 'LiblouisSaxonExtension')
 
 # debug toolbar
 #INSTALLED_APPS +=  ('debug_toolbar',)

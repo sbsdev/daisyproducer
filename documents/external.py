@@ -263,76 +263,24 @@ class Liblouis:
 
 class SBSForm:
 
-    nodeName = None
-
-    modeMap = {
-        'plain_text' : louis.plain_text, 
-        'italic' : louis.italic, 
-        'underline' : louis.underline, 
-        'bold' : louis.bold, 
-        'computer_braille' : louis.computer_braille}
-
-    @staticmethod
-    def translate(ctx, str, translation_tables, mode=None):
-        global nodeName
-        
-        try:
-            pctxt = libxslt.xpathParserContext(_obj=ctx)
-            ctxt = pctxt.context()
-            tctxt = ctxt.transformContext()
-            nodeName = tctxt.insertNode().name
-        except:
-            pass
-
-        typeform = len(str)*[SBSForm.modeMap[mode]] if mode else None
-        str = str.decode('utf-8')
-        # FIXME: The following is a workaround for a bug in liblouis.
-        # We want consecutive white space merged into one. The Braille
-        # tables have a rule that should do this, but it only seems to
-        # work up to 32 spaces. For that reason we introduce the
-        # following piece of code, which basically does a
-        # normalize-space without stripping leading and trailing space.
-        str = re.sub('\s+', ' ', str)
-        braille = louis.translate(translation_tables.split(','), 
-                                  str, typeform=typeform)[0]
-        return braille.encode('utf-8')
-
-
     @staticmethod
     def dtbook2sbsform(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to sbsform"""
-        styledoc = libxml2.parseFile(
-            join(settings.PROJECT_DIR, 'documents', 'xslt', 'dtbook2sbsform.xsl'))
-        style = libxslt.parseStylesheetDoc(styledoc)
-        libxml2.substituteEntitiesDefault(1) # resolve entities. See http://xmlsoft.org/entities.html
-        doc = libxml2.parseFile(inputFile)
+        command = (
+            join(settings.DTBOOK2SBSFORM_PATH, 'dtbook2sbsform.sh'),
+            "-s:%s" % inputFile,
+            "-o:%s" % outputFile,
+            )
         kwargs["version"] = getVersion()
-        # map True and False to "1" and "0"
-        kwargs.update([(k, 1 if v == True else 0) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
-        # coerce Unicode strings into non-Unicode strings
-        kwargs.update([(k, str(v)) for (k, v) in kwargs.iteritems() if isinstance(v, unicode)])
-        # and quote the values
-        kwargs.update([(k, "'%s'" % v) for (k, v) in kwargs.iteritems()])
-        result = style.applyStylesheet(doc, kwargs)
-        stringval = style.saveResultToString(result)
-        style.freeStylesheet()
-        doc.freeDoc()
-        result.freeDoc()
-        
-        f = open(outputFile, 'w')
-        # FIXME: Do a little monkey patching to make sure the
-        # TextWrapper doesn't break ASCIIBraille (which contains
-        # non-word characters such as '*' and '-' inside words). Once
-        # we move to Python2.6 this isn't needed anymore. All you do
-        # then is to invoke the TextWrapper as follows:
-        # wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ', 
-        #                                break_long_words=False, break_on_hyphens=False)
-        textwrap.TextWrapper.wordsep_re = re.compile(r'(\s+)')
-        wrapper = textwrap.TextWrapper(width=80, initial_indent=' ', subsequent_indent=' ')
-        for line in stringval.splitlines(True):
-            if line.startswith(' '):
-                line = wrapper.fill(line.strip()) + '\n'
-            f.write(line)
-        f.close()
-
-libxslt.registerExtModuleFunction("translate", "http://liblouis.org/liblouis", SBSForm.translate)
+        for k, v in kwargs.iteritems():
+            if isinstance(v, bool):
+                # map True and False to "true()" and "false()"
+                command += ("?%s=%s" % (k, "true()" if v else "false()"),)
+            elif isinstance(v, int):
+                command += ("?%s=%s" % (k, v),)
+            else:
+                command += ("%s=%s" % (k,v),)
+        print command
+        output = Popen(command, stdout=PIPE).communicate()[0]
+        print output
+#        call(command)
