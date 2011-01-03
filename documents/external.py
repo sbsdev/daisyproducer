@@ -280,7 +280,4 @@ class SBSForm:
                 command += ("?%s=%s" % (k, v),)
             else:
                 command += ("%s=%s" % (k,v),)
-        print command
-        output = Popen(command, stdout=PIPE).communicate()[0]
-        print output
-#        call(command)
+        call(command)
