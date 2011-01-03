@@ -74,7 +74,7 @@ check-coverage:
 
 # Deployment
 deploy_test:
-	ssh xmlp ~/updateDaisyProducer.sh test
+	ssh xmlp-test ~/updateDaisyProducer.sh test
 
 deploy_production:
 	ssh xmlp ~/updateDaisyProducer.sh production
