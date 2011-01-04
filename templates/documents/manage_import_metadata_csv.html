@@ -9,25 +9,47 @@
   {{ formset.management_form }}
   <table>
     {% for form in formset.forms %}
-    	{% if forloop.first %}
-    	<tr>
-	  {% for field in form.visible_fields %}
-          <th>{{ field.label }}</th>
-	  {% endfor %}
-    	</tr>
-    	{% endif %}
-       <tr>
-	 {% for field in form.visible_fields %}
-         <td>{{ field }}</td>
-	 {% endfor %}
-	 {% if form.errors %}
+    {% if forloop.first %}
+    <tr><th>{% trans 'Document' %}</th><th>{{ form.DELETE.label_tag }}</th></tr>
+    {% endif %}
+       <tr class="{% cycle 'odd' 'even' %}">
 	 <td>
-	   <div class="errorExplanation" id="errorExplanation">
-	     <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span>
-	     {{ form.errors }}
-	   </div>
+	   <table>
+	     {% if form.errors %}
+	     <tr>
+	       <td colspan="4">
+		 <div class="errorExplanation" id="errorExplanation">
+		   <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span>
+		   {{ form.errors }}
+		 </div>
+	       </td>
+	     </tr>
+	     {% endif %}
+	     <tr>
+	       <th>{{ form.author.label_tag }}:</th>
+	       <td>{{ form.author }}</td>
+	       <th>{{ form.title.label_tag }}:</th>
+	       <td>{{ form.title }}</td>
+	     </tr>
+	     <tr>
+	       <th>{{ form.identifier.label_tag }}:</th>
+	       <td>{{ form.identifier }}</td>
+	       <th>{{ form.source.label_tag }}:</th>
+	       <td>{{ form.source }}</td>
+	     </tr>
+	     <tr>
+	       <th>{{ form.source_edition.label_tag }}:</th>
+	       <td>{{ form.source_edition }}</td>
+	       <th>{{ form.source_publisher.label_tag }}:</th>
+	       <td>{{ form.source_publisher }}</td>
+	     </tr>
+	     <tr>
+	       <th>{{ form.language.label_tag }}:</th>
+	       <td>{{ form.language }}</td>
+	     </tr>
+	   </table>
 	 </td>
-	 {% endif %}
+	 <td>{{ form.DELETE }}</td>
        </tr>
     {% endfor %}
   </table>
