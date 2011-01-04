@@ -71,7 +71,7 @@ class Document(models.Model):
         help_text=_("A string or number identifying the DTB"))
     source = models.CharField(
         _("Source"),
-        max_length=10, 
+        max_length=20, 
         help_text=_("A reference to a resource (e.g., a print original, ebook, etc.) from which the DTB is derived. Best practice is to use the ISBN when available"), 
         blank=True)
     language_choices = (('de', 'de'),
