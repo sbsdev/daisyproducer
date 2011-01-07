@@ -267,8 +267,6 @@ class SBSForm:
     def dtbook2sbsform(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to sbsform"""
         command = (
-            # join(settings.DTBOOK2SBSFORM_PATH, 'saxon.sh'),
-            # "-xsl:%s" % join(settings.DTBOOK2SBSFORM_PATH, 'xsl', 'dtbook2sbsform.xsl'),
             join(settings.DTBOOK2SBSFORM_PATH, 'dtbook2sbsform.sh'),
             "-s:%s" % inputFile,
             )
@@ -285,12 +283,3 @@ class SBSForm:
         p1 = Popen(command, stdout=f)
         p1.communicate()
         f.close()
-        # p1 = Popen(command, stdout=PIPE)
-        # # wrap long lines
-        # command = join(settings.DTBOOK2SBSFORM_PATH, 'linebreak.sh')
-        # #command = 'cat'
-        # print command
-        # f = open(outputFile, 'w')
-        # p2 = Popen(command, stdin=p1.stdout, stdout=f)
-        # p2.communicate()
-        # f.close()
