@@ -1,4 +1,4 @@
-import csv
+import csv, codecs
 
 from daisyproducer.documents.forms import CSVUploadForm
 from daisyproducer.documents.models import Document, Version
@@ -101,6 +101,29 @@ def update(request, document_id):
     return render_to_response('documents/manage_update.html', locals(),
                               context_instance=RequestContext(request))
 
+# The following two classes are from http://docs.python.org/release/2.6.5/library/csv.html
+class UTF8Recoder:
+    def __init__(self, f, encoding):
+        self.reader = codecs.getreader(encoding)(f)
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        return self.reader.next().encode("utf-8")
+
+class UnicodeReader:
+    def __init__(self, f, encoding="utf-8", **kwds):
+        f = UTF8Recoder(f, encoding)
+        self.reader = csv.reader(f, **kwds)
+
+    def next(self):
+        row = self.reader.next()
+        return [unicode(s, "utf-8") for s in row]
+
+    def __iter__(self):
+        return self
+
 @login_required
 @permission_required("documents.add_document")
 @transaction.commit_on_success
@@ -117,7 +140,8 @@ def upload_metadata_csv(request):
                                   context_instance=RequestContext(request))
             
     csv_file = request.FILES['csv']
-    reader = csv.reader(open(csv_file.temporary_file_path()), delimiter='\t')
+    # FIXME: It's pretty annoying to hard code the expected encoding of the csv
+    reader = UnicodeReader(open(csv_file.temporary_file_path()), encoding="iso-8859-1", delimiter='\t')
     initial = [{'title': row[0], 'author': row[1], 
                 'identifier': row[2], 'source': row[3], 
                 'source_edition': row[4], 'source_publisher': row[5],
