@@ -31,7 +31,14 @@ class State(models.Model):
         if not state in self.next_states.all():
             raise StateError("Cannot transition to %s from %s" % (self.name, state.name))
         return state
+    
+    # used for admin view
+    def all_next_states(self):
+        return ",".join([state.name for state in self.next_states.all()])
 
+    # used for admin view
+    def all_responsible(self):
+        return ",".join([group.name for group in self.responsible.all()])
 
     class Meta:
         ordering = ['sort_order']

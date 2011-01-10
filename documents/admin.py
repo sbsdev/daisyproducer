@@ -9,7 +9,7 @@ class AttachmentInline(admin.TabularInline):
 	model = Attachment
 
 class StateAdmin(admin.ModelAdmin):
-	list_display = ('name', 'sort_order',)
+	list_display = ('name', 'all_next_states', 'all_responsible', 'sort_order',)
 	ordering = ('sort_order',)
 	search_fields = ('name',)
 
