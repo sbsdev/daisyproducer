@@ -1,4 +1,4 @@
-import uuid
+import uuid, datetime
 from os.path import join
 from shutil import rmtree
 
@@ -70,7 +70,6 @@ class Document(models.Model):
         help_text=_("The agency responsible for making the DTB available"))
     date = models.DateField(
         _("Date"),
-        auto_now_add=True,
         help_text=_("Date of publication of the DTB"))
     identifier = models.CharField(
         _("Identifier"),
@@ -118,8 +117,8 @@ class Document(models.Model):
 
     state = models.ForeignKey(State, verbose_name=_("State"))
     assigned_to = models.ForeignKey(User, verbose_name=_("Assigned to"), null=True, blank=True)
-    created_at = models.DateTimeField(_("Created"), auto_now_add=True)
-    modified_at = models.DateTimeField(_("Last Modified"), auto_now=True)
+    created_at = models.DateTimeField(_("Created"))
+    modified_at = models.DateTimeField(_("Last Modified"))
 
     def __unicode__(self):
         return self.title
@@ -133,6 +132,10 @@ class Document(models.Model):
         self.save()
 
     def save(self):
+        if not self.id:
+            self.created_at = datetime.datetime.now()
+            self.date = datetime.date.today() 
+        self.modified_at = datetime.datetime.now()             
         # set initial state
         if not self.pk:
             self.state = State.objects.filter(name='new')[0]
