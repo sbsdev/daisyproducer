@@ -7,19 +7,18 @@
 {% block sidebar %}
 {% if object %}
 <div id="sidebar">
-  <h3>{% trans "Document" %}</h3>
   {% if perms.documents.change_document %}
-  <a href="{% url manage_update object.id %}" accesskey="e">{% trans "Update" %}</a><br />
+  <h3>{% trans "Meta Data" %}</h3>
+  <a href="{% url manage_update object.id %}" accesskey="m">{% trans "Update" %}</a><br />
   {% endif %}
+  <h3>{% trans "TODO" %}</h3>
+  <a href="{% url todo_detail object.id %}" accesskey="e" >{% trans "Details" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
 
 {% block content %}
 {% if object %}
-<!-- <div class="contextual"> -->
-<!--   <a href="{% url manage_update object.id %}" accesskey="e" class="icon icon-edit">{% trans "Update" %}</a> -->
-<!-- </div> -->
 
 <h2>{% trans "Document Details" %}</h2>
 
