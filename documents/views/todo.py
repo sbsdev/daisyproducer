@@ -213,8 +213,12 @@ def preview_sbsform(request, document_id):
             inputFile = document.latest_version().content.path
             outputFile = "/tmp/%s.sbsform" % document_id
             SBSForm.dtbook2sbsform(inputFile, outputFile, **form.cleaned_data)
-            return render_to_mimetype_response('text/x-sbsform', 
-                                               document.title.encode('utf-8'), outputFile)
+            contraction = form.cleaned_data['contraction']
+            contraction_to_mimetype_mapping = {0 : 'text/x-sbsform-g0', 
+                                               1 : 'text/x-sbsform-g1',
+                                               2 : 'text/x-sbsform-g2'}
+            mimetype = contraction_to_mimetype_mapping.get(contraction, 'text/x-sbsform-g2')
+            return render_to_mimetype_response(mimetype, document.title.encode('utf-8'), outputFile)
     else:
         form = SBSFormForm()
 
