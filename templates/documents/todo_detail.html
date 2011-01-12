@@ -33,66 +33,38 @@
 <div class="issue">
   
   <h3>{{ document.title }}</h3>
-  <!-- <p class="author"> -->
-  <!--   Added by <a href="">Christian Egli</a> 28 days ago. -->
-  <!--   Updated 19 days ago. -->
-  <!-- </p> -->
   
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <!-- <div class="contextual"> -->
-    <!--   <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Add</a> -->
-    <!-- </div> -->
     
     <p><strong>{% trans "Versions" %}</strong></p>
     <table style="width:100%">
-      <!-- <tr> -->
-      <!-- 	<th>Comment</th> -->
-      <!-- 	<th>Created by</th> -->
-      <!-- 	<th>Created at</th> -->
-      <!-- </tr> -->
       {% for version in document.version_set.all|slice:":7" %}
       <tr>
 	<td><a href="{{ version.content.url }}">{{ version.comment }}</a></td>
 	<td>{{ version.created_by.get_full_name }}</td>
 	<td>{{ version.created_at|date }}</td>
-	<!-- <td> -->
-	<!--   <a href="#" title="Delete relation"> -->
-	<!--     <img alt="Delete" src="/images/delete.png" /> -->
-	<!--   </a> -->
-	<!-- </td> -->
       </tr>
       {% endfor %}
     </table>
 
     <form enctype="multipart/form-data" method="post" 
 	  action="{% url todo_add_version document.id %}">
-	  <!-- id="new-version-form" style="display: none;"> -->
       <p>
 	{% with versionForm as form %}
 	{% include "documents/simpleForm.html" %}
 	{% endwith %}
 	<input type="submit" value="{% trans 'Add' %}" /> 
-	<!-- <a href="#" onclick="Element.toggle('new-version-form'); this.blur(); return false;">Cancel</a> -->
       </p>
     </form>
   </div>
   <hr />
   
   <div id="relations">
-    <!-- <div class="contextual"> -->
-    <!--   <a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Add</a> -->
-    <!-- </div> -->
     
     <p><strong>{% trans "Attachments" %}</strong></p>
     <table style="width:100%">
-      <!-- <tr> -->
-      <!-- 	<th>Name</th> -->
-      <!-- 	<th>Comment</th> -->
-      <!-- 	<th>Mime type</th> -->
-      <!-- 	<th>Created at</th> -->
-      <!-- </tr> -->
       {% for attachment in document.attachment_set.all %}
       <tr>
 	<td><a href="{{ attachment.content.url }}">{{ attachment.content.name|basename }}</a></td>
@@ -100,23 +72,16 @@
 	<td>{{ attachment.mime_type }}</td>
 	<td>{{ attachment.created_by.get_full_name }}</td>
 	<td>{{ attachment.created_at|date }}</td>
-	<!-- <td> -->
-	<!--   <a href="#" title="Delete relation"> -->
-	<!--     <img alt="Delete" src="/images/delete.png" /> -->
-	<!--   </a> -->
-	<!-- </td> -->
       </tr>
       {% endfor %}
     </table>
     <form enctype="multipart/form-data" method="post"
 	  action="{% url todo_add_attachment document.id %}">
-	  <!-- id="new-attachment-form" style="display: none;"> -->
       <p>
 	{% with attachmentForm as form %}
 	{% include "documents/simpleForm.html" %}
 	{% endwith %}
 	<input type="submit" value="{% trans 'Add' %}" /> 
-	<!-- <a href="#" onclick="Element.toggle('new-attachment-form'); this.blur(); return false;">Cancel</a> -->
       </p>
     </form>
   </div>
