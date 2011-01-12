@@ -13,9 +13,14 @@
   <a href="{% url todo_markup document.id %}" accesskey="m" >{% trans "Markup" %}</a><br />
   <!-- <a href="{% url todo_markup_xopus document.id %}" accesskey="e" >{% trans "Markup with Xopus" %}</a><br /> -->
   <h3>{% trans "Preview" %}</h3>
-  <a href="{% url todo_xhtml document.id %}" accesskey="p" >{% trans "XHTML" %}</a><br />
-  <a href="{% url todo_sbsform document.id %}" accesskey="p" >{% trans "Braille (SBSForm)" %}</a><br />
-  <a href="{% url todo_pdf document.id %}" accesskey="p" >{% trans "Large Print" %}</a><br />
+  <a href="{% url todo_xhtml document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
+  <a href="{% url todo_sbsform document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
+  <a href="{% url todo_pdf document.id %}" accesskey="l" >{% trans "Large Print" %}</a><br />
+  <h3>{% trans "Preview (BETA)" %}</h3>
+  <a href="{% url todo_rtf document.id %}" accesskey="r" >{% trans "RTF" %}</a><br />
+  <a href="{% url todo_epub document.id %}" accesskey="r" >{% trans "EPUB" %}</a><br />
+  <a href="{% url todo_text_only_fileset document.id %}" accesskey="r" >{% trans "Daisy 2.02 Text-Only fileset" %}</a><br />
+  <a href="{% url todo_dtb document.id %}" accesskey="r" >{% trans "Full-Text Full-Audio book" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
