@@ -46,6 +46,8 @@
           <value>dtb:sourceEdition</value>
           <value>dtb:sourcePublisher</value>
           <value>dtb:sourceRights</value>
+          <value>sbs:BuchReihe</value>
+          <value>sbs:ReihenNummer</value>
         </choice>
       </attribute>
     </element>
@@ -131,6 +133,14 @@
       <choice>
         <value>detailed</value>
         <value>reduced</value>
+      </choice>
+    </attribute>
+  </define>
+  <define name="showinAttribute">
+    <attribute name="brl:showin">
+      <choice>
+        <value>onlyInBraille</value>
+        <value>notInBraille</value>
       </choice>
     </attribute>
   </define>
@@ -452,6 +462,9 @@
           <ref name="accentsAttribute"/>
         </choice>
       </oneOrMore>
+      <optional>
+        <ref name="showinAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -735,6 +748,9 @@
       <zeroOrMore>
         <ref name="emph"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="literal"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="num">
@@ -830,6 +846,14 @@
   <define name="volume">
     <element name="brl:volume">
       <ref name="gradeAttribute"/>
+    </element>
+  </define>
+  <define name="literal">
+    <element name="brl:literal">
+      <optional>
+        <ref name="gradeAttribute"/>
+      </optional>
+      <text/>
     </element>
   </define>
   <define name="toc-line">

@@ -17,6 +17,14 @@
       </xs:restriction>
     </xs:simpleType>
   </xs:attribute>
+  <xs:attribute name="showin">
+    <xs:simpleType>
+      <xs:restriction base="xs:token">
+        <xs:enumeration value="onlyInBraille"/>
+        <xs:enumeration value="notInBraille"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
   <xs:attribute name="render">
     <xs:simpleType>
       <xs:restriction base="xs:token">
@@ -96,6 +104,11 @@
   <xs:element name="volume">
     <xs:complexType>
       <xs:attributeGroup ref="dtbook:gradeAttribute"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="literal">
+    <xs:complexType mixed="true">
+      <xs:attribute ref="brl:grade"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="toc-line">
