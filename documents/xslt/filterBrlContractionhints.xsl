@@ -25,6 +25,9 @@
     <xsl:apply-templates/>
   </xsl:template>
 
+  <!-- Filter spans with brl:showin="onlyInBraille" -->
+  <xsl:template match="dtb:span[@brl:showin = 'onlyInBraille']"/>
+
   <!-- Drop the brl:* attributes -->
   <xsl:template match="@brl:*"/>
 
