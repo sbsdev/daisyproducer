@@ -141,7 +141,7 @@ def upload_metadata_csv(request):
             
     csv_file = request.FILES['csv']
     # FIXME: It's pretty annoying to hard code the expected encoding of the csv
-    reader = csv.reader(open(csv_file.temporary_file_path()), delimiter='\t')
+    reader = UnicodeReader(open(csv_file.temporary_file_path()), encoding="iso-8859-1", delimiter='\t')
     initial = [{'title': row[0], 'author': row[1], 
                 'identifier': row[2], 'source': row[3], 
                 'source_edition': row[4], 'source_publisher': row[5],
