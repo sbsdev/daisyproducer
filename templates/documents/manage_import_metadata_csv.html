@@ -10,7 +10,7 @@
   <table>
     {% for form in formset.forms %}
     {% if forloop.first %}
-    <tr><th>{% trans 'Document' %}</th><th>{{ form.DELETE.label_tag }}</th></tr>
+    <tr><th>{% trans 'Document' %}</th><th>{% trans 'Ignore this Document' %}</th></tr>
     {% endif %}
        <tr class="{% cycle 'odd' 'even' %}">
 	 <td>
