@@ -1,6 +1,6 @@
 #! /bin/sh
 
-#  Copyright (C) 2009 Christian Egli
+#  Copyright (C) 2009, 2011 Christian Egli
 
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright

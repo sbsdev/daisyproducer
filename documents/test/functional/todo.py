@@ -218,7 +218,7 @@ class TodoViewTest(TestCase):
         document.title = "Wachtmeister Studer"
         document.author = "Friedrich Glauser"
         document.source_publisher = "Diogenes"
-        document.publisher = "Swiss Library for the Blind and Visually Impaired"
+        document.publisher = "Swiss Library for the Blind, Visually Impaired and Print Disabled"
         document.date = "2009-04-23"
         document.identifier = "ch-sbs-1"
         document.language = "de-CH"
@@ -255,16 +255,16 @@ class TodoViewTest(TestCase):
         """Check if transitioning to no state results in a form error"""
         self.transition_test({}, 'This field is required.')
 
-    def test_todo_transition_invalid_state(self):
+    def test_todo_transition_invalid_state_with_string(self):
         """Check if transitioning to an invalid state results in rendering the form again"""
         self.transition_test({'state': 'foo'}, 
                              'Select a valid choice. foo is not one of the available choices.')
 
-    def test_todo_transition_invalid_state(self):
+    def test_todo_transition_invalid_state_with_number(self):
         """Check if transitioning to an invalid state results in rendering the form again"""
         # 99 is certainly not a valid state
         self.transition_test({'state': 99}, 
-                             'Select a valid choice. 99 is not one of the available choices.')
+                             u'Select a valid choice. That choice is not one of the available choices.')
 
     def test_todo_transition_invalid_state(self):
         """Check if an invalid transition results in an StateError exception"""
