@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="http://www.daisy.org/z3986/2005/dtbook/" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar ns="http://www.daisy.org/z3986/2005/dtbook/" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
     <ref name="dtbook"/>
   </start>
@@ -144,6 +144,15 @@
       </choice>
     </attribute>
   </define>
+  <define name="brailleClassAttribute">
+    <a:documentation>brl:class lets you fine tune the Braille formatting (think of it as
+a form of css for Braille)</a:documentation>
+    <optional>
+      <attribute name="brl:class">
+        <data type="string" datatypeLibrary=""/>
+      </attribute>
+    </optional>
+  </define>
   <define name="commonAttributes">
     <optional>
       <ref name="gradeAttribute"/>
@@ -247,6 +256,7 @@
   </define>
   <define name="h1">
     <element name="h1">
+      <ref name="brailleClassAttribute"/>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -264,6 +274,7 @@
   </define>
   <define name="h2">
     <element name="h2">
+      <ref name="brailleClassAttribute"/>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -281,6 +292,7 @@
   </define>
   <define name="h3">
     <element name="h3">
+      <ref name="brailleClassAttribute"/>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -298,6 +310,7 @@
   </define>
   <define name="h4">
     <element name="h4">
+      <ref name="brailleClassAttribute"/>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -315,6 +328,7 @@
   </define>
   <define name="h5">
     <element name="h5">
+      <ref name="brailleClassAttribute"/>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -329,12 +343,14 @@
   </define>
   <define name="h6">
     <element name="h6">
+      <ref name="brailleClassAttribute"/>
       <ref name="hcontent"/>
     </element>
   </define>
   <define name="p">
     <element name="p">
       <ref name="commonAttributes"/>
+      <ref name="brailleClassAttribute"/>
       <optional>
         <!--
           this is a hack that the Norwegians came up with to work around
@@ -382,6 +398,9 @@
     </element>
   </define>
   <define name="emphasisClassAttribute">
+    <a:documentation>The class attribute on emphasis is used to categorize the emphasis
+tags. This will help in deciding what brl:render attribute to set
+for this emphasis</a:documentation>
     <attribute name="class">
       <data type="string" datatypeLibrary=""/>
     </attribute>
@@ -490,6 +509,7 @@
   </define>
   <define name="blockquote">
     <element name="blockquote">
+      <ref name="brailleClassAttribute"/>
       <interleave>
         <oneOrMore>
           <ref name="p"/>
@@ -505,6 +525,7 @@
   </define>
   <define name="epigraph">
     <element name="epigraph">
+      <ref name="brailleClassAttribute"/>
       <interleave>
         <choice>
           <oneOrMore>
@@ -523,6 +544,7 @@
   </define>
   <define name="author">
     <element name="author">
+      <ref name="brailleClassAttribute"/>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -542,6 +564,7 @@
   </define>
   <define name="byline">
     <element name="byline">
+      <ref name="brailleClassAttribute"/>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -567,6 +590,7 @@
   </define>
   <define name="list">
     <element name="list">
+      <ref name="brailleClassAttribute"/>
       <optional>
         <attribute name="class">
           <value>toc</value>
@@ -587,6 +611,7 @@
   </define>
   <define name="li">
     <element name="li">
+      <ref name="brailleClassAttribute"/>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -651,6 +676,7 @@
   </define>
   <define name="poem">
     <element name="poem">
+      <ref name="brailleClassAttribute"/>
       <interleave>
         <zeroOrMore>
           <ref name="author"/>
@@ -671,6 +697,7 @@
   </define>
   <define name="linegroup">
     <element name="linegroup">
+      <ref name="brailleClassAttribute"/>
       <oneOrMore>
         <ref name="line"/>
       </oneOrMore>
@@ -678,6 +705,7 @@
   </define>
   <define name="line">
     <element name="line">
+      <ref name="brailleClassAttribute"/>
       <interleave>
         <text/>
         <zeroOrMore>

@@ -114,6 +114,13 @@
   <xs:attributeGroup name="showinAttribute">
     <xs:attribute ref="brl:showin" use="required"/>
   </xs:attributeGroup>
+  <xs:attributeGroup name="brailleClassAttribute">
+    <xs:annotation>
+      <xs:documentation>brl:class lets you fine tune the Braille formatting (think of it as
+a form of css for Braille)</xs:documentation>
+    </xs:annotation>
+    <xs:attribute ref="brl:class"/>
+  </xs:attributeGroup>
   <xs:attributeGroup name="commonAttributes">
     <xs:attribute ref="brl:grade"/>
   </xs:attributeGroup>
@@ -180,7 +187,15 @@
       </xs:element>
     </xs:sequence>
   </xs:group>
-  <xs:element name="h1" type="dtbook:hcontent"/>
+  <xs:element name="h1">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="dtbook:hcontent">
+          <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="level2">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -191,7 +206,15 @@
       <xs:attributeGroup ref="dtbook:commonAttributes"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="h2" type="dtbook:hcontent"/>
+  <xs:element name="h2">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="dtbook:hcontent">
+          <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="level3">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -202,7 +225,15 @@
       <xs:attributeGroup ref="dtbook:commonAttributes"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="h3" type="dtbook:hcontent"/>
+  <xs:element name="h3">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="dtbook:hcontent">
+          <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="level4">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -213,7 +244,15 @@
       <xs:attributeGroup ref="dtbook:commonAttributes"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="h4" type="dtbook:hcontent"/>
+  <xs:element name="h4">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="dtbook:hcontent">
+          <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="level5">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -224,7 +263,15 @@
       <xs:attributeGroup ref="dtbook:commonAttributes"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="h5" type="dtbook:hcontent"/>
+  <xs:element name="h5">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="dtbook:hcontent">
+          <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="level6">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -234,7 +281,15 @@
       <xs:attributeGroup ref="dtbook:commonAttributes"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="h6" type="dtbook:hcontent"/>
+  <xs:element name="h6">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="dtbook:hcontent">
+          <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="p">
     <xs:complexType mixed="true">
       <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -247,6 +302,7 @@
         <xs:element ref="dtbook:noteref"/>
       </xs:choice>
       <xs:attributeGroup ref="dtbook:commonAttributes"/>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
       <xs:attribute name="class">
         <xs:simpleType>
           <xs:restriction>
@@ -268,6 +324,11 @@
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="emphasisClassAttribute">
+    <xs:annotation>
+      <xs:documentation>The class attribute on emphasis is used to categorize the emphasis
+tags. This will help in deciding what brl:render attribute to set
+for this emphasis</xs:documentation>
+    </xs:annotation>
     <xs:attribute name="class" use="required" type="xs:string"/>
   </xs:attributeGroup>
   <xs:attributeGroup name="emphasisRenderAttribute">
@@ -321,6 +382,7 @@
         <xs:element ref="dtbook:author"/>
         <xs:element ref="dtbook:byline"/>
       </xs:choice>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="epigraph">
@@ -333,6 +395,7 @@
         <xs:element ref="dtbook:author"/>
         <xs:element ref="dtbook:byline"/>
       </xs:choice>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="author">
@@ -343,6 +406,7 @@
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:noteref"/>
       </xs:choice>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="byline">
@@ -355,6 +419,7 @@
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:noteref"/>
       </xs:choice>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="list">
@@ -363,6 +428,7 @@
         <xs:element ref="dtbook:li"/>
         <xs:element ref="dtbook:pagenum"/>
       </xs:choice>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
       <xs:attribute name="class">
         <xs:simpleType>
           <xs:restriction base="xs:token">
@@ -391,6 +457,7 @@
         <xs:element ref="dtbook:pagenum"/>
         <xs:element ref="dtbook:noteref"/>
       </xs:choice>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="lic">
@@ -430,6 +497,7 @@
           <xs:element ref="dtbook:line"/>
         </xs:choice>
       </xs:choice>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="linegroup">
@@ -437,6 +505,7 @@
       <xs:sequence>
         <xs:element maxOccurs="unbounded" ref="dtbook:line"/>
       </xs:sequence>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="line">
@@ -450,6 +519,7 @@
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:noteref"/>
       </xs:choice>
+      <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="noteref">
