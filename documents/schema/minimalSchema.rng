@@ -922,9 +922,12 @@ for this emphasis</a:documentation>
   <define name="select">
     <element name="brl:select">
       <element name="brl:whenBraille">
-        <oneOrMore>
-          <ref name="literal"/>
-        </oneOrMore>
+        <interleave>
+          <text/>
+          <zeroOrMore>
+            <ref name="literal"/>
+          </zeroOrMore>
+        </interleave>
       </element>
       <element name="brl:otherwise">
         <text/>

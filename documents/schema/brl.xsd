@@ -136,9 +136,9 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="whenBraille">
-    <xs:complexType>
+    <xs:complexType mixed="true">
       <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="brl:literal"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="brl:literal"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
