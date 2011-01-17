@@ -139,11 +139,9 @@
   <define name="brailleClassAttribute">
     <a:documentation>brl:class lets you fine tune the Braille formatting (think of it as
 a form of css for Braille)</a:documentation>
-    <optional>
-      <attribute name="brl:class">
-        <data type="string" datatypeLibrary=""/>
-      </attribute>
-    </optional>
+    <attribute name="brl:class">
+      <data type="string" datatypeLibrary=""/>
+    </attribute>
   </define>
   <define name="commonAttributes">
     <optional>
@@ -181,6 +179,9 @@ a form of css for Braille)</a:documentation>
       </zeroOrMore>
       <zeroOrMore>
         <ref name="volume"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="div"/>
       </zeroOrMore>
     </interleave>
   </define>
@@ -248,7 +249,9 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="h1">
     <element name="h1">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -266,7 +269,9 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="h2">
     <element name="h2">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -284,7 +289,9 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="h3">
     <element name="h3">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -302,7 +309,9 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="h4">
     <element name="h4">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -320,7 +329,9 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="h5">
     <element name="h5">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <ref name="hcontent"/>
     </element>
   </define>
@@ -335,14 +346,18 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="h6">
     <element name="h6">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <ref name="hcontent"/>
     </element>
   </define>
   <define name="p">
     <element name="p">
       <ref name="commonAttributes"/>
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <optional>
         <!--
           this is a hack that the Norwegians came up with to work around
@@ -499,7 +514,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="blockquote">
     <element name="blockquote">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <interleave>
         <oneOrMore>
           <ref name="p"/>
@@ -515,7 +532,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="epigraph">
     <element name="epigraph">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <interleave>
         <choice>
           <oneOrMore>
@@ -534,7 +553,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="author">
     <element name="author">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -554,7 +575,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="byline">
     <element name="byline">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -580,7 +603,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="list">
     <element name="list">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <optional>
         <attribute name="class">
           <value>toc</value>
@@ -601,7 +626,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="li">
     <element name="li">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -666,7 +693,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="poem">
     <element name="poem">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <interleave>
         <zeroOrMore>
           <ref name="author"/>
@@ -687,7 +716,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="linegroup">
     <element name="linegroup">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <oneOrMore>
         <ref name="line"/>
       </oneOrMore>
@@ -695,7 +726,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="line">
     <element name="line">
-      <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="brailleClassAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -738,6 +771,34 @@ for this emphasis</a:documentation>
       <oneOrMore>
         <ref name="p"/>
       </oneOrMore>
+    </element>
+  </define>
+  <define name="div">
+    <element name="div">
+      <ref name="brailleClassAttribute"/>
+      <interleave>
+        <zeroOrMore>
+          <ref name="p"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="list"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="blockquote"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="poem"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="linegroup"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="byline"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="epigraph"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="contractionhints">
