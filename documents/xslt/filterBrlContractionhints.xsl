@@ -20,13 +20,13 @@
   <!-- Drop the brl:running-line elements without retaining their content -->
   <xsl:template match="brl:running-line"/>
 
+  <!-- Filter brl:whenBraille elements -->
+  <xsl:template match="brl:whenBraille"/>
+
   <!-- Drop the brl:* elements while retaining their content -->
   <xsl:template match="brl:*">
     <xsl:apply-templates/>
   </xsl:template>
-
-  <!-- Filter spans with brl:showin="onlyInBraille" -->
-  <xsl:template match="dtb:span[@brl:showin = 'onlyInBraille']"/>
 
   <!-- Drop the brl:* attributes -->
   <xsl:template match="@brl:*"/>

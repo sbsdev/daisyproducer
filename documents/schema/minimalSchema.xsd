@@ -111,9 +111,6 @@
   <xs:attributeGroup name="accentsAttribute">
     <xs:attribute ref="brl:accents" use="required"/>
   </xs:attributeGroup>
-  <xs:attributeGroup name="showinAttribute">
-    <xs:attribute ref="brl:showin" use="required"/>
-  </xs:attributeGroup>
   <xs:attributeGroup name="brailleClassAttribute">
     <xs:annotation>
       <xs:documentation>brl:class lets you fine tune the Braille formatting (think of it as
@@ -300,6 +297,7 @@ a form of css for Braille)</xs:documentation>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:noteref"/>
+        <xs:element ref="brl:select"/>
       </xs:choice>
       <xs:attributeGroup ref="dtbook:commonAttributes"/>
       <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
@@ -372,7 +370,6 @@ for this emphasis</xs:documentation>
       </xs:choice>
       <xs:attribute ref="brl:grade"/>
       <xs:attribute ref="brl:accents"/>
-      <xs:attribute ref="brl:showin"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="blockquote">
@@ -546,8 +543,8 @@ for this emphasis</xs:documentation>
         <xs:element ref="brl:date"/>
         <xs:element ref="brl:time"/>
         <xs:element ref="brl:emph"/>
-        <xs:element ref="brl:literal"/>
       </xs:choice>
     </xs:sequence>
   </xs:group>
+  <!-- a simplified content selection feature backported from zednext -->
 </xs:schema>

@@ -136,14 +136,6 @@
       </choice>
     </attribute>
   </define>
-  <define name="showinAttribute">
-    <attribute name="brl:showin">
-      <choice>
-        <value>onlyInBraille</value>
-        <value>notInBraille</value>
-      </choice>
-    </attribute>
-  </define>
   <define name="brailleClassAttribute">
     <a:documentation>brl:class lets you fine tune the Braille formatting (think of it as
 a form of css for Braille)</a:documentation>
@@ -394,6 +386,9 @@ a form of css for Braille)</a:documentation>
         <zeroOrMore>
           <ref name="noteref"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -475,15 +470,10 @@ for this emphasis</a:documentation>
   </define>
   <define name="span">
     <element name="span">
-      <oneOrMore>
-        <choice>
-          <ref name="gradeAttribute"/>
-          <ref name="accentsAttribute"/>
-        </choice>
-      </oneOrMore>
-      <optional>
-        <ref name="showinAttribute"/>
-      </optional>
+      <choice>
+        <ref name="gradeAttribute"/>
+        <ref name="accentsAttribute"/>
+      </choice>
       <interleave>
         <text/>
         <zeroOrMore>
@@ -776,9 +766,6 @@ for this emphasis</a:documentation>
       <zeroOrMore>
         <ref name="emph"/>
       </zeroOrMore>
-      <zeroOrMore>
-        <ref name="literal"/>
-      </zeroOrMore>
     </interleave>
   </define>
   <define name="num">
@@ -929,6 +916,19 @@ for this emphasis</a:documentation>
           <ref name="span"/>
         </zeroOrMore>
       </interleave>
+    </element>
+  </define>
+  <!-- a simplified content selection feature backported from zednext -->
+  <define name="select">
+    <element name="brl:select">
+      <element name="brl:whenBraille">
+        <oneOrMore>
+          <ref name="literal"/>
+        </oneOrMore>
+      </element>
+      <element name="brl:otherwise">
+        <text/>
+      </element>
     </element>
   </define>
 </grammar>

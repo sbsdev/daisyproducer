@@ -17,14 +17,6 @@
       </xs:restriction>
     </xs:simpleType>
   </xs:attribute>
-  <xs:attribute name="showin">
-    <xs:simpleType>
-      <xs:restriction base="xs:token">
-        <xs:enumeration value="onlyInBraille"/>
-        <xs:enumeration value="notInBraille"/>
-      </xs:restriction>
-    </xs:simpleType>
-  </xs:attribute>
   <xs:attribute name="class" type="xs:string"/>
   <xs:attribute name="render">
     <xs:simpleType>
@@ -135,4 +127,20 @@
       <xs:attribute ref="brl:grade"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="select">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="brl:whenBraille"/>
+        <xs:element ref="brl:otherwise"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="whenBraille">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="brl:literal"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="otherwise" type="xs:string"/>
 </xs:schema>
