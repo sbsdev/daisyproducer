@@ -40,7 +40,7 @@ def detail(request, document_id):
 class PartialDocumentForm(ModelForm):
     class Meta:
         model = Document
-        fields = ('title', 'author', 'source_publisher', 'subject', 'description', 'source', 'language', 'rights', 'source_date', 'source_edition', 'source_rights', 'assigned_to')
+        fields = ('title', 'author', 'source_publisher', 'subject', 'description', 'source', 'language', 'rights', 'source_date', 'source_edition', 'source_rights', 'production_series', 'production_series_number', 'assigned_to',)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -148,7 +148,7 @@ def upload_metadata_csv(request):
                 'language': Document.language_choices[0][0]} 
                for row in reader]
     DocumentFormSet = modelformset_factory(Document, 
-                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language'), 
+                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number'), 
                                            extra=len(initial), can_delete=True)
     formset = DocumentFormSet(queryset=Document.objects.none(), initial=initial)
     return render_to_response('documents/manage_import_metadata_csv.html', locals(),
@@ -163,7 +163,7 @@ def import_metadata_csv(request):
         return HttpResponseRedirect(reverse('upload_metadata_csv'))
 
     DocumentFormSet = modelformset_factory(Document, 
-                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language'), 
+                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'sbs_source_series', 'sbs_source_series_number'), 
                                            can_delete=True)
     formset = DocumentFormSet(request.POST)
     if not formset.is_valid():

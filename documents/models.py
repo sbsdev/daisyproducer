@@ -73,7 +73,8 @@ class Document(models.Model):
         help_text=_("Date of publication of the DTB"))
     identifier = models.CharField(
         _("Identifier"),
-        max_length=255, 
+        max_length=255,
+        unique=True,
         help_text=_("A string or number identifying the DTB"))
     source = models.CharField(
         _("Source"),
@@ -113,6 +114,23 @@ class Document(models.Model):
         _("Source Rights"), 
         max_length=255, 
         help_text=_("Information about rights held in and over the resource (e.g., a print original, ebook, etc.) from which the DTB is derived"),
+        blank=True)
+
+    PRODUCTION_SERIES_CHOICES = (
+        ('SJW', 'SJW'),
+        ('PPP', 'Rucksack-Buch',),
+        )
+    production_series = models.CharField(
+        _("Production Series"), 
+        max_length=25, 
+        choices=PRODUCTION_SERIES_CHOICES,
+        help_text=_("FIXME"),
+        blank=True)
+        
+    production_series_number = models.CharField(
+        _("Production Series Number"), 
+        max_length=25, 
+        help_text=_("FIXME"),
         blank=True)
 
     state = models.ForeignKey(State, verbose_name=_("State"))
