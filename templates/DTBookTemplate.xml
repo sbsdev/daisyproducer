@@ -21,6 +21,8 @@
     <meta name="dtb:sourceEdition" content="{{ source_edition }}" />
     <meta name="dtb:sourcePublisher" content="{{ source_publisher }}" />
     <meta name="dtb:sourceRights" content="{{ source_rights }}" />
+    <meta name="prod:series" content="{{ production_series }}" />
+    <meta name="prod:seriesNumber" content="{{ production_series_number }}" />
   </head>
   
   <book>

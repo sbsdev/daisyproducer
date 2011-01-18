@@ -19,7 +19,9 @@ class XMLContent:
              'identifier' : "dtb:uid",
              'source_date' : "dtb:sourceDate",
              'source_edition' : "dtb:sourceEdition",
-             'source_rights' : "dtb:sourceRights"
+             'source_rights' : "dtb:sourceRights",
+             'production_series' : "prod:series",
+             'production_series_number' : "prod:seriesNumber"
         }
 
     @staticmethod
@@ -100,7 +102,11 @@ class XMLContent:
             # validate sourceEdition
             self._validateMetaAttribute("dtb:sourceEdition", kwargs.get('source_edition', '')) +
             # validate sourceRights
-            self._validateMetaAttribute("dtb:sourceRights", kwargs.get('source_rights', ''))
+            self._validateMetaAttribute("dtb:sourceRights", kwargs.get('source_rights', '')) +
+            # validate production_series
+            self._validateMetaAttribute("prod:series", kwargs.get('production_series', '')) +
+            # validate production_series_number
+            self._validateMetaAttribute("prod:seriesNumber", kwargs.get('production_series_number', ''))
             )
         
     def _updateMetaAttribute(self, key, value):
