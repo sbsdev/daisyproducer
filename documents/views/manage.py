@@ -1,4 +1,4 @@
-import csv, codecs
+import csv, codecs, re
 
 from daisyproducer.documents.forms import CSVUploadForm
 from daisyproducer.documents.models import Document, Version
@@ -142,11 +142,22 @@ def upload_metadata_csv(request):
     csv_file = request.FILES['csv']
     # FIXME: It's pretty annoying to hard code the expected encoding of the csv
     reader = UnicodeReader(open(csv_file.temporary_file_path()), encoding="iso-8859-1", delimiter='\t')
-    initial = [{'title': row[0], 'author': row[1], 
-                'identifier': row[2], 'source': row[3], 
-                'source_edition': row[4], 'source_publisher': row[5],
-                'language': Document.language_choices[0][0]} 
-               for row in reader]
+    initial = []
+    for row in reader:
+        fields = {'title': row[0], 'author': row[1], 
+                  'identifier': row[2], 'source': row[3], 
+                  'source_edition': row[4], 'source_publisher': row[5],
+                  'language': Document.language_choices[0][0]}
+        # FIXME: Obviously the following is highly SBS specific
+        if row[7] != '0':
+            fields['production_series'] = Document.PRODUCTION_SERIES_CHOICES[1][0]
+            fields['production_series_number'] = row[7]
+        elif row[6].upper().find('SJW') != -1:
+            fields['production_series'] = Document.PRODUCTION_SERIES_CHOICES[0][0]
+            m = re.search('\d+', row[6]) # extract the series number
+            if m != None:
+                fields['production_series_number'] = m.group(0)
+        initial.append(fields)
     DocumentFormSet = modelformset_factory(Document, 
                                            fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number'), 
                                            extra=len(initial), can_delete=True)
@@ -163,7 +174,7 @@ def import_metadata_csv(request):
         return HttpResponseRedirect(reverse('upload_metadata_csv'))
 
     DocumentFormSet = modelformset_factory(Document, 
-                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'sbs_source_series', 'sbs_source_series_number'), 
+                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number'), 
                                            can_delete=True)
     formset = DocumentFormSet(request.POST)
     if not formset.is_valid():
