@@ -57,6 +57,8 @@
 	 </td>
 	 <td>{{ form.DELETE }}</td>
        </tr>
+    {% empty %}
+    <p class="nodata">{% trans "CSV is empty or all records have already been imported" %}</p>
     {% endfor %}
   </table>
   <input type="submit" value="{% trans 'Import' %}" />

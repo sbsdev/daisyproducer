@@ -158,10 +158,16 @@ def upload_metadata_csv(request):
             if m != None:
                 fields['production_series_number'] = m.group(0)
         initial.append(fields)
+    # filter out existing document entries
+    new_identifiers = [row['identifier'] for row in initial]
+    duplicate_identifiers = [document.identifier for 
+                             document in Document.objects.filter(identifier__in=new_identifiers)]
+    unique_initial = [row for row in initial if row['identifier'] not in duplicate_identifiers]
+
     DocumentFormSet = modelformset_factory(Document, 
                                            fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number'), 
-                                           extra=len(initial), can_delete=True)
-    formset = DocumentFormSet(queryset=Document.objects.none(), initial=initial)
+                                           extra=len(unique_initial), can_delete=True)
+    formset = DocumentFormSet(queryset=Document.objects.none(), initial=unique_initial)
     return render_to_response('documents/manage_import_metadata_csv.html', locals(),
                               context_instance=RequestContext(request))
 
