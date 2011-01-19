@@ -145,6 +145,14 @@ class SBSFormForm(forms.Form):
         ('5', 5),
         ('6', 6),
         )
+    BRAILLE_FOOTNOTE_PLACEMENT_CHOICES = (
+        ('standard', _('Standard')),
+        ('end_vol', _('At end of volume')),
+        ('level1', _('At end of level1')),
+        ('level2', _('At end of level2')),
+        ('level3', _('At end of level3')),
+        ('level4', _('At end of level4')),
+        )
     cells_per_line = forms.IntegerField(label=_("Cells per Line"), initial=28, min_value=1, max_value=255)
     lines_per_page = forms.IntegerField(label=_("Lines per Page"), initial=28, min_value=1, max_value=255)
     contraction = forms.TypedChoiceField(
@@ -176,8 +184,11 @@ class SBSFormForm(forms.Form):
     detailed_accented_characters = forms.ChoiceField(
         label=_("Accented Characters"), 
         choices=BRAILLE_ACCENTS_CHOICES,
-        initial='de-accents-ch'
-)
+        initial='de-accents-ch')
+    footnote_placement = forms.ChoiceField(
+        label=_("Placement of Footnotes"), 
+        choices=BRAILLE_FOOTNOTE_PLACEMENT_CHOICES,
+        initial='standard')
 
 class XHTMLForm(forms.Form):
     genToc = forms.BooleanField(
