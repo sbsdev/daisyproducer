@@ -46,8 +46,8 @@
           <value>dtb:sourceEdition</value>
           <value>dtb:sourcePublisher</value>
           <value>dtb:sourceRights</value>
-          <value>sbs:BuchReihe</value>
-          <value>sbs:ReihenNummer</value>
+          <value>prod:series</value>
+          <value>prod:seriesNumber</value>
         </choice>
       </attribute>
     </element>
