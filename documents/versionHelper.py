@@ -7,21 +7,23 @@ from lxml import etree
 class XMLContent:
     
     DTBOOK_NAMESPACE = "http://www.daisy.org/z3986/2005/dtbook/"
+    XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace"
     FIELD_ATTRIBUTE_MAP = {
-            'subject' : "dtb:Subject",
-             'description' : "dtb:Description",
-             'publisher' : "dtb:Publisher",
-             'date' : "dtb:Date",
-             'identifier' : "dtb:Identifier",
-             'source' : "dtb:Source",
-             'language' : "dtb:Language",
-             'rights' : "dtb:Rights",
-             'identifier' : "dtb:uid",
-             'source_date' : "dtb:sourceDate",
-             'source_edition' : "dtb:sourceEdition",
-             'source_rights' : "dtb:sourceRights",
-             'production_series' : "prod:series",
-             'production_series_number' : "prod:seriesNumber"
+        'subject' : "dc:Subject",
+        'description' : "dc:Description",
+        'publisher' : "dc:Publisher",
+        'date' : "dc:Date",
+        'identifier' : "dc:Identifier",
+        'source' : "dc:Source",
+        'language' : "dc:Language",
+        'rights' : "dc:Rights",
+        'identifier' : "dtb:uid",
+        'source_date' : "dtb:sourceDate",
+        'source_publisher': "dtb:sourcePublisher",
+        'source_edition' : "dtb:sourceEdition",
+        'source_rights' : "dtb:sourceRights",
+        'production_series' : "prod:series",
+        'production_series_number' : "prod:seriesNumber"
         }
 
     @staticmethod
@@ -36,7 +38,7 @@ class XMLContent:
     def __init__(self, version=None):
         self.version = version
 
-    def getUpdatedContent(self, author, title, source_publisher, **kwargs):
+    def getUpdatedContent(self, author, title, **kwargs):
         # update the existing version with the modified meta data
         self.version.content.open()
         self.tree = etree.parse(self.version.content.file)
@@ -47,8 +49,8 @@ class XMLContent:
         # fix title
         self._updateMetaAttribute("dc:Title", title)
         self._updateMetaElement("doctitle", title)
-        # fix sourcePublisher
-        self._updateMetaAttribute("dtb:sourcePublisher", source_publisher)
+        # fix xml:lang
+        self._updateLangAttribute(kwargs.get('language'))
         for model_field, field_value in kwargs.items():
             # fix attribute
             if self.FIELD_ATTRIBUTE_MAP.has_key(model_field):
@@ -56,12 +58,21 @@ class XMLContent:
        
         return etree.tostring(self.tree, xml_declaration=True, encoding="UTF-8")
 
-    def validateContentMetaData(self, filePath, author, title, source_publisher, **kwargs):
+    def validateContentMetaData(self, filePath, author, title, **kwargs):
         versionFile = open(filePath)
         self.tree = etree.parse(versionFile)
         versionFile.close()
         
-        return filter(
+        validationProblems = reduce(
+            # flatten the list
+            lambda x,y: x+y, 
+            [self._validateMetaAttribute(self.FIELD_ATTRIBUTE_MAP[field], kwargs.get(field, '')) 
+             for field in 
+             ['source_publisher', 'subject', 'description', 'publisher', 'date', 'source', 
+              'language', 'rights', 'source_date', 'source_edition', 'source_rights', 
+              'production_series', 'production_series_number']])
+
+        return filter(None, validationProblems) + filter(
             None, 
             # validate author
             self._validateMetaAttribute("dc:Creator", author) +
@@ -77,36 +88,11 @@ class XMLContent:
             # <em>, <abbr> or any contraction hint. If we want to
             # check we need to strip the tags first.
 #            self._validateMetaElement("doctitle", title) +
-            # validate sourcePublisher
-            self._validateMetaAttribute("dtb:sourcePublisher", source_publisher) +
-            # validate subject
-            self._validateMetaAttribute("dtb:Subject", kwargs.get('subject', '')) +
-            # validate description
-            self._validateMetaAttribute("dtb:Description", kwargs.get('description', '')) +
-            # validate publisher
-            self._validateMetaAttribute("dtb:Publisher", kwargs.get('publisher', '')) +
-            # validate date
-            self._validateMetaAttribute("dtb:Date", (kwargs.get('date') or '')) +
             # validate identifier
-            self._validateMetaAttribute("dtb:Identifier", kwargs.get('identifier', '')) +
-            # validate source
-            self._validateMetaAttribute("dtb:Source", kwargs.get('source', '')) +
-            # validate language
-            self._validateMetaAttribute("dtb:Language", kwargs.get('language', '')) +
-            # validate rights
-            self._validateMetaAttribute("dtb:Rights", kwargs.get('rights', '')) +
-            # validate identifier
+            self._validateMetaAttribute("dc:Identifier", kwargs.get('identifier', '')) +
             self._validateMetaAttribute("dtb:uid", kwargs.get('identifier', '')) +
-            # validate sourceDate
-            self._validateMetaAttribute("dtb:sourceDate", (kwargs.get('source_date') or '')) +
-            # validate sourceEdition
-            self._validateMetaAttribute("dtb:sourceEdition", kwargs.get('source_edition', '')) +
-            # validate sourceRights
-            self._validateMetaAttribute("dtb:sourceRights", kwargs.get('source_rights', '')) +
-            # validate production_series
-            self._validateMetaAttribute("prod:series", kwargs.get('production_series', '')) +
-            # validate production_series_number
-            self._validateMetaAttribute("prod:seriesNumber", kwargs.get('production_series_number', ''))
+            # validate language
+            self._validateLangAttribute(kwargs.get('language', ''))
             )
         
     def _updateMetaAttribute(self, key, value):
@@ -118,12 +104,17 @@ class XMLContent:
     def _updateMetaElement(self, key, value):
         for element in self.tree.findall("//{%s}%s" % (self.DTBOOK_NAMESPACE, key)):
             element.text = value
-        
+    
+    def _updateLangAttribute(self, language):
+        self.tree.getroot().attrib['{%s}lang' % self.XML_NAMESPACE] = language
+
     def _validateMetaAttribute(self, key, value):
         """Return a list of tuples for each meta data of name key
         where the value of the attribute 'content' doesn't match the
         given value. The tuple contains the key, the given value and
         the value of the attribute 'content'"""
+        if isinstance(value, datetime.date):
+            value = value.isoformat()
         xpath = "//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key)
         return [tuple([key, element.attrib['content'], value]) for element in self.tree.findall(xpath) if element.attrib['content'] != value]
         
@@ -133,5 +124,10 @@ class XMLContent:
         key, the given value and the value of the text node"""
         xpath = "//{%s}%s" % (self.DTBOOK_NAMESPACE, key)
         return [tuple([key, element.text, value]) for element in self.tree.findall(xpath) if element.text != value and not (element.text == None and value == '')]
+
+    def _validateLangAttribute(self, language):
+        lang_attribute = self.tree.getroot().attrib['{%s}lang' % self.XML_NAMESPACE]
+        return [('xml:lang', lang_attribute, language)] if lang_attribute != language else []
+        
            
         
