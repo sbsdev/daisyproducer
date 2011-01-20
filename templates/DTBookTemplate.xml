@@ -2,6 +2,7 @@
 <!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
 <dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="{{ language }}">
   <head>
+    {# for a list of all the metadata fileds see http://www.daisy.org/z3986/2005/Z3986-2005.html #}
     <meta name="dc:Title" content="{{ title }}" />
     <meta name="dc:Creator" content="{{ author }}" />
     <meta name="dc:Subject" content="{{ subject }}" />
@@ -21,6 +22,7 @@
     <meta name="dtb:sourceEdition" content="{{ source_edition }}" />
     <meta name="dtb:sourcePublisher" content="{{ source_publisher }}" />
     <meta name="dtb:sourceRights" content="{{ source_rights }}" />
+    {# producer specific metadata #}
     <meta name="prod:series" content="{{ production_series }}" />
     <meta name="prod:seriesNumber" content="{{ production_series_number }}" />
   </head>
