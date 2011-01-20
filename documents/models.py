@@ -45,6 +45,7 @@ class State(models.Model):
 
 class Document(models.Model):
 
+    # see http://www.daisy.org/z3986/2005/Z3986-2005.html for a description of all the metadata fields
     title = models.CharField(
         _("Title"),
         max_length=255, 
