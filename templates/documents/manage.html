@@ -8,7 +8,7 @@
   <h3>{% trans "Documents" %}</h3>
   {% if perms.documents.add_document %}
   <a href="{% url manage_create %}">{% trans "Create a new document" %}</a><br />
-  <a href="{% url import_metadata_csv %}">{% trans "Import metadata csv" %}</a><br />
+  <a href="{% url import_metadata_csv %}">{% trans "Import metadata CSV File" %}</a><br />
   {% endif %}
 </div>
 {% endblock %}
