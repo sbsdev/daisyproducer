@@ -125,13 +125,13 @@ class Document(models.Model):
         _("Production Series"), 
         max_length=25, 
         choices=PRODUCTION_SERIES_CHOICES,
-        help_text=_("FIXME"),
+        help_text=_("Information about the series under which the book is produced"),
         blank=True)
         
     production_series_number = models.CharField(
         _("Production Series Number"), 
         max_length=25, 
-        help_text=_("FIXME"),
+        help_text=_("Information about the number in the series under which the book is produced"),
         blank=True)
 
     state = models.ForeignKey(State, verbose_name=_("State"))
