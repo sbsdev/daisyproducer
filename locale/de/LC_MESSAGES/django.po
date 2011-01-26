@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-01-25 11:59+0100\n"
-"PO-Revision-Date: 2011-01-25 12:05+0100\n"
+"PO-Revision-Date: 2011-01-26 11:34+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -62,23 +62,23 @@ msgstr "Standard"
 
 #: documents/forms.py:150
 msgid "At end of volume"
-msgstr ""
+msgstr "Am Bandende"
 
 #: documents/forms.py:151
 msgid "At end of level1"
-msgstr ""
+msgstr "Am Ende von level1"
 
 #: documents/forms.py:152
 msgid "At end of level2"
-msgstr ""
+msgstr "Am Ende von level2"
 
 #: documents/forms.py:153
 msgid "At end of level3"
-msgstr ""
+msgstr "Am Ende von level3"
 
 #: documents/forms.py:154
 msgid "At end of level4"
-msgstr ""
+msgstr "Am Ende von level4"
 
 #: documents/forms.py:156 documents/models.py:226
 msgid "Cells per Line"
@@ -126,7 +126,7 @@ msgstr "Akzentbuchstaben"
 
 #: documents/forms.py:189
 msgid "Placement of Footnotes"
-msgstr ""
+msgstr "Anordnung der Fussnoten"
 
 #: documents/forms.py:195 documents/forms.py:204
 msgid "Generate a table of contents"
@@ -190,11 +190,11 @@ msgstr "Unterstützung von mehreren Sprachen"
 
 #: documents/forms.py:253
 msgid "CSV File"
-msgstr "CSV Datei"
+msgstr "CSV-Datei"
 
 #: documents/forms.py:254
 msgid "CSV File containing document meta data"
-msgstr ""
+msgstr "CSV-Datei mit den Metadaten des Dokuments"
 
 #: documents/models.py:50
 msgid "Title"
@@ -237,7 +237,7 @@ msgstr "Herausgeber"
 
 #: documents/models.py:71
 msgid "The agency responsible for making the DTB available"
-msgstr ""
+msgstr "Verlag, der für die Bereitstellung des DTBs verantwortlich ist"
 
 #: documents/models.py:73
 msgid "Date"
@@ -253,7 +253,7 @@ msgstr "Kennung"
 
 #: documents/models.py:79
 msgid "A string or number identifying the DTB"
-msgstr ""
+msgstr "Zeichenkette oder Zahl zur Identifikation des DTBs"
 
 #: documents/models.py:81
 msgid "Source"
@@ -282,7 +282,7 @@ msgstr "Rechte"
 
 #: documents/models.py:97
 msgid "Information about rights held in and over the DTB"
-msgstr ""
+msgstr "Informationen über Rechte an dem DTB"
 
 #: documents/models.py:101
 msgid "Source Date"
@@ -317,12 +317,12 @@ msgid ""
 "The agency responsible for making available the resource (e.g., a print "
 "original, ebook, etc.) from which the DTB is derived"
 msgstr ""
-"Verantwortliches Organ für die Bereitstellung der Quelle (z.B. gedrucktes "
+"Verantwortlicher Verlag für die Bereitstellung der Quelle (z.B. gedrucktes "
 "Original, eBook, etc.), welche dem DTB zugrunde liegt"
 
 #: documents/models.py:115
 msgid "Source Rights"
-msgstr ""
+msgstr "Quellrechte"
 
 #: documents/models.py:117
 msgid ""
@@ -342,7 +342,7 @@ msgstr ""
 
 #: documents/models.py:132
 msgid "Production Series Number"
-msgstr ""
+msgstr "Buchreihen-Nr."
 
 #: documents/models.py:134
 msgid ""
@@ -375,7 +375,7 @@ msgstr "Grossschreibung einschalten"
 
 #: documents/models.py:232
 msgid "Detailed Accented Characters"
-msgstr ""
+msgstr "Ausführliche Akzentbuchstaben"
 
 #: documents/models.py:254
 msgid "Plain"
@@ -577,7 +577,7 @@ msgstr "Ein neues Dokument erstellen"
 
 #: templates/documents/manage.html:11
 msgid "Import metadata CSV File"
-msgstr ""
+msgstr "CSV-Datei mit Metadaten importieren"
 
 #: templates/documents/manage_create.html:4
 #: templates/documents/manage_create.html:7
@@ -590,7 +590,7 @@ msgstr "Erstellen"
 
 #: templates/documents/manage_detail.html:11
 msgid "Meta Data"
-msgstr ""
+msgstr "Metadaten"
 
 #: templates/documents/manage_detail.html:12
 #: templates/documents/manage_update.html:11
@@ -606,7 +606,7 @@ msgstr "Dokumentdetails"
 #: templates/documents/manage_upload_metadata_csv.html:4
 #: templates/documents/manage_upload_metadata_csv.html:7
 msgid "Bulk import documents"
-msgstr ""
+msgstr "Massenimport"
 
 #: templates/documents/manage_import_metadata_csv.html:13
 msgid "Ignore this Document"
@@ -614,7 +614,7 @@ msgstr "Dieses Dokument ignorieren"
 
 #: templates/documents/manage_import_metadata_csv.html:61
 msgid "CSV is empty or all records have already been imported"
-msgstr ""
+msgstr "CSV ist leer bzw. alle Einträge wurden bereits importiert"
 
 #: templates/documents/manage_import_metadata_csv.html:64
 #: templates/documents/manage_upload_metadata_csv.html:11
