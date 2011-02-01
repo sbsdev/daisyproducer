@@ -5,19 +5,21 @@ import zipfile
 
 from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm
 from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm, TextOnlyFilesetForm, DTBForm
-from daisyproducer.documents.models import Document, BrailleProfileForm, LargePrintProfileForm
+from daisyproducer.documents.models import State, Document, BrailleProfileForm, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic.list_detail import object_list, object_detail
+from django.db.models import Max
 
 
 # browse use case
 def index(request):
     """Show all the documents that approved and order them by title"""
+    final_state_id = State.objects.aggregate(final_state=Max('sort_order')).get('final_state')
     response = object_list(
         request,
-        queryset = Document.objects.filter(state__name='approved').order_by('title'),
+        queryset = Document.objects.filter(state__id=final_state_id).order_by('title'),
         template_name = 'documents/browse_index.html'
     )
     return response
