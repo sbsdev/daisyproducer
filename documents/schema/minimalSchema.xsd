@@ -367,6 +367,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:abbr"/>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:noteref"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
       <xs:attribute ref="brl:grade"/>
       <xs:attribute ref="brl:accents"/>
