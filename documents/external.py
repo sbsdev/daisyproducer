@@ -85,6 +85,8 @@ class DaisyPipeline:
         latexFileName = join(tmpDir, fileBaseName + ".tex")
 
         tmpFile = filterBrlContractionhints(inputFile)
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         # Transform to LaTeX using pipeline
         command = (
             join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
@@ -97,6 +99,8 @@ class DaisyPipeline:
             "--pageStyle=%(page_style)s" % kwargs,
             "--alignment=%(alignment)s" % kwargs,
             "--papersize=%(paper_size)s" % kwargs,
+            "--line_spacing=%(line_spacing)s" % kwargs,
+            "--replace_em_with_quote=%(replace_em_with_quote)s" % kwargs,
             )
         call(command)
         os.remove(tmpFile)        

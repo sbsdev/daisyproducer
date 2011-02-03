@@ -266,11 +266,19 @@ class LargePrintProfile(models.Model):
         ('a4paper', 'a4paper'),
         )
     
+    LINESPACING_CHOICES = (
+        ('singlespacing', _('Single spacing')),
+        ('onehalfspacing', _('One-and-a-half spacing')),
+        ('doublespacing', _('Double spacing')),
+        )
+    
     font_size = models.CharField(_("Fontsize"), default='17pt', max_length=4, choices=FONTSIZE_CHOICES)
     font = models.CharField(_("Font"), default='Tiresias LPfont', max_length=60, choices=FONT_CHOICES)
     page_style = models.CharField(_("Page style"), default='plain', max_length=16, choices=PAGESTYLE_CHOICES)
     alignment = models.CharField(default='justified', max_length=16, choices=ALIGNMENT_CHOICES)
     paper_size = models.CharField(_("Papersize"), default='a4paper', max_length=16, choices=PAPERSIZE_CHOICES)
+    line_spacing = models.CharField(_("Line Spacing"), default='singlespacing', max_length=16, choices=LINESPACING_CHOICES)
+    replace_em_with_quote = models.BooleanField(_("Replace italics with quote"))
 
 class LargePrintProfileForm(ModelForm):
     class Meta:
