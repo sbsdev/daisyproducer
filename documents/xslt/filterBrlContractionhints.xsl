@@ -20,8 +20,8 @@
   <!-- Drop the brl:running-line elements without retaining their content -->
   <xsl:template match="brl:running-line"/>
 
-  <!-- Filter brl:whenBraille elements -->
-  <xsl:template match="brl:whenBraille"/>
+  <!-- Filter brl:when-braille elements -->
+  <xsl:template match="brl:when-braille"/>
 
   <!-- Drop the brl:* elements while retaining their content -->
   <xsl:template match="brl:*">

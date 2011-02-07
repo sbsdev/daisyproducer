@@ -78,6 +78,9 @@
           <zeroOrMore>
             <ref name="contractionhints"/>
           </zeroOrMore>
+          <zeroOrMore>
+            <ref name="select"/>
+          </zeroOrMore>
         </interleave>
       </element>
       <element name="docauthor">
@@ -94,6 +97,9 @@
           </zeroOrMore>
           <zeroOrMore>
             <ref name="contractionhints"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="select"/>
           </zeroOrMore>
         </interleave>
       </element>
@@ -183,6 +189,9 @@ a form of css for Braille)</a:documentation>
       <zeroOrMore>
         <ref name="div"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="linegroup"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="hcontent">
@@ -208,6 +217,9 @@ a form of css for Braille)</a:documentation>
       </optional>
       <zeroOrMore>
         <ref name="running-line"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="select"/>
       </zeroOrMore>
     </interleave>
   </define>
@@ -570,6 +582,9 @@ for this emphasis</a:documentation>
         <zeroOrMore>
           <ref name="noteref"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -597,6 +612,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="noteref"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -655,6 +673,9 @@ for this emphasis</a:documentation>
         <zeroOrMore>
           <ref name="noteref"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -676,6 +697,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="span"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -711,6 +735,9 @@ for this emphasis</a:documentation>
             <ref name="line"/>
           </oneOrMore>
         </choice>
+        <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -719,9 +746,14 @@ for this emphasis</a:documentation>
       <optional>
         <ref name="brailleClassAttribute"/>
       </optional>
-      <oneOrMore>
-        <ref name="line"/>
-      </oneOrMore>
+      <interleave>
+        <oneOrMore>
+          <ref name="line"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="line">
@@ -751,6 +783,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="noteref"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -787,6 +822,12 @@ for this emphasis</a:documentation>
           <ref name="blockquote"/>
         </zeroOrMore>
         <zeroOrMore>
+          <ref name="author"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="note"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="poem"/>
         </zeroOrMore>
         <zeroOrMore>
@@ -797,6 +838,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="epigraph"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="div"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -982,7 +1026,7 @@ for this emphasis</a:documentation>
   <!-- a simplified content selection feature backported from zednext -->
   <define name="select">
     <element name="brl:select">
-      <element name="brl:whenBraille">
+      <element name="brl:when-braille">
         <interleave>
           <text/>
           <zeroOrMore>

@@ -130,12 +130,12 @@
   <xs:element name="select">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="brl:whenBraille"/>
+        <xs:element ref="brl:when-braille"/>
         <xs:element ref="brl:otherwise"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="whenBraille">
+  <xs:element name="when-braille">
     <xs:complexType mixed="true">
       <xs:sequence>
         <xs:element minOccurs="0" maxOccurs="unbounded" ref="brl:literal"/>
