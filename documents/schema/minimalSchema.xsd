@@ -104,7 +104,10 @@
   </xs:element>
   <xs:element name="rearmatter">
     <xs:complexType>
-      <xs:group maxOccurs="unbounded" ref="dtbook:level1"/>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:group ref="dtbook:level1"/>
+        <xs:element ref="brl:volume"/>
+      </xs:choice>
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="gradeAttribute">
@@ -433,13 +436,6 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:pagenum"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
-      <xs:attribute name="class">
-        <xs:simpleType>
-          <xs:restriction base="xs:token">
-            <xs:enumeration value="toc"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
       <xs:attribute name="type" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:token">
@@ -556,6 +552,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:linegroup"/>
         <xs:element ref="dtbook:byline"/>
         <xs:element ref="dtbook:epigraph"/>
+        <xs:element ref="dtbook:pagenum"/>
         <xs:element ref="dtbook:div"/>
       </xs:choice>
       <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>

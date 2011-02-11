@@ -122,9 +122,14 @@
   </define>
   <define name="rearmatter">
     <element name="rearmatter">
-      <oneOrMore>
-        <ref name="level1"/>
-      </oneOrMore>
+      <interleave>
+        <oneOrMore>
+          <ref name="level1"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="volume"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="gradeAttribute">
@@ -624,11 +629,6 @@ for this emphasis</a:documentation>
       <optional>
         <ref name="brailleClassAttribute"/>
       </optional>
-      <optional>
-        <attribute name="class">
-          <value>toc</value>
-        </attribute>
-      </optional>
       <attribute name="type">
         <value>pl</value>
       </attribute>
@@ -838,6 +838,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="epigraph"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="pagenum"/>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="div"/>
