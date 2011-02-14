@@ -16,6 +16,10 @@ from django.db.models import Max
 # browse use case
 def index(request):
     """Show all the documents that are in the final state and order them by title"""
+    # we only show this view to anonymous users
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('todo_index'))
+
     final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
     response = object_list(
         request,
