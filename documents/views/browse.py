@@ -15,11 +15,11 @@ from django.db.models import Max
 
 # browse use case
 def index(request):
-    """Show all the documents that approved and order them by title"""
-    final_state_id = State.objects.aggregate(final_state=Max('sort_order')).get('final_state')
+    """Show all the documents that are in the final state and order them by title"""
+    final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
     response = object_list(
         request,
-        queryset = Document.objects.filter(state__id=final_state_id).order_by('title'),
+        queryset = Document.objects.filter(state__sort_order=final_sort_order).order_by('title'),
         template_name = 'documents/browse_index.html'
     )
     return response
