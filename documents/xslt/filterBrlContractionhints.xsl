@@ -20,6 +20,9 @@
   <!-- Drop the brl:running-line elements without retaining their content -->
   <xsl:template match="brl:running-line"/>
 
+  <!-- Drop the brl:toc-line elements without retaining their content -->
+  <xsl:template match="brl:toc-line"/>
+
   <!-- Filter brl:when-braille elements -->
   <xsl:template match="brl:when-braille"/>
 
