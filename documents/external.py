@@ -72,7 +72,7 @@ def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **
     call(command) # call LaTeX again to make sure the toc is inserted
     os.rename(pdfFileName, outputFile)
     os.chdir(currentDir)
-    #rmtree(tmpDir)
+    rmtree(tmpDir)
 
 class DaisyPipeline:
 
