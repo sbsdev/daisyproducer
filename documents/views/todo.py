@@ -1,6 +1,6 @@
 import shutil, tempfile, zipfile, os.path
 
-from daisyproducer.documents.external import DaisyPipeline, SBSForm
+from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint
 from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyFilesetForm, DTBForm
 from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
@@ -242,6 +242,17 @@ def preview_pdf(request, document_id):
 
     return render_to_response('documents/todo_pdf.html', locals(),
                               context_instance=RequestContext(request))
+
+@login_required
+def preview_standard_pdf(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    inputFile = document.latest_version().content.path
+    outputFile = "/tmp/%s.pdf" % document_id
+    StandardLargePrint.dtbook2pdf(inputFile, outputFile)
+    return render_to_mimetype_response('application/pdf', 
+                                       document.title.encode('utf-8'), outputFile)
+
 
 @login_required
 def preview_rtf(request, document_id):

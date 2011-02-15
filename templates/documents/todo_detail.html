@@ -17,6 +17,7 @@
   <a href="{% url todo_sbsform document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
   <a href="{% url todo_pdf document.id %}" accesskey="l" >{% trans "Large Print" %}</a><br />
   <h3>{% trans "Preview (BETA)" %}</h3>
+  <a href="{% url todo_standard_pdf document.id %}" accesskey="l" >{% trans "Standard Large Print" %}</a><br />
   <a href="{% url todo_rtf document.id %}" accesskey="r" >{% trans "RTF" %}</a><br />
   <a href="{% url todo_epub document.id %}" accesskey="r" >{% trans "EPUB" %}</a><br />
   <a href="{% url todo_text_only_fileset document.id %}" accesskey="r" >{% trans "Daisy 2.02 Text-Only fileset" %}</a><br />
