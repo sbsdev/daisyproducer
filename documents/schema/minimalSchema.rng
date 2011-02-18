@@ -154,11 +154,6 @@ a form of css for Braille)</a:documentation>
       <data type="string" datatypeLibrary=""/>
     </attribute>
   </define>
-  <define name="commonAttributes">
-    <optional>
-      <ref name="gradeAttribute"/>
-    </optional>
-  </define>
   <define name="levelcontent">
     <interleave>
       <zeroOrMore>
@@ -230,7 +225,6 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level1">
     <element name="level1">
-      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <optional>
@@ -244,7 +238,6 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="frontmatterLevel1">
     <element name="level1">
-      <ref name="commonAttributes"/>
       <optional>
         <attribute name="class">
           <choice>
@@ -274,7 +267,6 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level2">
     <element name="level2">
-      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h2"/>
@@ -294,7 +286,6 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level3">
     <element name="level3">
-      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h3"/>
@@ -314,7 +305,6 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level4">
     <element name="level4">
-      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h4"/>
@@ -334,7 +324,6 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level5">
     <element name="level5">
-      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h5"/>
@@ -354,7 +343,6 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level6">
     <element name="level6">
-      <ref name="commonAttributes"/>
       <interleave>
         <ref name="levelcontent"/>
         <ref name="h6"/>
@@ -371,7 +359,6 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="p">
     <element name="p">
-      <ref name="commonAttributes"/>
       <optional>
         <ref name="brailleClassAttribute"/>
       </optional>
@@ -539,6 +526,9 @@ for this emphasis</a:documentation>
           <ref name="p"/>
         </oneOrMore>
         <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="author"/>
         </zeroOrMore>
         <zeroOrMore>
@@ -559,6 +549,9 @@ for this emphasis</a:documentation>
           </oneOrMore>
           <ref name="poem"/>
         </choice>
+        <zeroOrMore>
+          <ref name="pagenum"/>
+        </zeroOrMore>
         <zeroOrMore>
           <ref name="author"/>
         </zeroOrMore>
