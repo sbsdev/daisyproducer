@@ -336,6 +336,7 @@ for this emphasis</xs:documentation>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:noteref"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>
@@ -348,6 +349,7 @@ for this emphasis</xs:documentation>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:noteref"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>

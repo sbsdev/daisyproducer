@@ -451,6 +451,9 @@ for this emphasis</a:documentation>
         <zeroOrMore>
           <ref name="noteref"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -475,6 +478,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="noteref"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
         </zeroOrMore>
       </interleave>
     </element>
