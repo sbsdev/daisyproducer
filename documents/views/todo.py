@@ -170,28 +170,6 @@ def markup(request, document_id):
                               context_instance=RequestContext(request))
 
 @login_required
-def markup_xopus(request, document_id):
-    document = get_object_or_404(Document, pk=document_id)
-    if request.method == 'POST':
-        rawData = request.raw_post_data
-        root = etree.fromstring(rawData)
-#        root.getroottree().write("/tmp/document.xml", encoding="UTF-8", xml_declaration=True)    
-        content = ContentFile(
-            etree.tostring(root, 
-                           encoding="UTF-8",
-                           pretty_print=True,
-                           xml_declaration=True))
-        version = Version.objects.create(
-            comment="Changed with Xopus", 
-            document=document,
-            created_by=request.user)
-        version.content.save("initial_version.xml", content)
-        return HttpResponse("success")
-    else:
-        return render_to_response('documents/todo_markup_xopus.html', locals(),
-                                  context_instance=RequestContext(request))
-
-@login_required
 def preview_xhtml(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 

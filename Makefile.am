@@ -21,14 +21,6 @@ PUBLIC_FILES = \
 	public/javascripts/prototype.js \
 	public/stylesheets/application.css
 
-XOPUS_FILES = \
-	public/xopus-local/config/fasttrack.rnc \
-	public/xopus-local/config/fasttrack.xsd \
-	public/xopus-local/config/fasttrack.xsl \
-	public/xopus-local/config/README \
-	public/xopus-local/config/xml.xsd \
-	public/xopus-local/js/save.js
-
 TEST_FILES = \
 	$(wildcard documents/test/*.py) \
 	$(wildcard documents/test/functional/*.py) \

@@ -25,8 +25,6 @@
     Alias /stylesheets/ /srv/demo.xmlp.sbszh.ch/daisyproducer/public/stylesheets/
     Alias /javascripts/ /srv/demo.xmlp.sbszh.ch/daisyproducer/public/javascripts/
     Alias /images/      /srv/demo.xmlp.sbszh.ch/daisyproducer/public/images/
-    Alias /xopus/       /srv/demo.xmlp.sbszh.ch/daisyproducer/public/xopus/
-    Alias /xopus-local/ /srv/demo.xmlp.sbszh.ch/daisyproducer/public/xopus-local/
 
     <Directory /srv/demo.xmlp.sbszh.ch/daisyproducer>
         Order deny,allow
