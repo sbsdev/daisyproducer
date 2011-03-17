@@ -1,7 +1,6 @@
 *.pyc
 *~
 .coverage
-/public/xopus
 /INSTALL.html
 /README.html
 /aclocal.m4
