@@ -21,7 +21,7 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form enctype="multipart/form-data" method="post" action="{% url todo_ocr  document.id %}">
+    <form enctype="multipart/form-data" method="post" action="{% url todo_ocr  document.id %}">{% csrf_token %}
       <p>
 	{% include "documents/simpleForm.html" %}
       </p>

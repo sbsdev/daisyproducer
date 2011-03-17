@@ -15,7 +15,7 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form method="post" action="{% url todo_text_only_fileset document.id %}">
+    <form method="post" action="{% url todo_text_only_fileset document.id %}">{% csrf_token %}
       <p>
 	<table>
 	  {{ form.as_table }}

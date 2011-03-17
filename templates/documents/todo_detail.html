@@ -50,7 +50,7 @@
     </table>
 
     <form enctype="multipart/form-data" method="post" 
-	  action="{% url todo_add_version document.id %}">
+	  action="{% url todo_add_version document.id %}">{% csrf_token %}
       <p>
 	{% with versionForm as form %}
 	{% include "documents/simpleForm.html" %}
@@ -76,7 +76,7 @@
       {% endfor %}
     </table>
     <form enctype="multipart/form-data" method="post"
-	  action="{% url todo_add_attachment document.id %}">
+	  action="{% url todo_add_attachment document.id %}">{% csrf_token %}
       <p>
 	{% with attachmentForm as form %}
 	{% include "documents/simpleForm.html" %}
@@ -89,7 +89,7 @@
 
   <div id="relations">
     <p><strong>{% trans "State" %}</strong></p>
-    <form method="post" action="{% url todo_transition  document.id %}">
+    <form method="post" action="{% url todo_transition  document.id %}">{% csrf_token %}
       <p>
 	{% with documentForm as form %}
 	{% include "documents/simpleForm.html" %}

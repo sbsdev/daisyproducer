@@ -37,56 +37,56 @@
     </tr>
   </table>
   <h3 id="pdf_view">{% trans "View as PDF" %}</h3>
-  <form action="{% url browse_pdf object.id %}" method="POST">
+  <form action="{% url browse_pdf object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ lpform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
   <h3 id="sbsform_view">{% trans "View as Braille (SBSForm)" %}</h3>
-  <form action="{% url browse_sbsform object.id %}" method="POST">
+  <form action="{% url browse_sbsform object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ sform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
   <h3 id="braille_view">{% trans "View as Braille (Liblouis)" %}</h3>
-  <form action="{% url browse_brl object.id %}" method="POST">
+  <form action="{% url browse_brl object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ bform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
   <h3 id="xhtml_view">{% trans "View as XHTML" %}</h3>
-  <form action="{% url browse_xhtml object.id %}" method="POST">
+  <form action="{% url browse_xhtml object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ xhtmlform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
   <h3 id="rtf_view">{% trans "View as RTF" %}</h3>
-  <form action="{% url browse_rtf object.id %}" method="POST">
+  <form action="{% url browse_rtf object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ rtfform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
   <h3 id="epub_view">{% trans "View as EPUB" %}</h3>
-  <form action="{% url browse_epub object.id %}" method="POST">
+  <form action="{% url browse_epub object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ epubform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
   <h3 id="text_only_fileset_view">{% trans "View as Daisy 2.02 Text-Only fileset" %}</h3>
-  <form action="{% url browse_text_only_fileset object.id %}" method="POST">
+  <form action="{% url browse_text_only_fileset object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ textonlyfilesetform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
   <h3 id="dtb_view">{% trans "View as Full-Text Full-Audio book" %}</h3>
-  <form action="{% url browse_dtb object.id %}" method="POST">
+  <form action="{% url browse_dtb object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ dtbform.as_table }}
     </table>

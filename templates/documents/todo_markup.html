@@ -15,7 +15,7 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form method="post" action="{% url todo_markup  document.id %}">
+    <form method="post" action="{% url todo_markup  document.id %}">{% csrf_token %}
       <p>
 	{% if form.has_errors %}
 	<div class="errorExplanation" id="errorExplanation">

@@ -6,7 +6,7 @@
 {% block content %}
 {% if document %}
 <h2>{% trans "Update Document Details" %}</h2>
-<form action="" method="POST">
+<form action="" method="POST">{% csrf_token %}
     {% include "documents/simpleTableForm.html" %}
     <p><input type="submit" value="{% trans 'Update' %}" /></p>
 </form>

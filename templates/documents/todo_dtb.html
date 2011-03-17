@@ -15,7 +15,7 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form method="post" action="{% url todo_dtb document.id %}">
+    <form method="post" action="{% url todo_dtb document.id %}">{% csrf_token %}
       <p>
 	<table>
 	  {{ form.as_table }}

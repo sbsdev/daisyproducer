@@ -5,7 +5,7 @@
 
 {% block content %}
 <h2>{% trans "Bulk import documents" %}</h2>
-<form action="{% url import_metadata_csv %}" method="post">
+<form action="{% url import_metadata_csv %}" method="post">{% csrf_token %}
   {{ formset.management_form }}
   <table>
     {% for form in formset.forms %}
