@@ -73,6 +73,8 @@ class BrowseViewTest(TestCase):
                 'page_style': 'withPageNums',
                 'alignment': 'justified',
                 'paper_size': 'a3paper',
+                'line_spacing': 'singlespacing',
+                'replace_em_with_quote': 'false',
                 })
         self.failUnlessEqual(response.status_code, 200)
 

@@ -219,16 +219,20 @@ class TodoViewTest(TestCase):
         document.author = "Friedrich Glauser"
         document.source_publisher = "Diogenes"
         document.publisher = "Swiss Library for the Blind, Visually Impaired and Print Disabled"
-        document.date = "2009-04-23"
         document.identifier = "ch-sbs-1"
-        document.language = "de-CH"
+        document.language = "de"
         document.save()
         
+        # unfortunately document.save sets the date to today for a new
+        # document, so we need to save, set the date and save again
+        document.date = "2009-04-23"
+        document.save()
+
         self.client.login(username='testuser', password='foobar')
         version = open(os.path.join(TEST_DATA_DIR, 'test.xml'))
         post_data = {
             'comment': 'testing 123',
-            'content': version, 
+           'content': version, 
         }
         original_function = django.test.client.encode_file
         django.test.client.encode_file = get_file_encoder('text/xml')

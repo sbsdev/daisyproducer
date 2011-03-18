@@ -84,7 +84,7 @@ class ManageViewTest(TestCase):
         self.client.login(username='testuser', password='foobar')
         response = self.client.post(reverse('manage_create'), {
                 'title': 'testing 123',
-                'language': 'de-CH'
+                'language': 'de'
                 })
         self.assertTemplateNotUsed(response, 'documents/manage_create.html')
         self.assertRedirects(response, reverse('manage_index'))
@@ -123,7 +123,7 @@ class ManageViewTest(TestCase):
         self.client.login(username='testuser', password='foobar')
         response = self.client.post(reverse('manage_update', args=[self.document.pk]), {
                 'title': 'testing 456',
-                'language': 'de-CH'
+                'language': 'de'
                 })
         self.assertTemplateNotUsed(response, 'documents/manage_update.html')
         self.assertRedirects(response, reverse('manage_index'))
@@ -151,7 +151,7 @@ class ManageViewTest(TestCase):
         self.client.login(username='testuser', password='foobar')
         response = self.client.post(reverse('manage_update', args=[document.pk]), {
                 'title': 'testing 456',
-                'language': 'de-CH'
+                'language': 'de'
                 })
         self.assertTemplateNotUsed(response, 'documents/manage_update.html')
         self.assertRedirects(response, reverse('manage_index'))
