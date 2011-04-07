@@ -81,6 +81,9 @@
           <zeroOrMore>
             <ref name="select"/>
           </zeroOrMore>
+          <zeroOrMore>
+            <ref name="span"/>
+          </zeroOrMore>
         </interleave>
       </element>
       <element name="docauthor">
@@ -100,6 +103,9 @@
           </zeroOrMore>
           <zeroOrMore>
             <ref name="select"/>
+          </zeroOrMore>
+          <zeroOrMore>
+            <ref name="span"/>
           </zeroOrMore>
         </interleave>
       </element>

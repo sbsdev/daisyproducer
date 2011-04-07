@@ -80,6 +80,7 @@
         <xs:element ref="dtbook:strong"/>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="brl:select"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -91,6 +92,7 @@
         <xs:element ref="dtbook:strong"/>
         <xs:group ref="dtbook:contractionhints"/>
         <xs:element ref="brl:select"/>
+        <xs:element ref="dtbook:span"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
