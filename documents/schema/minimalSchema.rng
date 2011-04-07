@@ -204,6 +204,9 @@ a form of css for Braille)</a:documentation>
         <ref name="span"/>
       </zeroOrMore>
       <zeroOrMore>
+        <ref name="abbr"/>
+      </zeroOrMore>
+      <zeroOrMore>
         <ref name="em"/>
       </zeroOrMore>
       <zeroOrMore>
