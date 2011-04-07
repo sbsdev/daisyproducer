@@ -16,7 +16,7 @@ class BrowseViewTest(TestCase):
         os.mkdir(settings.MEDIA_ROOT)
         
         user = User.objects.get(pk=1)
-        self.document = Document()
+        self.document = Document(title="A Title", author="An Author", language="de")
         self.document.save()
         contentString  = XMLContent.getInitialContent(self.document)
         content = ContentFile(contentString)
