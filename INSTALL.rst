@@ -23,6 +23,7 @@ Basic requirements
 - A Python database interface like psycopg2_ or mysqldb_ for example.
 - docutils_ to render the help page (which is written in
   reStructuredText Markup).
+- south_ to handle changes in the database schema
 
 .. _Python: http://www.python.org
 .. _Django: http://www.djangoproject.com
@@ -38,6 +39,7 @@ Basic requirements
 .. _psycopg2: http://www.initd.org/
 .. _mysqldb: http://sourceforge.net/projects/mysql-python
 .. _docutils: http://docutils.sourceforge.net
+.. _south: http://south.aeracode.org/
 
 Required packages
 ~~~~~~~~~~~~~~~~~
@@ -62,10 +64,11 @@ In terms of (Debian/Ubuntu) packages this translates to
 
 Install the basic packages::
 
-  sudo aptitude install python python-django python-lxml \
-  python-docutils python-libxml2 python-libxslt1 sun-java6-jre \
-  texlive-xetex texlive-latex-extra texlive-latex-recommended \
-  texlive-lang-german ttf-tiresias lmodern xsltproc unzip
+  sudo aptitude install python python-django python-django-south	\
+  python-lxml python-docutils python-libxml2 python-libxslt1		\
+  sun-java6-jre texlive-xetex texlive-latex-extra			\
+  texlive-latex-recommended texlive-lang-german ttf-tiresias lmodern 	\
+  xsltproc unzip
 
 Database
 --------
