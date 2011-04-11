@@ -143,12 +143,27 @@ a form of css for Braille)</xs:documentation>
     <xs:sequence>
       <xs:element name="level1">
         <xs:complexType>
-          <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:choice>
-              <xs:element ref="dtbook:levelcontent"/>
-              <xs:element ref="dtbook:level2"/>
-            </xs:choice>
-            <xs:element ref="dtbook:h1"/>
+          <xs:choice>
+            <xs:sequence>
+              <xs:element ref="dtbook:h1"/>
+              <xs:choice maxOccurs="unbounded">
+                <xs:element ref="dtbook:levelcontent"/>
+                <xs:element ref="dtbook:level2"/>
+              </xs:choice>
+            </xs:sequence>
+            <xs:sequence>
+              <xs:choice maxOccurs="unbounded">
+                <xs:element ref="dtbook:levelcontent"/>
+                <xs:element ref="dtbook:level2"/>
+              </xs:choice>
+              <xs:sequence minOccurs="0">
+                <xs:element ref="dtbook:h1"/>
+                <xs:choice maxOccurs="unbounded">
+                  <xs:element ref="dtbook:levelcontent"/>
+                  <xs:element ref="dtbook:level2"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:sequence>
           </xs:choice>
         </xs:complexType>
       </xs:element>
@@ -188,12 +203,27 @@ a form of css for Braille)</xs:documentation>
   </xs:element>
   <xs:element name="level2">
     <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:choice>
-          <xs:element ref="dtbook:levelcontent"/>
-          <xs:element ref="dtbook:level3"/>
-        </xs:choice>
-        <xs:element ref="dtbook:h2"/>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element ref="dtbook:h2"/>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="dtbook:levelcontent"/>
+            <xs:element ref="dtbook:level3"/>
+          </xs:choice>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="dtbook:levelcontent"/>
+            <xs:element ref="dtbook:level3"/>
+          </xs:choice>
+          <xs:sequence minOccurs="0">
+            <xs:element ref="dtbook:h2"/>
+            <xs:choice maxOccurs="unbounded">
+              <xs:element ref="dtbook:levelcontent"/>
+              <xs:element ref="dtbook:level3"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:sequence>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -208,12 +238,27 @@ a form of css for Braille)</xs:documentation>
   </xs:element>
   <xs:element name="level3">
     <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:choice>
-          <xs:element ref="dtbook:levelcontent"/>
-          <xs:element ref="dtbook:level4"/>
-        </xs:choice>
-        <xs:element ref="dtbook:h3"/>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element ref="dtbook:h3"/>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="dtbook:levelcontent"/>
+            <xs:element ref="dtbook:level4"/>
+          </xs:choice>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="dtbook:levelcontent"/>
+            <xs:element ref="dtbook:level4"/>
+          </xs:choice>
+          <xs:sequence minOccurs="0">
+            <xs:element ref="dtbook:h3"/>
+            <xs:choice maxOccurs="unbounded">
+              <xs:element ref="dtbook:levelcontent"/>
+              <xs:element ref="dtbook:level4"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:sequence>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -228,12 +273,27 @@ a form of css for Braille)</xs:documentation>
   </xs:element>
   <xs:element name="level4">
     <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:choice>
-          <xs:element ref="dtbook:levelcontent"/>
-          <xs:element ref="dtbook:level5"/>
-        </xs:choice>
-        <xs:element ref="dtbook:h4"/>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element ref="dtbook:h4"/>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="dtbook:levelcontent"/>
+            <xs:element ref="dtbook:level5"/>
+          </xs:choice>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="dtbook:levelcontent"/>
+            <xs:element ref="dtbook:level5"/>
+          </xs:choice>
+          <xs:sequence minOccurs="0">
+            <xs:element ref="dtbook:h4"/>
+            <xs:choice maxOccurs="unbounded">
+              <xs:element ref="dtbook:levelcontent"/>
+              <xs:element ref="dtbook:level5"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:sequence>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -248,12 +308,27 @@ a form of css for Braille)</xs:documentation>
   </xs:element>
   <xs:element name="level5">
     <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:choice>
-          <xs:element ref="dtbook:levelcontent"/>
-          <xs:element ref="dtbook:level6"/>
-        </xs:choice>
-        <xs:element ref="dtbook:h5"/>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element ref="dtbook:h5"/>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="dtbook:levelcontent"/>
+            <xs:element ref="dtbook:level6"/>
+          </xs:choice>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:choice maxOccurs="unbounded">
+            <xs:element ref="dtbook:levelcontent"/>
+            <xs:element ref="dtbook:level6"/>
+          </xs:choice>
+          <xs:sequence minOccurs="0">
+            <xs:element ref="dtbook:h5"/>
+            <xs:choice maxOccurs="unbounded">
+              <xs:element ref="dtbook:levelcontent"/>
+              <xs:element ref="dtbook:level6"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:sequence>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -268,9 +343,18 @@ a form of css for Braille)</xs:documentation>
   </xs:element>
   <xs:element name="level6">
     <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="dtbook:levelcontent"/>
-        <xs:element ref="dtbook:h6"/>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element ref="dtbook:h6"/>
+          <xs:element maxOccurs="unbounded" ref="dtbook:levelcontent"/>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" ref="dtbook:levelcontent"/>
+          <xs:sequence minOccurs="0">
+            <xs:element ref="dtbook:h6"/>
+            <xs:element maxOccurs="unbounded" ref="dtbook:levelcontent"/>
+          </xs:sequence>
+        </xs:sequence>
       </xs:choice>
     </xs:complexType>
   </xs:element>

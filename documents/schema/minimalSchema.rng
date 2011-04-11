@@ -210,17 +210,34 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level1">
     <element name="level1">
-      <interleave>
-        <oneOrMore>
-          <choice>
-            <ref name="levelcontent"/>
-            <ref name="level2"/>
-          </choice>
-        </oneOrMore>
-        <optional>
+      <choice>
+        <group>
           <ref name="h1"/>
-        </optional>
-      </interleave>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level2"/>
+            </choice>
+          </oneOrMore>
+        </group>
+        <group>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level2"/>
+            </choice>
+          </oneOrMore>
+          <optional>
+            <ref name="h1"/>
+            <oneOrMore>
+              <choice>
+                <ref name="levelcontent"/>
+                <ref name="level2"/>
+              </choice>
+            </oneOrMore>
+          </optional>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="frontmatterLevel1">
@@ -256,15 +273,34 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level2">
     <element name="level2">
-      <interleave>
-        <oneOrMore>
-          <choice>
-            <ref name="levelcontent"/>
-            <ref name="level3"/>
-          </choice>
-        </oneOrMore>
-        <ref name="h2"/>
-      </interleave>
+      <choice>
+        <group>
+          <ref name="h2"/>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level3"/>
+            </choice>
+          </oneOrMore>
+        </group>
+        <group>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level3"/>
+            </choice>
+          </oneOrMore>
+          <optional>
+            <ref name="h2"/>
+            <oneOrMore>
+              <choice>
+                <ref name="levelcontent"/>
+                <ref name="level3"/>
+              </choice>
+            </oneOrMore>
+          </optional>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="h2">
@@ -277,15 +313,34 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level3">
     <element name="level3">
-      <interleave>
-        <oneOrMore>
-          <choice>
-            <ref name="levelcontent"/>
-            <ref name="level4"/>
-          </choice>
-        </oneOrMore>
-        <ref name="h3"/>
-      </interleave>
+      <choice>
+        <group>
+          <ref name="h3"/>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level4"/>
+            </choice>
+          </oneOrMore>
+        </group>
+        <group>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level4"/>
+            </choice>
+          </oneOrMore>
+          <optional>
+            <ref name="h3"/>
+            <oneOrMore>
+              <choice>
+                <ref name="levelcontent"/>
+                <ref name="level4"/>
+              </choice>
+            </oneOrMore>
+          </optional>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="h3">
@@ -298,15 +353,34 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level4">
     <element name="level4">
-      <interleave>
-        <oneOrMore>
-          <choice>
-            <ref name="levelcontent"/>
-            <ref name="level5"/>
-          </choice>
-        </oneOrMore>
-        <ref name="h4"/>
-      </interleave>
+      <choice>
+        <group>
+          <ref name="h4"/>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level5"/>
+            </choice>
+          </oneOrMore>
+        </group>
+        <group>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level5"/>
+            </choice>
+          </oneOrMore>
+          <optional>
+            <ref name="h4"/>
+            <oneOrMore>
+              <choice>
+                <ref name="levelcontent"/>
+                <ref name="level5"/>
+              </choice>
+            </oneOrMore>
+          </optional>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="h4">
@@ -319,15 +393,34 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level5">
     <element name="level5">
-      <interleave>
-        <oneOrMore>
-          <choice>
-            <ref name="levelcontent"/>
-            <ref name="level6"/>
-          </choice>
-        </oneOrMore>
-        <ref name="h5"/>
-      </interleave>
+      <choice>
+        <group>
+          <ref name="h5"/>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level6"/>
+            </choice>
+          </oneOrMore>
+        </group>
+        <group>
+          <oneOrMore>
+            <choice>
+              <ref name="levelcontent"/>
+              <ref name="level6"/>
+            </choice>
+          </oneOrMore>
+          <optional>
+            <ref name="h5"/>
+            <oneOrMore>
+              <choice>
+                <ref name="levelcontent"/>
+                <ref name="level6"/>
+              </choice>
+            </oneOrMore>
+          </optional>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="h5">
@@ -340,12 +433,25 @@ a form of css for Braille)</a:documentation>
   </define>
   <define name="level6">
     <element name="level6">
-      <interleave>
-        <oneOrMore>
-          <ref name="levelcontent"/>
-        </oneOrMore>
-        <ref name="h6"/>
-      </interleave>
+      <choice>
+        <group>
+          <ref name="h6"/>
+          <oneOrMore>
+            <ref name="levelcontent"/>
+          </oneOrMore>
+        </group>
+        <group>
+          <oneOrMore>
+            <ref name="levelcontent"/>
+          </oneOrMore>
+          <optional>
+            <ref name="h6"/>
+            <oneOrMore>
+              <ref name="levelcontent"/>
+            </oneOrMore>
+          </optional>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="h6">
