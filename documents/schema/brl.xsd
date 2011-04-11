@@ -94,7 +94,7 @@
       <xs:attribute ref="brl:render"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="volume">
+  <xs:element name="volume" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:attributeGroup ref="dtbook:gradeAttribute"/>
     </xs:complexType>

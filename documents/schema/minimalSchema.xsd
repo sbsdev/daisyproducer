@@ -125,24 +125,7 @@ a form of css for Braille)</xs:documentation>
     </xs:annotation>
     <xs:attribute ref="brl:class" use="required"/>
   </xs:attributeGroup>
-  <xs:group name="levelcontent">
-    <xs:sequence>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="dtbook:pagenum"/>
-        <xs:element ref="dtbook:p"/>
-        <xs:element ref="dtbook:list"/>
-        <xs:element ref="dtbook:blockquote"/>
-        <xs:element ref="dtbook:epigraph"/>
-        <xs:element ref="dtbook:poem"/>
-        <xs:element ref="dtbook:note"/>
-        <xs:element ref="dtbook:author"/>
-        <xs:element ref="dtbook:byline"/>
-        <xs:element ref="brl:volume"/>
-        <xs:element ref="dtbook:div"/>
-        <xs:element ref="dtbook:linegroup"/>
-      </xs:choice>
-    </xs:sequence>
-  </xs:group>
+  <xs:element name="levelcontent" abstract="true"/>
   <xs:complexType name="hcontent" mixed="true">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:group ref="dtbook:contractionhints"/>
@@ -161,9 +144,11 @@ a form of css for Braille)</xs:documentation>
       <xs:element name="level1">
         <xs:complexType>
           <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:group ref="dtbook:levelcontent"/>
+            <xs:choice>
+              <xs:element ref="dtbook:levelcontent"/>
+              <xs:element ref="dtbook:level2"/>
+            </xs:choice>
             <xs:element ref="dtbook:h1"/>
-            <xs:element ref="dtbook:level2"/>
           </xs:choice>
         </xs:complexType>
       </xs:element>
@@ -174,9 +159,11 @@ a form of css for Braille)</xs:documentation>
       <xs:element name="level1">
         <xs:complexType>
           <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:group ref="dtbook:levelcontent"/>
+            <xs:choice>
+              <xs:element ref="dtbook:levelcontent"/>
+              <xs:element ref="dtbook:level2"/>
+            </xs:choice>
             <xs:element ref="dtbook:h1"/>
-            <xs:element ref="dtbook:level2"/>
           </xs:choice>
           <xs:attribute name="class">
             <xs:simpleType>
@@ -202,9 +189,11 @@ a form of css for Braille)</xs:documentation>
   <xs:element name="level2">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:group ref="dtbook:levelcontent"/>
+        <xs:choice>
+          <xs:element ref="dtbook:levelcontent"/>
+          <xs:element ref="dtbook:level3"/>
+        </xs:choice>
         <xs:element ref="dtbook:h2"/>
-        <xs:element ref="dtbook:level3"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -220,9 +209,11 @@ a form of css for Braille)</xs:documentation>
   <xs:element name="level3">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:group ref="dtbook:levelcontent"/>
+        <xs:choice>
+          <xs:element ref="dtbook:levelcontent"/>
+          <xs:element ref="dtbook:level4"/>
+        </xs:choice>
         <xs:element ref="dtbook:h3"/>
-        <xs:element ref="dtbook:level4"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -238,9 +229,11 @@ a form of css for Braille)</xs:documentation>
   <xs:element name="level4">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:group ref="dtbook:levelcontent"/>
+        <xs:choice>
+          <xs:element ref="dtbook:levelcontent"/>
+          <xs:element ref="dtbook:level5"/>
+        </xs:choice>
         <xs:element ref="dtbook:h4"/>
-        <xs:element ref="dtbook:level5"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -256,9 +249,11 @@ a form of css for Braille)</xs:documentation>
   <xs:element name="level5">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:group ref="dtbook:levelcontent"/>
+        <xs:choice>
+          <xs:element ref="dtbook:levelcontent"/>
+          <xs:element ref="dtbook:level6"/>
+        </xs:choice>
         <xs:element ref="dtbook:h5"/>
-        <xs:element ref="dtbook:level6"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -274,7 +269,7 @@ a form of css for Braille)</xs:documentation>
   <xs:element name="level6">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:group ref="dtbook:levelcontent"/>
+        <xs:element ref="dtbook:levelcontent"/>
         <xs:element ref="dtbook:h6"/>
       </xs:choice>
     </xs:complexType>
@@ -288,7 +283,7 @@ a form of css for Braille)</xs:documentation>
       </xs:complexContent>
     </xs:complexType>
   </xs:element>
-  <xs:element name="p">
+  <xs:element name="p" substitutionGroup="dtbook:levelcontent">
     <xs:complexType mixed="true">
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:pagenum"/>
@@ -374,7 +369,7 @@ for this emphasis</xs:documentation>
       <xs:attribute ref="brl:accents"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="blockquote">
+  <xs:element name="blockquote" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:p"/>
@@ -385,7 +380,7 @@ for this emphasis</xs:documentation>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="epigraph">
+  <xs:element name="epigraph" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:choice>
@@ -399,7 +394,7 @@ for this emphasis</xs:documentation>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="author">
+  <xs:element name="author" substitutionGroup="dtbook:levelcontent">
     <xs:complexType mixed="true">
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:group ref="dtbook:contractionhints"/>
@@ -411,7 +406,7 @@ for this emphasis</xs:documentation>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="byline">
+  <xs:element name="byline" substitutionGroup="dtbook:levelcontent">
     <xs:complexType mixed="true">
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:group ref="dtbook:contractionhints"/>
@@ -425,7 +420,7 @@ for this emphasis</xs:documentation>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="list">
+  <xs:element name="list" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:li"/>
@@ -469,7 +464,7 @@ for this emphasis</xs:documentation>
       </xs:choice>
     </xs:complexType>
   </xs:element>
-  <xs:element name="pagenum">
+  <xs:element name="pagenum" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:integer">
@@ -485,7 +480,7 @@ for this emphasis</xs:documentation>
       </xs:simpleContent>
     </xs:complexType>
   </xs:element>
-  <xs:element name="poem">
+  <xs:element name="poem" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:author"/>
@@ -499,7 +494,7 @@ for this emphasis</xs:documentation>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="linegroup">
+  <xs:element name="linegroup" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:line"/>
@@ -528,7 +523,7 @@ for this emphasis</xs:documentation>
       <xs:attribute name="idref" use="required" type="xs:string"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="note">
+  <xs:element name="note" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:sequence>
         <xs:element maxOccurs="unbounded" ref="dtbook:p"/>
@@ -536,7 +531,7 @@ for this emphasis</xs:documentation>
       <xs:attribute name="id" use="required" type="xs:ID"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="div">
+  <xs:element name="div" substitutionGroup="dtbook:levelcontent">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:p"/>

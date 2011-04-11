@@ -161,44 +161,20 @@ a form of css for Braille)</a:documentation>
     </attribute>
   </define>
   <define name="levelcontent">
-    <interleave>
-      <zeroOrMore>
-        <ref name="pagenum"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="p"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="list"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="blockquote"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="epigraph"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="poem"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="note"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="author"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="byline"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="volume"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="div"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="linegroup"/>
-      </zeroOrMore>
-    </interleave>
+    <choice>
+      <ref name="pagenum"/>
+      <ref name="p"/>
+      <ref name="list"/>
+      <ref name="blockquote"/>
+      <ref name="epigraph"/>
+      <ref name="poem"/>
+      <ref name="note"/>
+      <ref name="author"/>
+      <ref name="byline"/>
+      <ref name="volume"/>
+      <ref name="div"/>
+      <ref name="linegroup"/>
+    </choice>
   </define>
   <define name="hcontent">
     <interleave>
@@ -235,13 +211,15 @@ a form of css for Braille)</a:documentation>
   <define name="level1">
     <element name="level1">
       <interleave>
-        <ref name="levelcontent"/>
+        <oneOrMore>
+          <choice>
+            <ref name="levelcontent"/>
+            <ref name="level2"/>
+          </choice>
+        </oneOrMore>
         <optional>
           <ref name="h1"/>
         </optional>
-        <zeroOrMore>
-          <ref name="level2"/>
-        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -256,13 +234,15 @@ a form of css for Braille)</a:documentation>
         </attribute>
       </optional>
       <interleave>
-        <ref name="levelcontent"/>
+        <oneOrMore>
+          <choice>
+            <ref name="levelcontent"/>
+            <ref name="level2"/>
+          </choice>
+        </oneOrMore>
         <optional>
           <ref name="h1"/>
         </optional>
-        <zeroOrMore>
-          <ref name="level2"/>
-        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -277,11 +257,13 @@ a form of css for Braille)</a:documentation>
   <define name="level2">
     <element name="level2">
       <interleave>
-        <ref name="levelcontent"/>
+        <oneOrMore>
+          <choice>
+            <ref name="levelcontent"/>
+            <ref name="level3"/>
+          </choice>
+        </oneOrMore>
         <ref name="h2"/>
-        <zeroOrMore>
-          <ref name="level3"/>
-        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -296,11 +278,13 @@ a form of css for Braille)</a:documentation>
   <define name="level3">
     <element name="level3">
       <interleave>
-        <ref name="levelcontent"/>
+        <oneOrMore>
+          <choice>
+            <ref name="levelcontent"/>
+            <ref name="level4"/>
+          </choice>
+        </oneOrMore>
         <ref name="h3"/>
-        <zeroOrMore>
-          <ref name="level4"/>
-        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -315,11 +299,13 @@ a form of css for Braille)</a:documentation>
   <define name="level4">
     <element name="level4">
       <interleave>
-        <ref name="levelcontent"/>
+        <oneOrMore>
+          <choice>
+            <ref name="levelcontent"/>
+            <ref name="level5"/>
+          </choice>
+        </oneOrMore>
         <ref name="h4"/>
-        <zeroOrMore>
-          <ref name="level5"/>
-        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -334,11 +320,13 @@ a form of css for Braille)</a:documentation>
   <define name="level5">
     <element name="level5">
       <interleave>
-        <ref name="levelcontent"/>
+        <oneOrMore>
+          <choice>
+            <ref name="levelcontent"/>
+            <ref name="level6"/>
+          </choice>
+        </oneOrMore>
         <ref name="h5"/>
-        <zeroOrMore>
-          <ref name="level6"/>
-        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -353,7 +341,9 @@ a form of css for Braille)</a:documentation>
   <define name="level6">
     <element name="level6">
       <interleave>
-        <ref name="levelcontent"/>
+        <oneOrMore>
+          <ref name="levelcontent"/>
+        </oneOrMore>
         <ref name="h6"/>
       </interleave>
     </element>
