@@ -180,7 +180,7 @@ Optional requirements
   diagrams. Note however that autodoc only works if you are sing
   PostgreSQL as a database.
 
-- python-yaml_ When running the tests (make check) , fixtures will be
+- python-yaml_ When running the tests (make check), fixtures will be
   loaded using yaml.
 
   sudo aptitude install python-yaml postgresql-autodoc
