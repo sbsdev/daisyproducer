@@ -142,9 +142,9 @@ The Daisy Pipeline has not been packaged so far and will have to be
 installed somewhere::
 
   cd /opt
-  sudo wget http://downloads.sourceforge.net/daisymfc/pipeline-20100125.zip
-  sudo unzip pipeline-20100125.zip
-  sudo chmod a+x pipeline-20100125/pipeline.sh
+  sudo wget http://downloads.sourceforge.net/project/daisymfc/pipeline/pipeline-20110317-RC/pipeline-20110317-RC.zip
+  sudo unzip pipeline-20110317-RC.zip
+  sudo chmod a+x pipeline-20110317/pipeline.sh
 
 The Daisy Pipeline has some dependencies as well, namely lame and
 espeak::
@@ -183,10 +183,13 @@ Optional requirements
 - python-yaml_ When running the tests (make check), fixtures will be
   loaded using yaml.
 
-  sudo aptitude install python-yaml postgresql-autodoc
+- sqlite_ To run the tests you need to have SQLite installed.
+
+  sudo aptitude install python-yaml postgresql-autodoc python-pysqlite2 sqlite3
 
 .. _python-yaml: http://pyyaml.org/
 .. _autodoc: http://www.rbt.ca/autodoc/
+.. _sqlite: http://www.sqlite.org/
 
 Installation
 ============
