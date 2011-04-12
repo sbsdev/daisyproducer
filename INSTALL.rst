@@ -132,6 +132,7 @@ as follows::
   ./configure
   make
   sudo make install
+  sudo ldconfig
 
 .. _Debian package for liblouis: http://packages.debian.org/search?keywords=liblouis&searchon=names&suite=all&section=all
 
@@ -181,6 +182,8 @@ Optional requirements
 
 - python-yaml_ When running the tests (make check) , fixtures will be
   loaded using yaml.
+
+  sudo aptitude install python-yaml postgresql-autodoc
 
 .. _python-yaml: http://pyyaml.org/
 .. _autodoc: http://www.rbt.ca/autodoc/
