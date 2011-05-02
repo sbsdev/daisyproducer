@@ -1,7 +1,9 @@
 import os
 import tempfile
 import textwrap
+import math
 from os.path import join, basename, splitext
+from pyPdf import PdfFileReader
 from shutil import rmtree
 from subprocess import call, Popen, PIPE
 import re
@@ -12,7 +14,6 @@ import louis
 from daisyproducer.version import getVersion
 from django.conf import settings
 from lxml import etree
-
 
 def filterBrlContractionhints(file_path):
     """Filter all the brl:contractionhints from the given file_path.
@@ -28,6 +29,50 @@ def filterBrlContractionhints(file_path):
         )
     call(command)
     return tmpFile
+
+def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **kwargs):
+    tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
+    fileBaseName = splitext(basename(inputFile))[0]
+    latexFileName = join(tmpDir, fileBaseName + ".tex")
+
+    # map True and False to "true" and "false"
+    kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+        # Transform to LaTeX using pipeline
+    command = (
+        join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+        join(settings.DAISY_PIPELINE_PATH, 'scripts',
+             'create_distribute', 'latex', taskscript),
+        "--input=%s" % inputFile,
+        "--output=%s" % latexFileName,
+        "--fontsize=%(font_size)s" % kwargs,
+        "--font=%(font)s" % kwargs,
+        "--pageStyle=%(page_style)s" % kwargs,
+        "--alignment=%(alignment)s" % kwargs,
+        "--papersize=%(paper_size)s" % kwargs,
+        "--line_spacing=%(line_spacing)s" % kwargs,
+        "--replace_em_with_quote=%(replace_em_with_quote)s" % kwargs,
+        "--paperwidth=%(paperwidth)s" % kwargs if 'paperwidth' in kwargs else "",
+        "--paperheight=%(paperheight)s" % kwargs if 'paperheight' in kwargs else "",
+        "--left_margin=%(left_margin)s" % kwargs if 'left_margin' in kwargs else "",
+        "--right_margin=%(right_margin)s" % kwargs if 'right_margin' in kwargs else "",
+        "--top_margin=%(top_margin)s" % kwargs if 'top_margin' in kwargs else "",
+        "--bottom_margin=%(bottom_margin)s" % kwargs if 'bottom_margin' in kwargs else "",
+        )
+    call(command)
+    # Transform to pdf using xelatex
+    pdfFileName = join(tmpDir, fileBaseName + ".pdf")
+    currentDir = os.getcwd()
+    os.chdir(tmpDir)
+    command = (
+        "xelatex",
+        "-halt-on-error",
+        latexFileName,
+        )
+    call(command)
+    call(command) # call LaTeX again to make sure the toc is inserted
+    os.rename(pdfFileName, outputFile)
+    os.chdir(currentDir)
+    rmtree(tmpDir)
 
 class DaisyPipeline:
 
@@ -80,44 +125,9 @@ class DaisyPipeline:
     @staticmethod
     def dtbook2pdf(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to pdf"""
-        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
-        fileBaseName = splitext(basename(inputFile))[0]
-        latexFileName = join(tmpDir, fileBaseName + ".tex")
-
         tmpFile = filterBrlContractionhints(inputFile)
-        # map True and False to "true" and "false"
-        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
-        # Transform to LaTeX using pipeline
-        command = (
-            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
-            join(settings.DAISY_PIPELINE_PATH, 'scripts',
-                 'create_distribute', 'latex', 'DTBookToLaTeX.taskScript'),
-            "--input=%s" % tmpFile,
-            "--output=%s" % latexFileName,
-            "--fontsize=%(font_size)s" % kwargs,
-            "--font=%(font)s" % kwargs,
-            "--pageStyle=%(page_style)s" % kwargs,
-            "--alignment=%(alignment)s" % kwargs,
-            "--papersize=%(paper_size)s" % kwargs,
-            "--line_spacing=%(line_spacing)s" % kwargs,
-            "--replace_em_with_quote=%(replace_em_with_quote)s" % kwargs,
-            )
-        call(command)
-        os.remove(tmpFile)        
-        # Transform to pdf using xelatex
-        pdfFileName = join(tmpDir, fileBaseName + ".pdf")
-        currentDir = os.getcwd()
-        os.chdir(tmpDir)
-        command = (
-            "xelatex",
-            "-halt-on-error",
-            latexFileName,
-            )
-        call(command)
-        call(command) # call LaTeX again to make sure the toc is inserted
-        os.rename(pdfFileName, outputFile)
-        os.chdir(currentDir)
-        rmtree(tmpDir)
+
+        generatePDF(tmpFile, outputFile, **kwargs)
 
     @staticmethod
     def dtbook2xhtml(inputFile, outputFile, **kwargs):
@@ -206,6 +216,57 @@ class DaisyPipeline:
             command += ("--%s=%s" % (k,v),)
         call(command)
         os.remove(tmpFile)
+
+class StandardLargePrint:
+
+    PAGES_PER_VOLUME=200
+
+    PARAMETER_DEFAULTS = {
+        'font_size': '17pt',
+        'font': 'Tiresias LPfont',
+        'page_style': 'plain',
+        'alignment': 'left',
+        'paper_size': 'custom',
+        'line_spacing': 'onehalfspacing',
+        'paperwidth': '200mm',
+        'paperheight': '250mm',
+        'left_margin': '28mm',
+        'right_margin': '20mm',
+        'top_margin': '20mm',
+        'bottom_margin': '20mm',
+        'replace_em_with_quote': 'true',
+        }
+
+    @staticmethod
+    def insertVolumeSplitPoints(file_path, number_of_volumes):
+        tmpFile = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")[1]
+        command = (
+            "java",
+            "-jar", join(settings.DAISY_PIPELINE_PATH, "lib", "saxon8.jar"),
+            "-s",  file_path,
+            "-o", tmpFile,
+            join(settings.PROJECT_DIR, 'documents', 'xslt', 'insertVolumeSplitPoints.xsl'),
+            "number_of_volumes=%s" % number_of_volumes,
+            )
+        call(command)
+        return tmpFile
+
+    @staticmethod
+    def determineNumberOfVolumes(file_path, **kwargs):
+        pdfFile = tempfile.mkstemp(prefix="daisyproducer-", suffix=".pdf")[1]
+        generatePDF(file_path, pdfFile, **kwargs)
+        pdfReader = PdfFileReader(file(pdfFile, "rb"))
+        volumes = int(math.ceil(pdfReader.getNumPages() / float(StandardLargePrint.PAGES_PER_VOLUME)))
+        return volumes
+
+    @staticmethod
+    def dtbook2pdf(inputFile, outputFile):
+        """Transform a dtbook xml file to pdf"""
+        tmpFile = filterBrlContractionhints(inputFile)
+        numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, **StandardLargePrint.PARAMETER_DEFAULTS)
+        tmpFile = StandardLargePrint.insertVolumeSplitPoints(tmpFile, numberOfVolumes)
+
+        generatePDF(tmpFile, outputFile, taskscript='DTBookToLaTeXSBS.taskScript', **StandardLargePrint.PARAMETER_DEFAULTS)
 
 class Liblouis:
 
