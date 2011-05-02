@@ -45,9 +45,15 @@ class XMLContent:
         self.version.content.close()
         # fix author
         self._updateMetaAttribute("dc:Creator", author)
+        # FIXME: Sometimes the docauthor contains xml markup, such as
+        # <em> and <abbr>, which is not in the meta tag. The following
+        # will just wipe this out.
         self._updateMetaElement("docauthor", author)
         # fix title
         self._updateMetaAttribute("dc:Title", title)
+        # FIXME: Sometimes the doctitle contains xml markup, such as
+        # <em> and <abbr>, which is not in the meta tag. The following
+        # will just wipe this out.
         self._updateMetaElement("doctitle", title)
         # fix xml:lang
         self._updateLangAttribute(kwargs.get('language'))
