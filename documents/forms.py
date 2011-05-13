@@ -257,11 +257,7 @@ class SalePDFForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SalePDFForm, self).__init__(*args, **kwargs) 
-        self.fields['font_size'].choices = (
-            ('17pt', '17pt'),
-            ('20pt', '20pt'),
-            ('25pt', '25pt'),
-            )
+        self.fields['font_size'].choices = LargePrintProfile.FONTSIZE_CHOICES[-3:]
 
     class Meta:
         model = LargePrintProfile
