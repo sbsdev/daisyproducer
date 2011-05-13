@@ -241,6 +241,7 @@ class LargePrintProfile(models.Model):
         ('14pt', '14pt'),
         ('17pt', '17pt'),
         ('20pt', '20pt'),
+        ('25pt', '25pt'),
         )
     
     FONT_CHOICES = (
