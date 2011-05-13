@@ -8,19 +8,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-25 11:59+0100\n"
-"PO-Revision-Date: 2011-01-26 11:34+0100\n"
+"POT-Creation-Date: 2011-05-13 16:05+0200\n"
+"PO-Revision-Date: 2011-05-13 16:14+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: urls.py:69 templates/base.html:30
+#: urls.py:70 templates/base.html:30
 msgid "Help"
 msgstr "Hilfe"
 
-#: urls.py:76 templates/base.html:31
+#: urls.py:77 templates/base.html:31
 msgid "About"
 msgstr "Impressum"
 
@@ -349,7 +350,7 @@ msgid ""
 "Information about the number in the series under which the book is produced"
 msgstr ""
 
-#: documents/models.py:137 templates/documents/todo_detail.html:91
+#: documents/models.py:137 templates/documents/todo_detail.html:92
 msgid "State"
 msgstr "Status"
 
@@ -397,21 +398,41 @@ msgstr "Blocksatz"
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: documents/models.py:269
+#: documents/models.py:270
+msgid "Single spacing"
+msgstr ""
+
+#: documents/models.py:271
+msgid "One-and-a-half spacing"
+msgstr ""
+
+#: documents/models.py:272
+msgid "Double spacing"
+msgstr ""
+
+#: documents/models.py:275
 msgid "Fontsize"
 msgstr "Fontgrösse"
 
-#: documents/models.py:270
+#: documents/models.py:276
 msgid "Font"
 msgstr "Font"
 
-#: documents/models.py:271
+#: documents/models.py:277
 msgid "Page style"
 msgstr "Seitenstil"
 
-#: documents/models.py:273
-msgid "Papersize"
-msgstr "Papiergrösse"
+#: documents/models.py:279
+msgid "Stocksize"
+msgstr "Papiergösse"
+
+#: documents/models.py:280
+msgid "Line Spacing"
+msgstr "Zeilenabstand"
+
+#: documents/models.py:281
+msgid "Replace italics with quote"
+msgstr "Kursiv mit Apostrophe ersetzen"
 
 #: templates/base.html:17
 msgid "Sign out"
@@ -430,23 +451,23 @@ msgstr "Einloggen"
 msgid "Administration"
 msgstr "Administration"
 
-#: templates/base.html:48
+#: templates/base.html:41
 msgid "Manage"
 msgstr ""
 
-#: templates/base.html:51 templates/documents/manage_detail.html:14
+#: templates/base.html:44 templates/documents/manage_detail.html:14
 msgid "TODO"
 msgstr ""
 
-#: templates/base.html:53
+#: templates/base.html:46
 msgid "Browse"
 msgstr ""
 
-#: templates/base.html:68 templates/documents/todo_markup_xopus.html:37
+#: templates/base.html:61
 msgid "Powered by"
 msgstr ""
 
-#: templates/base.html:68 templates/documents/todo_markup_xopus.html:37
+#: templates/base.html:61
 msgid "Swiss Library for the Blind, Visually Impaired and Print Disabled"
 msgstr "Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
@@ -455,7 +476,7 @@ msgstr "Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 #: templates/documents/manage_detail.html:5
 #: templates/documents/manage_detail.html:23
 #: templates/documents/todo_detail.html:6
-#: templates/documents/todo_detail.html:31
+#: templates/documents/todo_detail.html:32
 msgid "Document Details"
 msgstr "Dokumentdetails"
 
@@ -469,7 +490,7 @@ msgid "PDF"
 msgstr "PDF"
 
 #: templates/documents/browse_detail.html:12
-#: templates/documents/todo_detail.html:17
+#: templates/documents/todo_detail.html:16
 msgid "Braille (SBSForm)"
 msgstr "Braille (SBSForm)"
 
@@ -478,27 +499,27 @@ msgid "Braille (liblouis)"
 msgstr "Braille (liblouis)"
 
 #: templates/documents/browse_detail.html:14
-#: templates/documents/todo_detail.html:16
+#: templates/documents/todo_detail.html:15
 msgid "XHTML"
 msgstr "XHTML"
 
 #: templates/documents/browse_detail.html:15
-#: templates/documents/todo_detail.html:20
+#: templates/documents/todo_detail.html:21
 msgid "RTF"
 msgstr "RTF"
 
 #: templates/documents/browse_detail.html:16
-#: templates/documents/todo_detail.html:21
+#: templates/documents/todo_detail.html:22
 msgid "EPUB"
 msgstr "EPUB"
 
 #: templates/documents/browse_detail.html:17
-#: templates/documents/todo_detail.html:22
+#: templates/documents/todo_detail.html:23
 msgid "Daisy 2.02 Text-Only fileset"
 msgstr "Daisy 2.02 Text-Only"
 
 #: templates/documents/browse_detail.html:18
-#: templates/documents/todo_detail.html:23
+#: templates/documents/todo_detail.html:24
 msgid "Full-Text Full-Audio book"
 msgstr "Volltext Audio-Buch"
 
@@ -550,13 +571,13 @@ msgstr "Ansicht als Volltext Audio-Buch"
 #: templates/documents/manage_detail.html:46
 #: templates/documents/manage_index.html:38
 #: templates/documents/manage_update.html:15
-#: templates/documents/todo_detail.html:103
+#: templates/documents/todo_detail.html:104
 #: templates/documents/todo_dtb.html:31 templates/documents/todo_epub.html:31
 #: templates/documents/todo_index.html:32
 #: templates/documents/todo_markup.html:37
-#: templates/documents/todo_markup_xopus.html:33
 #: templates/documents/todo_ocr.html:36 templates/documents/todo_pdf.html:31
 #: templates/documents/todo_rtf.html:31
+#: templates/documents/todo_sale_pdf.html:31
 #: templates/documents/todo_sbsform.html:31
 #: templates/documents/todo_text_only_fileset.html:31
 msgid "No data to display"
@@ -627,6 +648,7 @@ msgstr "Importieren"
 #: templates/documents/todo_markup.html:31
 #: templates/documents/todo_ocr.html:30 templates/documents/todo_pdf.html:25
 #: templates/documents/todo_rtf.html:25
+#: templates/documents/todo_sale_pdf.html:25
 #: templates/documents/todo_sbsform.html:25
 #: templates/documents/todo_text_only_fileset.html:25
 msgid "Cancel"
@@ -656,39 +678,44 @@ msgid "Markup"
 msgstr "Markup"
 
 #: templates/documents/todo_detail.html:14
-msgid "Markup with Xopus"
-msgstr "Markup mit Xopus"
-
-#: templates/documents/todo_detail.html:15
 #: templates/documents/todo_dtb.html:24 templates/documents/todo_epub.html:24
 #: templates/documents/todo_pdf.html:24 templates/documents/todo_rtf.html:24
+#: templates/documents/todo_sale_pdf.html:24
 #: templates/documents/todo_sbsform.html:24
 #: templates/documents/todo_text_only_fileset.html:24
 msgid "Preview"
 msgstr "Vorschau"
 
-#: templates/documents/todo_detail.html:18
+#: templates/documents/todo_detail.html:17
 msgid "Large Print"
 msgstr "Grossdruck"
 
-#: templates/documents/todo_detail.html:19
+#: templates/documents/todo_detail.html:18
 msgid "Preview (BETA)"
 msgstr "Vorschau (BETA)"
 
-#: templates/documents/todo_detail.html:41
+#: templates/documents/todo_detail.html:19
+msgid "Large Print for Library"
+msgstr "Grossdruck für die Bibliothek"
+
+#: templates/documents/todo_detail.html:20
+msgid "Large Print for Sale"
+msgstr "Grossdruck für den Verkauf"
+
+#: templates/documents/todo_detail.html:42
 msgid "Versions"
 msgstr "Versionen"
 
-#: templates/documents/todo_detail.html:58
-#: templates/documents/todo_detail.html:84
+#: templates/documents/todo_detail.html:59
+#: templates/documents/todo_detail.html:85
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: templates/documents/todo_detail.html:66
+#: templates/documents/todo_detail.html:67
 msgid "Attachments"
 msgstr "Angehängte Dateien"
 
-#: templates/documents/todo_detail.html:97
+#: templates/documents/todo_detail.html:98
 msgid "Transition"
 msgstr "Weitergeben"
 
@@ -725,6 +752,11 @@ msgstr "Vorschau Grossdruck"
 msgid "Preview RTF (BETA)"
 msgstr "Vorschau RTF (BETA)"
 
+#: templates/documents/todo_sale_pdf.html:4
+#: templates/documents/todo_sale_pdf.html:9
+msgid "Preview Large Print for Sale"
+msgstr "Vorschau Grossdruck für den Verkauf"
+
 #: templates/documents/todo_sbsform.html:4
 #: templates/documents/todo_sbsform.html:9
 msgid "Preview Braille"
@@ -734,3 +766,4 @@ msgstr "Vorschau Braille"
 #: templates/documents/todo_text_only_fileset.html:9
 msgid "Preview Daisy 2.02 Text-Only fileset (BETA)"
 msgstr "Ansicht als Daisy 2.02 Text-Only (BETA)"
+
