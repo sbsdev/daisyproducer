@@ -1,5 +1,5 @@
 from daisyproducer.documents.external import DaisyPipeline
-from daisyproducer.documents.models import Document, Version, Attachment
+from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfile
 from daisyproducer.documents.versionHelper import XMLContent
 from django import forms
 from django.core.files.base import ContentFile
@@ -253,3 +253,17 @@ class CSVUploadForm(forms.Form):
         label = _("CSV File"), 
         help_text = _("CSV File containing document meta data"))
 
+class SalePDFForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SalePDFForm, self).__init__(*args, **kwargs) 
+        self.fields['font_size'].choices = (
+            ('17pt', '17pt'),
+            ('20pt', '20pt'),
+            ('25pt', '25pt'),
+            )
+
+    class Meta:
+        model = LargePrintProfile
+        fields = ('font_size',)
+    

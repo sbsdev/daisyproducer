@@ -261,9 +261,10 @@ class StandardLargePrint:
         return volumes
 
     @staticmethod
-    def dtbook2pdf(inputFile, outputFile):
+    def dtbook2pdf(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to pdf"""
         tmpFile = filterBrlContractionhints(inputFile)
+        StandardLargePrint.PARAMETER_DEFAULTS.update(kwargs)
         numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, **StandardLargePrint.PARAMETER_DEFAULTS)
         tmpFile = StandardLargePrint.insertVolumeSplitPoints(tmpFile, numberOfVolumes)
 
