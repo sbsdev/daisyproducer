@@ -259,6 +259,15 @@ Set ip the initial database tables::
 
   python manage syncdb
 
+Upgrading from an older installation
+====================================
+
+You will have to install south and migrate the database::
+
+  ./manage.py syncdb
+  ./manage.py migrate documents 0001 --fake
+
+
 Application setup
 =================
 

@@ -48,16 +48,17 @@ def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **
         "--font=%(font)s" % kwargs,
         "--pageStyle=%(page_style)s" % kwargs,
         "--alignment=%(alignment)s" % kwargs,
-        "--papersize=%(paper_size)s" % kwargs,
+        "--stocksize=%(stock_size)s" % kwargs,
         "--line_spacing=%(line_spacing)s" % kwargs,
         "--replace_em_with_quote=%(replace_em_with_quote)s" % kwargs,
-        "--paperwidth=%(paperwidth)s" % kwargs if 'paperwidth' in kwargs else "",
-        "--paperheight=%(paperheight)s" % kwargs if 'paperheight' in kwargs else "",
-        "--left_margin=%(left_margin)s" % kwargs if 'left_margin' in kwargs else "",
-        "--right_margin=%(right_margin)s" % kwargs if 'right_margin' in kwargs else "",
-        "--top_margin=%(top_margin)s" % kwargs if 'top_margin' in kwargs else "",
-        "--bottom_margin=%(bottom_margin)s" % kwargs if 'bottom_margin' in kwargs else "",
+        "--paperwidth=%(paperwidth)s" % kwargs if 'paperwidth' in kwargs else None,
+        "--paperheight=%(paperheight)s" % kwargs if 'paperheight' in kwargs else None,
+        "--left_margin=%(left_margin)s" % kwargs if 'left_margin' in kwargs else None,
+        "--right_margin=%(right_margin)s" % kwargs if 'right_margin' in kwargs else None,
+        "--top_margin=%(top_margin)s" % kwargs if 'top_margin' in kwargs else None,
+        "--bottom_margin=%(bottom_margin)s" % kwargs if 'bottom_margin' in kwargs else None,
         )
+    command = filter(None, command) # filter out empty arguments
     call(command)
     # Transform to pdf using xelatex
     pdfFileName = join(tmpDir, fileBaseName + ".pdf")
@@ -226,7 +227,7 @@ class StandardLargePrint:
         'font': 'Tiresias LPfont',
         'page_style': 'plain',
         'alignment': 'left',
-        'paper_size': 'custom',
+        'stock_size': 'a4paper',
         'line_spacing': 'onehalfspacing',
         'paperwidth': '200mm',
         'paperheight': '250mm',
@@ -241,12 +242,12 @@ class StandardLargePrint:
     def insertVolumeSplitPoints(file_path, number_of_volumes):
         tmpFile = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")[1]
         command = (
-            "java",
-            "-jar", join(settings.DAISY_PIPELINE_PATH, "lib", "saxon8.jar"),
-            "-s",  file_path,
-            "-o", tmpFile,
-            join(settings.PROJECT_DIR, 'documents', 'xslt', 'insertVolumeSplitPoints.xsl'),
-            "number_of_volumes=%s" % number_of_volumes,
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts',
+                 'modify_improve', 'dtbook', 'DTBookVolumeSplit.taskScript'),
+            "--input=%s" % file_path,
+            "--output=%s" % tmpFile,
+            "--number_of_volumes=%s" % number_of_volumes,
             )
         call(command)
         return tmpFile
@@ -266,7 +267,7 @@ class StandardLargePrint:
         numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, **StandardLargePrint.PARAMETER_DEFAULTS)
         tmpFile = StandardLargePrint.insertVolumeSplitPoints(tmpFile, numberOfVolumes)
 
-        generatePDF(tmpFile, outputFile, taskscript='DTBookToLaTeXSBS.taskScript', **StandardLargePrint.PARAMETER_DEFAULTS)
+        generatePDF(tmpFile, outputFile, **StandardLargePrint.PARAMETER_DEFAULTS)
 
 class Liblouis:
 

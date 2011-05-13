@@ -50,7 +50,7 @@ class BrowseViewTest(TestCase):
         """Check if post with an partial form fails"""
         response = self.client.post(reverse('browse_pdf', args=[self.document.pk]), {
                 'alignment': 'justified',
-                'paper_size': 'a3paper',
+                'stock_size': 'a3paper',
                 })
         self.failIfEqual(response.status_code, 200)
 
@@ -61,7 +61,7 @@ class BrowseViewTest(TestCase):
                 'font': 'bar',
                 'page_style': 'baz',
                 'alignment': 'not',
-                'paper_size': 'valid',
+                'stock_size': 'valid',
                 })
         self.failIfEqual(response.status_code, 200)
 
@@ -72,7 +72,7 @@ class BrowseViewTest(TestCase):
                 'font': 'Tiresias LPfont',
                 'page_style': 'withPageNums',
                 'alignment': 'justified',
-                'paper_size': 'a3paper',
+                'stock_size': 'a3paper',
                 'line_spacing': 'singlespacing',
                 'replace_em_with_quote': 'false',
                 })

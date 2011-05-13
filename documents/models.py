@@ -276,7 +276,7 @@ class LargePrintProfile(models.Model):
     font = models.CharField(_("Font"), default='Tiresias LPfont', max_length=60, choices=FONT_CHOICES)
     page_style = models.CharField(_("Page style"), default='plain', max_length=16, choices=PAGESTYLE_CHOICES)
     alignment = models.CharField(default='justified', max_length=16, choices=ALIGNMENT_CHOICES)
-    paper_size = models.CharField(_("Papersize"), default='a4paper', max_length=16, choices=PAPERSIZE_CHOICES)
+    stock_size = models.CharField(_("Stocksize"), default='a4paper', max_length=16, choices=PAPERSIZE_CHOICES)
     line_spacing = models.CharField(_("Line Spacing"), default='singlespacing', max_length=16, choices=LINESPACING_CHOICES)
     replace_em_with_quote = models.BooleanField(_("Replace italics with quote"))
 
