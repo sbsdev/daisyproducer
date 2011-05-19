@@ -11,6 +11,7 @@ Basic requirements
 - Python_ (tested with Python 2.5)
 - Django_ 
 - lxml_
+- pyPDF_ (used for large print volume size calculation)
 - `Daisy Pipeline`_ (use the Pipeline Core Packages)
 - XeTex_ (to generate Large Print from LaTeX)
 - texlive_ (should contain the extbook and titlesec class which is
@@ -29,6 +30,7 @@ Basic requirements
 .. _Django: http://www.djangoproject.com
 .. _lxml: http://codespeak.net/lxml/index.html
 .. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
+.. _pyPDF: http://pybrary.net/pyPdf/
 .. _XeTex: http://www.tug.org/xetex/
 .. _texlive: http://www.tug.org/texlive/
 .. _`Tiresias LP font`: http://www.tiresias.org/fonts/lpfont/about_lp.htm
@@ -55,6 +57,7 @@ In terms of (Debian/Ubuntu) packages this translates to
 - python-docutils
 - python-libxml2
 - python-libxslt1
+- python-pypdf
 - sun-java6-jre
 - texlive-xetex
 - texlive-latex-extra
@@ -65,8 +68,8 @@ In terms of (Debian/Ubuntu) packages this translates to
 Install the basic packages::
 
   sudo aptitude install python python-django python-django-south	\
-  python-lxml python-docutils python-libxml2 python-libxslt1		\
-  sun-java6-jre texlive-xetex texlive-latex-extra			\
+  python-lxml python-docutils python-libxml2 python-libxslt1            \
+  python-pypdf sun-java6-jre texlive-xetex texlive-latex-extra		\
   texlive-latex-recommended texlive-lang-german ttf-tiresias lmodern 	\
   xsltproc unzip
 
