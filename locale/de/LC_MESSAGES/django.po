@@ -6,10 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-13 16:05+0200\n"
-"PO-Revision-Date: 2011-05-13 16:14+0200\n"
+"POT-Creation-Date: 2011-05-19 12:02+0200\n"
+"PO-Revision-Date: 2011-05-19 12:07+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -378,59 +378,59 @@ msgstr "Grossschreibung einschalten"
 msgid "Detailed Accented Characters"
 msgstr "Ausführliche Akzentbuchstaben"
 
-#: documents/models.py:254
+#: documents/models.py:255
 msgid "Plain"
 msgstr "Einfach"
 
-#: documents/models.py:255
+#: documents/models.py:256
 msgid "With original page numbers"
 msgstr "Mit Original-Seitenzahlen"
 
-#: documents/models.py:256
+#: documents/models.py:257
 msgid "Scientific"
 msgstr "Wissenschaftlich"
 
-#: documents/models.py:260
+#: documents/models.py:261
 msgid "justified"
 msgstr "Blocksatz"
 
-#: documents/models.py:261
+#: documents/models.py:262
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: documents/models.py:270
+#: documents/models.py:271
 msgid "Single spacing"
 msgstr ""
 
-#: documents/models.py:271
+#: documents/models.py:272
 msgid "One-and-a-half spacing"
 msgstr ""
 
-#: documents/models.py:272
+#: documents/models.py:273
 msgid "Double spacing"
 msgstr ""
 
-#: documents/models.py:275
+#: documents/models.py:276
 msgid "Fontsize"
 msgstr "Fontgrösse"
 
-#: documents/models.py:276
+#: documents/models.py:277
 msgid "Font"
 msgstr "Font"
 
-#: documents/models.py:277
+#: documents/models.py:278
 msgid "Page style"
 msgstr "Seitenstil"
 
-#: documents/models.py:279
+#: documents/models.py:280
 msgid "Stocksize"
 msgstr "Papiergösse"
 
-#: documents/models.py:280
+#: documents/models.py:281
 msgid "Line Spacing"
 msgstr "Zeilenabstand"
 
-#: documents/models.py:281
+#: documents/models.py:282
 msgid "Replace italics with quote"
 msgstr "Kursiv mit Apostrophe ersetzen"
 
@@ -687,20 +687,20 @@ msgid "Preview"
 msgstr "Vorschau"
 
 #: templates/documents/todo_detail.html:17
-msgid "Large Print"
-msgstr "Grossdruck"
-
-#: templates/documents/todo_detail.html:18
-msgid "Preview (BETA)"
-msgstr "Vorschau (BETA)"
-
-#: templates/documents/todo_detail.html:19
 msgid "Large Print for Library"
 msgstr "Grossdruck für die Bibliothek"
 
-#: templates/documents/todo_detail.html:20
+#: templates/documents/todo_detail.html:18
 msgid "Large Print for Sale"
 msgstr "Grossdruck für den Verkauf"
+
+#: templates/documents/todo_detail.html:19
+msgid "Configurable Large Print"
+msgstr "Konfigurierbarer Grossdruck"
+
+#: templates/documents/todo_detail.html:20
+msgid "Preview (BETA)"
+msgstr "Vorschau (BETA)"
 
 #: templates/documents/todo_detail.html:42
 msgid "Versions"
@@ -766,4 +766,3 @@ msgstr "Vorschau Braille"
 #: templates/documents/todo_text_only_fileset.html:9
 msgid "Preview Daisy 2.02 Text-Only fileset (BETA)"
 msgstr "Ansicht als Daisy 2.02 Text-Only (BETA)"
-
