@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-19 12:02+0200\n"
-"PO-Revision-Date: 2011-05-19 12:07+0200\n"
+"POT-Creation-Date: 2011-05-19 16:11+0200\n"
+"PO-Revision-Date: 2011-05-19 16:14+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -745,8 +745,8 @@ msgid "Document OCR"
 msgstr "Dokumente OCR"
 
 #: templates/documents/todo_pdf.html:4 templates/documents/todo_pdf.html:9
-msgid "Preview Large Print"
-msgstr "Vorschau Grossdruck"
+msgid "Preview Configurable Large Print"
+msgstr "Vorschau Konfigurierbarer Grossdruck"
 
 #: templates/documents/todo_rtf.html:4 templates/documents/todo_rtf.html:9
 msgid "Preview RTF (BETA)"
