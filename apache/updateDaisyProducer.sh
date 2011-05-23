@@ -16,4 +16,5 @@ INSTALL_DIR=/srv/$DEPLOY_ENV.xmlp.sbszh.ch/daisyproducer
 cd $INSTALL_DIR
 git pull
 make locale/de/LC_MESSAGES/django.mo
+python manage.py migrate documents
 sudo /etc/init.d/apache2 restart
