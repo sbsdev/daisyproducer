@@ -1,6 +1,7 @@
 *.pyc
 *~
 .coverage
+/ID
 /INSTALL.html
 /README.html
 /aclocal.m4
