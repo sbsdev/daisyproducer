@@ -390,6 +390,7 @@ a form of css for Braille)</xs:documentation>
                     <xs:enumeration value="precedingseparator"/>
                     <xs:enumeration value="precedingemptyline"/>
                     <xs:enumeration value="noindent"/>
+                    <xs:enumeration value="sourcePublisher"/>
                   </xs:restriction>
                 </xs:simpleType>
               </xs:list>

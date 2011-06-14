@@ -482,6 +482,7 @@ a form of css for Braille)</a:documentation>
                 <value>precedingseparator</value>
                 <value>precedingemptyline</value>
                 <value>noindent</value>
+                <value>sourcePublisher</value>
               </choice>
             </oneOrMore>
           </list>
