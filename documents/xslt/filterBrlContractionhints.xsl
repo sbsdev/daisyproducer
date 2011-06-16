@@ -26,6 +26,14 @@
   <!-- Filter brl:when-braille elements -->
   <xsl:template match="brl:when-braille"/>
 
+  <!-- Replace space inside num elements with non-breaking space -->
+  <!-- FIXME: This should probably be in the dtbook2latex converter,
+       but since that one dosn't know anything about num elements this
+       template is here for now. -->
+  <xsl:template match="brl:num//text()">
+    <xsl:value-of select="translate(string(current()), ' ', ' ')"/>
+  </xsl:template>
+
   <!-- Drop the brl:* elements while retaining their content -->
   <xsl:template match="brl:*">
     <xsl:apply-templates/>
