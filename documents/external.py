@@ -264,11 +264,12 @@ class StandardLargePrint:
     def dtbook2pdf(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to pdf"""
         tmpFile = filterBrlContractionhints(inputFile)
-        StandardLargePrint.PARAMETER_DEFAULTS.update(kwargs)
-        numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, **StandardLargePrint.PARAMETER_DEFAULTS)
+        defaults = StandardLargePrint.PARAMETER_DEFAULTS.copy()
+        defaults.update(kwargs)
+        numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, **defaults)
         tmpFile = StandardLargePrint.insertVolumeSplitPoints(tmpFile, numberOfVolumes)
 
-        generatePDF(tmpFile, outputFile, **StandardLargePrint.PARAMETER_DEFAULTS)
+        generatePDF(tmpFile, outputFile, **defaults)
 
 class Liblouis:
 
