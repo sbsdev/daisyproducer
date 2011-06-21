@@ -228,8 +228,8 @@ def preview_library_pdf(request, document_id):
     inputFile = document.latest_version().content.path
     outputFile = "/tmp/%s.pdf" % document_id
     StandardLargePrint.dtbook2pdf(inputFile, outputFile)
-    return render_to_mimetype_response('application/pdf', 
-                                       document.title.encode('utf-8'), outputFile)
+    filename = document.title.encode('utf-8') + " 17pt"
+    return render_to_mimetype_response('application/pdf', filename, outputFile)
 
 
 @login_required
@@ -242,8 +242,8 @@ def preview_sale_pdf(request, document_id):
             inputFile = document.latest_version().content.path
             outputFile = "/tmp/%s.pdf" % document_id
             StandardLargePrint.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
-            return render_to_mimetype_response('application/pdf', 
-                                               document.title.encode('utf-8'), outputFile)
+            filename = document.title.encode('utf-8') + " " + form.cleaned_data['font_size']
+            return render_to_mimetype_response('application/pdf', filename, outputFile)
     else:
         form = SalePDFForm()
 
