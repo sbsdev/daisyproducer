@@ -532,6 +532,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:lic"/>
         <xs:element ref="dtbook:pagenum"/>
         <xs:element ref="dtbook:noteref"/>
+        <xs:element ref="dtbook:list"/>
         <xs:element ref="brl:select"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
