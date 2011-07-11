@@ -6,9 +6,19 @@
 
 {% block content %}
 
+<script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/javascripts/jquery.dataTables.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#documents').dataTable( {
+      "bPaginate": false
+    });
+  });
+</script>
+
 <h2>{% trans "Finished documents" %}</h2>
 {% if object_list %}
-<table class="list">
+<table class="list"  id="documents">
   <thead>
     <tr>
       <th>{{ object_list|first|verbose_name:"title" }}</th>

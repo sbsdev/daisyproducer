@@ -5,14 +5,13 @@
 {% block title %}{{ block.super }} - {% trans "Manage documents" %}{% endblock %}
 
 {% block content %}
+
 <script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
-
 <script type="text/javascript" language="javascript" src="/javascripts/jquery.dataTables.js"></script>
-
 <script type="text/javascript">
   $(document).ready(function(){
     $('#documents').dataTable( {
-      "sPaginationType": "full_numbers"
+      "bPaginate": false,
     });
   });
 </script>
