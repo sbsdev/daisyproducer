@@ -4,13 +4,27 @@
 {% block title %}{{ block.super }} - {% trans "Bulk import documents" %}{% endblock %}
 
 {% block content %}
+
+<script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript">
+  // toggle all checkboxes
+  $(document).ready(function(){
+    $('.toggleAllCheckboxes').click(function() {
+      $('[type=checkbox]').each(function (i) {
+        $(this).attr('checked', !this.checked);
+      });
+    });
+  });
+</script>
+
 <h2>{% trans "Bulk import documents" %}</h2>
 <form action="{% url import_metadata_csv %}" method="post">{% csrf_token %}
   {{ formset.management_form }}
   <table>
     {% for form in formset.forms %}
     {% if forloop.first %}
-    <tr><th>{% trans 'Document' %}</th><th>{% trans 'Ignore this Document' %}</th></tr>
+    <tr><th>{% trans 'Document' %}</th>
+        <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{% trans 'Ignore this Document' %}</th></tr>
     {% endif %}
        <tr class="{% cycle 'odd' 'even' %}">
 	 <td>
