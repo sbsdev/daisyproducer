@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-16 11:19+0200\n"
-"PO-Revision-Date: 2011-06-16 11:22+0200\n"
+"POT-Creation-Date: 2011-07-11 14:29+0200\n"
+"PO-Revision-Date: 2011-07-11 14:32+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: urls.py:70 templates/base.html:30
+#: urls.py:70 templates/base.html:31
 msgid "Help"
 msgstr "Hilfe"
 
-#: urls.py:77 templates/base.html:31
+#: urls.py:77 templates/base.html:32
 msgid "About"
 msgstr "Impressum"
 
@@ -433,40 +433,40 @@ msgstr "Zeilenabstand"
 msgid "Replace italics with quote"
 msgstr "Kursiv mit Apostrophe ersetzen"
 
-#: templates/base.html:17
+#: templates/base.html:18
 msgid "Sign out"
 msgstr "Ausloggen"
 
-#: templates/base.html:20
+#: templates/base.html:21
 #, python-format
 msgid "Logged in as %(username)s"
 msgstr "Eingeloggt als %(username)s"
 
-#: templates/base.html:23
+#: templates/base.html:24
 msgid "Sign in"
 msgstr "Einloggen"
 
-#: templates/base.html:28
+#: templates/base.html:29
 msgid "Administration"
 msgstr "Administration"
 
-#: templates/base.html:41
+#: templates/base.html:42
 msgid "Manage"
 msgstr ""
 
-#: templates/base.html:44 templates/documents/manage_detail.html:14
+#: templates/base.html:45 templates/documents/manage_detail.html:14
 msgid "TODO"
 msgstr ""
 
-#: templates/base.html:46
+#: templates/base.html:47
 msgid "Browse"
 msgstr ""
 
-#: templates/base.html:61
+#: templates/base.html:62
 msgid "Powered by"
 msgstr ""
 
-#: templates/base.html:61
+#: templates/base.html:62
 msgid "Swiss Library for the Blind, Visually Impaired and Print Disabled"
 msgstr "Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
@@ -480,7 +480,7 @@ msgid "Document Details"
 msgstr "Dokumentdetails"
 
 #: templates/documents/browse_detail.html:10
-#: templates/documents/manage_import_metadata_csv.html:13
+#: templates/documents/manage_import_metadata_csv.html:26
 msgid "Document"
 msgstr "Dokumente"
 
@@ -566,15 +566,15 @@ msgid "View as Full-Text Full-Audio book"
 msgstr "Ansicht als Volltext Audio-Buch"
 
 #: templates/documents/browse_detail.html:97
-#: templates/documents/browse_index.html:31
+#: templates/documents/browse_index.html:41
 #: templates/documents/browse_sale_cover_pdf.html:31
 #: templates/documents/browse_sale_pdf.html:31
 #: templates/documents/manage_detail.html:46
-#: templates/documents/manage_index.html:38
+#: templates/documents/manage_index.html:49
 #: templates/documents/manage_update.html:15
 #: templates/documents/todo_detail.html:104
 #: templates/documents/todo_dtb.html:31 templates/documents/todo_epub.html:31
-#: templates/documents/todo_index.html:32
+#: templates/documents/todo_index.html:43
 #: templates/documents/todo_markup.html:37
 #: templates/documents/todo_ocr.html:36 templates/documents/todo_pdf.html:31
 #: templates/documents/todo_rtf.html:31
@@ -585,7 +585,7 @@ msgid "No data to display"
 msgstr "Keine Daten vorhanden"
 
 #: templates/documents/browse_index.html:5
-#: templates/documents/browse_index.html:9
+#: templates/documents/browse_index.html:19
 msgid "Finished documents"
 msgstr "Fertiggestellte Dokumente"
 
@@ -607,7 +607,7 @@ msgstr "Vorschau"
 
 #: templates/documents/browse_sale_cover_pdf.html:25
 #: templates/documents/browse_sale_pdf.html:25
-#: templates/documents/manage_import_metadata_csv.html:65
+#: templates/documents/manage_import_metadata_csv.html:79
 #: templates/documents/manage_upload_metadata_csv.html:12
 #: templates/documents/todo_dtb.html:25 templates/documents/todo_epub.html:25
 #: templates/documents/todo_markup.html:31
@@ -661,27 +661,31 @@ msgid "Details"
 msgstr "Dokumentdetails"
 
 #: templates/documents/manage_import_metadata_csv.html:4
-#: templates/documents/manage_import_metadata_csv.html:7
+#: templates/documents/manage_import_metadata_csv.html:20
 #: templates/documents/manage_upload_metadata_csv.html:4
 #: templates/documents/manage_upload_metadata_csv.html:7
 msgid "Bulk import documents"
 msgstr "Massenimport"
 
-#: templates/documents/manage_import_metadata_csv.html:13
+#: templates/documents/manage_import_metadata_csv.html:27
+msgid "Toggle All"
+msgstr "Alle umschalten"
+
+#: templates/documents/manage_import_metadata_csv.html:27
 msgid "Ignore this Document"
 msgstr "Dieses Dokument ignorieren"
 
-#: templates/documents/manage_import_metadata_csv.html:61
+#: templates/documents/manage_import_metadata_csv.html:75
 msgid "CSV is empty or all records have already been imported"
 msgstr "CSV ist leer bzw. alle Einträge wurden bereits importiert"
 
-#: templates/documents/manage_import_metadata_csv.html:64
+#: templates/documents/manage_import_metadata_csv.html:78
 #: templates/documents/manage_upload_metadata_csv.html:11
 msgid "Import"
 msgstr "Importieren"
 
 #: templates/documents/manage_index.html:5
-#: templates/documents/manage_index.html:8
+#: templates/documents/manage_index.html:19
 msgid "Manage documents"
 msgstr "Alle Dokumente"
 
@@ -744,7 +748,8 @@ msgstr "Ansicht als Volltext Audio-Buch (BETA)"
 msgid "Preview EPUB (BETA)"
 msgstr "Vorschau EPUB (BETA)"
 
-#: templates/documents/todo_index.html:5 templates/documents/todo_index.html:8
+#: templates/documents/todo_index.html:5
+#: templates/documents/todo_index.html:19
 msgid "Pending documents"
 msgstr "Pendente Dokumente"
 
