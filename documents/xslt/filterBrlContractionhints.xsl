@@ -6,9 +6,11 @@
 		xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
 		exclude-result-prefixes="dtb brl">
   
-  <xsl:output method="xml" encoding="utf-8" indent="yes" 
+  <xsl:output method="xml" encoding="utf-8" indent="no" 
 	      doctype-public="-//NISO//DTD dtbook 2005-3//EN"
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
+
+  <xsl:strip-space elements="brl:select"/>
 
   <!-- Get rid of the brl namespace declaration in the dtbook node -->
   <xsl:template match="dtb:dtbook">
