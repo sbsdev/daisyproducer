@@ -33,7 +33,7 @@
        but since that one dosn't know anything about num elements this
        template is here for now. -->
   <xsl:template match="brl:num//text()">
-    <xsl:value-of select="translate(string(current()), ' ', ' ')"/>
+    <xsl:value-of select="translate(normalize-space(string(current())), ' ', ' ')"/>
   </xsl:template>
 
   <!-- Drop the brl:* elements while retaining their content -->
