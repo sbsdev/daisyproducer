@@ -859,6 +859,9 @@ for this emphasis</a:documentation>
           <ref name="line"/>
         </oneOrMore>
         <zeroOrMore>
+          <ref name="p"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="pagenum"/>
         </zeroOrMore>
       </interleave>

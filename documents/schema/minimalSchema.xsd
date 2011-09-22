@@ -584,6 +584,7 @@ for this emphasis</xs:documentation>
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="dtbook:line"/>
+        <xs:element ref="dtbook:p"/>
         <xs:element ref="dtbook:pagenum"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
