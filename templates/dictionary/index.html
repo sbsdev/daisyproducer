@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<form method="post" action="">
+  {{ formset.management_form }}
+  <table>
+  {% for form in formset.forms %}
+    {% if forloop.first %}
+    <tr>
+      {% for field in form %}
+      {% if field.label != 'Id' %}
+        <th>{{ field.label }}</th>
+      {% else %}
+        <th></th>
+      {% endif %}
+      {% endfor %}
+    </tr>
+    {% endif %}
+    <tr>
+    {% for field in form %}
+      <td>{{ field }}</td>
+    {% endfor %}
+    </tr>
+  {% endfor %}
+  </table>
+  <input type="submit" value="{% trans 'Submit' %}" />
+  <a href="">{% trans 'Cancel' %}</a>
+</form>
+{% endblock %}
