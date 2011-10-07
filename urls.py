@@ -58,7 +58,7 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
 
 # work on dictionary
 urlpatterns += patterns('daisyproducer.dictionary.views',
-    url(r'^dictionary/$', 'index', name='index'),
+    url(r'^todo/(?P<document_id>\d+)/dictionary$', 'dictionary', name='dictionary'),
 )
 
 # help and about
