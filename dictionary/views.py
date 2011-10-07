@@ -1,8 +1,11 @@
-import string
+import unicodedata
 
 import louis
+from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 from lxml import etree
 
 from dictionary.forms import BaseWordFormSet
@@ -11,23 +14,33 @@ from documents.models import Document
 
 
 def dictionary(request, document_id):
+
+    if request.method == 'POST':
+        WordFormSet = modelformset_factory(
+            Word, exclude=('document', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+
+        formset = WordFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+        else:
+            return render_to_response('dictionary/words.html', locals(),
+                                      context_instance=RequestContext(request))
+
     document = get_object_or_404(Document, pk=document_id)
     document.latest_version().content.open()
     tree = etree.parse(document.latest_version().content.file)
     document.latest_version().content.close()
     content = etree.tostring(tree, method="text", encoding=unicode)
-    punctuation = u'!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~\u2039\u203A\u00AB\u00BB' # left/right pointing (single) guillemet
-    translation_table = dict((ord(char), None) for char in punctuation)
-    content = content.translate(translation_table)
-    new_words = {}
-    for word in content.split():
-        new_words[word] = 1
+    content = ''.join(c for c in content if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl'])
+    new_words = dict((w,1) for w in content.split() if len(w) > 1).keys()
     duplicate_words = [word.untranslated for 
-                       word in Word.objects.filter(untranslated__in=new_words.keys())]
+                       word in Word.objects.filter(untranslated__in=new_words)]
     unknown_words = [{'untranslated': word, 
                       'grade1': louis.translateString(['de-ch-g1.ctb'], word),
                       'grade2': louis.translateString(['de-ch-g2.ctb'], word)} 
                      for word in new_words if word not in duplicate_words]
+    unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
     WordFormSet = modelformset_factory(
         Word, exclude=('document', 'isConfirmed'), 
@@ -35,5 +48,6 @@ def dictionary(request, document_id):
 
     formset = WordFormSet(queryset=Word.objects.none(), initial=unknown_words)
 
-    return render_to_response('dictionary/index.html', locals())
+    return render_to_response('dictionary/words.html', locals(), 
+                              context_instance=RequestContext(request))
 
