@@ -31,7 +31,9 @@ def check(request, document_id):
     tree = etree.parse(document.latest_version().content.file)
     document.latest_version().content.close()
     content = etree.tostring(tree, method="text", encoding=unicode)
-    content = ''.join(c for c in content if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl'])
+    content = ''.join(c for c in content 
+                      if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp'] 
+                      or c in ['\n', '\r'])
     new_words = dict((w.lower(),1) for w in content.split() if len(w) > 1).keys()
     duplicate_words = [word.untranslated for 
                        word in Word.objects.filter(untranslated__in=new_words)]
