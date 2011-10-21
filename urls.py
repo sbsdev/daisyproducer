@@ -59,6 +59,7 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
 # work on dictionary
 urlpatterns += patterns('daisyproducer.dictionary.views',
     url(r'^todo/(?P<document_id>\d+)/dictionary$', 'dictionary', name='dictionary_check'),
+    url(r'^manage/dictionary_confirm$', 'confirm', name='dictionary_confirm'),
 )
 
 # help and about

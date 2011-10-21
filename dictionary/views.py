@@ -1,16 +1,15 @@
 import unicodedata
 
 import louis
+from dictionary.forms import BaseWordFormSet
+from dictionary.models import Word
 from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from lxml import etree
-
-from dictionary.forms import BaseWordFormSet
-from dictionary.models import Word
 from documents.models import Document
+from lxml import etree
 
 
 def dictionary(request, document_id):
@@ -50,4 +49,28 @@ def dictionary(request, document_id):
 
     return render_to_response('dictionary/words.html', locals(), 
                               context_instance=RequestContext(request))
+
+
+def confirm(request):
+
+    if request.method == 'POST':
+        WordFormSet = modelformset_factory(
+            Word, exclude=('document', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+
+        formset = WordFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(reverse('todo_index'))
+        else:
+            return render_to_response('dictionary/confirm.html', locals(),
+                                      context_instance=RequestContext(request))
+
+    WordFormSet = modelformset_factory(
+        Word, exclude=('document', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+
+    formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False))
+
+    return render_to_response('dictionary/confirm.html', locals(), 
+                              context_instance=RequestContext(request))
+
 
