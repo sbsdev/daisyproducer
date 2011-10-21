@@ -5,17 +5,13 @@
 {% endblock %}
 
 {% block content %}
-<h2>{% trans "Check Unknown Words" %}</h2>
+<h2>{% trans "Confirm Unknown Words" %}</h2>
 
 <div class="issue">
   
-  <h3>{{ document.title }}</h3>
-  
-  {% include "documents/documentDetails.html" %}
-
     <table>
     <tr>
-      <td><b>Total unknown words:</b></td><td>{{formset.total_form_count}}</td>
+      <td><b>Total unconfirmed words:</b></td><td>{{formset.total_form_count}}</td>
     </tr>
   </table>
   <hr />
@@ -52,7 +48,7 @@
 	{% endfor %}
       </table>
       <input type="submit" value="{% trans 'Submit' %}" />
-      <a href="{% url todo_detail  document.id %}">{% trans 'Cancel' %}</a>
+      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
     </form>
   </div>
 </div>

@@ -1,13 +1,12 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block tab-todo %}class="selected"{% endblock %}
 
 {% block sidebar %}
-<!-- <div id="sidebar"> -->
-<!--   <h3>Documents</h3> -->
-<!--   <a href="">View my pending documents</a><br /> -->
-<!--   <a href="">View pending documents</a><br /> -->
-<!--   <a href="">View all documents</a><br /> -->
-<!-- </div> -->
+<div id="sidebar">
+  <h3>{% trans "Words" %}</h3>
+  <a href="{% url dictionary_confirm %}" accesskey="d" >{% trans "Confirm unknown words" %}</a><br />
+</div>
 {% endblock %}
 

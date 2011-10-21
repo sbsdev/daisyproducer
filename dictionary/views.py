@@ -12,7 +12,7 @@ from documents.models import Document
 from lxml import etree
 
 
-def dictionary(request, document_id):
+def check(request, document_id):
 
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
