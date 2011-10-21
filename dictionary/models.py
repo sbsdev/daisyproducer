@@ -16,12 +16,15 @@ class Word(models.Model):
         (7, _('Dialect')),
         )
 
-    untranslated = models.CharField(max_length=255, unique=True)
+    untranslated = models.CharField(max_length=255)
     grade1 = models.CharField(max_length=255)
     grade2 = models.CharField(max_length=255)
     document = models.ManyToManyField(Document, null=True, blank=True)
     type = models.PositiveSmallIntegerField(_("Type"), default=0, choices=WORD_TYPE_CHOICES)
     isConfirmed = models.BooleanField()
+ 
+    class Meta:
+        unique_together = ("untranslated", "type", "isConfirmed")
 
     def __unicode__(self):
         return self.untranslated
