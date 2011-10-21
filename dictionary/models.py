@@ -16,7 +16,7 @@ class Word(models.Model):
         (7, _('Dialect')),
         )
 
-    untranslated = models.CharField(max_length=255)
+    untranslated = models.CharField(max_length=255, db_index=True)
     grade1 = models.CharField(max_length=255)
     grade2 = models.CharField(max_length=255)
     document = models.ManyToManyField(Document, null=True, blank=True)
