@@ -8,10 +8,16 @@ from django.utils.translation import ugettext_lazy as _
 import tempfile
 import os
 from django.forms.models import model_to_dict
+from daisyproducer.logger import getLogger
+
+logger = getLogger(__name__)
 
 def validate_content(fileName, contentMetaData, removeFile=False):
     # make sure the uploaded version is valid xml
+
+    logger.debug('before DaisyPipeline.validate')
     exitMessages = DaisyPipeline.validate(fileName)
+    logger.debug('after DaisyPipeline.validate')
     if exitMessages:
         if removeFile:
             os.remove(fileName)

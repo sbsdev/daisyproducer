@@ -15,6 +15,9 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic.list_detail import object_list
 from lxml import etree
+from daisyproducer.logger import getLogger
+
+logger = getLogger(__name__)
 
 
 @login_required
@@ -90,8 +93,13 @@ def add_version(request, document_id):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
+    logger.debug('before PartialVersionForm')
+
     form = PartialVersionForm(request.POST, request.FILES, 
                               contentMetaData=model_to_dict(document))
+
+    logger.debug('before form.is_valid')
+
     if not form.is_valid():
         versionForm = form
         attachmentForm = PartialAttachmentForm()
@@ -99,6 +107,8 @@ def add_version(request, document_id):
         documentForm.limitChoicesToValidStates(document)
         return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
+
+    logger.debug('before Version.objects.create')
 
     # this is a bit of a hack as we need to create (and save) a
     # version before the id is known. We need to know the id before we
@@ -109,6 +119,8 @@ def add_version(request, document_id):
         created_by=request.user)
     content_file = request.FILES['content']
     version.content.save(content_file.name, content_file)
+
+    logger.debug('before Version.content.save')
 
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
