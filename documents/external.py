@@ -87,13 +87,9 @@ class DaisyPipeline:
         successful. Return a list of error messages as delivered by
         the Daisy Pipeline otherwise."""
 
-        logger.debug('before etree.parse (schema)')
-        
-        xmlschema_doc = etree.parse(
-            join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.xsd'))
         logger.debug('before etree.XMLSchema')
 
-        xmlschema = etree.XMLSchema(xmlschema_doc)
+        xmlschema = etree.XMLSchema(file=join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.xsd'))
 
         logger.debug('before etree.parse (file)')
         
