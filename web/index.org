@@ -35,10 +35,10 @@ and a [[./daisyproducerPaper.pdf][paper about Daisy Producer]] are available.
 * Download
 
 No release has been produced as of yet. Get the source directly from
-the [[http://github.com/egli/daisy-producer][repository]].
+the [[http://github.com/egli/daisyproducer][repository]].
 
 * Development
 
-Development of Daisy Producer is done in git. See the [[http://github.com/egli/daisy-producer][github project
+Development of Daisy Producer is done in git. See the [[http://github.com/egli/daisyproducer][github project
 pages]] for instructions on how to get the source code.
 
