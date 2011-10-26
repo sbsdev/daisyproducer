@@ -11,7 +11,7 @@
 /config.status
 /configure
 /daisyproducer-*.tar.gz
-/development.db
+/*.db
 /install-sh
 /media
 /missing
