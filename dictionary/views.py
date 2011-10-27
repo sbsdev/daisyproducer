@@ -52,6 +52,29 @@ def check(request, document_id):
     return render_to_response('dictionary/words.html', locals(), 
                               context_instance=RequestContext(request))
 
+def local(request, document_id):
+
+    if request.method == 'POST':
+        WordFormSet = modelformset_factory(
+            Word, exclude=('document', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+
+        formset = WordFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+        else:
+            return render_to_response('dictionary/local.html', locals(),
+                                      context_instance=RequestContext(request))
+
+    document = get_object_or_404(Document, pk=document_id)
+    WordFormSet = modelformset_factory(
+        Word, exclude=('document', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+
+    formset = WordFormSet(queryset=Word.objects.filter(document=document))
+
+    return render_to_response('dictionary/local.html', locals(), 
+                              context_instance=RequestContext(request))
+
 
 def confirm(request):
 

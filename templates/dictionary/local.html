@@ -1,0 +1,59 @@
+{% extends "documents/todo.html" %}
+{% load i18n %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+<h2>{% trans "Edit Local Words" %}</h2>
+
+<div class="issue">
+  
+  <h3>{{ document.title }}</h3>
+  
+  {% include "documents/documentDetails.html" %}
+
+    <table>
+    <tr>
+      <td><b>Total local words:</b></td><td>{{formset.total_form_count}}</td>
+    </tr>
+  </table>
+  <hr />
+
+  <div id="relations">
+    <form method="post" action="">{% csrf_token %}
+      {{ formset.management_form }}
+      <table>
+	{% for form in formset.forms %}
+	{% if forloop.first %}
+	<tr>
+	  {% for field in form %}
+	  {% if field.label != 'Id' %}
+          <th>{{ field.label }}</th>
+	  {% else %}
+          <th></th>
+	  {% endif %}
+	  {% endfor %}
+	</tr>
+	{% endif %}
+	<tr class="{% cycle 'odd' 'even' %}">
+	  {% for field in form %}
+	  <td>{{ field }}</td>
+	  {% endfor %}
+	  {% if form.errors %}
+	  <td>
+	    <div class="errorExplanation" id="errorExplanation">
+	      <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span>
+	      {{ form.errors }}
+	    </div>
+	  </td>
+	  {% endif %}
+	</tr>
+	{% endfor %}
+      </table>
+      <input type="submit" value="{% trans 'Submit' %}" />
+      <a href="{% url todo_detail  document.id %}">{% trans 'Cancel' %}</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
