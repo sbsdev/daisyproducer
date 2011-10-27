@@ -188,7 +188,8 @@ class DaisyPipeline:
             "--output=%s" % outputFile,
             )
         for k, v in kwargs.iteritems():
-            command += ("--%s=%s" % (k,v),)
+            value = v.encode('utf8') if isinstance(v, str) or isinstance(v, unicode) else v
+            command += ("--%s=%s" % (k,value),)
         call(command)
         os.remove(tmpFile)
 
