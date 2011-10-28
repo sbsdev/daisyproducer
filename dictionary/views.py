@@ -1,18 +1,21 @@
 import unicodedata
 
 import louis
-from dictionary.forms import BaseWordFormSet
-from dictionary.models import Word
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from documents.models import Document
 from lxml import etree
+
+from dictionary.forms import BaseWordFormSet
+from dictionary.models import Word
+from documents.models import Document
 
 
 def check(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
 
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
@@ -20,13 +23,16 @@ def check(request, document_id):
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
-            formset.save()
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.isConfirmed = False
+                instance.save()
+                instance.document.add(document)
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
         else:
             return render_to_response('dictionary/words.html', locals(),
                                       context_instance=RequestContext(request))
 
-    document = get_object_or_404(Document, pk=document_id)
     document.latest_version().content.open()
     tree = etree.parse(document.latest_version().content.file)
     document.latest_version().content.close()
@@ -76,22 +82,24 @@ def local(request, document_id):
                               context_instance=RequestContext(request))
 
 
+@transaction.commit_on_success
 def confirm(request):
-
     if request.method == 'POST':
-        WordFormSet = modelformset_factory(
-            Word, exclude=('document', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+        WordFormSet = modelformset_factory(Word, exclude=('document'), formset=BaseWordFormSet)
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
-            formset.save()
+            instances = formset.save()
+            for instance in instances:
+                # TODO: don't clear the documents if the word is local
+                instance.document.clear()
             return HttpResponseRedirect(reverse('todo_index'))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
                                       context_instance=RequestContext(request))
 
     WordFormSet = modelformset_factory(
-        Word, exclude=('document', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+        Word, exclude=('document'), formset=BaseWordFormSet, extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False))
 
