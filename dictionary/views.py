@@ -13,7 +13,7 @@ from dictionary.forms import BaseWordFormSet
 from dictionary.models import Word
 from documents.models import Document
 
-
+@transaction.commit_on_success
 def check(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
