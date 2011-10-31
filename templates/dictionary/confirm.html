@@ -5,6 +5,22 @@
 {% endblock %}
 
 {% block content %}
+
+<script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript">
+  // toggle all checkboxes
+  $(document).ready(function(){
+    $('.toggleAllCheckboxes').click(function() {
+      $('input[type=checkbox][name$="isConfirmed"]').each(function (i) {
+        $(this).attr('checked', !this.checked);
+      });
+    });
+  // set all confirmed checkboxes to true
+  $('input[type=checkbox][name$="isConfirmed"]').each(function (i) { $(this).attr('checked', true); });
+  
+  });
+</script>
+
 <h2>{% trans "Confirm Unknown Words" %}</h2>
 
 <div class="issue">
@@ -24,10 +40,14 @@
 	{% if forloop.first %}
 	<tr>
 	  {% for field in form %}
-	  {% if field.label != 'Id' %}
-          <th>{{ field.label }}</th>
-	  {% else %}
+	  {% if field.label == 'Id' %}
           <th></th>
+	  {% else %}
+	    {% if field.label == 'IsConfirmed' %}
+            <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{{ field.label }}</th>
+	    {% else %}
+            <th>{{ field.label }}</th>
+	    {% endif %}
 	  {% endif %}
 	  {% endfor %}
 	</tr>
