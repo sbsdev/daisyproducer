@@ -76,7 +76,7 @@ def local(request, document_id):
     WordFormSet = modelformset_factory(
         Word, exclude=('documents', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
 
-    formset = WordFormSet(queryset=Word.objects.filter(document=document))
+    formset = WordFormSet(queryset=Word.objects.filter(documents=document))
 
     return render_to_response('dictionary/local.html', locals(), 
                               context_instance=RequestContext(request))
