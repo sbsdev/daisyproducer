@@ -19,7 +19,7 @@ class Word(models.Model):
     untranslated = models.CharField(max_length=255, db_index=True)
     grade1 = models.CharField(max_length=255)
     grade2 = models.CharField(max_length=255)
-    document = models.ManyToManyField(Document, null=True, blank=True)
+    documents = models.ManyToManyField(Document, null=True, blank=True)
     type = models.PositiveSmallIntegerField(_("Type"), default=0, choices=WORD_TYPE_CHOICES)
     isConfirmed = models.BooleanField()
  
