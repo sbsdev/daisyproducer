@@ -61,7 +61,7 @@ class Command(BaseCommand):
                 w = Word(untranslated=untranslated, grade1=grade1, grade2=grade2, type=typeMap[typeString], isConfirmed=True)
                 self.save(w)
                 
-        self.stdout.write('Successfully added %s words to dictionary\n' % numberOfWords)
+        self.stdout.write('Successfully added %s words to dictionary\n' % self.numberOfWords)
 
     def save(self, word):
         try:
