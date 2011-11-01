@@ -18,15 +18,12 @@ def check(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method == 'POST':
-        WordFormSet = modelformset_factory(
-            Word, exclude=('documents', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+        WordFormSet = modelformset_factory(Word, exclude=('documents', 'isConfirmed', 'source'), can_delete=True)
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
-            instances = formset.save(commit=False)
+            instances = formset.save()
             for instance in instances:
-                instance.isConfirmed = False
-                instance.save()
                 instance.documents.add(document)
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
         else:
@@ -50,8 +47,8 @@ def check(request, document_id):
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
     WordFormSet = modelformset_factory(
-        Word, exclude=('documents', 'isConfirmed'), 
-        extra=len(unknown_words), formset=BaseWordFormSet, can_delete=True)
+        Word, exclude=('documents', 'isConfirmed', 'source'), 
+        extra=len(unknown_words), can_delete=True)
 
     formset = WordFormSet(queryset=Word.objects.none(), initial=unknown_words)
 
@@ -61,8 +58,7 @@ def check(request, document_id):
 def local(request, document_id):
 
     if request.method == 'POST':
-        WordFormSet = modelformset_factory(
-            Word, exclude=('documents', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+        WordFormSet = modelformset_factory(Word, exclude=('documents', 'isConfirmed', 'source'), can_delete=True)
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
@@ -74,7 +70,7 @@ def local(request, document_id):
 
     document = get_object_or_404(Document, pk=document_id)
     WordFormSet = modelformset_factory(
-        Word, exclude=('documents', 'isConfirmed'), formset=BaseWordFormSet, can_delete=True)
+        Word, exclude=('documents', 'isConfirmed', 'source'), can_delete=True)
 
     formset = WordFormSet(queryset=Word.objects.filter(documents=document))
 
@@ -85,7 +81,7 @@ def local(request, document_id):
 @transaction.commit_on_success
 def confirm(request):
     if request.method == 'POST':
-        WordFormSet = modelformset_factory(Word, exclude=('documents'), formset=BaseWordFormSet)
+        WordFormSet = modelformset_factory(Word, exclude=('documents', 'source'))
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
@@ -98,8 +94,7 @@ def confirm(request):
             return render_to_response('dictionary/confirm.html', locals(),
                                       context_instance=RequestContext(request))
 
-    WordFormSet = modelformset_factory(
-        Word, exclude=('documents'), formset=BaseWordFormSet, extra=0)
+    WordFormSet = modelformset_factory(Word, exclude=('documents', 'source'), extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False))
 

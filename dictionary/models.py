@@ -11,20 +11,22 @@ class Word(models.Model):
         (2, _('Only as a name')),
         (3, _('Also as a place')),
         (4, _('Only as a place')),
-        (5, _('Homograph default')),
-        (6, _('Homograph alternative')),
-        (7, _('Dialect')),
+        (5, _('Homograph')),
+        (6, _('Dialect')),
         )
 
-    untranslated = models.CharField(max_length=255, db_index=True)
-    grade1 = models.CharField(max_length=255)
-    grade2 = models.CharField(max_length=255)
+    untranslated = models.CharField(_("Untranslated"), max_length=255, db_index=True)
+    grade1 = models.CharField(_("Grade1"), max_length=255)
+    grade2 = models.CharField(_("Grade2"), max_length=255)
     documents = models.ManyToManyField(Document, null=True, blank=True)
     type = models.PositiveSmallIntegerField(_("Type"), default=0, choices=WORD_TYPE_CHOICES)
-    isConfirmed = models.BooleanField()
+    homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=255, blank=True)
+    isConfirmed = models.BooleanField(_("Confirmed"), default=False)
+    isLocal = models.BooleanField(_("Local"), default=False)
+    source = models.CharField(max_length=255) # the source as it was in the import file
  
     class Meta:
-        unique_together = ("untranslated", "type", "isConfirmed")
+        unique_together = ("untranslated", "type", "isConfirmed", "homograph_disambiguation")
 
     def __unicode__(self):
         return self.untranslated
