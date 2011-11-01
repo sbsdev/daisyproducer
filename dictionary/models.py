@@ -23,7 +23,6 @@ class Word(models.Model):
     homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=255, blank=True)
     isConfirmed = models.BooleanField(_("Confirmed"), default=False)
     isLocal = models.BooleanField(_("Local"), default=False)
-    source = models.CharField(max_length=255) # the source as it was in the import file
  
     class Meta:
         unique_together = ("untranslated", "type", "isConfirmed", "homograph_disambiguation")
