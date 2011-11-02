@@ -9,9 +9,9 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from lxml import etree
 
-from dictionary.forms import BaseWordFormSet
 from dictionary.models import Word
 from documents.models import Document
+
 
 @transaction.commit_on_success
 def check(request, document_id):
@@ -70,7 +70,7 @@ def local(request, document_id):
 
     document = get_object_or_404(Document, pk=document_id)
     WordFormSet = modelformset_factory(
-        Word, exclude=('documents', 'isConfirmed'), can_delete=True)
+        Word, exclude=('documents', 'isConfirmed'), can_delete=True, extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(documents=document))
 
@@ -87,8 +87,9 @@ def confirm(request):
         if formset.is_valid():
             instances = formset.save()
             for instance in instances:
-                # TODO: don't clear the documents if the word is local
-                instance.documents.clear()
+                if instance.isConfirmed and not instance.isLocal:
+                    # clear the documents if the word is not local
+                    instance.documents.clear()
             return HttpResponseRedirect(reverse('todo_index'))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
@@ -97,7 +98,6 @@ def confirm(request):
     WordFormSet = modelformset_factory(Word, exclude=('documents'), extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False))
-
     return render_to_response('dictionary/confirm.html', locals(), 
                               context_instance=RequestContext(request))
 
