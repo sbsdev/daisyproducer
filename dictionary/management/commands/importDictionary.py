@@ -6,16 +6,15 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
 from django.db import transaction
 
-
 typeMap = {
     '*': 0, # No restriction
-    'd': 2, # Dialect
-    'h': 3, # Homograph default
-    'H': 4, # Homograph alternative
-    'n': 5, # Also as a name
-    'N': 6, # Only as a place
-    'p': 7, # Also as a place
-    'P': 8, # Only as a place
+    'n': 1, # Also as a name
+    'N': 2, # Only as a name
+    'p': 3, # Also as a place
+    'P': 4, # Only as a place
+    'h': 5, # Homograph default
+    'H': 5, # Homograph alternative
+    'd': 6, # Dialect
     }
 
 class Command(BaseCommand):
