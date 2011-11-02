@@ -28,10 +28,10 @@
 	{% if forloop.first %}
 	<tr>
 	  {% for field in form %}
-	  {% if field.label != 'Id' %}
-          <th>{{ field.label }}</th>
-	  {% else %}
+	  {% if field.is_hidden %}
           <th></th>
+	  {% else %}
+          <th>{{ field.label }}</th>
 	  {% endif %}
 	  {% endfor %}
 	</tr>
