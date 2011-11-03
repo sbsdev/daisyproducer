@@ -9,6 +9,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from lxml import etree
 
+from dictionary.brailleTables import writeWhiteListTables, writeLocalTables
 from dictionary.models import Word
 from documents.models import Document
 
@@ -25,6 +26,7 @@ def check(request, document_id):
             instances = formset.save()
             for instance in instances:
                 instance.documents.add(document)
+            writeLocalTables([document])
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
         else:
             return render_to_response('dictionary/words.html', locals(),
@@ -57,18 +59,19 @@ def check(request, document_id):
 
 def local(request, document_id):
 
+    document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
         WordFormSet = modelformset_factory(Word, exclude=('documents', 'isConfirmed'), can_delete=True)
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
             formset.save()
+            writeLocalTables([document])
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
         else:
             return render_to_response('dictionary/local.html', locals(),
                                       context_instance=RequestContext(request))
 
-    document = get_object_or_404(Document, pk=document_id)
     WordFormSet = modelformset_factory(
         Word, exclude=('documents', 'isConfirmed'), can_delete=True, extra=0)
 
@@ -86,10 +89,16 @@ def confirm(request):
         formset = WordFormSet(request.POST)
         if formset.is_valid():
             instances = formset.save()
+            changedDocuments = set()
             for instance in instances:
                 if instance.isConfirmed and not instance.isLocal:
                     # clear the documents if the word is not local
+                    changedDocuments.update(instance.documents.all())
                     instance.documents.clear()
+            # write new global white lists
+            writeWhiteListTables(Word.objects.filter(isConfirmed=True).filter(isLocal=False).order_by('untranslated'))
+            # update local tables
+            writeLocalTables(changedDocuments)
             return HttpResponseRedirect(reverse('todo_index'))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
