@@ -5,16 +5,14 @@ from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionFor
 from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
-from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
 from django.forms.models import model_to_dict
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic.list_detail import object_list
-from lxml import etree
 
 
 @login_required
