@@ -12,10 +12,16 @@ typeMap = {
     'N': 2, # Only as a name
     'p': 3, # Also as a place
     'P': 4, # Only as a place
-    'h': 5, # Homograph default
-    'H': 5, # Homograph alternative
+    'H': 5, # Homograph default
+    'h': 5, # Homograph alternative
     'd': 6, # Dialect
     }
+
+def get_word(untranslated, grade1, grade2, type):
+    return Word(untranslated=untranslated.replace('|',''), 
+                grade1=grade1, grade2=grade2, 
+                type=type, isConfirmed=True, 
+                homograph_disambiguation=untranslated if type == 5 else '')
 
 class Command(BaseCommand):
     args = 'dictionary file name'
@@ -37,27 +43,25 @@ class Command(BaseCommand):
         for line in f:
             (typeString, untranslated, grade1, grade2) = line.split()
             self.lineNo += 1
-              
+            type = typeMap[typeString]
+
             if 's~' in untranslated:
                 # if the untranslated word contains a 's~' then add
                 # two entries: one for German and one for Swiss German
                 # spelling
-                w = Word(untranslated=untranslated.replace('s~',u'ß'), grade1=grade1.replace(u'§','^'), grade2=grade2.replace(u'§',u'ß'), 
-                         type=typeMap[typeString], isConfirmed=True)
+                w = get_word(untranslated.replace('s~',u'ß'), grade1.replace(u'§','^'), grade2.replace(u'§',u'ß'), type)
                 self.save(w)
-                w = Word(untranslated=untranslated.replace(u's~',u'ss'), grade1=grade1.replace(u'§','ss'), grade2=grade2.replace(u'§','^'), 
-                         type=typeMap[typeString], isConfirmed=True)
+                w = get_word(untranslated.replace(u's~',u'ss'), grade1.replace(u'§','SS'), grade2.replace(u'§','^'), type)
                 self.save(w)
             elif u'ß' in untranslated:
                 # if the untranslated word contains a ß then add a
                 # second entry for the swiss german spelling
-                w = Word(untranslated=untranslated, grade1=grade1, grade2=grade2, type=typeMap[typeString], isConfirmed=True)
+                w = get_word(untranslated, grade1, grade2, type)
                 self.save(w)
-                w = Word(untranslated=untranslated.replace(u'ß','ss'), grade1=grade1.replace(u'^','ss'), grade2=grade2.replace(u'ß','^'), 
-                         type=typeMap[typeString], isConfirmed=True)
+                w = get_word(untranslated.replace(u'ß','ss'), grade1.replace(u'^','SS'), grade2.replace(u'ß','^'), type)
                 self.save(w)
             else:
-                w = Word(untranslated=untranslated, grade1=grade1, grade2=grade2, type=typeMap[typeString], isConfirmed=True)
+                w = get_word(untranslated, grade1, grade2, type)
                 self.save(w)
                 
         self.stdout.write('Successfully added %s words to dictionary\n' % self.numberOfWords)
