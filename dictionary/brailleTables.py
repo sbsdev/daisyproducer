@@ -132,7 +132,7 @@ def writeWhiteListTables(words):
 
 def writeLocalTables(changedDocuments):
     for document in changedDocuments:
-        words = Word.objects.filter(documents=document)
+        words = Word.objects.filter(documents=document).order_by('untranslated')
         writeTable('sbs-de-local-g1-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade1) for word in words if word.type in (0, 1, 3, 5)))
         writeTable('sbs-de-local-g2-%s.mod' % document.identifier, 
