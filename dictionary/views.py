@@ -1,6 +1,8 @@
+import os
 import unicodedata
 
 import louis
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.forms.models import modelformset_factory
@@ -35,7 +37,10 @@ def check(request, document_id):
     document.latest_version().content.open()
     tree = etree.parse(document.latest_version().content.file)
     document.latest_version().content.close()
-    content = etree.tostring(tree, method="text", encoding=unicode)
+    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'))
+    transform = etree.XSLT(xsl)
+    filtered_tree = transform(tree)
+    content = etree.tostring(filtered_tree, method="text", encoding=unicode)
     content = ''.join(c for c in content 
                       if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp'] 
                       or c in ['\n', '\r'])
