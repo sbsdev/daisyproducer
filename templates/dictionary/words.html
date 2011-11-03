@@ -5,6 +5,18 @@
 {% endblock %}
 
 {% block content %}
+<script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript">
+  // toggle all checkboxes
+  $(document).ready(function(){
+    $('.toggleAllCheckboxes').click(function() {
+      $('input[type=checkbox][name$="DELETE"]').each(function (i) {
+        $(this).attr('checked', !this.checked);
+      });
+    });
+  });
+</script>
+
 <h2>{% trans "Check Unknown Words" %}</h2>
 
 <div class="issue">
@@ -31,7 +43,11 @@
 	  {% if field.is_hidden %}
           <th></th>
 	  {% else %}
+	  {% if field.name == 'DELETE' %}
+          <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{{ field.label }}</th>
+	  {% else %}
           <th>{{ field.label }}</th>
+	  {% endif %}
 	  {% endif %}
 	  {% endfor %}
 	</tr>
