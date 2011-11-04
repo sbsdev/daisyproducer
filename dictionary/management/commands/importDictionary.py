@@ -41,7 +41,7 @@ class Command(BaseCommand):
         self.lineNo = 0
 
         for line in f:
-            (typeString, untranslated, grade1, grade2) = line.split()
+            (typeString, untranslated, grade2, grade1) = line.split()
             self.lineNo += 1
             type = typeMap[typeString]
 
