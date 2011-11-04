@@ -12,9 +12,6 @@
 
   <xsl:strip-space elements="brl:select"/>
 
-  <!-- Filter brl:when-braille elements -->
-  <xsl:template match="brl:when-braille"/>
-
   <!-- Drop the abbr elements -->
   <xsl:template match="dtb:abbr"/>
 
