@@ -59,7 +59,11 @@ def check(request, document_id):
 
     formset = WordFormSet(queryset=Word.objects.none(), initial=unknown_words)
 
-    return render_to_response('dictionary/words.html', locals(), 
+    stats = { "total_words": len(new_words), 
+              "total_new": len(unknown_words), 
+              "percent": 100.0*len(unknown_words)/len(new_words) }
+
+    return render_to_response('dictionary/words.html', locals(),
                               context_instance=RequestContext(request))
 
 def local(request, document_id):
