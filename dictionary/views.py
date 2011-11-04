@@ -45,6 +45,18 @@ def check(request, document_id):
                       if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp'] 
                       or c in ['\n', '\r'])
     new_words = dict((w.lower(),1) for w in content.split() if len(w) > 1).keys()
+    # FIXME: We basically do a set difference manually here. This
+    # would probably be better if done inside the db. However for that
+    # we would have to be able to insert the new_words into the db in
+    # an efficient manner, i.e. bulk insert. For a possibility on how
+    # to do this in the context of Django ORM look at
+    # http://ole-laursen.blogspot.com/2010/11/bulk-inserting-django-objects.html.
+    # After that we could for example do a query along the lines of
+    # cursor.execute("SELECT untranslated from new_words EXCEPT SELECT
+    # untranslated FROM dict_words;). However MySQL doesn't seem to
+    # support EXCEPT so it would be SELECT untranslated FROM new_words
+    # w1 LEFT JOIN dict_words w2 ON w1.untranslated=w2.untranslated
+    # WHERE w2.untranslated IS NULL;
     duplicate_words = [word.untranslated for 
                        word in Word.objects.filter(untranslated__in=new_words)]
     unknown_words = [{'untranslated': word, 
