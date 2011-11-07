@@ -3,7 +3,6 @@ import codecs
 
 from dictionary.models import Word
 
-
 asciiToDotsMap = {
     u'A': "1",
     u'B': "12",
@@ -117,9 +116,8 @@ def word2dots(word):
 
 def writeTable(fileName, words):
     f = codecs.open(fileName, "w", "latin_1" )
-    f = open(fileName, 'w')
     for (untranslated, contracted) in words:
-        f.write("word %s %s\n" % (untranslated.encode('latin_1'), word2dots(contracted)))
+        f.write("word %s %s\n" % (untranslated, word2dots(contracted)))
     f.close()
 
 def writeWhiteListTables(words):
@@ -138,4 +136,63 @@ def writeLocalTables(changedDocuments):
         writeTable('sbs-de-local-g2-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade2) for word in words if word.type in (0, 1, 3, 5)))
         
+grade1ToUncontractedMap = {
+    '0': u'IE',
+    '1': u'AU',
+    '2': u'EU',
+    '3': u'EI',
+    '4': u'CH',
+    '5': u'SCH',
+    '8': u'ü',
+    '9': u'ö',
+    '@': u'ä',
+    '\\': u'äU',
+    ']': u'ST',
+    '^': u'ß',
+    't': '',
+    }
+
+def uncontract(word):
+    return u''.join([grade1ToUncontractedMap.get(c, c) for c in word]).lower()
     
+def writeWordSplitTable(words):
+    begwords, endwords, midwords  = (set(), set(), set())
+    grade1Map, grade2Map = ({}, {})
+    for word in words:
+        grade1Parts = word.grade1.split('w')
+        uncontractedParts = [uncontract(part) for part in grade1Parts]
+        if len(uncontractedParts) <= 1:
+            continue
+        grade2Parts = word.grade2.split('w')
+        if len(grade2Parts) != len(grade1Parts):
+            raise Exception
+        for uncontracted, grade1, grade2 in zip(uncontractedParts, grade1Parts, grade2Parts):
+            grade1Map[uncontracted] = grade1
+            grade2Map[uncontracted] = grade2
+        
+        begwords.add(uncontractedParts[0])
+        endwords.add(uncontractedParts[-1])
+        midwords.update(uncontractedParts[1:-1])
+
+    g1 = codecs.open('sbs-de-splitTable-g1.mod', "w", "latin_1" )
+    g2 = codecs.open('sbs-de-splitTable-g2.mod', "w", "latin_1" )
+    for word in begwords & midwords & endwords:
+        g1.write("always %s %s\n" % (word, grade1Map[word]))
+        g2.write("always %s %s\n" % (word, grade2Map[word]))
+    for word in (begwords & midwords) - endwords:
+        g1.write("begmidword %s %s\n" % (word, grade1Map[word]))
+        g2.write("begmidword %s %s\n" % (word, grade2Map[word]))
+    for word in (midwords & endwords) - begwords:
+        g1.write("midendword %s %s\n" % (word, grade1Map[word]))
+        g2.write("midendword %s %s\n" % (word, grade2Map[word]))
+    for word in begwords - midwords - endwords:
+        g1.write("begword %s %s\n" % (word, grade1Map[word]))
+        g2.write("begword %s %s\n" % (word, grade2Map[word]))
+    for word in midwords - begwords - endwords:
+        g1.write("midword %s %s\n" % (word, grade1Map[word]))
+        g2.write("midword %s %s\n" % (word, grade2Map[word]))
+    for word in endwords - midwords - begwords:
+        g1.write("endword %s %s\n" % (word, grade1Map[word]))
+        g2.write("endword %s %s\n" % (word, grade2Map[word]))
+    g1.close()
+    g2.close()

@@ -11,7 +11,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from lxml import etree
 
-from dictionary.brailleTables import writeWhiteListTables, writeLocalTables
+from dictionary.brailleTables import writeWhiteListTables, writeLocalTables, writeWordSplitTable
 from dictionary.models import Word
 from documents.models import Document
 
@@ -120,6 +120,8 @@ def confirm(request):
             writeWhiteListTables(Word.objects.filter(isConfirmed=True).filter(isLocal=False).order_by('untranslated'))
             # update local tables
             writeLocalTables(changedDocuments)
+            # write new word split table
+            writeWordSplitTable(Word.objects.filter(isConfirmed=True).filter(isLocal=False).order_by('untranslated'))
             return HttpResponseRedirect(reverse('todo_index'))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
