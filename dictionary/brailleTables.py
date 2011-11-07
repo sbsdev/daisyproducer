@@ -1,7 +1,9 @@
 # coding=utf-8
 import codecs
+from collections import namedtuple
 
 from dictionary.models import Word
+
 
 asciiToDotsMap = {
     u'A': "1",
@@ -157,7 +159,8 @@ def uncontract(word):
     
 def writeWordSplitTable(words):
     begwords, endwords, midwords  = (set(), set(), set())
-    grade1Map, grade2Map = ({}, {})
+    contractionMap = {}
+    Contraction = namedtuple('Contraction', 'grade1 grade2')
     for word in words:
         grade1Parts = word.grade1.split('w')
         uncontractedParts = [uncontract(part) for part in grade1Parts]
@@ -167,8 +170,7 @@ def writeWordSplitTable(words):
         if len(grade2Parts) != len(grade1Parts):
             raise Exception
         for uncontracted, grade1, grade2 in zip(uncontractedParts, grade1Parts, grade2Parts):
-            grade1Map[uncontracted] = grade1
-            grade2Map[uncontracted] = grade2
+            contractionMap[uncontracted] = Contraction(grade1, grade2)
         
         begwords.add(uncontractedParts[0])
         endwords.add(uncontractedParts[-1])
@@ -177,22 +179,22 @@ def writeWordSplitTable(words):
     g1 = codecs.open('sbs-de-splitTable-g1.mod', "w", "latin_1" )
     g2 = codecs.open('sbs-de-splitTable-g2.mod', "w", "latin_1" )
     for word in begwords & midwords & endwords:
-        g1.write("always %s %s\n" % (word, grade1Map[word]))
-        g2.write("always %s %s\n" % (word, grade2Map[word]))
+        g1.write("always %s %s\n" % (word, contractionMap[word].grade1))
+        g2.write("always %s %s\n" % (word, contractionMap[word].grade2))
     for word in (begwords & midwords) - endwords:
-        g1.write("begmidword %s %s\n" % (word, grade1Map[word]))
-        g2.write("begmidword %s %s\n" % (word, grade2Map[word]))
+        g1.write("begmidword %s %s\n" % (word, contractionMap[word].grade1))
+        g2.write("begmidword %s %s\n" % (word, contractionMap[word].grade2))
     for word in (midwords & endwords) - begwords:
-        g1.write("midendword %s %s\n" % (word, grade1Map[word]))
-        g2.write("midendword %s %s\n" % (word, grade2Map[word]))
+        g1.write("midendword %s %s\n" % (word, contractionMap[word].grade1))
+        g2.write("midendword %s %s\n" % (word, contractionMap[word].grade2))
     for word in begwords - midwords - endwords:
-        g1.write("begword %s %s\n" % (word, grade1Map[word]))
-        g2.write("begword %s %s\n" % (word, grade2Map[word]))
+        g1.write("begword %s %s\n" % (word, contractionMap[word].grade1))
+        g2.write("begword %s %s\n" % (word, contractionMap[word].grade2))
     for word in midwords - begwords - endwords:
-        g1.write("midword %s %s\n" % (word, grade1Map[word]))
-        g2.write("midword %s %s\n" % (word, grade2Map[word]))
+        g1.write("midword %s %s\n" % (word, contractionMap[word].grade1))
+        g2.write("midword %s %s\n" % (word, contractionMap[word].grade2))
     for word in endwords - midwords - begwords:
-        g1.write("endword %s %s\n" % (word, grade1Map[word]))
-        g2.write("endword %s %s\n" % (word, grade2Map[word]))
+        g1.write("endword %s %s\n" % (word, contractionMap[word].grade1))
+        g2.write("endword %s %s\n" % (word, contractionMap[word].grade2))
     g1.close()
     g2.close()
