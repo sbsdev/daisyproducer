@@ -7,7 +7,6 @@ from dictionary.models import Word
 
 
 TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
-TABLES_DIR = os.path.abspath("")
 
 asciiToDotsMap = {
     u'A': "1",
