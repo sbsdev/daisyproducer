@@ -1,9 +1,13 @@
 # coding=utf-8
 import codecs
+import os.path
 from collections import namedtuple
 
 from dictionary.models import Word
 
+
+TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
+TABLES_DIR = os.path.abspath("")
 
 asciiToDotsMap = {
     u'A': "1",
@@ -117,7 +121,7 @@ def word2dots(word):
     return '-'.join(dots)
 
 def writeTable(fileName, words):
-    f = codecs.open(fileName, "w", "latin_1" )
+    f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1")
     for (untranslated, contracted) in words:
         f.write("word %s %s\n" % (untranslated, word2dots(contracted)))
     f.close()
@@ -133,10 +137,14 @@ def writeWhiteListTables(words):
 def writeLocalTables(changedDocuments):
     for document in changedDocuments:
         words = Word.objects.filter(documents=document).order_by('untranslated')
-        writeTable('sbs-de-local-g1-%s.mod' % document.identifier, 
+        writeTable('sbs-de-g1-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade1) for word in words if word.type in (0, 1, 3, 5)))
-        writeTable('sbs-de-local-g2-%s.mod' % document.identifier, 
+        writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade2) for word in words if word.type in (0, 1, 3, 5)))
+        writeTable('sbs-de-g2-name-%s.mod' % document.identifier, 
+                   ((word.untranslated, word.grade1) for word in words if word.type == 2))
+        writeTable('sbs-de-g2-place-%s.mod' % document.identifier, 
+                   ((word.untranslated, word.grade2) for word in words if word.type == 4))
         
 grade1ToUncontractedMap = {
     '0': u'IE',
@@ -176,8 +184,8 @@ def writeWordSplitTable(words):
         endwords.add(uncontractedParts[-1])
         midwords.update(uncontractedParts[1:-1])
 
-    g1 = codecs.open('sbs-de-splitTable-g1.mod', "w", "latin_1" )
-    g2 = codecs.open('sbs-de-splitTable-g2.mod', "w", "latin_1" )
+    g1 = codecs.open(os.path.join(TABLES_DIR, 'sbs-de-g1-split.mod'), "w", "latin_1" )
+    g2 = codecs.open(os.path.join(TABLES_DIR, 'sbs-de-g2-split.mod'), "w", "latin_1" )
     for word in begwords & midwords & endwords:
         g1.write("always %s %s\n" % (word, contractionMap[word].grade1))
         g2.write("always %s %s\n" % (word, contractionMap[word].grade2))
