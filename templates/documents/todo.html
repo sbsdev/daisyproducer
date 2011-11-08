@@ -2,11 +2,3 @@
 {% load i18n %}
 
 {% block tab-todo %}class="selected"{% endblock %}
-
-{% block sidebar %}
-<div id="sidebar">
-  <h3>{% trans "Words" %}</h3>
-  <a href="{% url dictionary_confirm %}" accesskey="d" >{% trans "Confirm unknown words" %}</a><br />
-</div>
-{% endblock %}
-
