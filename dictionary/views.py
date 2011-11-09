@@ -13,7 +13,7 @@ from lxml import etree
 
 from daisyproducer.dictionary.brailleTables import writeWhiteListTables, writeLocalTables, writeWordSplitTable
 from daisyproducer.dictionary.models import Word
-from documents.models import Document
+from daisyproducer.documents.models import Document
 
 
 @transaction.commit_on_success
