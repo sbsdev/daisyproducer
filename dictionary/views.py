@@ -11,8 +11,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from lxml import etree
 
-from dictionary.brailleTables import writeWhiteListTables, writeLocalTables, writeWordSplitTable
-from dictionary.models import Word
+from daisyproducer.dictionary.brailleTables import writeWhiteListTables, writeLocalTables, writeWordSplitTable
+from daisyproducer.dictionary.models import Word
 from documents.models import Document
 
 

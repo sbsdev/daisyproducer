@@ -3,7 +3,7 @@ import codecs
 import os.path
 from collections import namedtuple
 
-from dictionary.models import Word
+from daisyproducer.dictionary.models import Word
 
 
 TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
