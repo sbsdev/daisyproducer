@@ -2,6 +2,13 @@
 {% load i18n %}
 {% load verbose_name %}
 
+{% block sidebar %}
+<div id="sidebar">
+  <h3>{% trans "Words" %}</h3>
+  <a href="{% url dictionary_confirm %}" accesskey="d" >{% trans "Confirm unknown words" %}</a><br />
+</div>
+{% endblock %}
+
 {% block title %}{{ block.super }} - {% trans "Pending documents" %}{% endblock %}
 
 {% block content %}

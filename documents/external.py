@@ -14,9 +14,6 @@ import louis
 from daisyproducer.version import getVersion
 from django.conf import settings
 from lxml import etree
-from daisyproducer.logger import getLogger
-
-logger = getLogger(__name__)
 
 def filterBrlContractionhints(file_path):
     """Filter all the brl:contractionhints from the given file_path.
@@ -88,19 +85,15 @@ class DaisyPipeline:
         the Daisy Pipeline otherwise."""
 
         logger.debug('before etree.XMLSchema')
-
         xmlschema = etree.XMLSchema(file=join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.xsd'))
 
         logger.debug('before etree.parse (file)')
-        
         etree.clear_error_log()
         try:
             doc = etree.parse(file_path)
         except etree.XMLSyntaxError, e:
             entries = e.error_log.filter_from_level(etree.ErrorLevels.FATAL)
             return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
-
-        logger.debug('before xmlschema.validate')
 
         if not xmlschema.validate(doc):
             entries = xmlschema.error_log
@@ -123,9 +116,6 @@ class DaisyPipeline:
             "--validatorInputDelegates=%s" %
             "org.daisy.util.fileset.validation.delegate.impl.NoDocTypeDeclarationDelegate",
             )
-
-        logger.debug('before executing pipeline')
-
         result = map(lambda line: line.replace("file:%s" % file_path, "", 1),
                    map(lambda line: line.replace("[ERROR, Validator]", "", 1), 
                        filter(lambda line: line.find('[ERROR, Validator]') != -1, 

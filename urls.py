@@ -56,6 +56,13 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
     url(r'^manage/import_metadata_csv/$', 'import_metadata_csv', name='import_metadata_csv'),
 )
 
+# work on dictionary
+urlpatterns += patterns('daisyproducer.dictionary.views',
+    url(r'^todo/(?P<document_id>\d+)/check_words$', 'check', name='dictionary_check'),
+    url(r'^todo/(?P<document_id>\d+)/local_words$', 'local', name='dictionary_local'),
+    url(r'^todo/confirm_words$', 'confirm', name='dictionary_confirm'),
+)
+
 # help and about
 def getRSTContent(file_name):
     f = open(os.path.join(PROJECT_DIR, 'doc', 'help', file_name))

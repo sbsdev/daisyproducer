@@ -5,19 +5,14 @@ from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionFor
 from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
-from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
 from django.forms.models import model_to_dict
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic.list_detail import object_list
-from lxml import etree
-from daisyproducer.logger import getLogger
-
-logger = getLogger(__name__)
 
 
 @login_required
@@ -93,13 +88,8 @@ def add_version(request, document_id):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
-    logger.debug('before PartialVersionForm')
-
     form = PartialVersionForm(request.POST, request.FILES, 
                               contentMetaData=model_to_dict(document))
-
-    logger.debug('before form.is_valid')
-
     if not form.is_valid():
         versionForm = form
         attachmentForm = PartialAttachmentForm()
@@ -107,8 +97,6 @@ def add_version(request, document_id):
         documentForm.limitChoicesToValidStates(document)
         return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
-
-    logger.debug('before Version.objects.create')
 
     # this is a bit of a hack as we need to create (and save) a
     # version before the id is known. We need to know the id before we
@@ -119,8 +107,6 @@ def add_version(request, document_id):
         created_by=request.user)
     content_file = request.FILES['content']
     version.content.save(content_file.name, content_file)
-
-    logger.debug('before Version.content.save')
 
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
@@ -202,7 +188,10 @@ def preview_sbsform(request, document_id):
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputFile = "/tmp/%s.sbsform" % document_id
-            SBSForm.dtbook2sbsform(inputFile, outputFile, **form.cleaned_data)
+            SBSForm.dtbook2sbsform(inputFile, outputFile, 
+                                   document_identifier=document.identifier,
+                                   use_local_dictionary=document.has_local_words(), 
+                                   **form.cleaned_data)
             contraction = form.cleaned_data['contraction']
             contraction_to_mimetype_mapping = {0 : 'text/x-sbsform-g0', 
                                                1 : 'text/x-sbsform-g1',

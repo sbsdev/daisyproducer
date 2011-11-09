@@ -150,6 +150,9 @@ class Document(models.Model):
         self.state = self.state.transitionTo(state)
         self.save()
 
+    def has_local_words(self):
+        return self.word_set.exists()
+
     def save(self):
         if not self.id:
             self.created_at = datetime.datetime.now()
