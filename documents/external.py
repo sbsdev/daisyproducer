@@ -84,10 +84,7 @@ class DaisyPipeline:
         successful. Return a list of error messages as delivered by
         the Daisy Pipeline otherwise."""
 
-        logger.debug('before etree.XMLSchema')
         xmlschema = etree.XMLSchema(file=join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.xsd'))
-
-        logger.debug('before etree.parse (file)')
         etree.clear_error_log()
         try:
             doc = etree.parse(file_path)
