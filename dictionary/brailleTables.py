@@ -4,6 +4,7 @@ import os.path
 from collections import namedtuple
 
 from daisyproducer.dictionary.models import Word
+from django.utils.encoding import smart_unicode
 
 
 TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
@@ -122,7 +123,7 @@ def word2dots(word):
 def writeTable(fileName, words):
     f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1")
     for (untranslated, contracted) in words:
-        f.write("word %s %s\n" % (untranslated, word2dots(contracted)))
+        f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(contracted)))
     f.close()
 
 def writeWhiteListTables(words):
@@ -169,11 +170,11 @@ def writeWordSplitTable(words):
     contractionMap = {}
     Contraction = namedtuple('Contraction', 'grade1 grade2')
     for word in words:
-        grade1Parts = word.grade1.split('w')
+        grade1Parts = smart_unicode(word.grade1).split('w')
         uncontractedParts = [uncontract(part) for part in grade1Parts]
         if len(uncontractedParts) <= 1:
             continue
-        grade2Parts = word.grade2.split('w')
+        grade2Parts = smart_unicode(word.grade2).split('w')
         if len(grade2Parts) != len(grade1Parts):
             raise Exception
         for uncontracted, grade1, grade2 in zip(uncontractedParts, grade1Parts, grade2Parts):

@@ -2,6 +2,9 @@ import os
 import unicodedata
 
 import louis
+from daisyproducer.dictionary.brailleTables import writeWhiteListTables, writeLocalTables, writeWordSplitTable
+from daisyproducer.dictionary.models import Word
+from daisyproducer.documents.models import Document
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import transaction
@@ -9,11 +12,8 @@ from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.utils.encoding import smart_unicode
 from lxml import etree
-
-from daisyproducer.dictionary.brailleTables import writeWhiteListTables, writeLocalTables, writeWordSplitTable
-from daisyproducer.dictionary.models import Word
-from daisyproducer.documents.models import Document
 
 
 @transaction.commit_on_success
@@ -57,7 +57,7 @@ def check(request, document_id):
     # support EXCEPT so it would be SELECT untranslated FROM new_words
     # w1 LEFT JOIN dict_words w2 ON w1.untranslated=w2.untranslated
     # WHERE w2.untranslated IS NULL;
-    duplicate_words = [word.untranslated for 
+    duplicate_words = [smart_unicode(word.untranslated) for 
                        word in Word.objects.filter(untranslated__in=new_words)]
     unknown_words = [{'untranslated': word, 
                       'grade1': louis.translateString(['de-ch-g1.ctb'], word),
