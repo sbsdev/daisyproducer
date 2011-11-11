@@ -123,6 +123,7 @@ def word2dots(word):
 def writeTable(fileName, words):
     f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1")
     for (untranslated, contracted) in words:
+        # TODO: drop unwanted hyphenation marks
         f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(contracted)))
     f.close()
 
@@ -159,13 +160,24 @@ grade1ToUncontractedMap = {
     '\\': u'äU',
     ']': u'ST',
     '^': u'ß',
+    'n': '',
     't': '',
     }
 
 def uncontract(word):
     return u''.join([grade1ToUncontractedMap.get(c, c) for c in word]).lower()
-    
+
 def writeWordSplitTable(words):
+
+    def getGrade1(word):
+        return contractionMap[word].grade1
+
+    def getGrade2(word):
+        return contractionMap[word].grade2
+
+    def getSplitWordLine(opcode, wordParts, getGrade):
+        return "%s %s %s\n" % (opcode, "".join(wordParts), "-w-".join((getGrade(word) for word in wordParts)))
+
     begwords, endwords, midwords  = (set(), set(), set())
     contractionMap = {}
     Contraction = namedtuple('Contraction', 'grade1 grade2')
@@ -178,31 +190,25 @@ def writeWordSplitTable(words):
         if len(grade2Parts) != len(grade1Parts):
             raise Exception
         for uncontracted, grade1, grade2 in zip(uncontractedParts, grade1Parts, grade2Parts):
-            contractionMap[uncontracted] = Contraction(grade1, grade2)
+            contractionMap[uncontracted] = Contraction(word2dots(grade1), word2dots(grade2)) 
         
-        begwords.add(uncontractedParts[0])
-        endwords.add(uncontractedParts[-1])
-        midwords.update(uncontractedParts[1:-1])
+        numberOfParts = len(uncontractedParts)
+        for i in range(1, numberOfParts):
+            begwords.add(tuple(uncontractedParts[0:i]))
+            endwords.add(tuple(uncontractedParts[i:numberOfParts]))
+            for j in range(i+1, numberOfParts):
+                midwords.add(tuple(uncontractedParts[i:j]))
 
-    g1 = codecs.open(os.path.join(TABLES_DIR, 'sbs-de-g1-split.mod'), "w", "latin_1" )
-    g2 = codecs.open(os.path.join(TABLES_DIR, 'sbs-de-g2-split.mod'), "w", "latin_1" )
-    for word in begwords & midwords & endwords:
-        g1.write("always %s %s\n" % (word, contractionMap[word].grade1))
-        g2.write("always %s %s\n" % (word, contractionMap[word].grade2))
-    for word in (begwords & midwords) - endwords:
-        g1.write("begmidword %s %s\n" % (word, contractionMap[word].grade1))
-        g2.write("begmidword %s %s\n" % (word, contractionMap[word].grade2))
-    for word in (midwords & endwords) - begwords:
-        g1.write("midendword %s %s\n" % (word, contractionMap[word].grade1))
-        g2.write("midendword %s %s\n" % (word, contractionMap[word].grade2))
-    for word in begwords - midwords - endwords:
-        g1.write("begword %s %s\n" % (word, contractionMap[word].grade1))
-        g2.write("begword %s %s\n" % (word, contractionMap[word].grade2))
-    for word in midwords - begwords - endwords:
-        g1.write("midword %s %s\n" % (word, contractionMap[word].grade1))
-        g2.write("midword %s %s\n" % (word, contractionMap[word].grade2))
-    for word in endwords - midwords - begwords:
-        g1.write("endword %s %s\n" % (word, contractionMap[word].grade1))
-        g2.write("endword %s %s\n" % (word, contractionMap[word].grade2))
+    g1 = codecs.open(os.path.join(TABLES_DIR, 'sbs-de-g1-wordsplit.mod'), "w", "latin_1" )
+    g2 = codecs.open(os.path.join(TABLES_DIR, 'sbs-de-g2-wordsplit.mod'), "w", "latin_1" )
+    for opcode, wordSet in (("always", begwords & midwords & endwords), 
+                            ("begmidword", (begwords & midwords) - endwords),
+                            ("midendword", (midwords & endwords) - begwords),
+                            ("begword", begwords - midwords - endwords),
+                            ("midword", midwords - begwords - endwords),
+                            ("endword", endwords - midwords - begwords)):
+        for wordParts in wordSet:
+            g1.write(getSplitWordLine(opcode, wordParts, getGrade1))
+            g2.write(getSplitWordLine(opcode, wordParts, getGrade2))
     g1.close()
     g2.close()
