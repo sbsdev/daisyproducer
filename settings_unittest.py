@@ -10,3 +10,4 @@ DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '/', 'opt', 'pipeline')
 SERVE_STATIC_FILES = True
 
 SOUTH_TESTS_MIGRATE = False
+SKIP_SOUTH_TESTS = True
