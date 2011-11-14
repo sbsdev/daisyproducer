@@ -117,7 +117,7 @@ asciiToDotsMap = {
     }
 
 def word2dots(word):
-    dots = [asciiToDotsMap.get(c, 'FIXME') for c in word]
+    dots = [asciiToDotsMap.get(c) for c in word]
     return '-'.join(dots)
 
 def writeTable(fileName, words):
@@ -176,7 +176,9 @@ def writeWordSplitTable(words):
         return contractionMap[word].grade2
 
     def getSplitWordLine(opcode, wordParts, getGrade):
-        return "%s %s %s\n" % (opcode, "".join(wordParts), "-w-".join((getGrade(word) for word in wordParts)))
+        splitMarkers = "-%s-" % word2dots("w")
+        return "%s %s %s\n" % (opcode, "".join(wordParts), 
+                               splitMarkers.join((getGrade(word) for word in wordParts)))
 
     begwords, endwords, midwords  = (set(), set(), set())
     contractionMap = {}
