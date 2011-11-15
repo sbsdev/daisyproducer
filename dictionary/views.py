@@ -15,9 +15,22 @@ from django.template import RequestContext
 from django.utils.encoding import smart_unicode
 from lxml import etree
 
+WORDSPLIT_TABLES_GRADE1 = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-accents.cti', 
+                           'sbs-special.cti', 'sbs-whitespace.mod', 'sbs-de-letsign.mod', 
+                           'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
+                           'sbs-de-g1-wordsplit.mod', 'sbs-de-g1-core.mod', 'sbs-special.mod']
+
+WORDSPLIT_TABLES_GRADE2 = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-accents.cti', 
+                           'sbs-special.cti', 'sbs-whitespace.mod', 'sbs-de-letsign.mod', 
+                           'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
+                           'sbs-de-g2-wordsplit.mod', 'sbs-de-g2-core.mod', 'sbs-special.mod']
 
 @transaction.commit_on_success
 def check(request, document_id):
+
+    def removeRedundantSplitpoints(contraction):
+        return "w".join(filter(None,contraction.split('w')))
+
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method == 'POST':
@@ -60,8 +73,8 @@ def check(request, document_id):
     duplicate_words = [smart_unicode(word.untranslated) for 
                        word in Word.objects.filter(untranslated__in=new_words)]
     unknown_words = [{'untranslated': word, 
-                      'grade1': louis.translateString(['de-ch-g1.ctb'], word),
-                      'grade2': louis.translateString(['de-ch-g2.ctb'], word)} 
+                      'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, word)),
+                      'grade2': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, word))} 
                      for word in new_words if word not in duplicate_words]
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
