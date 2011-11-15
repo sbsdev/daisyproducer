@@ -42,6 +42,12 @@ class Command(BaseCommand):
 
         for line in f:
             (typeString, untranslated, grade2, grade1) = line.split()
+            if '#' in untranslated:
+                # ignore rows where the untranslated word has some # in it. These lines need to be fixed
+                continue
+            # remove some unnecessary markup
+            untranslated = untranslated.replace('#','')
+            grade2 = grade2.replace('z','')
             self.lineNo += 1
             type = typeMap[typeString]
 
