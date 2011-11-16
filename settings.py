@@ -1,6 +1,6 @@
 from settings_common import *
 
-PACKAGE_VERSION = 0.5
+PACKAGE_VERSION = "0.5"
 
 DEBUG = TEMPLATE_DEBUG = True
 
