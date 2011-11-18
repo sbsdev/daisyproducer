@@ -855,12 +855,14 @@ for this emphasis</a:documentation>
         <ref name="brailleClassAttribute"/>
       </optional>
       <interleave>
-        <oneOrMore>
-          <ref name="line"/>
-        </oneOrMore>
-        <zeroOrMore>
-          <ref name="p"/>
-        </zeroOrMore>
+        <choice>
+          <oneOrMore>
+            <ref name="line"/>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="p"/>
+          </oneOrMore>
+        </choice>
         <zeroOrMore>
           <ref name="pagenum"/>
         </zeroOrMore>
