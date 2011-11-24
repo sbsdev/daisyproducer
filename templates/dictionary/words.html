@@ -44,7 +44,7 @@
           <th></th>
 	  {% else %}
 	  {% if field.name == 'DELETE' %}
-          <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{{ field.label }}</th>
+          <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{% trans 'Ignore' %}</th>
 	  {% else %}
           <th>{{ field.label }}</th>
 	  {% endif %}
