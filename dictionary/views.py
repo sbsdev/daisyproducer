@@ -34,12 +34,17 @@ def check(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method == 'POST':
-        WordFormSet = modelformset_factory(Word, exclude=('documents', 'isConfirmed'), can_delete=True)
+        WordFormSet = modelformset_factory(
+            Word, 
+            exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+            can_delete=True)
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
-            instances = formset.save()
+            instances = formset.save(commit=False)
             for instance in instances:
+                instance.modified_by = request.user
+                instance.save()
                 instance.documents.add(document)
             writeLocalTables([document])
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
@@ -79,7 +84,7 @@ def check(request, document_id):
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
     WordFormSet = modelformset_factory(
-        Word, exclude=('documents', 'isConfirmed'), 
+        Word, exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
         extra=len(unknown_words), can_delete=True)
 
     formset = WordFormSet(queryset=Word.objects.none(), initial=unknown_words)
@@ -95,11 +100,16 @@ def local(request, document_id):
 
     document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
-        WordFormSet = modelformset_factory(Word, exclude=('documents', 'isConfirmed'), can_delete=True)
+        WordFormSet = modelformset_factory(
+            Word, exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+            can_delete=True)
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
-            formset.save()
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.modified_by = request.user
+                instance.save()
             writeLocalTables([document])
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
         else:
@@ -107,7 +117,8 @@ def local(request, document_id):
                                       context_instance=RequestContext(request))
 
     WordFormSet = modelformset_factory(
-        Word, exclude=('documents', 'isConfirmed'), can_delete=True, extra=0)
+        Word, exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+        can_delete=True, extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(documents=document))
 
@@ -118,13 +129,16 @@ def local(request, document_id):
 @transaction.commit_on_success
 def confirm(request):
     if request.method == 'POST':
-        WordFormSet = modelformset_factory(Word, exclude=('documents'))
+        WordFormSet = modelformset_factory(
+            Word, exclude=('documents', 'created_at', 'modified_at', 'modified_by'))
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
-            instances = formset.save()
+            instances = formset.save(commit=False)
             changedDocuments = set()
             for instance in instances:
+                instance.modified_by = request.user
+                instance.save()
                 if instance.isConfirmed and not instance.isLocal:
                     # clear the documents if the word is not local
                     changedDocuments.update(instance.documents.all())
@@ -140,7 +154,8 @@ def confirm(request):
             return render_to_response('dictionary/confirm.html', locals(),
                                       context_instance=RequestContext(request))
 
-    WordFormSet = modelformset_factory(Word, exclude=('documents'), extra=0)
+    WordFormSet = modelformset_factory(
+        Word, exclude=('documents', 'created_at', 'modified_at', 'modified_by'), extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False))
     return render_to_response('dictionary/confirm.html', locals(), 

@@ -1,4 +1,7 @@
+import datetime
+
 from daisyproducer.documents.models import Document
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -23,10 +26,18 @@ class Word(models.Model):
     homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=255, blank=True)
     isConfirmed = models.BooleanField(_("Confirmed"), default=False)
     isLocal = models.BooleanField(_("Local"), default=False)
- 
+    created_at = models.DateTimeField(_("Created"))
+    modified_at = models.DateTimeField(_("Last Modified"))
+    modified_by = models.ForeignKey(User, verbose_name=_("Modified by"))
+
     class Meta:
         unique_together = ("untranslated", "type", "isConfirmed", "homograph_disambiguation")
 
     def __unicode__(self):
         return self.untranslated
 
+    def save(self):
+        if not self.id:
+            self.created_at = datetime.datetime.now()
+        self.modified_at = datetime.datetime.now()
+        super(Word, self).save()
