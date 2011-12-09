@@ -59,8 +59,10 @@ def check(request, document_id):
     transform = etree.XSLT(xsl)
     filtered_tree = transform(tree)
     content = etree.tostring(filtered_tree, method="text", encoding=unicode)
-    content = ''.join(c for c in content 
-                      if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp'] 
+    # filter all punctuation and replace dashes by space, so we can split by space below
+    content = ''.join(c if unicodedata.category(c) != 'Pd' else ' ' 
+                      for c in content 
+                      if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp', 'Pd'] 
                       or c in ['\n', '\r'])
     new_words = dict((w.lower(),1) for w in content.split() if len(w) > 1).keys()
     # FIXME: We basically do a set difference manually here. This
