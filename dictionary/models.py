@@ -11,11 +11,10 @@ class Word(models.Model):
     WORD_TYPE_CHOICES = (
         (0, _('No restriction')),
         (1, _('Also as a name')),
-        (2, _('Only as a name')),
+        (2, _('Name')),
         (3, _('Also as a place')),
-        (4, _('Only as a place')),
+        (4, _('Place')),
         (5, _('Homograph')),
-        (6, _('Dialect')),
         )
 
     untranslated = models.CharField(_("Untranslated"), max_length=255, db_index=True)
@@ -26,6 +25,7 @@ class Word(models.Model):
     homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=255, blank=True)
     isConfirmed = models.BooleanField(_("Confirmed"), default=False)
     isLocal = models.BooleanField(_("Local"), default=False)
+    use_for_word_splitting = models.BooleanField(_("Use for word splitting"), default=True)
     created_at = models.DateTimeField(_("Created"))
     modified_at = models.DateTimeField(_("Last Modified"))
     modified_by = models.ForeignKey(User, verbose_name=_("Modified by"))

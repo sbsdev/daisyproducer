@@ -8,7 +8,8 @@ from daisyproducer.documents.models import Document
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.forms.models import modelformset_factory
+from django.forms.models import modelformset_factory, ModelForm
+from django.forms.widgets import TextInput
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -25,6 +26,20 @@ WORDSPLIT_TABLES_GRADE2 = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-acce
                            'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
                            'sbs-de-g2-wordsplit.mod', 'sbs-de-g2-core.mod', 'sbs-special.mod']
 
+class PartialWordForm(ModelForm):
+    class Meta:
+        model = Word
+        exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+        widgets = {
+            'untranslated': TextInput(attrs={'readonly': 'readonly'}),
+            }
+
+class RestrictedWordForm(PartialWordForm):
+    def __init__(self, *args, **kwargs):
+        super(RestrictedWordForm, self).__init__(*args, **kwargs)
+        typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 2, 4, 5)]
+        self.fields['type'].choices = typeChoices
+
 @transaction.commit_on_success
 def check(request, document_id):
 
@@ -36,7 +51,8 @@ def check(request, document_id):
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
             Word, 
-            exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+            form=RestrictedWordForm,
+            exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST)
@@ -86,7 +102,9 @@ def check(request, document_id):
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
     WordFormSet = modelformset_factory(
-        Word, exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+        Word, 
+        form=RestrictedWordForm,
+        exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
         extra=len(unknown_words), can_delete=True)
 
     formset = WordFormSet(queryset=Word.objects.none(), initial=unknown_words)
@@ -103,7 +121,9 @@ def local(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
-            Word, exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+            Word, 
+            form=RestrictedWordForm,
+            exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST)
@@ -119,7 +139,9 @@ def local(request, document_id):
                                       context_instance=RequestContext(request))
 
     WordFormSet = modelformset_factory(
-        Word, exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+        Word, 
+        form=RestrictedWordForm,
+        exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
         can_delete=True, extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(documents=document))
@@ -132,7 +154,9 @@ def local(request, document_id):
 def confirm(request):
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
-            Word, exclude=('documents', 'created_at', 'modified_at', 'modified_by'))
+            Word, 
+            form=PartialWordForm,
+            exclude=('documents', 'created_at', 'modified_at', 'modified_by'))
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
@@ -150,14 +174,16 @@ def confirm(request):
             # update local tables
             writeLocalTables(changedDocuments)
             # write new word split table
-            writeWordSplitTable(Word.objects.filter(isConfirmed=True).filter(isLocal=False).order_by('untranslated'))
+            writeWordSplitTable(Word.objects.filter(isConfirmed=True).filter(isLocal=False).filter(use_for_word_splitting=True).order_by('untranslated'))
             return HttpResponseRedirect(reverse('todo_index'))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
                                       context_instance=RequestContext(request))
 
     WordFormSet = modelformset_factory(
-        Word, exclude=('documents', 'created_at', 'modified_at', 'modified_by'), extra=0)
+        Word, 
+        form=PartialWordForm,
+        exclude=('documents', 'created_at', 'modified_at', 'modified_by'), extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False))
     return render_to_response('dictionary/confirm.html', locals(), 
