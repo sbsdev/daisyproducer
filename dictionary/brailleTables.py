@@ -175,13 +175,10 @@ def writeWordSplitTable(words):
     def getGrade2(word):
         return contractionMap[word].grade2
 
-    def wrapInSplitpoints(dotPattern):
-        return "%s-%s-%s" % (word2dots("w"), dotPattern, word2dots("w"))
-
     def getSplitWordLine(opcode, wordParts, getGrade):
-        splitMarkers = "-%s-" % word2dots("w")
-        return "%s %s %s\n" % (opcode, "".join(wordParts), 
-                               wrapInSplitpoints(splitMarkers.join((getGrade(word) for word in wordParts))))
+        splitMarker = "-%s-" % word2dots("w")
+        return "%s %s %s%s\n" % (opcode, "".join(wordParts), splitMarker,
+                                 splitMarker.join((getGrade(word) for word in wordParts)))
 
     begwords, endwords, midwords  = (set(), set(), set())
     contractionMap = {}
