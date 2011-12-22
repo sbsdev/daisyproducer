@@ -177,7 +177,7 @@ def writeWordSplitTable(words):
 
     def getSplitWordLine(opcode, wordParts, getGrade):
         splitMarker = "-%s-" % word2dots("w")
-        return "%s %s %s%s\n" % (opcode, "".join(wordParts), splitMarker,
+        return "%s %s %s-%s\n" % (opcode, "".join(wordParts), word2dots("w"),
                                  splitMarker.join((getGrade(word) for word in wordParts)))
 
     begwords, endwords, midwords  = (set(), set(), set())
