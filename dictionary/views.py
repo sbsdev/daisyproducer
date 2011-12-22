@@ -21,10 +21,16 @@ WORDSPLIT_TABLES_GRADE1 = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-acce
                            'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
                            'sbs-de-g1-wordsplit.mod', 'sbs-de-g1-core.mod', 'sbs-special.mod']
 
-WORDSPLIT_TABLES_GRADE2 = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-accents.cti', 
-                           'sbs-special.cti', 'sbs-whitespace.mod', 'sbs-de-letsign.mod', 
-                           'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
-                           'sbs-de-g2-wordsplit.mod', 'sbs-de-g2-core.mod', 'sbs-special.mod']
+WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE1[:]
+WORDSPLIT_TABLES_GRADE2[9:11] = ('sbs-de-g2-wordsplit.mod', 'sbs-de-g2-core.mod')
+
+NAME_WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE2[:]
+NAME_WORDSPLIT_TABLES_GRADE2[9:11] = ('sbs-de-name-wordsplit.mod', 'sbs-de-g2-name.mod')
+
+PLACE_WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE2[:]
+PLACE_WORDSPLIT_TABLES_GRADE2[9:11] = ('sbs-de-place-wordsplit.mod', 'sbs-de-g2-place.mod', 'sbs-de-g2-name.mod')
+
+BRL_NAMESPACE = {'brl':'http://www.daisy.org/z3986/2009/braille/'}
 
 class PartialWordForm(ModelForm):
     class Meta:
@@ -71,9 +77,39 @@ def check(request, document_id):
     document.latest_version().content.open()
     tree = etree.parse(document.latest_version().content.file)
     document.latest_version().content.close()
+    # grab the homographs
+    homographs = ["|".join(homograph.xpath('text()')).lower() 
+                  for homograph in tree.xpath('//brl:homograph', namespaces=BRL_NAMESPACE)]
+    duplicate_homographs = [smart_unicode(word.homograph_disambiguation) for 
+                            word in Word.objects.filter(type=5).filter(homograph_disambiguation__in=homographs)]
+    unknown_homographs = [{'untranslated': homograph.replace('|', ''), 
+                           'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, homograph.replace('|', unichr(0x250A)))),
+                           'grade2': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, homograph.replace('|', unichr(0x250A)))),
+                           'type': 5,
+                           'homograph_disambiguation': homograph} 
+                          for homograph in homographs if homograph not in duplicate_homographs]
+    # grab names and places
+    names = [name.text.lower() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)]
+    duplicate_names = [smart_unicode(word.untranslated) for 
+                            word in Word.objects.filter(type__in=(1,2)).filter(untranslated__in=names)]
+    unknown_names = [{'untranslated': name,
+                      'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, name)),
+                      'grade2': removeRedundantSplitpoints(louis.translateString(NAME_WORDSPLIT_TABLES_GRADE2, name)),
+                      'type': 2} 
+                     for name in names if name not in duplicate_names]
+    places = [place.text.lower() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE)]
+    duplicate_places = [smart_unicode(word.untranslated) for 
+                            word in Word.objects.filter(type__in=(3,4)).filter(untranslated__in=places)]
+    unknown_places = [{'untranslated': place,
+                       'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, place)),
+                       'grade2': removeRedundantSplitpoints(louis.translateString(PLACE_WORDSPLIT_TABLES_GRADE2, place)),
+                       'type': 4} 
+                      for place in places if place not in duplicate_places]
+    # filter homographs, names and places from the xml
     xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'))
     transform = etree.XSLT(xsl)
     filtered_tree = transform(tree)
+    # grab the rest of the content
     content = etree.tostring(filtered_tree, method="text", encoding=unicode)
     # filter all punctuation and replace dashes by space, so we can split by space below
     content = ''.join(c if unicodedata.category(c) != 'Pd' else ' ' 
@@ -99,6 +135,8 @@ def check(request, document_id):
                       'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, word)),
                       'grade2': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, word))} 
                      for word in new_words if word not in duplicate_words]
+
+    unknown_words = unknown_words + unknown_homographs + unknown_names + unknown_places
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
     WordFormSet = modelformset_factory(

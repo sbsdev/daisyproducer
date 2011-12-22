@@ -12,6 +12,9 @@
 
   <xsl:strip-space elements="brl:select"/>
 
+  <!-- Drop the homograph, name and place elements as they are handled separately-->
+  <xsl:template match="brl:homograph|brl:name|brl:place"/>
+
   <!-- Drop the abbr elements -->
   <xsl:template match="dtb:abbr"/>
 
