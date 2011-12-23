@@ -168,6 +168,14 @@ def uncontract(word):
     return u''.join([grade1ToUncontractedMap.get(c, c) for c in word]).lower()
 
 def writeWordSplitTable(words):
+    writeWordSplitTableInternal(words.filter(type__in=(0,1,3,5)), 
+                                ('sbs-de-name-wordsplit.mod', 'sbs-de-g2-wordsplit.mod'))
+    writeWordSplitTableInternal(words.filter(type__in=(2,)), 
+                                ('sbs-de-name-wordsplit.mod',))
+    writeWordSplitTableInternal(words.filter(type__in=(4,)), 
+                                ('sbs-de-place-wordsplit.mod',))
+
+def writeWordSplitTableInternal(words, fileNames):
 
     def getGrade1(word):
         return contractionMap[word].grade1
@@ -178,7 +186,7 @@ def writeWordSplitTable(words):
     def getSplitWordLine(opcode, wordParts, getGrade):
         splitMarker = "-%s-" % word2dots("w")
         return "%s %s %s-%s\n" % (opcode, "".join(wordParts), word2dots("w"),
-                                 splitMarker.join((getGrade(word) for word in wordParts)))
+                                  splitMarker.join((getGrade(word) for word in wordParts)))
 
     begwords, endwords, midwords  = (set(), set(), set())
     contractionMap = {}
@@ -201,8 +209,7 @@ def writeWordSplitTable(words):
             for j in range(i+1, numberOfParts):
                 midwords.add(tuple(uncontractedParts[i:j]))
 
-    g1 = codecs.open(os.path.join(TABLES_DIR, 'sbs-de-g1-wordsplit.mod'), "w", "latin_1" )
-    g2 = codecs.open(os.path.join(TABLES_DIR, 'sbs-de-g2-wordsplit.mod'), "w", "latin_1" )
+    filehandles = [codecs.open(os.path.join(TABLES_DIR, name), "w", "latin_1") for name in fileNames]
     for opcode, wordSet in (("always", begwords & midwords & endwords), 
                             ("begmidword", (begwords & midwords) - endwords),
                             ("midendword", (midwords & endwords) - begwords),
@@ -210,7 +217,10 @@ def writeWordSplitTable(words):
                             ("midword", midwords - begwords - endwords),
                             ("endword", endwords - midwords - begwords)):
         for wordParts in wordSet:
-            g1.write(getSplitWordLine(opcode, wordParts, getGrade1))
-            g2.write(getSplitWordLine(opcode, wordParts, getGrade2))
-    g1.close()
-    g2.close()
+            if 'sbs-de-name-wordsplit.mod' in fileNames or 'sbs-de-place-wordsplit.mod' in fileNames:
+                filehandles[0].write(getSplitWordLine(opcode, wordParts, getGrade2))
+            else:
+                filehandles[0].write(getSplitWordLine(opcode, wordParts, getGrade1))
+                filehandles[1].write(getSplitWordLine(opcode, wordParts, getGrade2))
+    for handle in filehandles:
+        handle.close()
