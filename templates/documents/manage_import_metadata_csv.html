@@ -24,7 +24,7 @@
     {% for form in formset.forms %}
     {% if forloop.first %}
     <tr><th>{% trans 'Document' %}</th>
-        <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{% trans 'Ignore this Document' %}</th></tr>
+        <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{% trans 'Ignore' %}</th></tr>
     {% endif %}
        <tr class="{% cycle 'odd' 'even' %}">
 	 <td>
@@ -64,6 +64,8 @@
 	       <td>{{ form.production_series_number }}</td>
 	     </tr>
 	     <tr>
+	       <th>{{ form.production_source.label_tag }}:</th>
+	       <td>{{ form.production_source }}</td>
 	       <th>{{ form.language.label_tag }}:</th>
 	       <td>{{ form.language }}</td>
 	     </tr>

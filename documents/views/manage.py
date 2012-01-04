@@ -40,7 +40,7 @@ def detail(request, document_id):
 class PartialDocumentForm(ModelForm):
     class Meta:
         model = Document
-        fields = ('title', 'author', 'source_publisher', 'subject', 'description', 'source', 'language', 'rights', 'source_date', 'source_edition', 'source_rights', 'production_series', 'production_series_number', 'assigned_to',)
+        fields = ('title', 'author', 'source_publisher', 'subject', 'description', 'source', 'language', 'rights', 'source_date', 'source_edition', 'source_rights', 'production_series', 'production_series_number', 'production_source', 'assigned_to',)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -157,6 +157,8 @@ def upload_metadata_csv(request):
             m = re.search('\d+', row[6]) # extract the series number
             if m != None:
                 fields['production_series_number'] = m.group(0)
+        if row[8] == 'D':
+            fields['production_source'] = Document.PRODUCTION_SOURCE_CHOICES[0][0]
         initial.append(fields)
     # filter out existing document entries
     new_identifiers = [row['identifier'] for row in initial]
@@ -165,7 +167,7 @@ def upload_metadata_csv(request):
     unique_initial = [row for row in initial if row['identifier'] not in duplicate_identifiers]
 
     DocumentFormSet = modelformset_factory(Document, 
-                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number'), 
+                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number', 'production_source'), 
                                            extra=len(unique_initial), can_delete=True)
     formset = DocumentFormSet(queryset=Document.objects.none(), initial=unique_initial)
     return render_to_response('documents/manage_import_metadata_csv.html', locals(),
@@ -180,7 +182,7 @@ def import_metadata_csv(request):
         return HttpResponseRedirect(reverse('upload_metadata_csv'))
 
     DocumentFormSet = modelformset_factory(Document, 
-                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number'), 
+                                           fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number', 'production_source'), 
                                            can_delete=True)
     formset = DocumentFormSet(request.POST)
     if not formset.is_valid():

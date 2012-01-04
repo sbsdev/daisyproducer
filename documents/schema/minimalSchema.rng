@@ -12,6 +12,8 @@
         <choice>
           <value>de</value>
           <value>de-1901</value>
+          <value>de-CH</value>
+          <value>de-CH-1901</value>
         </choice>
       </attribute>
       <ref name="head"/>
@@ -48,6 +50,7 @@
           <value>dtb:sourceRights</value>
           <value>prod:series</value>
           <value>prod:seriesNumber</value>
+          <value>prod:source</value>
         </choice>
       </attribute>
     </element>

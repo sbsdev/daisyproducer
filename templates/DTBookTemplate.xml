@@ -25,6 +25,7 @@
     {# producer specific metadata #}
     <meta name="prod:series" content="{{ production_series }}" />
     <meta name="prod:seriesNumber" content="{{ production_series_number }}" />
+    <meta name="prod:source" content="{{ production_source }}" />
   </head>
   
   <book>

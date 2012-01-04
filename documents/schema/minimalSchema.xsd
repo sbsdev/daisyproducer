@@ -49,6 +49,7 @@
             <xs:enumeration value="dtb:sourceRights"/>
             <xs:enumeration value="prod:series"/>
             <xs:enumeration value="prod:seriesNumber"/>
+            <xs:enumeration value="prod:source"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>

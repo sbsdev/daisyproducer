@@ -23,7 +23,8 @@ class XMLContent:
         'source_edition' : "dtb:sourceEdition",
         'source_rights' : "dtb:sourceRights",
         'production_series' : "prod:series",
-        'production_series_number' : "prod:seriesNumber"
+        'production_series_number' : "prod:seriesNumber",
+        'production_source' : "prod:source"
         }
 
     @staticmethod
@@ -74,9 +75,9 @@ class XMLContent:
             lambda x,y: x+y, 
             [self._validateMetaAttribute(self.FIELD_ATTRIBUTE_MAP[field], kwargs.get(field, '')) 
              for field in 
-             ['source_publisher', 'subject', 'description', 'publisher', 'date', 'source', 
+             ('source_publisher', 'subject', 'description', 'publisher', 'date', 'source', 
               'language', 'rights', 'source_date', 'source_edition', 'source_rights', 
-              'production_series', 'production_series_number']])
+              'production_series', 'production_series_number', 'production_source')])
 
         return filter(None, validationProblems) + filter(
             None, 

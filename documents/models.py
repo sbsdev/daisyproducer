@@ -134,6 +134,16 @@ class Document(models.Model):
         help_text=_("Information about the number in the series under which the book is produced"),
         blank=True)
 
+    PRODUCTION_SOURCE_CHOICES = (
+        ('electronicData', 'Electronic Data'),
+        )
+    production_source = models.CharField(
+        _("Production Source"), 
+        max_length=25, 
+        choices=PRODUCTION_SOURCE_CHOICES,
+        help_text=_("Information about the source from which the book was produced, e.g. scanned book, electronic data, etc"),
+        blank=True)
+        
     state = models.ForeignKey(State, verbose_name=_("State"))
     assigned_to = models.ForeignKey(User, verbose_name=_("Assigned to"), null=True, blank=True)
     created_at = models.DateTimeField(_("Created"))
