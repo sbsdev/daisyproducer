@@ -113,7 +113,6 @@ class XMLContent:
         else:
             for element in elements:
                 element.attrib['content'] = value
-            
         
     def _updateMetaElement(self, key, value):
         for element in self.tree.findall("//{%s}%s" % (self.DTBOOK_NAMESPACE, key)):
