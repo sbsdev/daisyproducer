@@ -143,11 +143,20 @@ def upload_metadata_csv(request):
     # FIXME: It's pretty annoying to hard code the expected encoding of the csv
     reader = UnicodeReader(open(csv_file.temporary_file_path()), encoding="iso-8859-1", delimiter='\t')
     initial = []
+    seen_sources = set()
+    seen_title_author = set()
     for row in reader:
         fields = {'title': row[0], 'author': row[1], 
                   'identifier': row[2], 'source': row[3], 
                   'source_edition': row[4], 'source_publisher': row[5],
                   'language': Document.language_choices[0][0]}
+        # filter entries in the csv that deal with the same isbn or with the same title/author combo
+        if fields['source'] in seen_sources or fields['title'] + fields['author'] in seen_title_author:
+            continue
+        if fields['source']:
+            seen_sources.add(fields['source'])
+        if fields['title'] + fields['author']:
+            seen_title_author.add(fields['title'] + fields['author'])
         # FIXME: Obviously the following is highly SBS specific
         if row[7] != '0':
             fields['production_series'] = Document.PRODUCTION_SERIES_CHOICES[1][0]
@@ -162,9 +171,12 @@ def upload_metadata_csv(request):
         initial.append(fields)
     # filter out existing document entries
     new_identifiers = [row['identifier'] for row in initial]
+    new_sources = [row['source'] for row in initial if row['source']]
     duplicate_identifiers = [document.identifier for 
                              document in Document.objects.filter(identifier__in=new_identifiers)]
-    unique_initial = [row for row in initial if row['identifier'] not in duplicate_identifiers]
+    duplicate_sources = [document.source for 
+                         document in Document.objects.filter(source__in=new_sources)]
+    unique_initial = [row for row in initial if row['identifier'] not in duplicate_identifiers and row['source'] not in duplicate_sources]
 
     DocumentFormSet = modelformset_factory(Document, 
                                            fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number', 'production_source'), 
