@@ -45,13 +45,13 @@ class XMLContent:
         self.tree = etree.parse(self.version.content.file)
         self.version.content.close()
         # fix author
-        self._updateMetaAttribute("dc:Creator", author)
+        self._updateOrInsertMetaAttribute("dc:Creator", author)
         # FIXME: Sometimes the docauthor contains xml markup, such as
         # <em> and <abbr>, which is not in the meta tag. The following
         # will just wipe this out.
         self._updateMetaElement("docauthor", author)
         # fix title
-        self._updateMetaAttribute("dc:Title", title)
+        self._updateOrInsertMetaAttribute("dc:Title", title)
         # FIXME: Sometimes the doctitle contains xml markup, such as
         # <em> and <abbr>, which is not in the meta tag. The following
         # will just wipe this out.
@@ -61,7 +61,7 @@ class XMLContent:
         for model_field, field_value in kwargs.items():
             # fix attribute
             if self.FIELD_ATTRIBUTE_MAP.has_key(model_field):
-                self._updateMetaAttribute(self.FIELD_ATTRIBUTE_MAP[model_field], (field_value or ''))
+                self._updateOrInsertMetaAttribute(self.FIELD_ATTRIBUTE_MAP[model_field], (field_value or ''))
        
         return etree.tostring(self.tree, xml_declaration=True, encoding="UTF-8")
 
@@ -102,11 +102,18 @@ class XMLContent:
             self._validateLangAttribute(kwargs.get('language', ''))
             )
         
-    def _updateMetaAttribute(self, key, value):
+    def _updateOrInsertMetaAttribute(self, key, value):
         if isinstance(value, datetime.date):
             value = value.isoformat()
-        for element in self.tree.findall("//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key)):
-            element.attrib['content'] = value
+        elements = self.tree.findall("//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key))
+        if not elements and value:
+            # insert a new meta element if there wasn't one before and if the value is not empty
+            head = self.tree.find("//{%s}head" % self.DTBOOK_NAMESPACE)
+            etree.SubElement(head, "{%s}meta" % self.DTBOOK_NAMESPACE, name=key, content=value)
+        else:
+            for element in elements:
+                element.attrib['content'] = value
+            
         
     def _updateMetaElement(self, key, value):
         for element in self.tree.findall("//{%s}%s" % (self.DTBOOK_NAMESPACE, key)):
