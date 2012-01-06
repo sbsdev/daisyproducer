@@ -43,12 +43,29 @@ class PartialWordForm(ModelForm):
 class RestrictedWordForm(PartialWordForm):
     def __init__(self, *args, **kwargs):
         super(RestrictedWordForm, self).__init__(*args, **kwargs)
-        if self.initial['type'] == 0:
-            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 2, 4)]
-        else:
-            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
-        self.fields['type'].choices = typeChoices
+        if not self.is_bound:
+            if self.initial['type'] == 0:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 2, 4)]
+            else:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+            self.fields['type'].choices = typeChoices
 
+class RestrictedConfirmWordForm(PartialWordForm):
+    def __init__(self, *args, **kwargs):
+        super(RestrictedConfirmWordForm, self).__init__(*args, **kwargs)
+        if not self.is_bound:
+            if self.initial['type'] == 0:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 1, 2, 3, 4)]
+            elif self.initial['type'] == 2:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
+                self.initial['use_for_word_splitting'] = False
+            elif self.initial['type'] == 4:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
+                self.initial['use_for_word_splitting'] = False
+            else:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+            self.fields['type'].choices = typeChoices
+        
 @transaction.commit_on_success
 def check(request, document_id):
 
@@ -197,7 +214,7 @@ def confirm(request):
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
             Word, 
-            form=PartialWordForm,
+            form=RestrictedConfirmWordForm,
             exclude=('documents', 'created_at', 'modified_at', 'modified_by'))
 
         formset = WordFormSet(request.POST)
@@ -224,7 +241,7 @@ def confirm(request):
 
     WordFormSet = modelformset_factory(
         Word, 
-        form=PartialWordForm,
+        form=RestrictedConfirmWordForm,
         exclude=('documents', 'created_at', 'modified_at', 'modified_by'), extra=0)
 
     formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False))
