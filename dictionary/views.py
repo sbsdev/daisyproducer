@@ -43,7 +43,10 @@ class PartialWordForm(ModelForm):
 class RestrictedWordForm(PartialWordForm):
     def __init__(self, *args, **kwargs):
         super(RestrictedWordForm, self).__init__(*args, **kwargs)
-        typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 2, 4, 5)]
+        if self.initial['type'] == 0:
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 2, 4)]
+        else:
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
         self.fields['type'].choices = typeChoices
 
 @transaction.commit_on_success
@@ -133,7 +136,8 @@ def check(request, document_id):
                        word in Word.objects.filter(untranslated__in=new_words)]
     unknown_words = [{'untranslated': word, 
                       'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, word)),
-                      'grade2': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, word))} 
+                      'grade2': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, word)),
+                      'type' : 0} 
                      for word in new_words if word not in duplicate_words]
 
     unknown_words = unknown_words + unknown_homographs + unknown_names + unknown_places
