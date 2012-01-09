@@ -203,7 +203,7 @@ def local(request, document_id):
         exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
         can_delete=True, extra=0)
 
-    formset = WordFormSet(queryset=Word.objects.filter(documents=document))
+    formset = WordFormSet(queryset=Word.objects.filter(documents=document).order_by('untranslated', 'type'))
 
     return render_to_response('dictionary/local.html', locals(), 
                               context_instance=RequestContext(request))
@@ -255,7 +255,7 @@ def confirm(request):
         form=RestrictedConfirmWordForm,
         exclude=('documents', 'created_at', 'modified_at', 'modified_by'), extra=0)
 
-    formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False))
+    formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False).order_by('untranslated', 'type'))
     return render_to_response('dictionary/confirm.html', locals(), 
                               context_instance=RequestContext(request))
 
