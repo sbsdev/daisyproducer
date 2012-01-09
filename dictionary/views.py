@@ -66,11 +66,11 @@ class RestrictedConfirmWordForm(PartialWordForm):
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
         
+def removeRedundantSplitpoints(contraction):
+    return "w".join(filter(None,contraction.split('w')))
+
 @transaction.commit_on_success
 def check(request, document_id):
-
-    def removeRedundantSplitpoints(contraction):
-        return "w".join(filter(None,contraction.split('w')))
 
     document = get_object_or_404(Document, pk=document_id)
 
@@ -239,6 +239,17 @@ def confirm(request):
             return render_to_response('dictionary/confirm.html', locals(),
                                       context_instance=RequestContext(request))
 
+    # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
+    unconfirmed_homographs = set(Word.objects.filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
+    covered_entries = set(Word.objects.filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
+    for word in unconfirmed_homographs - covered_entries:
+        w = Word(untranslated=word, 
+                 grade1=removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, word)),
+                 grade2=removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, word)),
+                 type=0,
+                 modified_by = request.user)
+        w.save()
+    
     WordFormSet = modelformset_factory(
         Word, 
         form=RestrictedConfirmWordForm,
