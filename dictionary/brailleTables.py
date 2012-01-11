@@ -168,11 +168,11 @@ def uncontract(word):
     return u''.join([grade1ToUncontractedMap.get(c, c) for c in word]).lower()
 
 def writeWordSplitTable(words):
-    writeWordSplitTableInternal(words.filter(type__in=(0,1,3,5)), 
-                                ('sbs-de-name-wordsplit.mod', 'sbs-de-g2-wordsplit.mod'))
-    writeWordSplitTableInternal(words.filter(type__in=(2,)), 
+    writeWordSplitTableInternal(words.filter(type__in=(0,5)), 
+                                ('sbs-de-g1-wordsplit.mod', 'sbs-de-g2-wordsplit.mod'))
+    writeWordSplitTableInternal(words.filter(type__in=(1,2)), 
                                 ('sbs-de-name-wordsplit.mod',))
-    writeWordSplitTableInternal(words.filter(type__in=(4,)), 
+    writeWordSplitTableInternal(words.filter(type__in=(3,4)), 
                                 ('sbs-de-place-wordsplit.mod',))
 
 def writeWordSplitTableInternal(words, fileNames):
