@@ -402,6 +402,18 @@ a form of css for Braille)</xs:documentation>
       </xs:attribute>
     </xs:complexType>
   </xs:element>
+  <xs:element name="a">
+    <xs:complexType mixed="true">
+      <xs:attribute name="href" use="required"/>
+      <xs:attribute name="external" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="true"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
   <xs:attributeGroup name="emphasisClassAttribute">
     <xs:annotation>
       <xs:documentation>The class attribute on emphasis is used to categorize the emphasis

@@ -520,6 +520,18 @@ a form of css for Braille)</a:documentation>
       </interleave>
     </element>
   </define>
+  <define name="a">
+    <a:documentation>A subset of the dtb:a which is not used for inter-dtbook linking
+but solely for marking up (external) URLs such as urls of
+publishers of book websites, etc</a:documentation>
+    <element name="a">
+      <attribute name="href"/>
+      <attribute name="external">
+        <value>true</value>
+      </attribute>
+      <text/>
+    </element>
+  </define>
   <define name="emphasisClassAttribute">
     <a:documentation>The class attribute on emphasis is used to categorize the emphasis
 tags. This will help in deciding what brl:render attribute to set
