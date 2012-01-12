@@ -1,7 +1,9 @@
 # coding=utf-8
 import codecs
+import functools
 
 from daisyproducer.dictionary.models import Word
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
 from django.db import transaction
@@ -14,28 +16,35 @@ typeMap = {
     'P': 4, # Only as a place
     'H': 5, # Homograph default
     'h': 5, # Homograph alternative
-    'd': 6, # Dialect
     }
 
-def get_word(untranslated, grade1, grade2, type):
+def get_word_full(untranslated, grade1, grade2, type, use_for_word_splitting, user):
     return Word(untranslated=untranslated.replace('|',''), 
                 grade1=grade1, grade2=grade2, 
                 type=type, isConfirmed=True, 
-                homograph_disambiguation=untranslated if type == 5 else '')
+                homograph_disambiguation=untranslated if type == 5 else '',
+                use_for_word_splitting=use_for_word_splitting,
+                modified_by=user)
 
 class Command(BaseCommand):
-    args = 'dictionary file name'
-    help = 'Import the given file as a dictionary'
+    args = 'default_user_id dictionary_file'
+    help = 'Import the given file as a dictionary with the given user_id'
     output_transaction = True
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
+        if len(args) != 2:
+            raise CommandError('Incorrect number of arguments')
         try:
-            f = codecs.open(args[0], "r", "utf-8" )
+            user = User.objects.get(username=args[0])
+        except User.DoesNotExist:
+            raise CommandError('User "%s" does not exist' % args[0])
+        try:
+            f = codecs.open(args[1], "r", "utf-8" )
         except IndexError:
             raise CommandError('No dictionary file specified')
         except IOError:
-            raise CommandError('Dictionary file "%s" not found' % args[0])
+            raise CommandError('Dictionary file "%s" not found' % args[1])
 
         self.numberOfWords = 0
         self.lineNo = 0
@@ -49,25 +58,33 @@ class Command(BaseCommand):
             untranslated = untranslated.replace('#','')
             grade2 = grade2.replace('z','')
             self.lineNo += 1
-            type = typeMap[typeString]
 
+            if typeString == 'd':
+                # assume no restriction for dialect words
+                type = 0
+                use_for_word_splitting = False
+            else:
+                type = typeMap[typeString]
+                use_for_word_splitting = True
+
+            get_word = functools.partial(get_word_full, type=type, use_for_word_splitting=use_for_word_splitting, user=user)
             if 's~' in untranslated:
                 # if the untranslated word contains a 's~' then add
                 # two entries: one for German and one for Swiss German
                 # spelling
-                w = get_word(untranslated.replace('s~',u'ß'), grade1.replace(u'§','^'), grade2.replace(u'§',u'ß'), type)
+                w = get_word(untranslated.replace('s~',u'ß'), grade1.replace(u'§','^'), grade2.replace(u'§',u'ß'))
                 self.save(w)
-                w = get_word(untranslated.replace(u's~',u'ss'), grade1.replace(u'§','SS'), grade2.replace(u'§','^'), type)
+                w = get_word(untranslated.replace(u's~',u'ss'), grade1.replace(u'§','SS'), grade2.replace(u'§','^'))
                 self.save(w)
             elif u'ß' in untranslated:
                 # if the untranslated word contains a ß then add a
                 # second entry for the swiss german spelling
-                w = get_word(untranslated, grade1, grade2, type)
+                w = get_word(untranslated, grade1, grade2)
                 self.save(w)
-                w = get_word(untranslated.replace(u'ß','ss'), grade1.replace(u'^','SS'), grade2.replace(u'ß','^'), type)
+                w = get_word(untranslated.replace(u'ß','ss'), grade1.replace(u'^','SS'), grade2.replace(u'ß','^'))
                 self.save(w)
             else:
-                w = get_word(untranslated, grade1, grade2, type)
+                w = get_word(untranslated, grade1, grade2)
                 self.save(w)
                 
         self.stdout.write('Successfully added %s words to dictionary\n' % self.numberOfWords)
