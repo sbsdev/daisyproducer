@@ -16,6 +16,7 @@
 /media
 /missing
 /py-compile
+/settings_local.py
 /xml2brl.temp
 Makefile
 Makefile.in
