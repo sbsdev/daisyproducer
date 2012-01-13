@@ -6,6 +6,13 @@ from collections import namedtuple
 from daisyproducer.dictionary.models import Word
 from django.utils.encoding import smart_unicode
 
+class DifferentNumberOfPartsError(Exception):
+    def __init__(self, grade1Parts, grade2Parts):
+        self.grade1Parts = grade1Parts
+        self.grade2Parts = grade2Parts
+
+    def __str__(self):
+        return "Not the same number of parts for grade1 (%s) and grade2 (%s)" % (self.grade1Parts, self.grade2Parts)
 
 TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
 
@@ -132,8 +139,8 @@ def writeWhiteListTables(words):
                ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.grade1) for word in words if word.type in (0, 1, 3, 5)))
     writeTable('sbs-de-g2-white.mod', 
                ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.grade2) for word in words if word.type in (0, 1, 3, 5)))
-    writeTable('sbs-de-g2-name.mod', ((word.untranslated, word.grade2) for word in words if word.type == 2))
-    writeTable('sbs-de-g2-place.mod', ((word.untranslated, word.grade2) for word in words if word.type == 4))
+    writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.grade2) for word in words if word.type == 2))
+    writeTable('sbs-de-g2-place-white.mod', ((word.untranslated, word.grade2) for word in words if word.type == 4))
 
 def writeLocalTables(changedDocuments):
     for document in changedDocuments:
@@ -142,9 +149,9 @@ def writeLocalTables(changedDocuments):
                    ((word.untranslated, word.grade1) for word in words if word.type in (0, 1, 3, 5)))
         writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade2) for word in words if word.type in (0, 1, 3, 5)))
-        writeTable('sbs-de-g2-name-%s.mod' % document.identifier, 
+        writeTable('sbs-de-g2-name-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade1) for word in words if word.type == 2))
-        writeTable('sbs-de-g2-place-%s.mod' % document.identifier, 
+        writeTable('sbs-de-g2-place-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade2) for word in words if word.type == 4))
         
 grade1ToUncontractedMap = {
@@ -198,7 +205,7 @@ def writeWordSplitTableInternal(words, fileNames):
             continue
         grade2Parts = smart_unicode(word.grade2).split('w')
         if len(grade2Parts) != len(grade1Parts):
-            raise Exception
+            raise DifferentNumberOfPartsError(grade1Parts, grade2Parts)
         for uncontracted, grade1, grade2 in zip(uncontractedParts, grade1Parts, grade2Parts):
             contractionMap[uncontracted] = Contraction(word2dots(grade1), word2dots(grade2)) 
         
