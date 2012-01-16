@@ -8,6 +8,7 @@ from daisyproducer.documents.models import Document
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django import forms
 from django.forms.models import modelformset_factory, ModelForm
 from django.forms.widgets import TextInput
 from django.http import HttpResponseRedirect
@@ -39,6 +40,17 @@ class PartialWordForm(ModelForm):
         widgets = {
             'untranslated': TextInput(attrs={'readonly': 'readonly'}),
             }
+
+    # make sure grade1 and grade2 have the same number of hyphenation points
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        grade1 = cleaned_data.get("grade1")
+        grade2 = cleaned_data.get("grade2")
+
+        if grade1 and grade2 and len(grade1.split('w')) != len(grade2.split('w')):
+            raise forms.ValidationError("Grade1 and Grade2 do not have the same number of hyphenation points")
+
+        return cleaned_data
 
 class RestrictedWordForm(PartialWordForm):
     def __init__(self, *args, **kwargs):
