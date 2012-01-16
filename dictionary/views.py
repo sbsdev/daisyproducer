@@ -197,7 +197,8 @@ def local(request, document_id):
             exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
             can_delete=True)
 
-        formset = WordFormSet(request.POST)
+        formset = WordFormSet(request.POST, 
+                              queryset=Word.objects.filter(documents=document))
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
@@ -229,7 +230,8 @@ def confirm(request):
             form=RestrictedConfirmWordForm,
             exclude=('documents', 'created_at', 'modified_at', 'modified_by'))
 
-        formset = WordFormSet(request.POST)
+        formset = WordFormSet(request.POST, 
+                              queryset=Word.objects.filter(isConfirmed=False))
         if formset.is_valid():
             instances = formset.save(commit=False)
             changedDocuments = set()
