@@ -62,6 +62,16 @@ class RestrictedWordForm(PartialWordForm):
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
 
+    # only clean if a word is not ignored
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        delete = cleaned_data.get("DELETE")
+
+        if not delete:
+            return super(RestrictedWordForm, self).clean()
+
+        return cleaned_data
+
 class RestrictedConfirmWordForm(PartialWordForm):
     def __init__(self, *args, **kwargs):
         super(RestrictedConfirmWordForm, self).__init__(*args, **kwargs)
@@ -77,7 +87,17 @@ class RestrictedConfirmWordForm(PartialWordForm):
             else:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
-        
+
+    # only clean if a word is confirmed
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        isConfirmed = cleaned_data.get("isConfirmed")
+
+        if isConfirmed:
+            return super(RestrictedConfirmWordForm, self).clean()
+
+        return cleaned_data
+
 def removeRedundantSplitpoints(contraction):
     return "w".join(filter(None,contraction.split('w')))
 
