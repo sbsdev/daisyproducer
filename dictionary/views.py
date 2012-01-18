@@ -2,7 +2,7 @@ import os
 import unicodedata
 
 import louis
-from daisyproducer.dictionary.brailleTables import writeWhiteListTables, writeLocalTables, writeWordSplitTable
+from daisyproducer.dictionary.brailleTables import writeLocalTables
 from daisyproducer.dictionary.models import Word
 from daisyproducer.documents.models import Document
 from django.conf import settings
@@ -207,6 +207,7 @@ def check(request, document_id):
     return render_to_response('dictionary/words.html', locals(),
                               context_instance=RequestContext(request))
 
+@transaction.commit_on_success
 def local(request, document_id):
 
     document = get_object_or_404(Document, pk=document_id)
@@ -241,7 +242,6 @@ def local(request, document_id):
     return render_to_response('dictionary/local.html', locals(), 
                               context_instance=RequestContext(request))
 
-
 @transaction.commit_on_success
 def confirm(request):
     if request.method == 'POST':
@@ -262,12 +262,18 @@ def confirm(request):
                     # clear the documents if the word is not local
                     changedDocuments.update(instance.documents.all())
                     instance.documents.clear()
-            # write new global white lists
-            writeWhiteListTables(Word.objects.filter(isConfirmed=True).filter(isLocal=False).order_by('untranslated'))
-            # update local tables
-            writeLocalTables(changedDocuments)
-            # write new word split table
-            writeWordSplitTable(Word.objects.filter(isConfirmed=True).filter(isLocal=False).filter(use_for_word_splitting=True).order_by('untranslated'))
+    # FIXME: in principle we need to regenerate the liblouis tables,
+    # i.e. the white lists now. However we do this asynchronously
+    # (using a cron job) for now. There are several reasons for this:
+    # 1) It is slow as hell if done inside a transaction. To do this
+    # outside the transaction we need transaction context managers
+    # (https://docs.djangoproject.com/en/1.3/topics/db/transactions/#controlling-transaction-management-in-views)
+    # which are only available in Django 1.3.
+    # 2) We need to serialize the table writing so they do not write
+    # on top of each other. This is easy if it is done periodically.
+    # 3) Of course it would be nice to use some kind of message queue
+    # for this (e.g. rabbitmq and celery), but for now this poor mans
+    # solution seems good enough
             return HttpResponseRedirect(reverse('todo_index'))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
