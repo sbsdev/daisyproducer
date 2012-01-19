@@ -200,10 +200,15 @@ def writeWordSplitTableInternal(words, fileNames):
     Contraction = namedtuple('Contraction', 'grade1 grade2')
     for word in words:
         grade1Parts = smart_unicode(word.grade1).split('w')
-        uncontractedParts = [uncontract(part) for part in grade1Parts]
-        if len(uncontractedParts) <= 1:
+        if len(grade1Parts) <= 1:
             continue
+        uncontractedParts = [uncontract(part) for part in grade1Parts]
         grade2Parts = smart_unicode(word.grade2).split('w')
+        # filter parts that are shorter than 3 characters
+        zipped = [items for items in zip(uncontractedParts, grade1Parts, grade2Parts) if len(items[0]) >= 3]
+        if not zipped:
+            continue # the word has no word parts that are long enough
+        uncontractedParts, grade1Parts, grade2Parts = zip(*zipped)
         if len(grade2Parts) != len(grade1Parts):
             raise DifferentNumberOfPartsError(grade1Parts, grade2Parts)
         for uncontracted, grade1, grade2 in zip(uncontractedParts, grade1Parts, grade2Parts):
