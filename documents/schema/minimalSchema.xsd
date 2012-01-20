@@ -47,6 +47,7 @@
             <xs:enumeration value="dtb:sourceEdition"/>
             <xs:enumeration value="dtb:sourcePublisher"/>
             <xs:enumeration value="dtb:sourceRights"/>
+            <xs:enumeration value="dtb:sourceDate"/>
             <xs:enumeration value="prod:series"/>
             <xs:enumeration value="prod:seriesNumber"/>
             <xs:enumeration value="prod:source"/>

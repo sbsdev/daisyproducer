@@ -48,6 +48,7 @@
           <value>dtb:sourceEdition</value>
           <value>dtb:sourcePublisher</value>
           <value>dtb:sourceRights</value>
+          <value>dtb:sourceDate</value>
           <value>prod:series</value>
           <value>prod:seriesNumber</value>
           <value>prod:source</value>
