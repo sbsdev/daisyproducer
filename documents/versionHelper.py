@@ -3,6 +3,23 @@ import datetime
 from django.template.loader import render_to_string
 from lxml import etree
 
+entities = (
+    ('&', '&amp;'),
+    ('<', '&lt;'),
+    ('>', '&gt;'),
+    ('"', '&quot;'),
+    ("'", '&#39;')
+    )
+
+def escape(string):
+    """
+    Returns the given string ampersands, quotes and angle brackets encoded, so it is save to be inserted in XML attributes.
+    """
+    return reduce(lambda s, entity: s.replace(entity[0], entity[1]), entities, string)
+
+def unescape(string):
+    return reduce(lambda s, entity: s.replace(entity[1], entity[0]), entities, string)
+
 
 class XMLContent:
     
@@ -73,7 +90,7 @@ class XMLContent:
         validationProblems = reduce(
             # flatten the list
             lambda x,y: x+y, 
-            [self._validateMetaAttribute(self.FIELD_ATTRIBUTE_MAP[field], kwargs.get(field, '')) 
+            [self._validateMetaAttribute(self.FIELD_ATTRIBUTE_MAP[field], (kwargs.get(field, '') or '')) 
              for field in 
              ('source_publisher', 'subject', 'description', 'publisher', 'date', 'source', 
               'language', 'rights', 'source_date', 'source_edition', 'source_rights', 
@@ -109,10 +126,10 @@ class XMLContent:
         if not elements and value:
             # insert a new meta element if there wasn't one before and if the value is not empty
             head = self.tree.find("//{%s}head" % self.DTBOOK_NAMESPACE)
-            etree.SubElement(head, "{%s}meta" % self.DTBOOK_NAMESPACE, name=key, content=value)
+            etree.SubElement(head, "{%s}meta" % self.DTBOOK_NAMESPACE, name=key, content=escape(value))
         else:
             for element in elements:
-                element.attrib['content'] = value
+                element.attrib['content'] = escape(value)
         
     def _updateMetaElement(self, key, value):
         for element in self.tree.findall("//{%s}%s" % (self.DTBOOK_NAMESPACE, key)):
@@ -129,7 +146,8 @@ class XMLContent:
         if isinstance(value, datetime.date):
             value = value.isoformat()
         xpath = "//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key)
-        return [tuple([key, element.attrib['content'], value]) for element in self.tree.findall(xpath) if element.attrib['content'] != value]
+        return [tuple([key, element.attrib['content'], value]) 
+                for element in self.tree.findall(xpath) if unescape(element.attrib['content']) != value]
         
     def _validateMetaElement(self, key, value):
         """Return a list of tuples for each element of name key where
