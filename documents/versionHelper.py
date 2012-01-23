@@ -3,24 +3,6 @@ import datetime
 from django.template.loader import render_to_string
 from lxml import etree
 
-entities = (
-    ('&', '&amp;'),
-    ('<', '&lt;'),
-    ('>', '&gt;'),
-    ('"', '&quot;'),
-    ("'", '&#39;')
-    )
-
-def escape(string):
-    """
-    Returns the given string ampersands, quotes and angle brackets encoded, so it is save to be inserted in XML attributes.
-    """
-    return reduce(lambda s, entity: s.replace(entity[0], entity[1]), entities, string)
-
-def unescape(string):
-    return reduce(lambda s, entity: s.replace(entity[1], entity[0]), entities, string)
-
-
 class XMLContent:
     
     DTBOOK_NAMESPACE = "http://www.daisy.org/z3986/2005/dtbook/"
@@ -47,10 +29,10 @@ class XMLContent:
     @staticmethod
     def getInitialContent(document):
         from django.forms.models import model_to_dict
-        context = model_to_dict(document)
-        context['date'] = document.date.isoformat() if document.date else ''
-        context['source_date'] = document.source_date.isoformat() if document.source_date else ''
-        content = render_to_string('DTBookTemplate.xml', context)
+        dictionary = model_to_dict(document)
+        dictionary['date'] = document.date.isoformat() if document.date else ''
+        dictionary['source_date'] = document.source_date.isoformat() if document.source_date else ''
+        content = render_to_string('DTBookTemplate.xml', dictionary)
         return content.encode('utf-8')
         
     def __init__(self, version=None):
@@ -126,10 +108,10 @@ class XMLContent:
         if not elements and value:
             # insert a new meta element if there wasn't one before and if the value is not empty
             head = self.tree.find("//{%s}head" % self.DTBOOK_NAMESPACE)
-            etree.SubElement(head, "{%s}meta" % self.DTBOOK_NAMESPACE, name=key, content=escape(value))
+            etree.SubElement(head, "{%s}meta" % self.DTBOOK_NAMESPACE, name=key, content=value)
         else:
             for element in elements:
-                element.attrib['content'] = escape(value)
+                element.attrib['content'] = value
         
     def _updateMetaElement(self, key, value):
         for element in self.tree.findall("//{%s}%s" % (self.DTBOOK_NAMESPACE, key)):
@@ -147,7 +129,7 @@ class XMLContent:
             value = value.isoformat()
         xpath = "//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key)
         return [tuple([key, element.attrib['content'], value]) 
-                for element in self.tree.findall(xpath) if unescape(element.attrib['content']) != value]
+                for element in self.tree.findall(xpath) if element.attrib['content'] != value]
         
     def _validateMetaElement(self, key, value):
         """Return a list of tuples for each element of name key where
