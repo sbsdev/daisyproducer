@@ -124,7 +124,7 @@ asciiToDotsMap = {
     }
 
 def word2dots(word):
-    dots = [asciiToDotsMap.get(c) for c in word]
+    dots = [asciiToDotsMap[c] for c in word]
     return '-'.join(dots)
 
 def writeTable(fileName, words):
