@@ -150,7 +150,7 @@ def writeLocalTables(changedDocuments):
         writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade2) for word in words if word.type in (0, 1, 3, 5)))
         writeTable('sbs-de-g2-name-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.grade1) for word in words if word.type == 2))
+                   ((word.untranslated, word.grade2) for word in words if word.type == 2))
         writeTable('sbs-de-g2-place-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.grade2) for word in words if word.type == 4))
         
