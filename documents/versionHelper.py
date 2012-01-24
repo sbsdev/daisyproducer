@@ -127,16 +127,21 @@ class XMLContent:
         the value of the attribute 'content'"""
         if isinstance(value, datetime.date):
             value = value.isoformat()
-        xpath = "//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key)
-        return [tuple([key, element.attrib['content'], value]) 
-                for element in self.tree.findall(xpath) if element.attrib['content'] != value]
+        r = self.tree.xpath("//dtb:meta[@name='%s']" % (key,), namespaces={'dtb': self.DTBOOK_NAMESPACE})
+        if not len(r) and value != '':
+            # hm the meta attribute is not there. It should be though. Report this as an error
+            return [(key, '', value)]
+        else:
+            return [tuple([key, element.attrib['content'], value]) 
+                    for element in r if element.attrib['content'] != value]
         
     def _validateMetaElement(self, key, value):
         """Return a list of tuples for each element of name key where
         the text doesn't match the given value. The tuple contains the
         key, the given value and the value of the text node"""
-        xpath = "//{%s}%s" % (self.DTBOOK_NAMESPACE, key)
-        return [tuple([key, element.text, value]) for element in self.tree.findall(xpath) if element.text != value and not (element.text == None and value == '')]
+        r = self.tree.xpath("//%s" % (key,), namespaces={'dtb': self.DTBOOK_NAMESPACE})
+        # in theory we should also check for an empty result set r. However the schema already takes care of that
+        return [tuple([key, element.text, value]) for element in r if element.text != value and not (element.text == None and value == '')]
 
     def _validateLangAttribute(self, language):
         lang_attribute = self.tree.getroot().attrib['{%s}lang' % self.XML_NAMESPACE]
