@@ -380,6 +380,7 @@ a form of css for Braille)</xs:documentation>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="brl:select"/>
+        <xs:element ref="dtbook:a"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
       <xs:attribute name="class">
@@ -434,6 +435,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="dtbook:span"/>
+        <xs:element ref="dtbook:a"/>
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>
@@ -447,6 +449,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="dtbook:span"/>
+        <xs:element ref="dtbook:a"/>
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>
@@ -501,6 +504,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="brl:select"/>
+        <xs:element ref="dtbook:a"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>
@@ -515,6 +519,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="brl:select"/>
+        <xs:element ref="dtbook:a"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>
@@ -548,6 +553,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="dtbook:list"/>
         <xs:element ref="brl:select"/>
+        <xs:element ref="dtbook:a"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>
@@ -561,6 +567,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:abbr"/>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="brl:select"/>
+        <xs:element ref="dtbook:a"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -617,6 +624,7 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="brl:select"/>
+        <xs:element ref="dtbook:a"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
     </xs:complexType>

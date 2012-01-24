@@ -518,6 +518,9 @@ a form of css for Braille)</a:documentation>
         <zeroOrMore>
           <ref name="select"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="a"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -576,6 +579,9 @@ for this emphasis</a:documentation>
         <zeroOrMore>
           <ref name="span"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="a"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -603,6 +609,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="span"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="a"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -711,6 +720,9 @@ for this emphasis</a:documentation>
         <zeroOrMore>
           <ref name="select"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="a"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -741,6 +753,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="select"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="a"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -800,6 +815,9 @@ for this emphasis</a:documentation>
         <zeroOrMore>
           <ref name="select"/>
         </zeroOrMore>
+        <zeroOrMore>
+          <ref name="a"/>
+        </zeroOrMore>
       </interleave>
     </element>
   </define>
@@ -824,6 +842,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="select"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="a"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -915,6 +936,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="select"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="a"/>
         </zeroOrMore>
       </interleave>
     </element>
