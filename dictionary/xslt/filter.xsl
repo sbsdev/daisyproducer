@@ -12,6 +12,9 @@
 
   <xsl:strip-space elements="brl:select"/>
 
+  <!-- Drop a, i.e. urls, etc as they will be shown in grade 0 anyway -->
+  <xsl:template match="dtb:a"/>
+
   <!-- Drop the homograph, name and place elements as they are handled separately-->
   <xsl:template match="brl:homograph|brl:name|brl:place"/>
 
