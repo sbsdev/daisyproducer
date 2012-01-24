@@ -3,14 +3,13 @@ import unicodedata
 
 import louis
 from daisyproducer.dictionary.brailleTables import writeLocalTables
+from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm
 from daisyproducer.dictionary.models import Word
 from daisyproducer.documents.models import Document
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django import forms
-from django.forms.models import modelformset_factory, ModelForm
-from django.forms.widgets import TextInput
+from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -32,71 +31,6 @@ PLACE_WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE2[:]
 PLACE_WORDSPLIT_TABLES_GRADE2[9:11] = ('sbs-de-place-wordsplit.mod', 'sbs-de-g2-place.mod', 'sbs-de-g2-name.mod')
 
 BRL_NAMESPACE = {'brl':'http://www.daisy.org/z3986/2009/braille/'}
-
-class PartialWordForm(ModelForm):
-    class Meta:
-        model = Word
-        exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
-        widgets = {
-            'untranslated': TextInput(attrs={'readonly': 'readonly'}),
-            }
-
-    # make sure grade1 and grade2 have the same number of hyphenation points
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        grade1 = cleaned_data.get("grade1")
-        grade2 = cleaned_data.get("grade2")
-
-        if grade1 and grade2 and len(grade1.split('w')) != len(grade2.split('w')):
-            raise forms.ValidationError("Grade1 and Grade2 do not have the same number of hyphenation points")
-
-        return cleaned_data
-
-class RestrictedWordForm(PartialWordForm):
-    def __init__(self, *args, **kwargs):
-        super(RestrictedWordForm, self).__init__(*args, **kwargs)
-        if not self.is_bound:
-            if self.initial['type'] == 0:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 2, 4)]
-            else:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
-            self.fields['type'].choices = typeChoices
-
-    # only clean if a word is not ignored
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        delete = cleaned_data.get("DELETE")
-
-        if not delete:
-            return super(RestrictedWordForm, self).clean()
-
-        return cleaned_data
-
-class RestrictedConfirmWordForm(PartialWordForm):
-    def __init__(self, *args, **kwargs):
-        super(RestrictedConfirmWordForm, self).__init__(*args, **kwargs)
-        if not self.is_bound:
-            if self.initial['type'] == 0:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 1, 2, 3, 4)]
-            elif self.initial['type'] == 2:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
-                self.initial['use_for_word_splitting'] = False
-            elif self.initial['type'] == 4:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
-                self.initial['use_for_word_splitting'] = False
-            else:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
-            self.fields['type'].choices = typeChoices
-
-    # only clean if a word is confirmed
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        isConfirmed = cleaned_data.get("isConfirmed")
-
-        if isConfirmed:
-            return super(RestrictedConfirmWordForm, self).clean()
-
-        return cleaned_data
 
 def removeRedundantSplitpoints(contraction):
     return "w".join(filter(None,contraction.split('w')))
