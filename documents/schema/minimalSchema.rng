@@ -210,6 +210,9 @@ a form of css for Braille)</a:documentation>
       <zeroOrMore>
         <ref name="select"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="a"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="level1">
@@ -529,7 +532,9 @@ a form of css for Braille)</a:documentation>
 but solely for marking up (external) URLs such as urls of
 publishers of book websites, etc</a:documentation>
     <element name="a">
-      <attribute name="href"/>
+      <attribute name="href">
+        <data type="string" datatypeLibrary=""/>
+      </attribute>
       <attribute name="external">
         <value>true</value>
       </attribute>
