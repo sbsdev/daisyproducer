@@ -98,10 +98,14 @@ def check(request, document_id):
     # grab the rest of the content
     content = etree.tostring(filtered_tree, method="text", encoding=unicode)
     # filter all punctuation and replace dashes by space, so we can split by space below
-    content = ''.join(c if unicodedata.category(c) != 'Pd' else ' ' 
-                      for c in content 
-                      if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp', 'Pd']
-                      or c in ['\n', '\r'])
+    content = ''.join(
+        # replace Punctuation Dash and Ponctuation other with space
+        c if unicodedata.category(c) not in ['Pd', 'Po'] else ' '
+        for c in content 
+        # drop all chars which are not letters, separators or select
+        # punctuation which we replace with space later on
+        if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp', 'Pd', 'Po']
+        or c in ['\n', '\r'])
     new_words = set((w.lower() for w in content.split() if len(w) > 1))
     # FIXME: We basically do a set difference manually here. This
     # would probably be better if done inside the db. However for that
