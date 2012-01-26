@@ -6,7 +6,7 @@ from django.forms.models import ModelForm
 from django.forms.widgets import TextInput
 from django.core.validators import RegexValidator
 
-VALID_BRAILLE_RE = u"^[A-Z0-9&%[^\],;:/?+=(*).\\@#\"!>$_<\'ß§|àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœbmtwanpkv]+$"
+VALID_BRAILLE_RE = u"^[A-Z0-9&%[^\],;:/?+=(*).\\@#\"!>$_<\'ß§|àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœtwanpkv]+$"
 validate = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
 
 class PartialWordForm(ModelForm):
