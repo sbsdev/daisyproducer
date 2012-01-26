@@ -335,7 +335,6 @@ class SBSForm:
         command = (
             join(settings.DTBOOK2SBSFORM_PATH, 'dtbook2sbsform.sh'),
             "-s:%s" % inputFile,
-            "-o:%s" % outputFile,
             )
         kwargs["version"] = getVersion()
         for k, v in kwargs.iteritems():
@@ -346,4 +345,7 @@ class SBSForm:
                 command += ("?%s=%s" % (k, v),)
             else:
                 command += ("%s=%s" % (k,v),)
-        call(command)
+        f = open(outputFile, 'w')
+        p1 = Popen(command, stdout=f)
+        p1.communicate()
+        f.close()
