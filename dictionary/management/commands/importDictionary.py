@@ -56,7 +56,7 @@ class Command(BaseCommand):
                 # ignore rows where the untranslated word has some # in it. These lines need to be fixed
                 continue
             if not VALID_BRAILLE_RE.search(grade1) or not VALID_BRAILLE_RE.search(grade2):
-                print "Invalid characters in Braille: %s, %s" % (grade1, grade2)
+                print "Invalid characters in Braille: %s, %s, %s" % (untranslated, grade1, grade2)
                 continue 
                 
             # remove some unnecessary markup
