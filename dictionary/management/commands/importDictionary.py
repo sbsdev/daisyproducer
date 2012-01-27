@@ -3,6 +3,7 @@ import codecs
 import functools
 
 from daisyproducer.dictionary.models import Word
+from daisyproducer.dictionary.forms import VALID_BRAILLE_RE
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
@@ -54,6 +55,10 @@ class Command(BaseCommand):
             if '#' in untranslated:
                 # ignore rows where the untranslated word has some # in it. These lines need to be fixed
                 continue
+            if not VALID_BRAILLE_RE.search(grade1) or not VALID_BRAILLE_RE.search(grade2):
+                print "Invalid characters in Braille: %s, %s" % (grade1, grade2)
+                continue 
+                
             # remove some unnecessary markup
             untranslated = untranslated.replace('#','')
             grade2 = grade2.replace('z','')
