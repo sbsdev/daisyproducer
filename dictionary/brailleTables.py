@@ -121,12 +121,20 @@ asciiToDotsMap = {
     u'v': "36a", # P36 ohne nachfolgende Trennmarke "m" (für "ver" u.ä.)
     }
 
+# register a special handler which translates unknown utf-8 into
+# \xhhhh escape sequences so liblouis can understand them.
+backslashreplace_handler = codecs.lookup_error('backslashreplace')
+def liblouis_handler(error):
+    (replacement, pos) = backslashreplace_handler(error)
+    return (replacement.replace('\u','\\x'), pos)
+codecs.register_error('liblouis', liblouis_handler)
+
 def word2dots(word):
     dots = [asciiToDotsMap[c] for c in word]
     return '-'.join(dots)
 
 def writeTable(fileName, words):
-    f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1")
+    f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1", 'liblouis')
     for (untranslated, contracted) in words:
         # TODO: drop unwanted hyphenation marks
         f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
