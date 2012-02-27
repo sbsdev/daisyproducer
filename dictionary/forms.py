@@ -8,35 +8,19 @@ from django.forms.models import ModelForm
 from django.forms.widgets import TextInput
 from django.core.validators import RegexValidator
 
-VALID_BRAILLE_RE = re.compile(u"^[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'ß§|àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœtwanpkv]+$")
+VALID_BRAILLE_RE = re.compile(u"^[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœv]+$")
 validate = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
 
 class PartialWordForm(ModelForm):
     class Meta:
         model = Word
-        exclude=('documents', 'isConfirmed', 'created_at', 'modified_at', 'modified_by'), 
+        exclude=('documents', 'isConfirmed', 'grade'), 
         widgets = {
             'untranslated': TextInput(attrs={'readonly': 'readonly'}),
             }
 
-    # make sure grade1 and grade2 have the same number of hyphenation points
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        grade1 = cleaned_data.get("grade1")
-        grade2 = cleaned_data.get("grade2")
-
-        if grade1 and grade2 and len(grade1.split('w')) != len(grade2.split('w')):
-            raise ValidationError("Grade1 and Grade2 do not have the same number of hyphenation points")
-
-        return cleaned_data
-
-    def clean_grade1(self):
-        data = self.cleaned_data['grade1']
-        validate(data)
-        return data
-        
-    def clean_grade2(self):
-        data = self.cleaned_data['grade2']
+    def clean_braille(self):
+        data = self.cleaned_data['braille']
         validate(data)
         return data
         
