@@ -8,6 +8,31 @@ from django.utils.encoding import smart_unicode
 
 TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
 
+GRADE1_TABLES = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-accents.cti', 
+                 'sbs-special.cti', 'sbs-whitespace.mod', 'sbs-de-letsign.mod', 
+                 'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
+                 'sbs-de-g1-core.mod', 'sbs-special.mod']
+
+GRADE2_TABLES = GRADE1_TABLES[:]
+GRADE2_TABLES[8:10] = ('sbs-de-g2-core.mod',)
+
+GRADE2_TABLES_NAME = GRADE2_TABLES[:]
+GRADE2_TABLES_NAME[8:10] = ('sbs-de-g2-name.mod',)
+
+GRADE2_TABLES_PLACE = GRADE2_TABLES[:]
+GRADE2_TABLES_PLACE[8:10] = ('sbs-de-g2-place.mod', 'sbs-de-g2-name.mod')
+
+def getTables(grade, name=False, place=False):
+    if grade == 1:
+        return GRADE1_TABLES
+    else:
+        if place:
+            return GRADE2_TABLES_PLACE
+        elif name:
+            return GRADE2_TABLES_NAME
+        else:
+            return GRADE2_TABLES
+
 asciiToDotsMap = {
     u'A': "1",
     u'B': "12",

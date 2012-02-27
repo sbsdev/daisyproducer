@@ -2,7 +2,7 @@ import os
 import unicodedata
 
 import louis
-from daisyproducer.dictionary.brailleTables import writeLocalTables
+from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
 from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm
 from daisyproducer.dictionary.models import Word
 from daisyproducer.documents.models import Document
@@ -15,20 +15,6 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.encoding import smart_unicode
 from lxml import etree
-
-WORDSPLIT_TABLES_GRADE1 = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-accents.cti', 
-                           'sbs-special.cti', 'sbs-whitespace.mod', 'sbs-de-letsign.mod', 
-                           'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
-                           'sbs-de-g1-core.mod', 'sbs-special.mod']
-
-WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE1[:]
-WORDSPLIT_TABLES_GRADE2[8:10] = ('sbs-de-g2-core.mod',)
-
-NAME_WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE2[:]
-NAME_WORDSPLIT_TABLES_GRADE2[8:10] = ('sbs-de-g2-name.mod',)
-
-PLACE_WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE2[:]
-PLACE_WORDSPLIT_TABLES_GRADE2[8:10] = ('sbs-de-g2-place.mod', 'sbs-de-g2-name.mod')
 
 BRL_NAMESPACE = {'brl':'http://www.daisy.org/z3986/2009/braille/'}
 
@@ -60,14 +46,13 @@ def check(request, document_id, grade):
     document.latest_version().content.open()
     tree = etree.parse(document.latest_version().content.file)
     document.latest_version().content.close()
-    braille_tables = WORDSPLIT_TABLES_GRADE1 if grade == 1 else WORDSPLIT_TABLES_GRADE2
     # grab the homographs
     homographs = set(("|".join(homograph.xpath('text()')).lower() 
                       for homograph in tree.xpath('//brl:homograph', namespaces=BRL_NAMESPACE)))
     duplicate_homographs = set((smart_unicode(word.homograph_disambiguation) for 
                                 word in Word.objects.filter(grade=grade).filter(type=5).filter(homograph_disambiguation__in=homographs)))
     unknown_homographs = [{'untranslated': homograph.replace('|', ''), 
-                           'braille': louis.translateString(braille_tables, homograph.replace('|', unichr(0x250A))),
+                           'braille': louis.translateString(getTables(grade), homograph.replace('|', unichr(0x250A))),
                            'type': 5,
                            'homograph_disambiguation': homograph} 
                           for homograph in homographs - duplicate_homographs]
@@ -76,14 +61,14 @@ def check(request, document_id, grade):
     duplicate_names = set((smart_unicode(word.untranslated) for 
                            word in Word.objects.filter(grade=grade).filter(type__in=(1,2)).filter(untranslated__in=names)))
     unknown_names = [{'untranslated': name, 
-                      'braille': louis.translateString(braille_tables, name), 
+                      'braille': louis.translateString(getTables(grade, name=True), name), 
                       'type': 2} 
                      for name in names - duplicate_names]
     places = set((place.text.lower() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE)))
     duplicate_places = set((smart_unicode(word.untranslated) for 
                             word in Word.objects.filter(grade=grade).filter(type__in=(3,4)).filter(untranslated__in=places)))
     unknown_places = [{'untranslated': place,
-                       'braille': louis.translateString(braille_tables, place),
+                       'braille': louis.translateString(getTables(grade, place=True), place),
                        'type': 4} 
                       for place in places - duplicate_places]
     # filter homographs, names and places from the xml
@@ -117,7 +102,7 @@ def check(request, document_id, grade):
     duplicate_words = set((smart_unicode(word.untranslated) for 
                            word in Word.objects.filter(grade=grade).filter(untranslated__in=new_words)))
     unknown_words = [{'untranslated': word, 
-                      'braille': louis.translateString(braille_tables, word),
+                      'braille': louis.translateString(getTables(grade), word),
                       'type' : 0} 
                      for word in new_words - duplicate_words]
 
@@ -210,10 +195,9 @@ def confirm(request, grade):
     unconfirmed_homographs = set(Word.objects.filter(grade=grade).filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
     covered_entries = set(Word.objects.filter(grade=grade).filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
 
-    braille_tables = WORDSPLIT_TABLES_GRADE1 if grade == 1 else WORDSPLIT_TABLES_GRADE2
     for word in unconfirmed_homographs - covered_entries:
         w = Word(untranslated=word, 
-                 braille=louis.translateString(braille_tables, word),
+                 braille=louis.translateString(getTables(grade), word),
                  grade=grade, type=0)
         w.save()
     
