@@ -111,7 +111,6 @@ def word2dots(word):
 def writeTable(fileName, words):
     f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1")
     for (untranslated, contracted) in words:
-        # TODO: drop unwanted hyphenation marks
         f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
     f.close()
 
