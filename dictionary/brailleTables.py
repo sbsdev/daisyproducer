@@ -3,6 +3,8 @@ import codecs
 import os.path
 from collections import namedtuple
 
+import louis
+
 from daisyproducer.dictionary.models import Word
 from django.utils.encoding import smart_unicode
 
@@ -133,31 +135,40 @@ def word2dots(word):
     dots = [asciiToDotsMap[c] for c in word]
     return '-'.join(dots)
 
-def writeTable(fileName, words):
+def writeTable(fileName, words, translate):
     f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1")
     for (untranslated, contracted) in words:
-        f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
+        if translate(untranslated) != contracted:
+            f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
     f.close()
 
 def writeWhiteListTables(words):
     writeTable('sbs-de-g1-white.mod', 
                ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.braille) 
-                for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))))
+                for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))), 
+               lambda word: louis.translateString(getTables(1), word))
     writeTable('sbs-de-g2-white.mod', 
                ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.braille) 
-                for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))))
-    writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)))
-    writeTable('sbs-de-g2-place-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=4)))
+                for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))), 
+               lambda word: louis.translateString(getTables(2), word))
+    writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)), 
+               lambda word: louis.translateString(getTables(2, name=True), word))
+    writeTable('sbs-de-g2-place-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=4)),
+               lambda word: louis.translateString(getTables(2, place=True), word))
 
 def writeLocalTables(changedDocuments):
     for document in changedDocuments:
         words = Word.objects.filter(documents=document).order_by('untranslated')
         writeTable('sbs-de-g1-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.braille) for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))))
+                   ((word.untranslated, word.braille) for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))),
+                   lambda word: louis.translateString(getTables(1), word))
         writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))))
+                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))),
+                   lambda word: louis.translateString(getTables(2), word))
         writeTable('sbs-de-g2-name-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)))
+                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)),
+                   lambda word: louis.translateString(getTables(2, name=True), word))
         writeTable('sbs-de-g2-place-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type= 4)))
+                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type= 4)),
+                  lambda word: louis.translateString(getTables(2, place=True), word))
         
