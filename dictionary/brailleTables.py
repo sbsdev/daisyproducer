@@ -160,10 +160,12 @@ def writeLocalTables(changedDocuments):
     for document in changedDocuments:
         words = Word.objects.filter(documents=document).order_by('untranslated')
         writeTable('sbs-de-g1-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.braille) for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))),
+                   ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.braille) 
+                    for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))),
                    lambda word: louis.translateString(getTables(1), word))
         writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))),
+                   ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.braille) 
+                    for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))),
                    lambda word: louis.translateString(getTables(2), word))
         writeTable('sbs-de-g2-name-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)),
