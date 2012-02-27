@@ -6,14 +6,6 @@ from collections import namedtuple
 from daisyproducer.dictionary.models import Word
 from django.utils.encoding import smart_unicode
 
-class DifferentNumberOfPartsError(Exception):
-    def __init__(self, grade1Parts, grade2Parts):
-        self.grade1Parts = grade1Parts
-        self.grade2Parts = grade2Parts
-
-    def __str__(self):
-        return "Not the same number of parts for grade1 (%s) and grade2 (%s)" % (self.grade1Parts, self.grade2Parts)
-
 TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
 
 asciiToDotsMap = {
@@ -80,9 +72,6 @@ asciiToDotsMap = {
     u'<': "56",
     u'-': "36",
     u'\'': "6",
-    u'ß': "2346",
-    u'§': "2346", # bedingtes Eszett
-    u'|': "2346", # Eszett bei groß, schließ, ...
     u'à': "123568",
     u'á': "168",
     u'â': "1678",
@@ -112,12 +101,6 @@ asciiToDotsMap = {
     u'þ': "12348",
     u'ÿ': "134568",
     u'œ': "246789",
-    u't': "e",
-    u'w': "f",
-    u'a': "ca",
-    u'n': "cb",
-    u'p': "cd",
-    u'k': "ce",
     u'v': "36a", # P36 ohne nachfolgende Trennmarke "m" (für "ver" u.ä.)
     }
 
@@ -134,103 +117,23 @@ def writeTable(fileName, words):
 
 def writeWhiteListTables(words):
     writeTable('sbs-de-g1-white.mod', 
-               ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.grade1) for word in words if word.type in (0, 1, 3, 5)))
+               ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.braille) 
+                for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))))
     writeTable('sbs-de-g2-white.mod', 
-               ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.grade2) for word in words if word.type in (0, 1, 3, 5)))
-    writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.grade2) for word in words if word.type == 2))
-    writeTable('sbs-de-g2-place-white.mod', ((word.untranslated, word.grade2) for word in words if word.type == 4))
+               ((word.homograph_disambiguation if word.type == 5 else word.untranslated, word.braille) 
+                for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))))
+    writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)))
+    writeTable('sbs-de-g2-place-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=4)))
 
 def writeLocalTables(changedDocuments):
     for document in changedDocuments:
         words = Word.objects.filter(documents=document).order_by('untranslated')
         writeTable('sbs-de-g1-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.grade1) for word in words if word.type in (0, 1, 3, 5)))
+                   ((word.untranslated, word.braille) for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))))
         writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.grade2) for word in words if word.type in (0, 1, 3, 5)))
+                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))))
         writeTable('sbs-de-g2-name-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.grade2) for word in words if word.type == 2))
+                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)))
         writeTable('sbs-de-g2-place-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.grade2) for word in words if word.type == 4))
+                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type= 4)))
         
-grade1ToUncontractedMap = {
-    '0': u'IE',
-    '1': u'AU',
-    '2': u'EU',
-    '3': u'EI',
-    '4': u'CH',
-    '5': u'SCH',
-    '8': u'ü',
-    '9': u'ö',
-    '@': u'ä',
-    '\\': u'äU',
-    ']': u'ST',
-    '^': u'ß',
-    'n': '',
-    't': '',
-    }
-
-def uncontract(word):
-    return u''.join([grade1ToUncontractedMap.get(c, c) for c in word]).lower()
-
-def writeWordSplitTable(words):
-    writeWordSplitTableInternal(words.filter(type__in=(0,5)), 
-                                ('sbs-de-g1-wordsplit.mod', 'sbs-de-g2-wordsplit.mod'))
-    writeWordSplitTableInternal(words.filter(type__in=(1,2)), 
-                                ('sbs-de-name-wordsplit.mod',))
-    writeWordSplitTableInternal(words.filter(type__in=(3,4)), 
-                                ('sbs-de-place-wordsplit.mod',))
-
-def writeWordSplitTableInternal(words, fileNames):
-
-    def getGrade1(word):
-        return contractionMap[word].grade1
-
-    def getGrade2(word):
-        return contractionMap[word].grade2
-
-    def getSplitWordLine(opcode, wordParts, getGrade):
-        splitMarker = "-%s-" % word2dots("w")
-        return "%s %s %s-%s\n" % (opcode, "".join(wordParts), word2dots("w"),
-                                  splitMarker.join((getGrade(word) for word in wordParts)))
-
-    begwords, endwords, midwords  = (set(), set(), set())
-    contractionMap = {}
-    Contraction = namedtuple('Contraction', 'grade1 grade2')
-    for word in words:
-        grade1Parts = smart_unicode(word.grade1).split('w')
-        if len(grade1Parts) <= 1:
-            continue
-        uncontractedParts = [uncontract(part) for part in grade1Parts]
-        grade2Parts = smart_unicode(word.grade2).split('w')
-        # filter parts that are shorter than 3 characters
-        zipped = [items for items in zip(uncontractedParts, grade1Parts, grade2Parts) if len(items[0]) >= 3]
-        if not zipped:
-            continue # the word has no word parts that are long enough
-        uncontractedParts, grade1Parts, grade2Parts = zip(*zipped)
-        if len(grade2Parts) != len(grade1Parts):
-            raise DifferentNumberOfPartsError(grade1Parts, grade2Parts)
-        for uncontracted, grade1, grade2 in zip(uncontractedParts, grade1Parts, grade2Parts):
-            contractionMap[uncontracted] = Contraction(word2dots(grade1), word2dots(grade2)) 
-        
-        numberOfParts = len(uncontractedParts)
-        for i in range(1, numberOfParts):
-            begwords.add(tuple(uncontractedParts[0:i]))
-            endwords.add(tuple(uncontractedParts[i:numberOfParts]))
-            for j in range(i+1, numberOfParts):
-                midwords.add(tuple(uncontractedParts[i:j]))
-
-    filehandles = [codecs.open(os.path.join(TABLES_DIR, name), "w", "latin_1") for name in fileNames]
-    for opcode, wordSet in (("always", begwords & midwords & endwords), 
-                            ("begmidword", (begwords & midwords) - endwords),
-                            ("midendword", (midwords & endwords) - begwords),
-                            ("begword", begwords - midwords - endwords),
-                            ("midword", midwords - begwords - endwords),
-                            ("endword", endwords - midwords - begwords)):
-        for wordParts in wordSet:
-            if 'sbs-de-name-wordsplit.mod' in fileNames or 'sbs-de-place-wordsplit.mod' in fileNames:
-                filehandles[0].write(getSplitWordLine(opcode, wordParts, getGrade2))
-            else:
-                filehandles[0].write(getSplitWordLine(opcode, wordParts, getGrade1))
-                filehandles[1].write(getSplitWordLine(opcode, wordParts, getGrade2))
-    for handle in filehandles:
-        handle.close()
