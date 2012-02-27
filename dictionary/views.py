@@ -19,24 +19,21 @@ from lxml import etree
 WORDSPLIT_TABLES_GRADE1 = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-accents.cti', 
                            'sbs-special.cti', 'sbs-whitespace.mod', 'sbs-de-letsign.mod', 
                            'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
-                           'sbs-de-g1-wordsplit.mod', 'sbs-de-g1-core.mod', 'sbs-special.mod']
+                           'sbs-de-g1-core.mod', 'sbs-special.mod']
 
 WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE1[:]
-WORDSPLIT_TABLES_GRADE2[9:11] = ('sbs-de-g2-wordsplit.mod', 'sbs-de-g2-core.mod')
+WORDSPLIT_TABLES_GRADE2[8:10] = ('sbs-de-g2-core.mod',)
 
 NAME_WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE2[:]
-NAME_WORDSPLIT_TABLES_GRADE2[9:11] = ('sbs-de-name-wordsplit.mod', 'sbs-de-g2-name.mod')
+NAME_WORDSPLIT_TABLES_GRADE2[8:10] = ('sbs-de-g2-name.mod',)
 
 PLACE_WORDSPLIT_TABLES_GRADE2 = WORDSPLIT_TABLES_GRADE2[:]
-PLACE_WORDSPLIT_TABLES_GRADE2[9:11] = ('sbs-de-place-wordsplit.mod', 'sbs-de-g2-place.mod', 'sbs-de-g2-name.mod')
+PLACE_WORDSPLIT_TABLES_GRADE2[8:10] = ('sbs-de-g2-place.mod', 'sbs-de-g2-name.mod')
 
 BRL_NAMESPACE = {'brl':'http://www.daisy.org/z3986/2009/braille/'}
 
-def removeRedundantSplitpoints(contraction):
-    return "w".join(filter(None,contraction.split('w')))
-
 @transaction.commit_on_success
-def check(request, document_id):
+def check(request, document_id, grade):
 
     document = get_object_or_404(Document, pk=document_id)
 
@@ -44,14 +41,14 @@ def check(request, document_id):
         WordFormSet = modelformset_factory(
             Word, 
             form=RestrictedWordForm,
-            exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
+            exclude=('documents', 'isConfirmed', 'grade'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
-                instance.modified_by = request.user
+                instance.grade = grade
                 instance.save()
                 instance.documents.add(document)
             writeLocalTables([document])
@@ -63,32 +60,30 @@ def check(request, document_id):
     document.latest_version().content.open()
     tree = etree.parse(document.latest_version().content.file)
     document.latest_version().content.close()
+    braille_tables = WORDSPLIT_TABLES_GRADE1 if grade == 1 else WORDSPLIT_TABLES_GRADE2
     # grab the homographs
     homographs = set(("|".join(homograph.xpath('text()')).lower() 
                       for homograph in tree.xpath('//brl:homograph', namespaces=BRL_NAMESPACE)))
     duplicate_homographs = set((smart_unicode(word.homograph_disambiguation) for 
-                                word in Word.objects.filter(type=5).filter(homograph_disambiguation__in=homographs)))
+                                word in Word.objects.filter(grade=grade).filter(type=5).filter(homograph_disambiguation__in=homographs)))
     unknown_homographs = [{'untranslated': homograph.replace('|', ''), 
-                           'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, homograph.replace('|', unichr(0x250A)))),
-                           'grade2': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, homograph.replace('|', unichr(0x250A)))),
+                           'braille': louis.translateString(braille_tables, homograph.replace('|', unichr(0x250A))),
                            'type': 5,
                            'homograph_disambiguation': homograph} 
                           for homograph in homographs - duplicate_homographs]
     # grab names and places
     names = set((name.text.lower() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)))
     duplicate_names = set((smart_unicode(word.untranslated) for 
-                           word in Word.objects.filter(type__in=(1,2)).filter(untranslated__in=names)))
-    unknown_names = [{'untranslated': name,
-                      'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, name)),
-                      'grade2': removeRedundantSplitpoints(louis.translateString(NAME_WORDSPLIT_TABLES_GRADE2, name)),
+                           word in Word.objects.filter(grade=grade).filter(type__in=(1,2)).filter(untranslated__in=names)))
+    unknown_names = [{'untranslated': name, 
+                      'braille': louis.translateString(braille_tables, name), 
                       'type': 2} 
                      for name in names - duplicate_names]
     places = set((place.text.lower() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE)))
     duplicate_places = set((smart_unicode(word.untranslated) for 
-                            word in Word.objects.filter(type__in=(3,4)).filter(untranslated__in=places)))
+                            word in Word.objects.filter(grade=grade).filter(type__in=(3,4)).filter(untranslated__in=places)))
     unknown_places = [{'untranslated': place,
-                       'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, place)),
-                       'grade2': removeRedundantSplitpoints(louis.translateString(PLACE_WORDSPLIT_TABLES_GRADE2, place)),
+                       'braille': louis.translateString(braille_tables, place),
                        'type': 4} 
                       for place in places - duplicate_places]
     # filter homographs, names and places from the xml
@@ -120,10 +115,9 @@ def check(request, document_id):
     # w1 LEFT JOIN dict_words w2 ON w1.untranslated=w2.untranslated
     # WHERE w2.untranslated IS NULL;
     duplicate_words = set((smart_unicode(word.untranslated) for 
-                           word in Word.objects.filter(untranslated__in=new_words)))
+                           word in Word.objects.filter(grade=grade).filter(untranslated__in=new_words)))
     unknown_words = [{'untranslated': word, 
-                      'grade1': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, word)),
-                      'grade2': removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, word)),
+                      'braille': louis.translateString(braille_tables, word),
                       'type' : 0} 
                      for word in new_words - duplicate_words]
 
@@ -133,7 +127,7 @@ def check(request, document_id):
     WordFormSet = modelformset_factory(
         Word, 
         form=RestrictedWordForm,
-        exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
+        exclude=('documents', 'isConfirmed', 'grade'), 
         extra=len(unknown_words), can_delete=True)
 
     formset = WordFormSet(queryset=Word.objects.none(), initial=unknown_words)
@@ -146,23 +140,20 @@ def check(request, document_id):
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
-def local(request, document_id):
+def local(request, document_id, grade):
 
     document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
             Word, 
             form=RestrictedWordForm,
-            exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
+            exclude=('documents', 'isConfirmed', 'grade'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST, 
                               queryset=Word.objects.filter(documents=document))
         if formset.is_valid():
-            instances = formset.save(commit=False)
-            for instance in instances:
-                instance.modified_by = request.user
-                instance.save()
+            instances = formset.save()
             writeLocalTables([document])
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
         else:
@@ -172,30 +163,28 @@ def local(request, document_id):
     WordFormSet = modelformset_factory(
         Word, 
         form=RestrictedWordForm,
-        exclude=('documents', 'isConfirmed', 'use_for_word_splitting', 'created_at', 'modified_at', 'modified_by'), 
+        exclude=('documents', 'isConfirmed', 'grade'), 
         can_delete=True, extra=0)
 
-    formset = WordFormSet(queryset=Word.objects.filter(documents=document).order_by('untranslated', 'type'))
+    formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(documents=document).order_by('untranslated', 'type'))
 
     return render_to_response('dictionary/local.html', locals(), 
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
-def confirm(request):
+def confirm(request, grade):
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
             Word, 
             form=RestrictedConfirmWordForm,
-            exclude=('documents', 'created_at', 'modified_at', 'modified_by'))
+            exclude=('documents', 'grade'))
 
         formset = WordFormSet(request.POST, 
                               queryset=Word.objects.filter(isConfirmed=False))
         if formset.is_valid():
-            instances = formset.save(commit=False)
+            instances = formset.save()
             changedDocuments = set()
             for instance in instances:
-                instance.modified_by = request.user
-                instance.save()
                 if instance.isConfirmed and not instance.isLocal:
                     # clear the documents if the word is not local
                     changedDocuments.update(instance.documents.all())
@@ -218,22 +207,22 @@ def confirm(request):
                                       context_instance=RequestContext(request))
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
-    unconfirmed_homographs = set(Word.objects.filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
-    covered_entries = set(Word.objects.filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
+    unconfirmed_homographs = set(Word.objects.filter(grade=grade).filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
+    covered_entries = set(Word.objects.filter(grade=grade).filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
+
+    braille_tables = WORDSPLIT_TABLES_GRADE1 if grade == 1 else WORDSPLIT_TABLES_GRADE2
     for word in unconfirmed_homographs - covered_entries:
         w = Word(untranslated=word, 
-                 grade1=removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE1, word)),
-                 grade2=removeRedundantSplitpoints(louis.translateString(WORDSPLIT_TABLES_GRADE2, word)),
-                 type=0,
-                 modified_by = request.user)
+                 braille=louis.translateString(braille_tables, word),
+                 grade=grade, type=0)
         w.save()
     
     WordFormSet = modelformset_factory(
         Word, 
         form=RestrictedConfirmWordForm,
-        exclude=('documents', 'created_at', 'modified_at', 'modified_by'), extra=0)
+        exclude=('documents', 'grade'), extra=0)
 
-    formset = WordFormSet(queryset=Word.objects.filter(isConfirmed=False).order_by('untranslated', 'type'))
+    formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type'))
     return render_to_response('dictionary/confirm.html', locals(), 
                               context_instance=RequestContext(request))
 

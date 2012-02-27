@@ -12,8 +12,12 @@
   <!-- <a href="{% url todo_ocr document.id %}" accesskey="o" >{% trans "OCR" %}</a><br /> -->
   <a href="{% url todo_markup document.id %}" accesskey="m" >{% trans "Markup" %}</a><br />
   <h3>{% trans "Words" %}</h3>
-  <a href="{% url dictionary_check document.id %}" accesskey="d" >{% trans "Unknown words" %}</a><br />
-  <a href="{% url dictionary_local document.id %}" accesskey="d" >{% trans "Local words" %}</a><br />
+  <h4>{% trans "Grade 1" %}</h4>
+  <a href="{% url dictionary_check_g1 document.id %}" accesskey="d" >{% trans "Unknown words" %}</a><br />
+  <a href="{% url dictionary_local_g1 document.id %}" accesskey="d" >{% trans "Local words" %}</a><br />
+  <h4>{% trans "Grade 2" %}</h4>
+  <a href="{% url dictionary_check_g2 document.id %}" accesskey="d" >{% trans "Unknown words" %}</a><br />
+  <a href="{% url dictionary_local_g2 document.id %}" accesskey="d" >{% trans "Local words" %}</a><br />
   <h3>{% trans "Preview" %}</h3>
   <a href="{% url todo_xhtml document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
   <a href="{% url todo_sbsform document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
