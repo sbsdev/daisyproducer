@@ -147,6 +147,7 @@ def writeTable(fileName, words, translate):
     f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1", 'liblouis')
     for (untranslated, contracted) in words:
         if translate(untranslated) != contracted:
+            # FIXME do we need to translate unichr(0x250A)) back to '|'?
             f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
     f.close()
 
