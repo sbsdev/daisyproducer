@@ -58,9 +58,12 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
 
 # work on dictionary
 urlpatterns += patterns('daisyproducer.dictionary.views',
-    url(r'^todo/(?P<document_id>\d+)/check_words$', 'check', name='dictionary_check'),
-    url(r'^todo/(?P<document_id>\d+)/local_words$', 'local', name='dictionary_local'),
-    url(r'^todo/confirm_words$', 'confirm', name='dictionary_confirm'),
+    url(r'^todo/(?P<document_id>\d+)/check_words_g1$', 'check', kwargs={'grade': 1}, name='dictionary_check_g1'),
+    url(r'^todo/(?P<document_id>\d+)/check_words_g2$', 'check', kwargs={'grade': 2}, name='dictionary_check_g2'),
+    url(r'^todo/(?P<document_id>\d+)/local_words_g1$', 'local', kwargs={'grade': 1}, name='dictionary_local_g1'),
+    url(r'^todo/(?P<document_id>\d+)/local_words_g2$', 'local', kwargs={'grade': 2}, name='dictionary_local_g2'),
+    url(r'^todo/confirm_words_g1$', 'confirm', kwargs={'grade': 1}, name='dictionary_confirm_g1'),
+    url(r'^todo/confirm_words_g2$', 'confirm', kwargs={'grade': 2}, name='dictionary_confirm_g2'),
 )
 
 # help and about

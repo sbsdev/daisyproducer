@@ -1,10 +1,8 @@
 # coding=utf-8
 import codecs
-import functools
 
 from daisyproducer.dictionary.models import Word
 from daisyproducer.dictionary.forms import VALID_BRAILLE_RE
-from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
 from django.db import transaction
@@ -19,13 +17,10 @@ typeMap = {
     'h': 5, # Homograph alternative
     }
 
-def get_word_full(untranslated, grade1, grade2, type, use_for_word_splitting, user):
+def get_word(untranslated, braille, grade, type):
     return Word(untranslated=untranslated.replace('|',''), 
-                grade1=grade1, grade2=grade2, 
-                type=type, isConfirmed=True, 
-                homograph_disambiguation=untranslated if type == 5 else '',
-                use_for_word_splitting=use_for_word_splitting,
-                modified_by=user)
+                braille=braille, grade=grade, type=type, isConfirmed=True, 
+                homograph_disambiguation=untranslated if type == 5 else '')
 
 class Command(BaseCommand):
     args = 'default_user_id dictionary_file'
@@ -34,18 +29,14 @@ class Command(BaseCommand):
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
-        if len(args) != 2:
+        if len(args) != 1:
             raise CommandError('Incorrect number of arguments')
         try:
-            user = User.objects.get(username=args[0])
-        except User.DoesNotExist:
-            raise CommandError('User "%s" does not exist' % args[0])
-        try:
-            f = codecs.open(args[1], "r", "utf-8" )
+            f = codecs.open(args[0], "r", "utf-8" )
         except IndexError:
             raise CommandError('No dictionary file specified')
         except IOError:
-            raise CommandError('Dictionary file "%s" not found' % args[1])
+            raise CommandError('Dictionary file "%s" not found' % args[0])
 
         self.numberOfWords = 0
         self.lineNo = 0
@@ -54,50 +45,31 @@ class Command(BaseCommand):
             (typeString, untranslated, grade2, grade1) = line.split()
             if '#' in untranslated:
                 # ignore rows where the untranslated word has some # in it. These lines need to be fixed
+                print "Invalid characters ('#') in untranslated: %s" % (untranslated,)
                 continue
             if not VALID_BRAILLE_RE.search(grade1) or not VALID_BRAILLE_RE.search(grade2):
                 print "Invalid characters in Braille: %s, %s, %s" % (untranslated, grade1, grade2)
                 continue 
                 
-            # remove some unnecessary markup
-            untranslated = untranslated.replace('#','')
-            grade2 = grade2.replace('z','')
             self.lineNo += 1
 
             if typeString == 'd':
                 # assume no restriction for dialect words
                 type = 0
-                use_for_word_splitting = False
             else:
                 type = typeMap[typeString]
-                use_for_word_splitting = True
 
-            get_word = functools.partial(get_word_full, type=type, use_for_word_splitting=use_for_word_splitting, user=user)
-            if 's~' in untranslated:
-                # if the untranslated word contains a 's~' then add
-                # two entries: one for German and one for Swiss German
-                # spelling
-                w = get_word(untranslated.replace('s~',u'ß'), grade1.replace(u'§','^'), grade2.replace(u'§',u'ß'))
-                self.save(w)
-                w = get_word(untranslated.replace(u's~',u'ss'), grade1.replace(u'§','SS'), grade2.replace(u'§','^'))
-                self.save(w)
-            elif u'ß' in untranslated:
-                # if the untranslated word contains a ß then add a
-                # second entry for the swiss german spelling
-                w = get_word(untranslated, grade1, grade2)
-                self.save(w)
-                w = get_word(untranslated.replace(u'ß','ss'), grade1.replace(u'^','SS'), grade2.replace(u'ß','^'))
-                self.save(w)
-            else:
-                w = get_word(untranslated, grade1, grade2)
-                self.save(w)
+            w1 = get_word(untranslated, grade1, 1, type)
+            w2 = get_word(untranslated, grade2, 2, type)
+            self.save(w1, w2)
                 
         self.stdout.write('Successfully added %s words to dictionary\n' % self.numberOfWords)
 
-    def save(self, word):
+    def save(self, grade1, grade2):
         try:
-            word.save()
+            grade1.save()
+            grade2.save()
             self.numberOfWords += 1
         except IntegrityError:
-            raise CommandError('Duplicate word "%s" (line %s)' % (word, self.lineNo))
+            raise CommandError('Duplicate word "%s" (line %s)' % (grade1, self.lineNo))
 

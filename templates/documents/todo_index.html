@@ -5,7 +5,10 @@
 {% block sidebar %}
 <div id="sidebar">
   <h3>{% trans "Words" %}</h3>
-  <a href="{% url dictionary_confirm %}" accesskey="d" >{% trans "Confirm unknown words" %}</a><br />
+  <h4>{% trans "Grade 1" %}</h4>
+  <a href="{% url dictionary_confirm_g1 %}" >{% trans "Confirm unknown words" %}</a><br />
+  <h4>{% trans "Grade 2" %}</h4>
+  <a href="{% url dictionary_confirm_g2 %}" >{% trans "Confirm unknown words" %}</a><br />
 </div>
 {% endblock %}
 
