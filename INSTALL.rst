@@ -244,7 +244,11 @@ The following settings have to be adapted for your site:
 
 - DAISY_PIPELINE_PATH
 
-  - set to os.path.join('/', 'opt', 'pipeline-20100125')
+  - set to os.path.join('/', 'path', 'to', 'pipeline-20100125')
+
+- DTBOOK2SBSFORM_PATH 
+
+  - set to os.path.join('/', 'path', 'to', 'dtbook2sbsform')
 
 - SECRET_KEY
 - TIME_ZONE
