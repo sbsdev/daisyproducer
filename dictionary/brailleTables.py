@@ -146,18 +146,18 @@ def word2dots(word):
 def writeTable(fileName, words, translate):
     f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1", 'liblouis')
     for (untranslated, contracted) in words:
-        if translate(untranslated) != contracted:
+        if translate(smart_unicode(untranslated)) != smart_unicode(contracted):
             # FIXME do we need to translate unichr(0x250A)) back to '|'?
             f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
     f.close()
 
 def writeWhiteListTables(words):
     writeTable('sbs-de-g1-white.mod', 
-               ((word.homograph_disambiguation.replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
+               ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
                 for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))), 
                lambda word: louis.translateString(getTables(1), word))
     writeTable('sbs-de-g2-white.mod', 
-               ((word.homograph_disambiguation.replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
+               ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
                 for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))), 
                lambda word: louis.translateString(getTables(2), word))
     writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)), 
