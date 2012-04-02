@@ -68,6 +68,7 @@ cp pipeline/transformers/se_tpb_dtbook2latex/dtbook2latex_sbs.xsl pipeline/trans
 case "$1" in
     prod) 
 	deploy_pipeline xmlp /opt
+	deploy_dtbook2sbsform xmlp /opt
 	deploy_braille_tables xmlp ~/src
 	restart_apache xmlp;;
     test) 
