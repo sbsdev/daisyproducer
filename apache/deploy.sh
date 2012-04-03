@@ -31,6 +31,20 @@ unzip -q `basename $PACKAGE`"
     fi
 }
 
+function deploy_dtbook_hyphenator() {
+    local PACKAGE=~/src/dtbook_hyphenator/dtbook_hyphenator.zip
+    if is_newer_locally $PACKAGE $1 $2; then
+	echo "`basename $PACKAGE` is newer locally. Deploying it..."
+	scp $PACKAGE $1:$2
+	ssh $1 "
+cd $2
+rm -rf `basename $PACKAGE .zip`
+unzip -q `basename $PACKAGE`"
+    else
+	echo "`basename $PACKAGE` has already been deployed. Skipping it..."
+    fi
+}
+
 function deploy_braille_tables() {
     local PACKAGE=`ls -rt ~/src/sbs-braille-tables/sbs-braille-tables-*.tar.gz|tail -1`
     if is_newer_locally $PACKAGE $1 $2; then
@@ -93,13 +107,15 @@ case "$1" in
     test) 
 	deploy_pipeline xmlp-test /opt
 	deploy_dtbook2sbsform xmlp-test /opt
+	deploy_dtbook_hyphenator xmlp-test /opt
 	deploy_braille_tables xmlp-test ~/src
 	deploy_hyphen_java_bindings xmlp-test ~/src "CPPFLAGS='-I/usr/lib/jvm/java-6-sun-1.6.0.26/include -I/usr/lib/jvm/java-6-sun-1.6.0.26/include/linux'"
 	restart_apache xmlp-test;;
     
     dev|*) 
 	deploy_pipeline localhost ~/tmp
-	deploy_dtbook2sbsform localhost ~/tmp;;
+	deploy_dtbook2sbsform localhost ~/tmp
+	deploy_dtbook_hyphenator localhost ~/tmp;;
 
 esac
 
