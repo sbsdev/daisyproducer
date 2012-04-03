@@ -5,7 +5,7 @@ PACKAGE_VERSION = "0.5"
 DEBUG = TEMPLATE_DEBUG = True
 
 DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline')
-DTBOOK2SBSFORM_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'dtbook2sbsform')
+EXTERNAL_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp')
 
 SERVE_STATIC_FILES = True
 

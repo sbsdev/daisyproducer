@@ -332,20 +332,28 @@ class SBSForm:
     @staticmethod
     def dtbook2sbsform(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to sbsform"""
-        command = (
-            join(settings.DTBOOK2SBSFORM_PATH, 'dtbook2sbsform.sh'),
-            "-s:%s" % inputFile,
+        hyphenator = (
+            "java",
+            "-cp", join(settings.EXTERNAL_PATH, 'dtbook_hyphenator', 'lib'),
+            "-Djava.library.path=/usr/local/lib",
+            "-jar", join(settings.EXTERNAL_PATH, 'dtbook_hyphenator', 'dtbook_hyphenator.jar'),
+            inputFile,
+            )
+        translator = (
+            join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'dtbook2sbsform.sh'),
+            "-s:-",
             )
         kwargs["version"] = getVersion()
         for k, v in kwargs.iteritems():
             if isinstance(v, bool):
                 # map True and False to "true()" and "false()"
-                command += ("?%s=%s" % (k, "true()" if v else "false()"),)
+                translator += ("?%s=%s" % (k, "true()" if v else "false()"),)
             elif isinstance(v, int):
-                command += ("?%s=%s" % (k, v),)
+                translator += ("?%s=%s" % (k, v),)
             else:
-                command += ("%s=%s" % (k,v),)
+                translator += ("%s=%s" % (k,v),)
         f = open(outputFile, 'w')
-        p1 = Popen(command, stdout=f)
-        p1.communicate()
+        p1 = Popen(hyphenator, stdout=PIPE)
+        p2 = Popen(translator, stdin=p1.stdout, stdout=f)
+        p2.communicate()
         f.close()

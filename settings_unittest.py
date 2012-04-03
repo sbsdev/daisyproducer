@@ -6,7 +6,7 @@ DATABASE_ENGINE = 'sqlite3'
 TEST_DATABASE_NAME = 'unittest.db'
 
 DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline')
-DTBOOK2SBSFORM_PATH = os.path.join(PROJECT_DIR, '..', 'LiblouisSaxonExtension')
+EXTERNAL_PATH = os.path.join(PROJECT_DIR, '..')
 
 SERVE_STATIC_FILES = True
 

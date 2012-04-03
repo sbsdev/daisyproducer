@@ -193,9 +193,17 @@ Optional requirements
 
   sudo aptitude install python-yaml postgresql-autodoc python-pysqlite2 sqlite3
 
+- libhyphen If you want automatically hyphenated Braille you will
+  need to install the hyphenation files from openoffice, the hyphen
+  library and the `java bindings`_ to said library
+
+  sudo aptitude install libhyphen-dev swig
+  sudo aptitude install openoffice.org-hyphenation-de
+
 .. _python-yaml: http://pyyaml.org/
 .. _autodoc: http://www.rbt.ca/autodoc/
 .. _sqlite: http://www.sqlite.org/
+.. _java bindings: https://github.com/sbsdev/jhyphen
 
 Installation
 ============
@@ -246,9 +254,14 @@ The following settings have to be adapted for your site:
 
   - set to os.path.join('/', 'path', 'to', 'pipeline-20100125')
 
-- DTBOOK2SBSFORM_PATH 
+- EXTERNAL_PATH 
 
-  - set to os.path.join('/', 'path', 'to', 'dtbook2sbsform')
+  - This is where external utilities (which should eventually end up
+    in the DAISY Pipeline) are located. These tools include
+    `dtbook2sbsform` and `dtbook_hyphenator`. So if `dtbook2sbsform`
+    is installed in `/opt/dtbook2sbsform` then set `EXTERNAL_PATH` to
+    os.path.join('/', 'opt').
+
 
 - SECRET_KEY
 - TIME_ZONE
