@@ -48,6 +48,23 @@ sudo make install"
     fi
 }
 
+function deploy_hyphen_java_bindings() {
+    local PACKAGE=`ls -rt ~/src/jhyphen/jhyphen-*.tar.gz|tail -1`
+    if is_newer_locally $PACKAGE $1 $2; then
+	echo "`basename $PACKAGE` is newer locally. Deploying it..."
+	scp $PACKAGE $1:$2
+	ssh -t $1 "
+cd $2
+tar xzf `basename $PACKAGE`
+cd `basename $PACKAGE .tar.gz`
+./configure
+make $3
+sudo make install"
+    else
+	echo "`basename $PACKAGE` has already been deployed. Skipping it..."
+    fi
+}
+
 function deploy_pipeline() {
     local PACKAGE=`ls -rt ~/src/dmfc/dist/pipeline-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].zip|tail -1`
     if is_newer_locally $PACKAGE $1 $2; then
@@ -75,6 +92,7 @@ case "$1" in
 	deploy_pipeline xmlp-test /opt
 	deploy_dtbook2sbsform xmlp-test /opt
 	deploy_braille_tables xmlp-test ~/src
+	deploy_hyphen_java_bindings xmlp-test ~/src "CPPFLAGS='-I/usr/lib/jvm/java-6-sun-1.6.0.26/include -I/usr/lib/jvm/java-6-sun-1.6.0.26/include/linux'"
 	restart_apache xmlp-test;;
     
     dev|*) 
