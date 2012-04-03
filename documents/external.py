@@ -332,6 +332,7 @@ class SBSForm:
     @staticmethod
     def dtbook2sbsform(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to sbsform"""
+        hyphenate = kwargs.get('hyphenation', False)
         hyphenator = (
             "java",
             "-cp", join(settings.EXTERNAL_PATH, 'dtbook_hyphenator', 'lib'),
@@ -341,7 +342,7 @@ class SBSForm:
             )
         translator = (
             join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'dtbook2sbsform.sh'),
-            "-s:-",
+            "-s:-" if hyphenate else "-s:%s" % inputFile,
             )
         kwargs["version"] = getVersion()
         for k, v in kwargs.iteritems():
@@ -353,7 +354,10 @@ class SBSForm:
             else:
                 translator += ("%s=%s" % (k,v),)
         f = open(outputFile, 'w')
-        p1 = Popen(hyphenator, stdout=PIPE)
-        p2 = Popen(translator, stdin=p1.stdout, stdout=f)
+        if hyphenate:
+            p1 = Popen(hyphenator, stdout=PIPE)
+            p2 = Popen(translator, stdin=p1.stdout, stdout=f)
+        else:
+            p2 = Popen(translator, stdout=f)
         p2.communicate()
         f.close()
