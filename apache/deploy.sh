@@ -55,6 +55,8 @@ function deploy_hyphen_java_bindings() {
 	scp $PACKAGE $1:$2
 	ssh -t $1 "
 cd $2
+# removing the old source seems to help with using user variables for make below
+rm -rf `basename $PACKAGE .tar.gz` 
 tar xzf `basename $PACKAGE`
 cd `basename $PACKAGE .tar.gz`
 ./configure
