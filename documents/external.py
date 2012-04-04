@@ -354,9 +354,10 @@ class SBSForm:
             else:
                 translator += ("%s=%s" % (k,v),)
         f = open(outputFile, 'w')
+        env = {'LANG': 'en_US.UTF-8'}
         if hyphenate:
-            p1 = Popen(hyphenator, stdout=PIPE)
-            p2 = Popen(translator, stdin=p1.stdout, stdout=f)
+            p1 = Popen(hyphenator, stdout=PIPE, env=env)
+            p2 = Popen(translator, stdin=p1.stdout, stdout=f, env=env)
         else:
             p2 = Popen(translator, stdout=f)
         p2.communicate()
