@@ -79,7 +79,7 @@ def check(request, document_id, grade):
     content = etree.tostring(filtered_tree, method="text", encoding=unicode)
     # filter all punctuation and replace dashes by space, so we can split by space below
     content = ''.join(
-        # replace Punctuation Dash and Ponctuation other with space
+        # replace Punctuation Dash and Punctuation other with space
         c if unicodedata.category(c) not in ['Pd', 'Po'] else ' '
         for c in content 
         # drop all chars which are not letters, separators or select
