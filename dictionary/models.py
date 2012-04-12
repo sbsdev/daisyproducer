@@ -20,16 +20,14 @@ class Word(models.Model):
     untranslated = models.CharField(_("Untranslated"), max_length=MAX_WORD_LENGTH, db_index=True)
     braille = models.CharField(_("Braille"), max_length=MAX_WORD_LENGTH)
     grade = models.PositiveSmallIntegerField(_("Grade"), db_index=True)
-    documents = models.ManyToManyField(Document, null=True, blank=True)
     type = models.PositiveSmallIntegerField(_("Type"), default=0, choices=WORD_TYPE_CHOICES)
     homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=MAX_WORD_LENGTH, blank=True)
-    isConfirmed = models.BooleanField(_("Confirmed"), default=False)
     isLocal = models.BooleanField(_("Local"), default=False)
+    isConfirmed = models.BooleanField(_("Confirmed"), default=False)
+    document = models.ForeignKey(Document, null=True, blank=True)
 
     class Meta:
-        unique_together = ("untranslated", "type", "grade", "isConfirmed", "homograph_disambiguation")
+        unique_together = ("untranslated", "type", "grade", "homograph_disambiguation", "document")
 
     def __unicode__(self):
         return self.untranslated
-
-

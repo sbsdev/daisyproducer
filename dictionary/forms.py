@@ -4,7 +4,9 @@ import re
 from daisyproducer.dictionary.models import Word
 
 from django.core.exceptions import ValidationError
-from django.forms.models import ModelForm
+from django.forms.forms import NON_FIELD_ERRORS
+from django.forms.formsets import DELETION_FIELD_NAME
+from django.forms.models import ModelForm, BaseModelFormSet
 from django.forms.widgets import TextInput
 from django.core.validators import RegexValidator
 
@@ -14,7 +16,7 @@ validate = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not val
 class PartialWordForm(ModelForm):
     class Meta:
         model = Word
-        exclude=('documents', 'isConfirmed', 'grade'), 
+        exclude=('document', 'isConfirmed', 'grade'), 
         widgets = {
             'untranslated': TextInput(attrs={'readonly': 'readonly'}),
             }
@@ -37,7 +39,7 @@ class RestrictedWordForm(PartialWordForm):
     # only clean if a word is not ignored
     def clean(self):
         cleaned_data = self.cleaned_data
-        delete = cleaned_data.get("DELETE")
+        delete = cleaned_data.get(DELETION_FIELD_NAME)
 
         if not delete:
             return super(RestrictedWordForm, self).clean()
@@ -70,3 +72,22 @@ class RestrictedConfirmWordForm(PartialWordForm):
 
         return cleaned_data
 
+class BaseWordFormSet(BaseModelFormSet):
+     def clean(self):
+         if any(self.errors):
+             return
+         unique = True
+         words = set()
+         msg = "Global words must be unique."
+         for i in range(0, self.total_form_count()):
+             form = self.forms[i]
+             if not form.cleaned_data.get(DELETION_FIELD_NAME):
+                 word = (form.cleaned_data['untranslated'], 
+                         form.cleaned_data['type'], 
+                         form.cleaned_data['homograph_disambiguation'])
+                 if word in words:
+                     form._errors[NON_FIELD_ERRORS] = form.error_class([msg])
+                     unique = False
+                 words.add(word)
+         if not unique:
+             raise ValidationError(msg)

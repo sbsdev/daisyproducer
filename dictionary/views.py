@@ -3,7 +3,7 @@ import unicodedata
 
 import louis
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm, BaseWordFormSet
 from daisyproducer.dictionary.models import Word
 from daisyproducer.documents.models import Document
 from django.conf import settings
@@ -27,7 +27,7 @@ def check(request, document_id, grade):
         WordFormSet = modelformset_factory(
             Word, 
             form=RestrictedWordForm,
-            exclude=('documents', 'isConfirmed', 'grade'), 
+            exclude=('document', 'isConfirmed', 'grade'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST)
@@ -35,8 +35,8 @@ def check(request, document_id, grade):
             instances = formset.save(commit=False)
             for instance in instances:
                 instance.grade = grade
+                instance.document = document
                 instance.save()
-                instance.documents.add(document)
             writeLocalTables([document])
             return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
         else:
@@ -112,7 +112,7 @@ def check(request, document_id, grade):
     WordFormSet = modelformset_factory(
         Word, 
         form=RestrictedWordForm,
-        exclude=('documents', 'isConfirmed', 'grade'), 
+        exclude=('document', 'isConfirmed', 'grade'), 
         extra=len(unknown_words), can_delete=True)
 
     formset = WordFormSet(queryset=Word.objects.none(), initial=unknown_words)
@@ -132,11 +132,11 @@ def local(request, document_id, grade):
         WordFormSet = modelformset_factory(
             Word, 
             form=RestrictedWordForm,
-            exclude=('documents', 'isConfirmed', 'grade'), 
+            exclude=('document', 'isConfirmed', 'grade'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST, 
-                              queryset=Word.objects.filter(documents=document))
+                              queryset=Word.objects.filter(document=document))
         if formset.is_valid():
             instances = formset.save()
             writeLocalTables([document])
@@ -148,10 +148,10 @@ def local(request, document_id, grade):
     WordFormSet = modelformset_factory(
         Word, 
         form=RestrictedWordForm,
-        exclude=('documents', 'isConfirmed', 'grade'), 
+        exclude=('document', 'isConfirmed', 'grade'), 
         can_delete=True, extra=0)
 
-    formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(documents=document).order_by('untranslated', 'type'))
+    formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(document=document).order_by('untranslated', 'type'))
 
     return render_to_response('dictionary/local.html', locals(), 
                               context_instance=RequestContext(request))
@@ -162,18 +162,21 @@ def confirm(request, grade):
         WordFormSet = modelformset_factory(
             Word, 
             form=RestrictedConfirmWordForm,
-            exclude=('documents', 'grade'))
+            formset=BaseWordFormSet,
+            exclude=('document', 'grade'),
+            can_delete=True)
 
         formset = WordFormSet(request.POST, 
                               queryset=Word.objects.filter(isConfirmed=False))
         if formset.is_valid():
-            instances = formset.save()
+            instances = formset.save(commit=False)
             changedDocuments = set()
             for instance in instances:
                 if instance.isConfirmed and not instance.isLocal:
                     # clear the documents if the word is not local
-                    changedDocuments.update(instance.documents.all())
-                    instance.documents.clear()
+                    changedDocuments.add(instance.document)
+                    instance.document = None
+                    instance.save()
     # FIXME: in principle we need to regenerate the liblouis tables,
     # i.e. the white lists now. However we do this asynchronously
     # (using a cron job) for now. There are several reasons for this:
@@ -204,7 +207,9 @@ def confirm(request, grade):
     WordFormSet = modelformset_factory(
         Word, 
         form=RestrictedConfirmWordForm,
-        exclude=('documents', 'grade'), extra=0)
+        formset=BaseWordFormSet,
+        exclude=('document', 'grade'), extra=0,
+        can_delete=True)
 
     formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type'))
     return render_to_response('dictionary/confirm.html', locals(), 
