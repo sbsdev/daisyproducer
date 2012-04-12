@@ -43,9 +43,11 @@ def check(request, document_id, grade):
             return render_to_response('dictionary/words.html', locals(),
                                       context_instance=RequestContext(request))
 
-    document.latest_version().content.open()
-    tree = etree.parse(document.latest_version().content.file)
-    document.latest_version().content.close()
+    content = document.latest_version().content
+    content.open()
+    tree = etree.parse(content.file)
+    content.close()
+
     # grab the homographs
     homographs = set(("|".join(homograph.xpath('text()')).lower() 
                       for homograph in tree.xpath('//brl:homograph', namespaces=BRL_NAMESPACE)))
