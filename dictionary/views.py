@@ -52,7 +52,7 @@ def check(request, document_id, grade):
     homographs = set(("|".join(homograph.xpath('text()')).lower() 
                       for homograph in tree.xpath('//brl:homograph', namespaces=BRL_NAMESPACE)))
     duplicate_homographs = set((smart_unicode(word.homograph_disambiguation) for 
-                                word in Word.objects.filter(grade=grade).filter(type=5).filter(homograph_disambiguation__in=homographs)))
+                                word in Word.objects.filter(grade=grade).filter(isConfirmed=True).filter(type=5).filter(homograph_disambiguation__in=homographs)))
     unknown_homographs = [{'untranslated': homograph.replace('|', ''), 
                            'braille': louis.translateString(getTables(grade), homograph.replace('|', unichr(0x250A))),
                            'type': 5,
@@ -61,14 +61,14 @@ def check(request, document_id, grade):
     # grab names and places
     names = set((name.text.lower() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)))
     duplicate_names = set((smart_unicode(word.untranslated) for 
-                           word in Word.objects.filter(grade=grade).filter(type__in=(1,2)).filter(untranslated__in=names)))
+                           word in Word.objects.filter(grade=grade).filter(isConfirmed=True).filter(type__in=(1,2)).filter(untranslated__in=names)))
     unknown_names = [{'untranslated': name, 
                       'braille': louis.translateString(getTables(grade, name=True), name), 
                       'type': 2} 
                      for name in names - duplicate_names]
     places = set((place.text.lower() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE)))
     duplicate_places = set((smart_unicode(word.untranslated) for 
-                            word in Word.objects.filter(grade=grade).filter(type__in=(3,4)).filter(untranslated__in=places)))
+                            word in Word.objects.filter(grade=grade).filter(isConfirmed=True).filter(type__in=(3,4)).filter(untranslated__in=places)))
     unknown_places = [{'untranslated': place,
                        'braille': louis.translateString(getTables(grade, place=True), place),
                        'type': 4} 
@@ -102,7 +102,7 @@ def check(request, document_id, grade):
     # w1 LEFT JOIN dict_words w2 ON w1.untranslated=w2.untranslated
     # WHERE w2.untranslated IS NULL;
     duplicate_words = set((smart_unicode(word.untranslated) for 
-                           word in Word.objects.filter(grade=grade).filter(untranslated__in=new_words)))
+                           word in Word.objects.filter(grade=grade).filter(isConfirmed=True).filter(untranslated__in=new_words)))
     unknown_words = [{'untranslated': word, 
                       'braille': louis.translateString(getTables(grade), word),
                       'type' : 0} 
