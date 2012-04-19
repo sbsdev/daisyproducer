@@ -11,7 +11,9 @@ from django.forms.widgets import TextInput
 from django.core.validators import RegexValidator
 
 VALID_BRAILLE_RE = re.compile(u"^[-v]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+$")
-validate = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
+validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
+VALID_HOMOGRAPH_RE = re.compile(u"^[a-zàáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ|]*$")
+validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters are not valid')
 
 class PartialWordForm(ModelForm):
     class Meta:
@@ -23,9 +25,14 @@ class PartialWordForm(ModelForm):
 
     def clean_braille(self):
         data = self.cleaned_data['braille']
-        validate(data)
+        validate_braille(data)
         return data
         
+    def clean_homograph_disambiguation(self):
+        data = self.cleaned_data['homograph_disambiguation']
+        validate_homograph(data)
+        return data
+
 class RestrictedWordForm(PartialWordForm):
     def __init__(self, *args, **kwargs):
         super(RestrictedWordForm, self).__init__(*args, **kwargs)
