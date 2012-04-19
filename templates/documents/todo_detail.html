@@ -10,25 +10,25 @@
 <div id="sidebar">
   <h3>{% trans "Edit" %}</h3>
   <!-- <a href="{% url todo_ocr document.id %}" accesskey="o" >{% trans "OCR" %}</a><br /> -->
-  <a href="{% url todo_markup document.id %}" accesskey="m" >{% trans "Markup" %}</a><br />
+  <a href="{% url todo_markup document.id %}">{% trans "Markup" %}</a><br />
   <h3>{% trans "Words" %}</h3>
   <h4>{% trans "Grade 1" %}</h4>
-  <a href="{% url dictionary_check_g1 document.id %}" accesskey="d" >{% trans "Unknown words" %}</a><br />
-  <a href="{% url dictionary_local_g1 document.id %}" accesskey="d" >{% trans "Local words" %}</a><br />
+  <a href="{% url dictionary_check_g1 document.id %}">{% trans "Unknown words" %}</a><br />
+  <a href="{% url dictionary_local_g1 document.id %}" accesskey="v">{% trans "Local words" %}</a><br />
   <h4>{% trans "Grade 2" %}</h4>
-  <a href="{% url dictionary_check_g2 document.id %}" accesskey="d" >{% trans "Unknown words" %}</a><br />
-  <a href="{% url dictionary_local_g2 document.id %}" accesskey="d" >{% trans "Local words" %}</a><br />
+  <a href="{% url dictionary_check_g2 document.id %}">{% trans "Unknown words" %}</a><br />
+  <a href="{% url dictionary_local_g2 document.id %}" accesskey="k">{% trans "Local words" %}</a><br />
   <h3>{% trans "Preview" %}</h3>
   <a href="{% url todo_xhtml document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
   <a href="{% url todo_sbsform document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
-  <a href="{% url todo_library_pdf document.id %}" accesskey="p" >{% trans "Large Print (Library)" %}</a><br />
-  <a href="{% url todo_sale_pdf document.id %}" accesskey="p" >{% trans "Large Print (Sale)" %}</a><br />
-  <a href="{% url todo_pdf document.id %}" accesskey="p" >{% trans "Configurable Large Print" %}</a><br />
+  <a href="{% url todo_library_pdf document.id %}">{% trans "Large Print (Library)" %}</a><br />
+  <a href="{% url todo_sale_pdf document.id %}">{% trans "Large Print (Sale)" %}</a><br />
+  <a href="{% url todo_pdf document.id %}">{% trans "Configurable Large Print" %}</a><br />
   <h3>{% trans "Preview (BETA)" %}</h3>
-  <a href="{% url todo_rtf document.id %}" accesskey="r" >{% trans "RTF" %}</a><br />
-  <a href="{% url todo_epub document.id %}" accesskey="r" >{% trans "EPUB" %}</a><br />
-  <a href="{% url todo_text_only_fileset document.id %}" accesskey="r" >{% trans "Daisy 2.02 Text-Only fileset" %}</a><br />
-  <a href="{% url todo_dtb document.id %}" accesskey="r" >{% trans "Full-Text Full-Audio book" %}</a><br />
+  <a href="{% url todo_rtf document.id %}">{% trans "RTF" %}</a><br />
+  <a href="{% url todo_epub document.id %}">{% trans "EPUB" %}</a><br />
+  <a href="{% url todo_text_only_fileset document.id %}">{% trans "Daisy 2.02 Text-Only fileset" %}</a><br />
+  <a href="{% url todo_dtb document.id %}">{% trans "Full-Text Full-Audio book" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
