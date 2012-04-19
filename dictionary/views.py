@@ -4,7 +4,7 @@ import unicodedata
 import louis
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
 from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm, BaseWordFormSet
-from daisyproducer.dictionary.models import Word
+from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.documents.models import Document
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -25,7 +25,7 @@ def check(request, document_id, grade):
 
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
-            Word, 
+            LocalWord, 
             form=RestrictedWordForm,
             exclude=('document', 'isConfirmed', 'grade'), 
             can_delete=True)
@@ -52,7 +52,7 @@ def check(request, document_id, grade):
     homographs = set(("|".join(homograph.xpath('text()')).lower() 
                       for homograph in tree.xpath('//brl:homograph', namespaces=BRL_NAMESPACE)))
     duplicate_homographs = set((smart_unicode(word.homograph_disambiguation) for 
-                                word in Word.objects.filter(grade=grade).filter(isConfirmed=True).filter(type=5).filter(homograph_disambiguation__in=homographs)))
+                                word in GlobalWord.objects.filter(grade=grade).filter(type=5).filter(homograph_disambiguation__in=homographs)))
     unknown_homographs = [{'untranslated': homograph.replace('|', ''), 
                            'braille': louis.translateString(getTables(grade), homograph.replace('|', unichr(0x250A))),
                            'type': 5,
@@ -61,14 +61,14 @@ def check(request, document_id, grade):
     # grab names and places
     names = set((name.text.lower() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)))
     duplicate_names = set((smart_unicode(word.untranslated) for 
-                           word in Word.objects.filter(grade=grade).filter(isConfirmed=True).filter(type__in=(1,2)).filter(untranslated__in=names)))
+                           word in GlobalWord.objects.filter(grade=grade).filter(type__in=(1,2)).filter(untranslated__in=names)))
     unknown_names = [{'untranslated': name, 
                       'braille': louis.translateString(getTables(grade, name=True), name), 
                       'type': 2} 
                      for name in names - duplicate_names]
     places = set((place.text.lower() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE)))
     duplicate_places = set((smart_unicode(word.untranslated) for 
-                            word in Word.objects.filter(grade=grade).filter(isConfirmed=True).filter(type__in=(3,4)).filter(untranslated__in=places)))
+                            word in GlobalWord.objects.filter(grade=grade).filter(type__in=(3,4)).filter(untranslated__in=places)))
     unknown_places = [{'untranslated': place,
                        'braille': louis.translateString(getTables(grade, place=True), place),
                        'type': 4} 
@@ -102,7 +102,7 @@ def check(request, document_id, grade):
     # w1 LEFT JOIN dict_words w2 ON w1.untranslated=w2.untranslated
     # WHERE w2.untranslated IS NULL;
     duplicate_words = set((smart_unicode(word.untranslated) for 
-                           word in Word.objects.filter(grade=grade).filter(isConfirmed=True).filter(untranslated__in=new_words)))
+                           word in GlobalWord.objects.filter(grade=grade).filter(untranslated__in=new_words)))
     unknown_words = [{'untranslated': word, 
                       'braille': louis.translateString(getTables(grade), word),
                       'type' : 0} 
@@ -112,7 +112,7 @@ def check(request, document_id, grade):
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
     WordFormSet = modelformset_factory(
-        Word, 
+        LocalWord, 
         form=RestrictedWordForm,
         exclude=('document', 'isConfirmed', 'grade'), 
         extra=len(unknown_words), can_delete=True)
@@ -132,13 +132,13 @@ def local(request, document_id, grade):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
-            Word, 
+            LocalWord, 
             form=RestrictedWordForm,
             exclude=('document', 'isConfirmed', 'grade'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST, 
-                              queryset=Word.objects.filter(document=document))
+                              queryset=LocalWord.objects.filter(document=document))
         if formset.is_valid():
             instances = formset.save()
             writeLocalTables([document])
@@ -148,7 +148,7 @@ def local(request, document_id, grade):
                                       context_instance=RequestContext(request))
 
     WordFormSet = modelformset_factory(
-        Word, 
+        LocalWord, 
         form=RestrictedWordForm,
         exclude=('document', 'isConfirmed', 'grade'), 
         can_delete=True, extra=0)
@@ -162,23 +162,27 @@ def local(request, document_id, grade):
 def confirm(request, grade):
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
-            Word, 
+            LocalWord, 
             form=RestrictedConfirmWordForm,
             formset=BaseWordFormSet,
             exclude=('document', 'grade'),
             can_delete=True)
 
         formset = WordFormSet(request.POST, 
-                              queryset=Word.objects.filter(isConfirmed=False))
+                              queryset=LocalWord.objects.filter(isConfirmed=False))
         if formset.is_valid():
-            instances = formset.save(commit=False)
-            changedDocuments = set()
-            for instance in instances:
-                if instance.isConfirmed and not instance.isLocal:
-                    # clear the documents if the word is not local
-                    changedDocuments.add(instance.document)
-                    instance.document = None
-                    instance.save()
+            instances = formset.save()
+            from django.db import connection, transaction
+            cursor = connection.cursor()
+            # move global words into global table
+            query = """INSERT dictionary_global_word (untranslated, type, grade, homograph_disambiguation) 
+SELECT DISTINCT untranslated, type, grade, homograph_disambiguation 
+FROM dictionary_local_word 
+WHERE isConfirmed = TRUE"""
+            cursor.execute(query)
+            cursor.execute("DELETE FROM dictionary_local_word WHERE isConfirmed = TRUE AND isLocal = FALSE")
+            transaction.commit_unless_managed()
+
     # FIXME: in principle we need to regenerate the liblouis tables,
     # i.e. the white lists now. However we do this asynchronously
     # (using a cron job) for now. There are several reasons for this:
@@ -197,23 +201,23 @@ def confirm(request, grade):
                                       context_instance=RequestContext(request))
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
-    unconfirmed_homographs = set(Word.objects.filter(grade=grade).filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
-    covered_entries = set(Word.objects.filter(grade=grade).filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
+    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade).filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
+    covered_entries = set(LocalWord.objects.filter(grade=grade).filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
 
     for word in unconfirmed_homographs - covered_entries:
-        w = Word(untranslated=word, 
-                 braille=louis.translateString(getTables(grade), word),
-                 grade=grade, type=0)
+        w = LocalWord(untranslated=word, 
+                      braille=louis.translateString(getTables(grade), word),
+                      grade=grade, type=0)
         w.save()
     
     WordFormSet = modelformset_factory(
-        Word, 
+        LocalWord, 
         form=RestrictedConfirmWordForm,
         formset=BaseWordFormSet,
         exclude=('document', 'grade'), extra=0,
         can_delete=True)
 
-    formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type'))
+    formset = WordFormSet(queryset=LocalWord.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type'))
     return render_to_response('dictionary/confirm.html', locals(), 
                               context_instance=RequestContext(request))
 

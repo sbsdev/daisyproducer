@@ -22,12 +22,22 @@ class Word(models.Model):
     grade = models.PositiveSmallIntegerField(_("Grade"), db_index=True)
     type = models.PositiveSmallIntegerField(_("Type"), default=0, choices=WORD_TYPE_CHOICES)
     homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=MAX_WORD_LENGTH, blank=True)
-    isLocal = models.BooleanField(_("Local"), default=False)
-    isConfirmed = models.BooleanField(_("Confirmed"), default=False)
-    document = models.ForeignKey(Document, null=True, blank=True)
 
     class Meta:
-        unique_together = ("untranslated", "type", "grade", "homograph_disambiguation", "document")
+        abstract = True
 
     def __unicode__(self):
         return self.untranslated
+
+class GlobalWord(Word):
+
+    class Meta:
+        unique_together = ("untranslated", "type", "grade", "homograph_disambiguation")
+
+class LocalWord(Word):
+    isLocal = models.BooleanField(_("Local"), default=False)
+    isConfirmed = models.BooleanField(_("Confirmed"), default=False)
+    document = models.ForeignKey(Document)
+
+    class Meta:
+        unique_together = ("untranslated", "type", "grade", "homograph_disambiguation", "isConfirmed", "document")

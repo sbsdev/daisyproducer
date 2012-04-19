@@ -5,7 +5,7 @@ from collections import namedtuple
 
 import louis
 
-from daisyproducer.dictionary.models import Word
+from daisyproducer.dictionary.models import LocalWord
 from django.utils.encoding import smart_unicode
 
 TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
@@ -167,7 +167,7 @@ def writeWhiteListTables(words):
 
 def writeLocalTables(changedDocuments):
     for document in changedDocuments:
-        words = Word.objects.filter(document=document).order_by('untranslated')
+        words = LocalWord.objects.filter(document=document).order_by('untranslated')
         writeTable('sbs-de-g1-white-%s.mod' % document.identifier, 
                    ((word.homograph_disambiguation.replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
                     for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))),

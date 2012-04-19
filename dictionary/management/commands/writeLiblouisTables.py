@@ -1,5 +1,5 @@
 from daisyproducer.dictionary.brailleTables import writeWhiteListTables, writeLocalTables
-from daisyproducer.dictionary.models import Word
+from daisyproducer.dictionary.models import GlobalWord
 from daisyproducer.documents.models import Document
 from django.core.management.base import BaseCommand
 
@@ -9,6 +9,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # write new global white lists
-        writeWhiteListTables(Word.objects.filter(isConfirmed=True).filter(isLocal=False).order_by('untranslated'))
+        writeWhiteListTables(GlobalWord.objects.filter(isLocal=False).order_by('untranslated'))
         # update local tables
         writeLocalTables(Document.objects.all())

@@ -1,7 +1,7 @@
 # coding=utf-8
 import re
 
-from daisyproducer.dictionary.models import Word
+from daisyproducer.dictionary.models import LocalWord
 
 from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
@@ -17,7 +17,7 @@ validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters
 
 class PartialWordForm(ModelForm):
     class Meta:
-        model = Word
+        model = LocalWord
         exclude=('document', 'isConfirmed', 'grade'), 
         widgets = {
             'untranslated': TextInput(attrs={'readonly': 'readonly'}),

@@ -1,7 +1,7 @@
 # coding=utf-8
 import codecs
 
-from daisyproducer.dictionary.models import Word
+from daisyproducer.dictionary.models import GlobalWord
 from daisyproducer.dictionary.forms import VALID_BRAILLE_RE
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
@@ -18,7 +18,7 @@ typeMap = {
     }
 
 def get_word(untranslated, braille, grade, type):
-    return Word(untranslated=untranslated.replace('|',''), 
+    return GlobalWord(untranslated=untranslated.replace('|',''), 
                 braille=braille, grade=grade, type=type, isConfirmed=True, 
                 homograph_disambiguation=untranslated if type == 5 else '')
 
