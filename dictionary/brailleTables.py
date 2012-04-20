@@ -154,7 +154,7 @@ def writeTable(fileName, words, translate):
 def writeWhiteListTables(words):
     writeTable('sbs-de-g1-white.mod', 
                ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
-                for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))), 
+                for word in words.filter(grade=1)), 
                lambda word: louis.translateString(getTables(1), word))
     writeTable('sbs-de-g2-white.mod', 
                ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
@@ -170,7 +170,7 @@ def writeLocalTables(changedDocuments):
         words = Word.objects.filter(document=document).order_by('untranslated')
         writeTable('sbs-de-g1-white-%s.mod' % document.identifier, 
                    ((word.homograph_disambiguation.replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
-                    for word in words.filter(grade=1).filter(type__in=(0, 1, 3, 5))),
+                    for word in words.filter(grade=1)),
                    lambda word: louis.translateString(getTables(1), word))
         writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
                    ((word.homograph_disambiguation.replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
