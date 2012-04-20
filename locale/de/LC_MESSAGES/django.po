@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-11 14:29+0200\n"
-"PO-Revision-Date: 2011-07-11 14:32+0200\n"
+"POT-Creation-Date: 2012-04-20 16:55+0200\n"
+"PO-Revision-Date: 2012-04-20 16:53+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,13 +16,66 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: urls.py:70 templates/base.html:31
+#: urls.py:81 templates/base.html:31
 msgid "Help"
 msgstr "Hilfe"
 
-#: urls.py:77 templates/base.html:32
+#: urls.py:88 templates/base.html:32
 msgid "About"
 msgstr "Impressum"
+
+#: dictionary/models.py:12
+msgid "No restriction"
+msgstr "Keine Einschränkung"
+
+#: dictionary/models.py:13
+msgid "Also as a name"
+msgstr "Auch als Name"
+
+#: dictionary/models.py:14
+msgid "Name"
+msgstr "Name"
+
+#: dictionary/models.py:15
+msgid "Also as a place"
+msgstr "Auch als Ort"
+
+#: dictionary/models.py:16
+msgid "Place"
+msgstr "Ort"
+
+# Homograph
+#: dictionary/models.py:17
+msgid "Homograph"
+msgstr "Homograph"
+
+#: dictionary/models.py:20
+msgid "Untranslated"
+msgstr ""
+
+#: dictionary/models.py:21
+msgid "Braille"
+msgstr "Braille"
+
+#: dictionary/models.py:22
+msgid "Grade"
+msgstr ""
+
+#: dictionary/models.py:23
+msgid "Type"
+msgstr "Typ"
+
+#: dictionary/models.py:24
+msgid "Homograph Disambiguation"
+msgstr "Homograph Präzisierung"
+
+#: dictionary/models.py:25
+msgid "Local"
+msgstr "Lokal"
+
+#: dictionary/models.py:26
+msgid "Confirmed"
+msgstr "Bestätigt"
 
 #: documents/forms.py:88
 msgid "Data from scan"
@@ -32,15 +85,19 @@ msgstr "Eingescannte Daten"
 msgid "The image files that resulted from the scan"
 msgstr "Eingescannte Bilddateien"
 
-#: documents/forms.py:130 documents/models.py:221
+#: documents/forms.py:130 documents/models.py:234
 msgid "Grade 0"
 msgstr "Basisschrift"
 
-#: documents/forms.py:131 documents/models.py:222
+#: documents/forms.py:131 documents/models.py:235
+#: templates/documents/todo_detail.html:15
+#: templates/documents/todo_index.html:9
 msgid "Grade 1"
 msgstr "Vollschrift"
 
-#: documents/forms.py:132 documents/models.py:223
+#: documents/forms.py:132 documents/models.py:236
+#: templates/documents/todo_detail.html:18
+#: templates/documents/todo_index.html:11
 msgid "Grade 2"
 msgstr "Kurzschrift"
 
@@ -80,19 +137,19 @@ msgstr "Am Ende von level3"
 msgid "At end of level4"
 msgstr "Am Ende von level4"
 
-#: documents/forms.py:156 documents/models.py:226
+#: documents/forms.py:156 documents/models.py:239
 msgid "Cells per Line"
 msgstr "Zellen pro Zeile"
 
-#: documents/forms.py:157 documents/models.py:227
+#: documents/forms.py:157 documents/models.py:240
 msgid "Lines per Page"
 msgstr "Zeilen pro Seite"
 
-#: documents/forms.py:159 documents/models.py:228
+#: documents/forms.py:159 documents/models.py:241
 msgid "Contraction"
 msgstr "Kürzungsgrad"
 
-#: documents/forms.py:164 documents/models.py:229
+#: documents/forms.py:164 documents/models.py:242
 msgid "Hyphenation"
 msgstr "Silbentrennung"
 
@@ -108,7 +165,7 @@ msgstr "Angezeigte Ebenen im Laufindex"
 msgid "Include SBSForm macros"
 msgstr "SBSForm-Makros mitliefern"
 
-#: documents/forms.py:177 documents/forms.py:205 documents/models.py:230
+#: documents/forms.py:177 documents/forms.py:205 documents/models.py:243
 msgid "Show original page numbers"
 msgstr "Schwarzschrift-Seitenzahlen anzeigen"
 
@@ -349,87 +406,97 @@ msgid ""
 "Information about the number in the series under which the book is produced"
 msgstr ""
 
-#: documents/models.py:137 templates/documents/todo_detail.html:92
+#: documents/models.py:141
+msgid "Production Source"
+msgstr "Datenquelle"
+
+#: documents/models.py:144
+msgid ""
+"Information about the source from which the book was produced, e.g. scanned "
+"book, electronic data, etc"
+msgstr ""
+
+#: documents/models.py:147 templates/documents/todo_detail.html:99
 msgid "State"
 msgstr "Status"
 
-#: documents/models.py:138
+#: documents/models.py:148
 msgid "Assigned to"
 msgstr "Zugewiesen an"
 
-#: documents/models.py:139
+#: documents/models.py:149
 msgid "Created"
 msgstr "Erstellt am"
 
-#: documents/models.py:140
+#: documents/models.py:150
 msgid "Last Modified"
 msgstr "Letzte Änderung"
 
-#: documents/models.py:178 documents/models.py:206
+#: documents/models.py:191 documents/models.py:219
 msgid "Created by"
 msgstr "Erstellt von"
 
-#: documents/models.py:231
+#: documents/models.py:244
 msgid "Enable Capitalization"
 msgstr "Grossschreibung einschalten"
 
-#: documents/models.py:232
+#: documents/models.py:245
 msgid "Detailed Accented Characters"
 msgstr "Ausführliche Akzentbuchstaben"
 
-#: documents/models.py:255
+#: documents/models.py:268
 msgid "Plain"
 msgstr "Einfach"
 
-#: documents/models.py:256
+#: documents/models.py:269
 msgid "With original page numbers"
 msgstr "Mit Original-Seitenzahlen"
 
-#: documents/models.py:257
+#: documents/models.py:270
 msgid "Scientific"
 msgstr "Wissenschaftlich"
 
-#: documents/models.py:261
+#: documents/models.py:274
 msgid "justified"
 msgstr "Blocksatz"
 
-#: documents/models.py:262
+#: documents/models.py:275
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: documents/models.py:271
+#: documents/models.py:284
 msgid "Single spacing"
 msgstr ""
 
-#: documents/models.py:272
+#: documents/models.py:285
 msgid "One-and-a-half spacing"
 msgstr ""
 
-#: documents/models.py:273
+#: documents/models.py:286
 msgid "Double spacing"
 msgstr ""
 
-#: documents/models.py:276
+#: documents/models.py:289
 msgid "Fontsize"
 msgstr "Fontgrösse"
 
-#: documents/models.py:277
+#: documents/models.py:290
 msgid "Font"
 msgstr "Font"
 
-#: documents/models.py:278
+#: documents/models.py:291
 msgid "Page style"
 msgstr "Seitenstil"
 
-#: documents/models.py:280
+#: documents/models.py:293
 msgid "Stocksize"
 msgstr "Papiergösse"
 
-#: documents/models.py:281
+#: documents/models.py:294
 msgid "Line Spacing"
 msgstr "Zeilenabstand"
 
-#: documents/models.py:282
+#: documents/models.py:295
 msgid "Replace italics with quote"
 msgstr "Kursiv mit Apostrophe ersetzen"
 
@@ -470,12 +537,75 @@ msgstr ""
 msgid "Swiss Library for the Blind, Visually Impaired and Print Disabled"
 msgstr "Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
+#: templates/dictionary/confirm.html:24
+#, python-format
+msgid "Confirm Unknown Words for Grade %(grade)s"
+msgstr "Unbekannte Wörter für Grade %(grade)s bestätigen"
+
+#: templates/dictionary/confirm.html:30
+msgid "Total unconfirmed words"
+msgstr "Unbestätigte Wörter insgesamt"
+
+#: templates/dictionary/confirm.html:47 templates/dictionary/words.html:54
+#: templates/documents/manage_import_metadata_csv.html:27
+msgid "Toggle All"
+msgstr "Alle umschalten"
+
+#: templates/dictionary/confirm.html:70 templates/dictionary/local.html:54
+#: templates/dictionary/words.html:77
+msgid "Submit"
+msgstr ""
+
+#: templates/dictionary/confirm.html:71 templates/dictionary/local.html:55
+#: templates/dictionary/words.html:78
+#: templates/documents/browse_sale_cover_pdf.html:25
+#: templates/documents/browse_sale_pdf.html:25
+#: templates/documents/manage_import_metadata_csv.html:81
+#: templates/documents/manage_upload_metadata_csv.html:12
+#: templates/documents/todo_dtb.html:25 templates/documents/todo_epub.html:25
+#: templates/documents/todo_markup.html:31
+#: templates/documents/todo_ocr.html:30 templates/documents/todo_pdf.html:25
+#: templates/documents/todo_rtf.html:25
+#: templates/documents/todo_sale_pdf.html:25
+#: templates/documents/todo_sbsform.html:25
+#: templates/documents/todo_text_only_fileset.html:25
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: templates/dictionary/local.html:8
+#, python-format
+msgid "Edit Local Words for Grade %(grade)s"
+msgstr "Lokale Wörter für Grade %(grade)s bearbeiten"
+
+#: templates/dictionary/local.html:18
+msgid "Total local words"
+msgstr "Lokale Wörter insgesamt"
+
+#: templates/dictionary/words.html:20
+#, python-format
+msgid "Check Unknown Words for Grade %(grade)s"
+msgstr "Unbekannte Wörter für Grade %(grade)s überprüfen"
+
+#: templates/dictionary/words.html:30
+msgid "Total unknown words"
+msgstr "Unbekannte Wörter insgesamt"
+
+#: templates/dictionary/words.html:34
+#, python-format
+msgid "%(total_new)s of %(total_words)s (%(percent)s%%)"
+msgstr "%(total_new)s von %(total_words)s (%(percent)s%%)"
+
+#: templates/dictionary/words.html:54
+#: templates/documents/manage_import_metadata_csv.html:27
+msgid "Ignore"
+msgstr "Ignorieren"
+
 #: templates/documents/browse_detail.html:5
 #: templates/documents/browse_detail.html:25
 #: templates/documents/manage_detail.html:5
 #: templates/documents/manage_detail.html:23
 #: templates/documents/todo_detail.html:6
-#: templates/documents/todo_detail.html:32
+#: templates/documents/todo_detail.html:39
 msgid "Document Details"
 msgstr "Dokumentdetails"
 
@@ -489,7 +619,7 @@ msgid "PDF"
 msgstr "PDF"
 
 #: templates/documents/browse_detail.html:12
-#: templates/documents/todo_detail.html:16
+#: templates/documents/todo_detail.html:23
 msgid "Braille (SBSForm)"
 msgstr "Braille (SBSForm)"
 
@@ -498,27 +628,27 @@ msgid "Braille (liblouis)"
 msgstr "Braille (liblouis)"
 
 #: templates/documents/browse_detail.html:14
-#: templates/documents/todo_detail.html:15
+#: templates/documents/todo_detail.html:22
 msgid "XHTML"
 msgstr "XHTML"
 
 #: templates/documents/browse_detail.html:15
-#: templates/documents/todo_detail.html:21
+#: templates/documents/todo_detail.html:28
 msgid "RTF"
 msgstr "RTF"
 
 #: templates/documents/browse_detail.html:16
-#: templates/documents/todo_detail.html:22
+#: templates/documents/todo_detail.html:29
 msgid "EPUB"
 msgstr "EPUB"
 
 #: templates/documents/browse_detail.html:17
-#: templates/documents/todo_detail.html:23
+#: templates/documents/todo_detail.html:30
 msgid "Daisy 2.02 Text-Only fileset"
 msgstr "Daisy 2.02 Text-Only"
 
 #: templates/documents/browse_detail.html:18
-#: templates/documents/todo_detail.html:24
+#: templates/documents/todo_detail.html:31
 msgid "Full-Text Full-Audio book"
 msgstr "Volltext Audio-Buch"
 
@@ -572,9 +702,9 @@ msgstr "Ansicht als Volltext Audio-Buch"
 #: templates/documents/manage_detail.html:46
 #: templates/documents/manage_index.html:49
 #: templates/documents/manage_update.html:15
-#: templates/documents/todo_detail.html:104
+#: templates/documents/todo_detail.html:111
 #: templates/documents/todo_dtb.html:31 templates/documents/todo_epub.html:31
-#: templates/documents/todo_index.html:43
+#: templates/documents/todo_index.html:55
 #: templates/documents/todo_markup.html:37
 #: templates/documents/todo_ocr.html:36 templates/documents/todo_pdf.html:31
 #: templates/documents/todo_rtf.html:31
@@ -596,7 +726,7 @@ msgstr "Vorschau Grossdruck Umschlag (Verkauf)"
 
 #: templates/documents/browse_sale_cover_pdf.html:24
 #: templates/documents/browse_sale_pdf.html:24
-#: templates/documents/todo_detail.html:14
+#: templates/documents/todo_detail.html:21
 #: templates/documents/todo_dtb.html:24 templates/documents/todo_epub.html:24
 #: templates/documents/todo_pdf.html:24 templates/documents/todo_rtf.html:24
 #: templates/documents/todo_sale_pdf.html:24
@@ -604,20 +734,6 @@ msgstr "Vorschau Grossdruck Umschlag (Verkauf)"
 #: templates/documents/todo_text_only_fileset.html:24
 msgid "Preview"
 msgstr "Vorschau"
-
-#: templates/documents/browse_sale_cover_pdf.html:25
-#: templates/documents/browse_sale_pdf.html:25
-#: templates/documents/manage_import_metadata_csv.html:79
-#: templates/documents/manage_upload_metadata_csv.html:12
-#: templates/documents/todo_dtb.html:25 templates/documents/todo_epub.html:25
-#: templates/documents/todo_markup.html:31
-#: templates/documents/todo_ocr.html:30 templates/documents/todo_pdf.html:25
-#: templates/documents/todo_rtf.html:25
-#: templates/documents/todo_sale_pdf.html:25
-#: templates/documents/todo_sbsform.html:25
-#: templates/documents/todo_text_only_fileset.html:25
-msgid "Cancel"
-msgstr "Abbrechen"
 
 #: templates/documents/browse_sale_pdf.html:5
 #: templates/documents/browse_sale_pdf.html:9
@@ -667,19 +783,11 @@ msgstr "Dokumentdetails"
 msgid "Bulk import documents"
 msgstr "Massenimport"
 
-#: templates/documents/manage_import_metadata_csv.html:27
-msgid "Toggle All"
-msgstr "Alle umschalten"
-
-#: templates/documents/manage_import_metadata_csv.html:27
-msgid "Ignore this Document"
-msgstr "Dieses Dokument ignorieren"
-
-#: templates/documents/manage_import_metadata_csv.html:75
+#: templates/documents/manage_import_metadata_csv.html:77
 msgid "CSV is empty or all records have already been imported"
 msgstr "CSV ist leer bzw. alle Einträge wurden bereits importiert"
 
-#: templates/documents/manage_import_metadata_csv.html:78
+#: templates/documents/manage_import_metadata_csv.html:80
 #: templates/documents/manage_upload_metadata_csv.html:11
 msgid "Import"
 msgstr "Importieren"
@@ -707,36 +815,51 @@ msgstr "OCR"
 msgid "Markup"
 msgstr "Markup"
 
+#: templates/documents/todo_detail.html:14
+#: templates/documents/todo_index.html:8
+msgid "Words"
+msgstr ""
+
+#: templates/documents/todo_detail.html:16
+#: templates/documents/todo_detail.html:19
+msgid "Unknown words"
+msgstr "Unbekannte Wörter"
+
 #: templates/documents/todo_detail.html:17
+#: templates/documents/todo_detail.html:20
+msgid "Local words"
+msgstr "Lokale Wörter"
+
+#: templates/documents/todo_detail.html:24
 msgid "Large Print (Library)"
 msgstr "Grossdruck (Ausleih)"
 
-#: templates/documents/todo_detail.html:18
+#: templates/documents/todo_detail.html:25
 msgid "Large Print (Sale)"
 msgstr "Grossdruck (Verkauf)"
 
-#: templates/documents/todo_detail.html:19
+#: templates/documents/todo_detail.html:26
 msgid "Configurable Large Print"
 msgstr "Konfigurierbarer Grossdruck"
 
-#: templates/documents/todo_detail.html:20
+#: templates/documents/todo_detail.html:27
 msgid "Preview (BETA)"
 msgstr "Vorschau (BETA)"
 
-#: templates/documents/todo_detail.html:42
+#: templates/documents/todo_detail.html:49
 msgid "Versions"
 msgstr "Versionen"
 
-#: templates/documents/todo_detail.html:59
-#: templates/documents/todo_detail.html:85
+#: templates/documents/todo_detail.html:66
+#: templates/documents/todo_detail.html:92
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: templates/documents/todo_detail.html:67
+#: templates/documents/todo_detail.html:74
 msgid "Attachments"
 msgstr "Angehängte Dateien"
 
-#: templates/documents/todo_detail.html:98
+#: templates/documents/todo_detail.html:105
 msgid "Transition"
 msgstr "Weitergeben"
 
@@ -748,8 +871,13 @@ msgstr "Ansicht als Volltext Audio-Buch (BETA)"
 msgid "Preview EPUB (BETA)"
 msgstr "Vorschau EPUB (BETA)"
 
-#: templates/documents/todo_index.html:5
-#: templates/documents/todo_index.html:19
+#: templates/documents/todo_index.html:10
+#: templates/documents/todo_index.html:12
+msgid "Confirm unknown words"
+msgstr "Unbekannte Wörter bestätigen"
+
+#: templates/documents/todo_index.html:17
+#: templates/documents/todo_index.html:31
 msgid "Pending documents"
 msgstr "Pendente Dokumente"
 
