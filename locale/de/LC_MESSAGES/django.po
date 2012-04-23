@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-20 16:55+0200\n"
-"PO-Revision-Date: 2012-04-20 16:53+0200\n"
+"POT-Creation-Date: 2012-04-23 09:12+0200\n"
+"PO-Revision-Date: 2012-04-23 09:14+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -51,7 +51,7 @@ msgstr "Homograph"
 
 #: dictionary/models.py:20
 msgid "Untranslated"
-msgstr ""
+msgstr "Schwarzschrift"
 
 #: dictionary/models.py:21
 msgid "Braille"
@@ -546,18 +546,18 @@ msgstr "Unbekannte Wörter für Grade %(grade)s bestätigen"
 msgid "Total unconfirmed words"
 msgstr "Unbestätigte Wörter insgesamt"
 
-#: templates/dictionary/confirm.html:47 templates/dictionary/words.html:54
+#: templates/dictionary/confirm.html:47 templates/dictionary/words.html:48
 #: templates/documents/manage_import_metadata_csv.html:27
 msgid "Toggle All"
 msgstr "Alle umschalten"
 
 #: templates/dictionary/confirm.html:70 templates/dictionary/local.html:54
-#: templates/dictionary/words.html:77
+#: templates/dictionary/words.html:71
 msgid "Submit"
 msgstr ""
 
 #: templates/dictionary/confirm.html:71 templates/dictionary/local.html:55
-#: templates/dictionary/words.html:78
+#: templates/dictionary/words.html:72
 #: templates/documents/browse_sale_cover_pdf.html:25
 #: templates/documents/browse_sale_pdf.html:25
 #: templates/documents/manage_import_metadata_csv.html:81
@@ -590,12 +590,11 @@ msgstr "Unbekannte Wörter für Grade %(grade)s überprüfen"
 msgid "Total unknown words"
 msgstr "Unbekannte Wörter insgesamt"
 
-#: templates/dictionary/words.html:34
-#, python-format
-msgid "%(total_new)s of %(total_words)s (%(percent)s%%)"
-msgstr "%(total_new)s von %(total_words)s (%(percent)s%%)"
+#: templates/dictionary/words.html:31
+msgid "of"
+msgstr "von"
 
-#: templates/dictionary/words.html:54
+#: templates/dictionary/words.html:48
 #: templates/documents/manage_import_metadata_csv.html:27
 msgid "Ignore"
 msgstr "Ignorieren"
@@ -817,8 +816,8 @@ msgstr "Markup"
 
 #: templates/documents/todo_detail.html:14
 #: templates/documents/todo_index.html:8
-msgid "Words"
-msgstr ""
+msgid "Braille Dictionary"
+msgstr "Braille Wörterbuch"
 
 #: templates/documents/todo_detail.html:16
 #: templates/documents/todo_detail.html:19

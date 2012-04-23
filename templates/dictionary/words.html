@@ -28,13 +28,7 @@
     <table>
     <tr>
       <td><b>{% trans 'Total unknown words' %}:</b></td>
-      {% with stats.total_new as total_new %}
-      {% with stats.total_words as total_words %}
-      {% with stats.percent|floatformat as percent %}
-      <td>{% blocktrans %}{{total_new}} of {{total_words}} ({{percent}}%){% endblocktrans %}</td>
-      {% endwith %}
-      {% endwith %}
-      {% endwith %}
+      <td>{{stats.total_new}} {% trans 'of' %} {{stats.total_words}} ({{stats.percent|floatformat}}%)</td>
     </tr>
   </table>
   <hr />
