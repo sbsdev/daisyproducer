@@ -7,8 +7,9 @@ from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.formsets import DELETION_FIELD_NAME
 from django.forms.models import ModelForm, BaseModelFormSet
-from django.forms.widgets import TextInput
+from django.forms.widgets import TextInput, CheckboxInput, Select
 from django.core.validators import RegexValidator
+from django.utils.translation import ugettext_lazy as _
 
 VALID_BRAILLE_RE = re.compile(u"^[-v]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+$")
 validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
@@ -20,7 +21,11 @@ class PartialWordForm(ModelForm):
         model = Word
         exclude=('document', 'isConfirmed', 'grade'), 
         widgets = {
-            'untranslated': TextInput(attrs={'readonly': 'readonly'}),
+            'untranslated': TextInput(attrs={'readonly': 'readonly', 'title': _("Untranslated")}),
+            'braille': TextInput(attrs={'title': _("Braille")}),
+            'type': Select(attrs={'title': _("Type")}),
+            'homograph_disambiguation': TextInput(attrs={'title': _("Homograph Disambiguation")}),
+            'isLocal': CheckboxInput(attrs={'title': _("Local")}),
             }
 
     def clean_braille(self):
