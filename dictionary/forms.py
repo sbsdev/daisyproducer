@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 
 VALID_BRAILLE_RE = re.compile(u"^[-v]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+$")
 validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
-VALID_HOMOGRAPH_RE = re.compile(u"^[a-zàáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ|]*$")
+VALID_HOMOGRAPH_RE = re.compile(u"^(|[a-zàáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+\|[a-zàáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+)$")
 validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters are not valid')
 
 class PartialWordForm(ModelForm):
@@ -34,9 +34,15 @@ class PartialWordForm(ModelForm):
         return data
         
     def clean_homograph_disambiguation(self):
-        data = self.cleaned_data['homograph_disambiguation']
-        validate_homograph(data)
-        return data
+        type = self.cleaned_data.get('type')
+        homograph_disambiguation = self.cleaned_data.get('homograph_disambiguation')
+        untranslated = self.cleaned_data.get('untranslated')
+        if type != 5 and homograph_disambiguation != "":
+             raise ValidationError("Should be empty for types other than Homograph")
+        if type == 5 and untranslated != homograph_disambiguation.replace('|', ''):
+             raise ValidationError("Should the same as untranslated (modulo '|')")
+        validate_homograph(homograph_disambiguation)
+        return homograph_disambiguation
 
 class RestrictedWordForm(PartialWordForm):
     def __init__(self, *args, **kwargs):
