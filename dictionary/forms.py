@@ -7,9 +7,7 @@ from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.formsets import DELETION_FIELD_NAME
 from django.forms.models import ModelForm, BaseModelFormSet
-from django.forms.widgets import TextInput, CheckboxInput, Select
 from django.core.validators import RegexValidator
-from django.utils.translation import ugettext_lazy as _
 
 VALID_BRAILLE_RE = re.compile(u"^[-v]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+$")
 validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
@@ -20,13 +18,14 @@ class PartialWordForm(ModelForm):
     class Meta:
         model = Word
         exclude=('document', 'isConfirmed', 'grade'), 
-        widgets = {
-            'untranslated': TextInput(attrs={'readonly': 'readonly', 'title': _("Untranslated")}),
-            'braille': TextInput(attrs={'title': _("Braille")}),
-            'type': Select(attrs={'title': _("Type")}),
-            'homograph_disambiguation': TextInput(attrs={'title': _("Homograph Disambiguation")}),
-            'isLocal': CheckboxInput(attrs={'title': _("Local")}),
-            }
+        widgets = {}
+        # add the title attribute to the widgets
+        for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal'):
+            f = model._meta.get_field(field)
+            formField = f.formfield()
+            attrs = {'title': formField.label} if field != 'untranslated' else {'title': formField.label, 'readonly': 'readonly'}
+            if formField: 
+                widgets[field] = type(formField.widget)(attrs=attrs)
 
     def clean_braille(self):
         data = self.cleaned_data['braille']
