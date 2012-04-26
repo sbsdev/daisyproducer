@@ -24,8 +24,15 @@ class PartialWordForm(ModelForm):
             f = model._meta.get_field(field)
             formField = f.formfield()
             attrs = {'title': formField.label} if field != 'untranslated' else {'title': formField.label, 'readonly': 'readonly'}
-            if formField: 
+            if formField:
                 widgets[field] = type(formField.widget)(attrs=attrs)
+
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+        if not self.is_bound:
+            # make the type field "read-only" (restrict it to a single choice)
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+            self.fields['type'].choices = typeChoices
 
     def clean_braille(self):
         data = self.cleaned_data['braille']
@@ -44,15 +51,6 @@ class PartialWordForm(ModelForm):
         return homograph_disambiguation
 
 class RestrictedWordForm(PartialWordForm):
-    def __init__(self, *args, **kwargs):
-        super(RestrictedWordForm, self).__init__(*args, **kwargs)
-        if not self.is_bound:
-            if self.initial['type'] == 0:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 2, 4)]
-            else:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
-            self.fields['type'].choices = typeChoices
-
     # only clean if a word is not ignored
     def clean(self):
         cleaned_data = self.cleaned_data
