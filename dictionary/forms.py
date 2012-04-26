@@ -20,7 +20,7 @@ class PartialWordForm(ModelForm):
         exclude=('document', 'isConfirmed', 'grade'), 
         widgets = {}
         # add the title attribute to the widgets
-        for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal'):
+        for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isConfirmed', 'isLocal'):
             f = model._meta.get_field(field)
             formField = f.formfield()
             attrs = {'title': formField.label} if field != 'untranslated' else {'title': formField.label, 'readonly': 'readonly'}
