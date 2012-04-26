@@ -71,10 +71,8 @@ class RestrictedConfirmWordForm(PartialWordForm):
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 1, 2, 3, 4)]
             elif self.initial['type'] == 2:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
-                self.initial['use_for_word_splitting'] = False
             elif self.initial['type'] == 4:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
-                self.initial['use_for_word_splitting'] = False
             else:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
