@@ -20,15 +20,16 @@ def filterBrlContractionhints(file_path):
     This is done using an XSLT stylesheet. Return the name of a
     temporary file that contains the filtered content. The caller is
     responsible for removing the temporary file."""
-    tmpFile = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")[1]
+    tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", delete=False)
+    tmpFile.close() # we are only interested in a unique filename
     command = (
         "xsltproc",
-        "--output", tmpFile,
+        "--output", tmpFile.name,
         join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterBrlContractionhints.xsl'),
         file_path,
         )
     call(command)
-    return tmpFile
+    return tmpFile.name
 
 def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **kwargs):
     tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
@@ -126,6 +127,7 @@ class DaisyPipeline:
         tmpFile = filterBrlContractionhints(inputFile)
 
         generatePDF(tmpFile, outputFile, **kwargs)
+        os.remove(tmpFile)
 
     @staticmethod
     def dtbook2xhtml(inputFile, outputFile, **kwargs):
@@ -238,24 +240,26 @@ class StandardLargePrint:
 
     @staticmethod
     def insertVolumeSplitPoints(file_path, number_of_volumes):
-        tmpFile = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")[1]
+        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", delete=False)
+        tmpFile.close()
         command = (
             join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
             join(settings.DAISY_PIPELINE_PATH, 'scripts',
                  'modify_improve', 'dtbook', 'DTBookVolumeSplit.taskScript'),
             "--input=%s" % file_path,
-            "--output=%s" % tmpFile,
+            "--output=%s" % tmpFile.name,
             "--number_of_volumes=%s" % number_of_volumes,
             )
         call(command)
-        return tmpFile
+        return tmpFile.name
 
     @staticmethod
     def determineNumberOfVolumes(file_path, **kwargs):
-        pdfFile = tempfile.mkstemp(prefix="daisyproducer-", suffix=".pdf")[1]
-        generatePDF(file_path, pdfFile, **kwargs)
-        pdfReader = PdfFileReader(file(pdfFile, "rb"))
+        pdfFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".pdf")
+        generatePDF(file_path, pdfFile.name, **kwargs)
+        pdfReader = PdfFileReader(file(pdfFile.name, "rb"))
         volumes = int(math.ceil(pdfReader.getNumPages() / float(StandardLargePrint.PAGES_PER_VOLUME)))
+        pdfFile.close()
         return volumes
 
     @staticmethod
@@ -265,9 +269,12 @@ class StandardLargePrint:
         defaults = StandardLargePrint.PARAMETER_DEFAULTS.copy()
         defaults.update(kwargs)
         numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, **defaults)
-        tmpFile = StandardLargePrint.insertVolumeSplitPoints(tmpFile, numberOfVolumes)
+        tmpFile2 = StandardLargePrint.insertVolumeSplitPoints(tmpFile, numberOfVolumes)
 
-        generatePDF(tmpFile, outputFile, **defaults)
+        generatePDF(tmpFile2, outputFile, **defaults)
+        os.remove(tmpFile)
+        os.remove(tmpFile2)
+        
 
 class Liblouis:
 
