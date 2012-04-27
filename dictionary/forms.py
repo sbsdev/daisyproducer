@@ -23,7 +23,7 @@ class PartialWordForm(ModelForm):
         for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isConfirmed', 'isLocal'):
             f = model._meta.get_field(field)
             formField = f.formfield()
-            attrs = {'title': formField.label} if field != 'untranslated' else {'title': formField.label, 'readonly': 'readonly'}
+            attrs = {'title': formField.label} if field not in ('untranslated', 'homograph_disambiguation') else {'title': formField.label, 'readonly': 'readonly'}
             if formField:
                 widgets[field] = type(formField.widget)(attrs=attrs)
 
