@@ -9,7 +9,7 @@ class Word(models.Model):
 
     MAX_WORD_LENGTH = 100
     WORD_TYPE_CHOICES = (
-        (0, _('No restriction')),
+        (0, _('None')),
         (1, _('Also as a name')),
         (2, _('Name')),
         (3, _('Also as a place')),
@@ -20,7 +20,7 @@ class Word(models.Model):
     untranslated = models.CharField(_("Untranslated"), max_length=MAX_WORD_LENGTH, db_index=True)
     braille = models.CharField(_("Braille"), max_length=MAX_WORD_LENGTH)
     grade = models.PositiveSmallIntegerField(_("Grade"), db_index=True)
-    type = models.PositiveSmallIntegerField(_("Type"), default=0, choices=WORD_TYPE_CHOICES)
+    type = models.PositiveSmallIntegerField(_("Markup"), default=0, choices=WORD_TYPE_CHOICES)
     homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=MAX_WORD_LENGTH, blank=True)
     isLocal = models.BooleanField(_("Local"), default=False)
     isConfirmed = models.BooleanField(_("Confirmed"), default=False)
