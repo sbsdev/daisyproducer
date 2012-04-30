@@ -23,8 +23,8 @@ def get_word(untranslated, braille, grade, type):
                 homograph_disambiguation=untranslated if type == 5 else '')
 
 class Command(BaseCommand):
-    args = 'default_user_id dictionary_file'
-    help = 'Import the given file as a dictionary with the given user_id'
+    args = 'dictionary_file'
+    help = 'Import the given file as a dictionary'
     output_transaction = True
 
     @transaction.commit_on_success
