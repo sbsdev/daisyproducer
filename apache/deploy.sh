@@ -102,8 +102,11 @@ case "$1" in
     prod) 
 	deploy_pipeline xmlp /opt
 	deploy_dtbook2sbsform xmlp /opt
+	deploy_dtbook_hyphenator xmlp /opt
+	deploy_hyphen_java_bindings xmlp ~/src "CPPFLAGS='-I/usr/lib/jvm/java-6-sun-1.6.0.26/include -I/usr/lib/jvm/java-6-sun-1.6.0.26/include/linux'"
 	deploy_braille_tables xmlp ~/src
 	restart_apache xmlp;;
+
     test) 
 	deploy_pipeline xmlp-test /opt
 	deploy_dtbook2sbsform xmlp-test /opt
