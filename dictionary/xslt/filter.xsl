@@ -27,6 +27,9 @@
   <!-- Drop brl:literals -->
   <xsl:template match="brl:literal"/>
 
+  <!-- Drop text which is not meant for Braille anyway -->
+  <xsl:template match="brl:otherwise"/>
+
   <!-- Copy all other elements and attributes -->
   <xsl:template match="node()|@*">
     <xsl:copy>
