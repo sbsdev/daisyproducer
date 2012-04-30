@@ -9,6 +9,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # write new global white lists
+        if options['verbosity'] >= 2:
+            self.stderr.write('Writing new global white lists...\n')
         writeWhiteListTables(Word.objects.filter(isConfirmed=True).filter(isLocal=False).order_by('untranslated'))
         # update local tables
+        if options['verbosity'] >= 2:
+            self.stderr.write('Updating local tables...\n')
         writeLocalTables(Document.objects.all())
