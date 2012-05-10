@@ -7,9 +7,9 @@
   {% if perms.dictionary.add_word %}
   <h3>{% trans "Braille Dictionary" %}</h3>
   <h4>{% trans "Grade 1" %}</h4>
-  <a href="{% url dictionary_confirm_g1 %}" >{% trans "Confirm unknown words" %}</a><br />
+  <a href="{% url dictionary_confirm_g1 %}" accesskey="v">{% trans "Confirm unknown words" %}</a><br />
   <h4>{% trans "Grade 2" %}</h4>
-  <a href="{% url dictionary_confirm_g2 %}" >{% trans "Confirm unknown words" %}</a><br />
+  <a href="{% url dictionary_confirm_g2 %}" accesskey="k">{% trans "Confirm unknown words" %}</a><br />
   {% endif %}
 </div>
 {% endblock %}
