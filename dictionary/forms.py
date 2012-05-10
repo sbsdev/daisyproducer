@@ -23,8 +23,12 @@ class PartialWordForm(ModelForm):
         for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isConfirmed', 'isLocal'):
             f = model._meta.get_field(field)
             formField = f.formfield()
-            attrs = {'title': formField.label} if field not in ('untranslated', 'homograph_disambiguation') else {'title': formField.label, 'readonly': 'readonly'}
             if formField:
+                attrs = {'title': formField.label}
+                if field == 'braille':
+                    attrs.update({'class': 'braille'})
+                elif field in ('untranslated', 'homograph_disambiguation'):
+                    attrs.update({'readonly': 'readonly'})
                 widgets[field] = type(formField.widget)(attrs=attrs)
 
     def __init__(self, *args, **kwargs):
