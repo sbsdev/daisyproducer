@@ -160,8 +160,6 @@ div.square {
  overflow: hidden;
  width: .6em; height: .6em;
 }
-.contextual {float:right; white-space: nowrap; line-height:1.4em;margin-top:5px; padding-left: 10px; font-size:0.9em;}
-.contextual input {font-size:0.9em;}
 
 .splitcontentleft{float:left; width:49%;}
 .splitcontentright{float:right; width:49%;}
@@ -219,28 +217,9 @@ dt.attachment { background-image: url(../images/attachment.png); }
 dt.document { background-image: url(../images/document.png); }
 dt.project { background-image: url(../images/projects.png); }
 
-div#roadmap fieldset.related-issues { margin-bottom: 1em; }
-div#roadmap fieldset.related-issues ul { margin-top: 0.3em; margin-bottom: 0.3em; }
-div#roadmap .wiki h1:first-child { display: none; }
-div#roadmap .wiki h1 { font-size: 120%; }
-div#roadmap .wiki h2 { font-size: 110%; }
-
-div#version-summary { float:right; width:380px; margin-left: 16px; margin-bottom: 16px; background-color: #fff; }
-div#version-summary fieldset { margin-bottom: 1em; }
-div#version-summary .total-hours { text-align: right; }
-
-table#time-report td.hours, table#time-report th.period, table#time-report th.total { text-align: right; padding-right: 0.5em; }
-table#time-report tbody tr { font-style: italic; color: #777; }
-table#time-report tbody tr.last-level { font-style: normal; color: #555; }
-table#time-report tbody tr.total { font-style: normal; font-weight: bold; color: #555; background-color:#EEEEEE; }
-table#time-report .hours-dec { font-size: 0.9em; }
-
 ul.properties {padding:0; font-size: 0.9em; color: #777;}
 ul.properties li {list-style-type:none;}
 ul.properties li span {font-style:italic;}
-
-.total-hours { font-size: 110%; font-weight: bold; }
-.total-hours span.hours-int { font-size: 120%; }
 
 .autoscroll {overflow-x: auto; padding:1px; margin-bottom: 1.2em;}
 #user_firstname, #user_lastname, #user_mail, #my_account_form select { width: 90%; }
@@ -583,7 +562,7 @@ h2 img { vertical-align:middle; }
 
 /***** Media print specific styles *****/
 @media print {
-  #top-menu, #header, #main-menu, #sidebar, #footer, .contextual, .other-formats { display:none; }
+  #top-menu, #header, #main-menu, #sidebar, #footer, .other-formats { display:none; }
   #main { background: #fff; }
   #content { width: 99%; margin: 0; padding: 0; border: 0; background: #fff; overflow: visible !important;}
 	#wiki_add_attachment { display:none; }
