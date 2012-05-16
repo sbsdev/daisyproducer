@@ -9,7 +9,7 @@ from django.forms.formsets import DELETION_FIELD_NAME
 from django.forms.models import ModelForm, BaseModelFormSet
 from django.core.validators import RegexValidator
 
-VALID_BRAILLE_RE = re.compile(u"^([-v]|[-v]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+)$")
+VALID_BRAILLE_RE = re.compile(u"^([-v]|[-v]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœāăąćĉċčďđēėęğģĥħĩīįıĳĵķĺļľŀłńņňŋōŏőŕŗřśŝşšţťŧũūŭůűųŵŷźżžǎẁẃẅỳ]+)$")
 validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
 VALID_HOMOGRAPH_RE = re.compile(u"^(|[a-zàáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+\|[a-zàáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+)$")
 validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters are not valid')
