@@ -109,8 +109,12 @@ class DaisyPipeline:
             join(settings.DAISY_PIPELINE_PATH, 'scripts', 'verify',
                  'ConfigurableValidator.taskScript'),
             "--validatorInputFile=%s" % tmpFile,
-            # make sure files with a missing DOCTYPE declaration do
-            # not validate. 
+            # # also check using schematron tests
+            # "--validatorInputSchemas=%s" % "-//TPB//SCH dtbook 2005 Narrator//EN",
+            # # make sure it has to be a DTBook file
+            # "--validatorRequireInputType=%s" % "Dtbook document",
+            # # make sure files with a missing DOCTYPE declaration do
+            # # not validate. 
             "--validatorInputDelegates=%s" %
             "org.daisy.util.fileset.validation.delegate.impl.NoDocTypeDeclarationDelegate",
             )
@@ -342,8 +346,6 @@ class SBSForm:
         hyphenate = kwargs.get('hyphenation', False)
         hyphenator = (
             "java",
-            "-cp", join(settings.EXTERNAL_PATH, 'dtbook_hyphenator', 'lib'),
-            "-Djava.library.path=/usr/local/lib",
             "-jar", join(settings.EXTERNAL_PATH, 'dtbook_hyphenator', 'dtbook_hyphenator.jar'),
             inputFile,
             )
