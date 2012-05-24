@@ -23,7 +23,7 @@ urlpatterns = patterns('daisyproducer.documents.views.browse',
     url(r'^(?P<document_id>\d+).xhtml$', 'as_xhtml', name='browse_xhtml'),
     url(r'^(?P<document_id>\d+).rtf$', 'as_rtf', name='browse_rtf'),
     url(r'^(?P<document_id>\d+).epub$', 'as_epub', name='browse_epub'),
-    url(r'^(?P<document_id>\d+).text_only_fileset$', 'as_text_only_fileset', name='browse_text_only_fileset'),
+    url(r'^(?P<document_id>\d+).dtb_text_only$', 'as_text_only_dtb', name='browse_text_only_dtb'),
     url(r'^(?P<document_id>\d+).dtb$', 'as_dtb', name='browse_dtb'),
 )
 
@@ -43,7 +43,7 @@ urlpatterns += patterns('daisyproducer.documents.views.todo',
     url(r'^todo/(?P<document_id>\d+)/preview_library_pdf$', 'preview_library_pdf', name='todo_library_pdf'),
     url(r'^todo/(?P<document_id>\d+)/preview_rtf$', 'preview_rtf', name='todo_rtf'),
     url(r'^todo/(?P<document_id>\d+)/preview_epub$', 'preview_epub', name='todo_epub'),
-    url(r'^todo/(?P<document_id>\d+)/preview_text_only_fileset$', 'preview_text_only_fileset', name='todo_text_only_fileset'),
+    url(r'^todo/(?P<document_id>\d+)/preview_text_only_dtb$', 'preview_text_only_dtb', name='todo_text_only_dtb'),
     url(r'^todo/(?P<document_id>\d+)/preview_dtb$', 'preview_dtb', name='todo_dtb'),
 )
 

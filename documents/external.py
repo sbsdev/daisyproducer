@@ -7,6 +7,7 @@ from pyPdf import PdfFileReader
 from shutil import rmtree
 from subprocess import call, Popen, PIPE
 import re
+import zipfile
 
 import libxml2
 import libxslt
@@ -26,6 +27,22 @@ def filterBrlContractionhints(file_path):
         "xsltproc",
         "--output", tmpFile.name,
         join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterBrlContractionhints.xsl'),
+        file_path,
+        )
+    call(command)
+    return tmpFile.name
+
+def filterProcessingInstructions(file_path):
+    """Filter all the processing instructions from the given file_path.
+    This is done using an XSLT stylesheet. Return the name of a
+    temporary file that contains the filtered content. The caller is
+    responsible for removing the temporary file."""
+    tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", delete=False)
+    tmpFile.close() # we are only interested in a unique filename
+    command = (
+        "xsltproc",
+        "--output", tmpFile.name,
+        join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterProcessingInstructions.xsl'),
         file_path,
         )
     call(command)
@@ -75,6 +92,23 @@ def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **
     os.rename(pdfFileName, outputFile)
     os.chdir(currentDir)
     rmtree(tmpDir)
+
+def zipDirectory(directory, zipFileName, document_title):
+    outputFile = zipfile.ZipFile(zipFileName, 'w')
+    cwd = os.getcwd()
+    os.chdir(directory)
+    for dirpath, dirnames, filenames in os.walk('.'):
+        for filename in filenames:
+            # zipFile support in Python has a few weak spots: Older
+            # Pythons die if the filename or the arcname that is
+            # passed to ZipFile.write is not in the right encoding
+            # FIXME: remove the encode("latin-1") workaround once we
+            # upgrade to 2.6.2
+            outputFile.write(
+                os.path.join(dirpath, filename).encode("latin-1"), 
+                os.path.join(document_title, dirpath, filename).encode("latin-1"))
+    outputFile.close()
+    os.chdir(cwd)
 
 class DaisyPipeline:
 
@@ -203,6 +237,26 @@ class DaisyPipeline:
             command += ("--%s=%s" % (k,v),)
         call(command)
         os.remove(tmpFile)
+
+    @staticmethod
+    def dtbook2text_only_dtb(inputFile, outputPath, **kwargs):
+        """Transform a dtbook xml file to a Daisy 3 Text-Only"""
+        tmpFile = filterBrlContractionhints(inputFile)
+        tmpFile2 = filterProcessingInstructions(tmpFile)
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+        command = (
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts',
+                 'create_distribute', 'dtb', 'DTBookToDaisy3TextOnlyDTB.taskScript'),
+            "--input=%s" % tmpFile2,
+            "--outputPath=%s" % outputPath,
+            )
+        for k, v in kwargs.iteritems():
+            command += ("--%s=%s" % (k,v),)
+        call(command)
+        os.remove(tmpFile)
+        os.remove(tmpFile2)
 
     @staticmethod
     def dtbook2dtb(inputFile, outputPath, **kwargs):

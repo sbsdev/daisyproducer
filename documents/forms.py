@@ -222,6 +222,9 @@ class TextOnlyFilesetForm(forms.Form):
     doWordDetection = forms.BooleanField(
         label=_("Word detection"), required=False)
 
+class TextOnlyDTBForm(forms.Form):
+    pass
+
 class DTBForm(forms.Form):
     NARRATOR_BITRATE_CHOICES = (
         (32, _('32 kbit/s')),

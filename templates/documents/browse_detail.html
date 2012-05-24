@@ -14,7 +14,7 @@
   <a href="#xhtml_view" accesskey="x" >{% trans "XHTML" %}</a><br />
   <a href="#rtf_view" accesskey="r" >{% trans "RTF" %}</a><br />
   <a href="#epub_view" accesskey="e" >{% trans "EPUB" %}</a><br />
-  <a href="#text_only_fileset_view" accesskey="t" >{% trans "Daisy 2.02 Text-Only fileset" %}</a><br />
+  <a href="#text_only_view" accesskey="t" >{% trans "Text-Only Daisy book" %}</a><br />
   <a href="#dtb_view" accesskey="a" >{% trans "Full-Text Full-Audio book" %}</a><br />
 </div>
 {% endif %}
@@ -78,10 +78,10 @@
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <h3 id="text_only_fileset_view">{% trans "View as Daisy 2.02 Text-Only fileset" %}</h3>
-  <form action="{% url browse_text_only_fileset object.id %}" method="POST">{% csrf_token %}
+  <h3 id="text_only_view">{% trans "View as Text-Only Daisy book" %}</h3>
+  <form action="{% url browse_text_only_dtb object.id %}" method="POST">{% csrf_token %}
     <table>
-      {{ textonlyfilesetform.as_table }}
+      {{ textonlydtbform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>

@@ -27,7 +27,7 @@
   <h3>{% trans "Preview (BETA)" %}</h3>
   <a href="{% url todo_rtf document.id %}">{% trans "RTF" %}</a><br />
   <a href="{% url todo_epub document.id %}">{% trans "EPUB" %}</a><br />
-  <a href="{% url todo_text_only_fileset document.id %}">{% trans "Daisy 2.02 Text-Only fileset" %}</a><br />
+  <a href="{% url todo_text_only_dtb document.id %}">{% trans "Text-Only Daisy book" %}</a><br />
   <a href="{% url todo_dtb document.id %}">{% trans "Full-Text Full-Audio book" %}</a><br />
 </div>
 {% endif %}

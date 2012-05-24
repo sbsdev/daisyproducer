@@ -1,7 +1,7 @@
-import shutil, tempfile, zipfile, os.path
+import shutil, tempfile, os.path
 
-from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint
-from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyFilesetForm, DTBForm, SalePDFForm
+from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory
+from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm
 from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -296,34 +296,17 @@ def preview_epub(request, document_id):
     return render_to_response('documents/todo_epub.html', locals(),
                               context_instance=RequestContext(request))
 
-def zipDirectory(directory, zipFileName, document_title):
-    outputFile = zipfile.ZipFile(zipFileName, 'w')
-    cwd = os.getcwd()
-    os.chdir(directory)
-    for dirpath, dirnames, filenames in os.walk('.'):
-        for filename in filenames:
-            # zipFile support in Python has a few weak spots: Older
-            # Pythons die if the filename or the arcname that is
-            # passed to ZipFile.write is not in the right encoding
-            # FIXME: remove the encode("latin-1") workaround once we
-            # upgrade to 2.6.2
-            outputFile.write(
-                os.path.join(dirpath, filename).encode("latin-1"), 
-                os.path.join(document_title, dirpath, filename).encode("latin-1"))
-    outputFile.close()
-    os.chdir(cwd)
-
 @login_required
-def preview_text_only_fileset(request, document_id):
+def preview_text_only_dtb(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method == 'POST':
-        form = TextOnlyFilesetForm(request.POST)
+        form = TextOnlyDTBForm(request.POST)
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
 
-            DaisyPipeline.dtbook2text_only_fileset(inputFile, outputDir, **form.cleaned_data)
+            DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
 
             ignore, zipFileName = tempfile.mkstemp(suffix='.zip', prefix=document_id)
             zipDirectory(outputDir, zipFileName, document.title)
@@ -332,9 +315,9 @@ def preview_text_only_fileset(request, document_id):
             return render_to_mimetype_response('application/zip', 
                                                document.title.encode('utf-8'), zipFileName)
     else:
-        form = TextOnlyFilesetForm()
+        form = TextOnlyDTBForm()
 
-    return render_to_response('documents/todo_text_only_fileset.html', locals(),
+    return render_to_response('documents/todo_text_only_dtb.html', locals(),
                               context_instance=RequestContext(request))
 
 @login_required
@@ -350,7 +333,7 @@ def preview_dtb(request, document_id):
 
             ignore, zipFileName = tempfile.mkstemp(suffix='.zip', prefix=document_id)
             zipDirectory(outputDir, zipFileName, document.title)
-            # shutil.rmtree(outputDir)
+            shutil.rmtree(outputDir)
 
             return render_to_mimetype_response('application/zip', 
                                                document.title.encode('utf-8'), zipFileName)
