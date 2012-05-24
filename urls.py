@@ -1,5 +1,6 @@
 import os.path
 
+import django
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
@@ -95,9 +96,10 @@ urlpatterns += patterns('',
 )
 
 # enable the admin:
-urlpatterns += patterns('',
-    (r'^admin/(.*)', admin.site.root),
-)
+if django.VERSION < (1, 3, 0, 'final', 0):
+    urlpatterns += patterns('', (r'^admin/(.*)', admin.site.root),)
+else:
+    urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)),)
 
 # static files
 if settings.SERVE_STATIC_FILES:
