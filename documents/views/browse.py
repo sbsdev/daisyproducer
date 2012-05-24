@@ -144,11 +144,11 @@ def as_text_only_dtb(request, document_id):
 
     DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
 
-    ignore, zipFileName = tempfile.mkstemp(suffix='.zip', prefix=document_id)
-    zipDirectory(outputDir, zipFileName, document.title)
+    zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
+    zipDirectory(outputDir, zipFile.name, document.title)
     shutil.rmtree(outputDir)
     
-    return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFileName)
+    return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFile.name)
 
 def as_dtb(request, document_id):
     form = DTBForm(request.POST)
@@ -162,9 +162,9 @@ def as_dtb(request, document_id):
 
     DaisyPipeline.dtbook2dtb(inputFile, outputDir, **form.cleaned_data)
 
-    ignore, zipFileName = tempfile.mkstemp(suffix='.zip', prefix=document_id)
-    zipDirectory(outputDir, zipFileName, document.title)
+    zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
+    zipDirectory(outputDir, zipFile.name, document.title)
     shutil.rmtree(outputDir)
 
-    return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFileName)
+    return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFile.name)
 

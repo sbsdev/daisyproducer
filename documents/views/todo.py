@@ -308,12 +308,12 @@ def preview_text_only_dtb(request, document_id):
 
             DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
 
-            ignore, zipFileName = tempfile.mkstemp(suffix='.zip', prefix=document_id)
-            zipDirectory(outputDir, zipFileName, document.title)
+            zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
+            zipDirectory(outputDir, zipFile.name, document.title)
             shutil.rmtree(outputDir)
     
             return render_to_mimetype_response('application/zip', 
-                                               document.title.encode('utf-8'), zipFileName)
+                                               document.title.encode('utf-8'), zipFile.name)
     else:
         form = TextOnlyDTBForm()
 
@@ -331,12 +331,12 @@ def preview_dtb(request, document_id):
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
             DaisyPipeline.dtbook2dtb(inputFile, outputDir, **form.cleaned_data)
 
-            ignore, zipFileName = tempfile.mkstemp(suffix='.zip', prefix=document_id)
-            zipDirectory(outputDir, zipFileName, document.title)
+            zipFile = tempfile.mkstemp(suffix='.zip', prefix=document_id, delete=False)
+            zipDirectory(outputDir, zipFile.name, document.title)
             shutil.rmtree(outputDir)
 
             return render_to_mimetype_response('application/zip', 
-                                               document.title.encode('utf-8'), zipFileName)
+                                               document.title.encode('utf-8'), zipFile.name)
     else:
         form = DTBForm()
 
