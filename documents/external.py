@@ -255,8 +255,9 @@ class DaisyPipeline:
         fnull = open(os.devnull, 'w')
         result = map(lambda line: line.strip(),
                      map(lambda line: line.replace("[ERROR, Validator]", "", 1), 
-                         filter(lambda line: line.find('[ERROR, Validator]') != -1, 
-                                Popen(command, stdout=PIPE, stderr=fnull).communicate()[0].splitlines())))
+                         filter(lambda line: line.find('[ERROR, Validator] report:') == -1, 
+                                filter(lambda line: line.find('[ERROR, Validator]') != -1 or line.find('  [') != -1, 
+                                       Popen(command, stdout=PIPE, stderr=fnull).communicate()[0].splitlines()))))
         fnull.close()
         os.remove(tmpFile)
         os.remove(tmpFile2)
