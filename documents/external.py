@@ -254,9 +254,15 @@ class DaisyPipeline:
             )
         for k, v in kwargs.iteritems():
             command += ("--%s=%s" % (k,v),)
-        call(command)
+        fnull = open(os.devnull, 'w')
+        result = map(lambda line: line.strip(),
+                     map(lambda line: line.replace("[ERROR, Validator]", "", 1), 
+                         filter(lambda line: line.find('[ERROR, Validator]') != -1, 
+                                Popen(command, stdout=PIPE, stderr=fnull).communicate()[0].splitlines())))
+        fnull.close()
         os.remove(tmpFile)
         os.remove(tmpFile2)
+        return result
 
     @staticmethod
     def dtbook2dtb(inputFile, outputPath, **kwargs):
