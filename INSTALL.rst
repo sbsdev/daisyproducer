@@ -8,7 +8,7 @@ Requirements
 Basic requirements
 ------------------
 
-- Python_ (tested with Python 2.5)
+- Python_ (you need at least Python 2.6.2)
 - Django_ 
 - lxml_
 - pyPDF_ (used for large print volume size calculation)
