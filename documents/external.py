@@ -111,6 +111,23 @@ def zipDirectory(directory, zipFileName, document_title):
 class DaisyPipeline:
 
     @staticmethod
+    def replace_file_references(lines, file_path):
+        return [line.replace("file:%s" % file_path, "line: ", 1) for line in lines]
+
+    @staticmethod
+    def filter_output(lines):
+        return [line.replace("[ERROR, Validator]", "", 1).strip() 
+                for line in lines
+                # find all lines that contain an error
+                if line.find('[ERROR, Validator]') != -1 
+                # but drop lines that just announce some more error messages
+                and line.find('[ERROR, Validator] assertion failed:') == -1 
+                and line.find('[ERROR, Validator] report:') == -1 
+                # include lines which are indented by two spaces. Apparently the validator uses this to
+                # announce errors
+                or line.find('  [') != -1]
+
+    @staticmethod
     def validate(file_path):
         """Validate a given file_path using the Validator from the Daisy
         Pipeline. Return an empty string if the validation was
@@ -150,10 +167,8 @@ class DaisyPipeline:
             "--validatorInputDelegates=%s" %
             "org.daisy.util.fileset.validation.delegate.impl.NoDocTypeDeclarationDelegate",
             )
-        result = map(lambda line: line.replace("file:%s" % file_path, "", 1),
-                   map(lambda line: line.replace("[ERROR, Validator]", "", 1), 
-                       filter(lambda line: line.find('[ERROR, Validator]') != -1, 
-                              Popen(command, stdout=PIPE).communicate()[0].splitlines())))
+        result = DaisyPipeline.replace_file_references(
+            DaisyPipeline.filter_output(Popen(command, stdout=PIPE).communicate()[0].splitlines()), tmpFile)
         os.remove(tmpFile)
         return result
         
@@ -253,11 +268,7 @@ class DaisyPipeline:
         for k, v in kwargs.iteritems():
             command += ("--%s=%s" % (k,v),)
         fnull = open(os.devnull, 'w')
-        result = map(lambda line: line.strip(),
-                     map(lambda line: line.replace("[ERROR, Validator]", "", 1), 
-                         filter(lambda line: line.find('[ERROR, Validator] report:') == -1, 
-                                filter(lambda line: line.find('[ERROR, Validator]') != -1 or line.find('  [') != -1, 
-                                       Popen(command, stdout=PIPE, stderr=fnull).communicate()[0].splitlines()))))
+        result = DaisyPipeline.filter_output(Popen(command, stdout=PIPE, stderr=fnull).communicate()[0].splitlines())
         fnull.close()
         os.remove(tmpFile)
         os.remove(tmpFile2)
