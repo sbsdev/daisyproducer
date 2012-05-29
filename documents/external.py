@@ -48,6 +48,22 @@ def filterProcessingInstructions(file_path):
     call(command)
     return tmpFile.name
 
+def filterEmptyTOC(file_path):
+    """Filter empty TOCs from the given file_path.
+    This is done using an XSLT stylesheet. Return the name of a
+    temporary file that contains the filtered content. The caller is
+    responsible for removing the temporary file."""
+    tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", delete=False)
+    tmpFile.close() # we are only interested in a unique filename
+    command = (
+        "xsltproc",
+        "--output", tmpFile.name,
+        join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterEmptyTOC.xsl'),
+        file_path,
+        )
+    call(command)
+    return tmpFile.name
+
 def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **kwargs):
     tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
     fileBaseName = splitext(basename(inputFile))[0]
@@ -256,13 +272,14 @@ class DaisyPipeline:
         """Transform a dtbook xml file to a Daisy 3 Text-Only"""
         tmpFile = filterBrlContractionhints(inputFile)
         tmpFile2 = filterProcessingInstructions(tmpFile)
+        tmpFile3 = filterEmptyTOC(tmpFile2)
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
             join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
             join(settings.DAISY_PIPELINE_PATH, 'scripts',
                  'create_distribute', 'dtb', 'DTBookToDaisy3TextOnlyDTB.taskScript'),
-            "--input=%s" % tmpFile2,
+            "--input=%s" % tmpFile3,
             "--outputPath=%s" % outputPath,
             )
         for k, v in kwargs.iteritems():
@@ -272,6 +289,7 @@ class DaisyPipeline:
         fnull.close()
         os.remove(tmpFile)
         os.remove(tmpFile2)
+        os.remove(tmpFile3)
         return result
 
     @staticmethod
