@@ -57,6 +57,7 @@ class Command(BaseCommand):
                 fileName = mapping[fileName]
             if verbosity >= 2:
                 self.stdout.write('Mapping %s to %s\n' % (dtbook, fileName))
+                self.stdout.flush()
                 
             zipFileName = os.path.join(outputPath, fileName + ".zip")
             zipDirectory(outputDir, zipFileName, fileName)
