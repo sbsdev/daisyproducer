@@ -2,6 +2,7 @@ import os
 import tempfile
 import textwrap
 import math
+import subprocess
 from os.path import join, basename, splitext
 from pyPdf import PdfFileReader
 from shutil import rmtree
@@ -32,38 +33,14 @@ def filterBrlContractionhints(file_path):
     call(command)
     return tmpFile.name
 
-def filterProcessingInstructions(file_path):
-    """Filter all the processing instructions from the given file_path.
-    This is done using an XSLT stylesheet. Return the name of a
-    temporary file that contains the filtered content. The caller is
-    responsible for removing the temporary file."""
-    tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", delete=False)
-    tmpFile.close() # we are only interested in a unique filename
+def applyXSL(xsl, stdin, stdout):
     command = (
         "xsltproc",
-        "--output", tmpFile.name,
-        join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterProcessingInstructions.xsl'),
-        file_path,
+        join(settings.PROJECT_DIR, 'documents', 'xslt', xsl),
+        "-",
         )
-    call(command)
-    return tmpFile.name
-
-def filterEmptyTOC(file_path):
-    """Filter empty TOCs from the given file_path.
-    This is done using an XSLT stylesheet. Return the name of a
-    temporary file that contains the filtered content. The caller is
-    responsible for removing the temporary file."""
-    tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", delete=False)
-    tmpFile.close() # we are only interested in a unique filename
-    command = (
-        "xsltproc",
-        "--output", tmpFile.name,
-        join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterEmptyTOC.xsl'),
-        file_path,
-        )
-    call(command)
-    return tmpFile.name
-
+    return Popen(command, stdin=stdin, stdout=stdout)
+    
 def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **kwargs):
     tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
     fileBaseName = splitext(basename(inputFile))[0]
@@ -270,16 +247,20 @@ class DaisyPipeline:
     @staticmethod
     def dtbook2text_only_dtb(inputFile, outputPath, **kwargs):
         """Transform a dtbook xml file to a Daisy 3 Text-Only"""
-        tmpFile = filterBrlContractionhints(inputFile)
-        tmpFile2 = filterProcessingInstructions(tmpFile)
-        tmpFile3 = filterEmptyTOC(tmpFile2)
+        inputFileHandle = open(inputFile)
+        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml")
+        p1 = applyXSL('filterBrlContractionhints.xsl', inputFileHandle, subprocess.PIPE)
+        p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
+        p3 = applyXSL('filterEmptyTOC.xsl', p2.stdout, subprocess.PIPE)
+        p4 = applyXSL('addEmptyHeaders.xsl', p3.stdout, tmpFile)
+        p4.communicate()
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
             join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
             join(settings.DAISY_PIPELINE_PATH, 'scripts',
                  'create_distribute', 'dtb', 'DTBookToDaisy3TextOnlyDTB.taskScript'),
-            "--input=%s" % tmpFile3,
+            "--input=%s" % tmpFile,
             "--outputPath=%s" % outputPath,
             )
         for k, v in kwargs.iteritems():
@@ -287,9 +268,8 @@ class DaisyPipeline:
         fnull = open(os.devnull, 'w')
         result = DaisyPipeline.filter_output(Popen(command, stdout=PIPE, stderr=fnull).communicate()[0].splitlines())
         fnull.close()
-        os.remove(tmpFile)
-        os.remove(tmpFile2)
-        os.remove(tmpFile3)
+        inputFileHandle.close()
+        tmpFile.close()
         return result
 
     @staticmethod
