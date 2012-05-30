@@ -17,9 +17,20 @@
   <div id="relations">
     <form method="post" action="{% url todo_text_only_dtb document.id %}">{% csrf_token %}
       <p>
+	{% if transformationErrors %}
+	<div class="errorExplanation" id="errorExplanation">
+	  {% trans "Unable to complete the preview" %}
+	  <ul>
+	    {% for error in transformationErrors %}
+	    <li>{{ error }}</li>
+	    {% endfor %}
+	  </ul>
+	</div>
+	{% endif %}
 	<table>
 	  {{ form.as_table }}
 	</table>
+      </p>
       <p>
 	<input type="submit" value="{% trans 'Preview' %}" />
 	<a href="{% url todo_detail document.id %}">{% trans 'Cancel' %}</a>

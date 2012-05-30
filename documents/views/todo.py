@@ -306,7 +306,10 @@ def preview_text_only_dtb(request, document_id):
             inputFile = document.latest_version().content.path
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
 
-            DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
+            transformationErrors = DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
+            if transformationErrors:
+                return render_to_response('documents/todo_text_only_dtb.html', locals(),
+                                          context_instance=RequestContext(request))
 
             zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
             zipDirectory(outputDir, zipFile.name, document.title)
@@ -331,7 +334,7 @@ def preview_dtb(request, document_id):
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
             DaisyPipeline.dtbook2dtb(inputFile, outputDir, **form.cleaned_data)
 
-            zipFile = tempfile.mkstemp(suffix='.zip', prefix=document_id, delete=False)
+            zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
             zipDirectory(outputDir, zipFile.name, document.title)
             shutil.rmtree(outputDir)
 
