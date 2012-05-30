@@ -260,7 +260,7 @@ class DaisyPipeline:
             join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
             join(settings.DAISY_PIPELINE_PATH, 'scripts',
                  'create_distribute', 'dtb', 'DTBookToDaisy3TextOnlyDTB.taskScript'),
-            "--input=%s" % tmpFile,
+            "--input=%s" % tmpFile.name,
             "--outputPath=%s" % outputPath,
             )
         for k, v in kwargs.iteritems():
