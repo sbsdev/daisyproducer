@@ -7,6 +7,7 @@ from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 import tempfile
 import os
+from lxml import etree
 from django.forms.models import model_to_dict
 
 def validate_content(fileName, contentMetaData, removeFile=False):
@@ -21,7 +22,10 @@ def validate_content(fileName, contentMetaData, removeFile=False):
     # make sure the meta data of the uploaded version corresponds
     # to the meta data in the document
     xmlContent = XMLContent()
-    errorList = xmlContent.validateContentMetaData(fileName , **contentMetaData)
+    try:
+        errorList = xmlContent.validateContentMetaData(fileName , **contentMetaData)
+    except etree.XMLSyntaxError as e:
+        raise forms.ValidationError(("The uploaded file is not a valid DTBook XML document:" + e.message))
     if removeFile:
         os.remove(fileName)
     if errorList:
