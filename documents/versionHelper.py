@@ -65,9 +65,8 @@ class XMLContent:
         return etree.tostring(self.tree, xml_declaration=True, encoding="UTF-8")
 
     def validateContentMetaData(self, filePath, author, title, **kwargs):
-        versionFile = open(filePath)
-        self.tree = etree.parse(versionFile)
-        versionFile.close()
+        with open(filePath) as versionFile:
+            self.tree = etree.parse(versionFile)
         
         validationProblems = reduce(
             # flatten the list
