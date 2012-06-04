@@ -1,0 +1,23 @@
+{% extends "documents/todo.html" %}
+{% load i18n %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+
+<h2>{% blocktrans %}Confirm Single Word for Grade {{grade}}{% endblocktrans %}</h2>
+
+<div class="issue">
+  
+  <div id="relations">
+    <form method="post" action="">{% csrf_token %}
+      <table>
+	{{ form.as_table }}
+      </table>
+      <input type="submit" value="{% trans 'Confirm' %}" />
+      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

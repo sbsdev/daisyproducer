@@ -65,6 +65,8 @@ urlpatterns += patterns('daisyproducer.dictionary.views',
     url(r'^todo/(?P<document_id>\d+)/local_words_g2$', 'local', kwargs={'grade': 2}, name='dictionary_local_g2'),
     url(r'^todo/confirm_words_g1$', 'confirm', kwargs={'grade': 1}, name='dictionary_confirm_g1'),
     url(r'^todo/confirm_words_g2$', 'confirm', kwargs={'grade': 2}, name='dictionary_confirm_g2'),
+    url(r'^todo/confirm_single_word_g1$', 'confirm_single', kwargs={'grade': 1}, name='dictionary_single_confirm_g1'),
+    url(r'^todo/confirm_single_word_g2$', 'confirm_single', kwargs={'grade': 2}, name='dictionary_single_confirm_g2'),
 )
 
 # help and about

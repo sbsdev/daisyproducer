@@ -3,7 +3,7 @@ import unicodedata
 
 import louis
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm, BaseWordFormSet
+from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm, BaseWordFormSet, ConfirmSingleWordForm, ConfirmSingleTypedWordForm, ConfirmSingleHomographWordForm
 from daisyproducer.dictionary.models import Word
 from daisyproducer.documents.models import Document
 from django.conf import settings
@@ -216,6 +216,39 @@ def confirm(request, grade):
 
     formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type'))
     return render_to_response('dictionary/confirm.html', locals(), 
+                              context_instance=RequestContext(request))
+
+@transaction.commit_on_success
+def confirm_single(request, grade):
+    try:
+        # just get one word
+        word = Word.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type')[0:1].get()
+    except Word.DoesNotExist:
+        return HttpResponseRedirect(reverse('todo_index'))
+
+    if word.type == 0:
+        formClass = ConfirmSingleWordForm
+    elif word.type == 5:
+        formClass = ConfirmSingleHomographWordForm
+    else:
+        formClass = ConfirmSingleTypedWordForm
+
+    if request.method == 'POST':
+        form = formClass(request.POST, instance=word)
+        if form.is_valid():
+            word = form.save(commit=False)
+            word.document = None
+            word.isConfirmed = True
+            word.grade = grade
+            word.save()
+            # redirect to self to deal with the next word
+            return HttpResponseRedirect(reverse('dictionary_single_confirm_g1'))
+        else:
+            return render_to_response('dictionary/confirm_single.html', locals(),
+                                      context_instance=RequestContext(request))
+
+    form = formClass(instance=word)
+    return render_to_response('dictionary/confirm_single.html', locals(), 
                               context_instance=RequestContext(request))
 
 

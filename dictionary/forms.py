@@ -17,7 +17,7 @@ validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters
 class PartialWordForm(ModelForm):
     class Meta:
         model = Word
-        exclude=('document', 'isConfirmed', 'grade'), 
+        exclude=('document', 'isConfirmed', 'grade')
         widgets = {}
         # add the title attribute to the widgets
         for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isConfirmed', 'isLocal'):
@@ -88,6 +88,42 @@ class RestrictedConfirmWordForm(PartialWordForm):
             return super(RestrictedConfirmWordForm, self).clean()
 
         return cleaned_data
+
+class ConfirmSingleWordForm(ModelForm):
+    class Meta:
+        model = Word
+        exclude=('document', 'isConfirmed', 'grade', 'type', 'homograph_disambiguation')
+        widgets = {}
+        # add the title attribute to the widgets
+        for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal'):
+            f = model._meta.get_field(field)
+            formField = f.formfield()
+            if formField:
+                attrs = {'title': formField.label}
+                if field == 'braille':
+                    attrs.update({'class': 'braille'})
+                elif field in ('untranslated', 'homograph_disambiguation'):
+                    attrs.update({'readonly': 'readonly'})
+                widgets[field] = type(formField.widget)(attrs=attrs)
+
+class ConfirmSingleTypedWordForm(ConfirmSingleWordForm):
+    class Meta(ConfirmSingleWordForm.Meta):
+        exclude=('document', 'isConfirmed', 'grade', 'homograph_disambiguation')
+
+    def __init__(self, *args, **kwargs):
+        super(ConfirmSingleWordForm, self).__init__(*args, **kwargs)
+        if not self.is_bound:
+            if self.initial['type'] == 2:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
+            elif self.initial['type'] == 4:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
+            else:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+            self.fields['type'].choices = typeChoices
+
+class ConfirmSingleHomographWordForm(ConfirmSingleTypedWordForm):
+    class Meta(ConfirmSingleTypedWordForm.Meta):
+        exclude=('document', 'isConfirmed', 'grade')
 
 class BaseWordFormSet(BaseModelFormSet):
      def clean(self):
