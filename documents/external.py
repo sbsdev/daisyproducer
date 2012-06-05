@@ -152,7 +152,7 @@ class DaisyPipeline:
                  'ConfigurableValidator.taskScript'),
             "--validatorInputFile=%s" % tmpFile,
             # also check using schematron tests
-            "--validatorInputSchemas=%s" % "-//TPB//SCH dtbook 2005 Narrator//EN",
+            # "--validatorInputSchemas=%s" % "-//TPB//SCH dtbook 2005 Narrator//EN",
             # make sure it has to be a DTBook file
             "--validatorRequireInputType=%s" % "Dtbook document",
             # make sure files with a missing DOCTYPE declaration do
