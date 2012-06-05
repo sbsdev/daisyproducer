@@ -242,7 +242,8 @@ def confirm_single(request, grade):
             word.grade = grade
             word.save()
             # redirect to self to deal with the next word
-            return HttpResponseRedirect(reverse('dictionary_single_confirm_g1'))
+            redirect = 'dictionary_single_confirm_g1' if grade == 1 else 'dictionary_single_confirm_g2'
+            return HttpResponseRedirect(reverse(redirect))
         else:
             return render_to_response('dictionary/confirm_single.html', locals(),
                                       context_instance=RequestContext(request))
