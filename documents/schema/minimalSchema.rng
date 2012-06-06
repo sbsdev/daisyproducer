@@ -142,6 +142,16 @@
       </interleave>
     </element>
   </define>
+  <define name="langAttribute">
+    <attribute name="xml:lang">
+      <choice>
+        <value>de-CH</value>
+        <value>en</value>
+        <value>fr</value>
+        <value>it</value>
+      </choice>
+    </attribute>
+  </define>
   <define name="gradeAttribute">
     <attribute name="brl:grade">
       <data type="nonNegativeInteger">
@@ -628,6 +638,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="span">
     <element name="span">
+      <optional>
+        <ref name="langAttribute"/>
+      </optional>
       <choice>
         <ref name="gradeAttribute"/>
         <ref name="accentsAttribute"/>
@@ -660,6 +673,9 @@ for this emphasis</a:documentation>
   </define>
   <define name="blockquote">
     <element name="blockquote">
+      <optional>
+        <ref name="langAttribute"/>
+      </optional>
       <optional>
         <ref name="brailleClassAttribute"/>
       </optional>
@@ -869,6 +885,9 @@ for this emphasis</a:documentation>
     <element name="poem">
       <optional>
         <ref name="brailleClassAttribute"/>
+      </optional>
+      <optional>
+        <ref name="langAttribute"/>
       </optional>
       <interleave>
         <zeroOrMore>
