@@ -20,7 +20,7 @@ class Word(models.Model):
     untranslated = models.CharField(_("Untranslated"), max_length=MAX_WORD_LENGTH, db_index=True)
     braille = models.CharField(_("Braille"), max_length=MAX_WORD_LENGTH)
     grade = models.PositiveSmallIntegerField(_("Grade"), db_index=True)
-    type = models.PositiveSmallIntegerField(_("Markup"), default=0, choices=WORD_TYPE_CHOICES)
+    type = models.PositiveSmallIntegerField(_("Markup"), default=0, choices=WORD_TYPE_CHOICES, db_index=True)
     homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=MAX_WORD_LENGTH, blank=True)
 
     class Meta:
