@@ -143,6 +143,11 @@
     </element>
   </define>
   <define name="langAttribute">
+    <a:documentation>Because this xml:lang is different than the one above (for the top level),
+trang wraps the XML Schema attribute definitions in two attributeGroup's with
+different names (xml:lang &amp; xml:lang1). But for some reason the attribute
+definitions now have a use="required", which has to be deleted manually for
+xml:lang1 (until we find a way to properly configure trang).</a:documentation>
     <attribute name="xml:lang">
       <choice>
         <value>de-CH</value>
@@ -569,6 +574,20 @@ for this emphasis</a:documentation>
       </choice>
     </attribute>
   </define>
+  <define name="continuationAttribute">
+    <a:documentation>The continuation attribute provides a mechanism to establish a connection
+between emphasis that continues across multiple paragraphs e.g.
+Referenced elements must be located after the referencing element. An &lt;em&gt;
+can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference another &lt;strong&gt;.</a:documentation>
+    <attribute name="brl:continuation">
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="idAttribute">
+    <attribute name="id">
+      <data type="ID"/>
+    </attribute>
+  </define>
   <define name="em">
     <element name="em">
       <optional>
@@ -576,6 +595,12 @@ for this emphasis</a:documentation>
       </optional>
       <optional>
         <ref name="emphasisRenderAttribute"/>
+      </optional>
+      <optional>
+        <ref name="idAttribute"/>
+      </optional>
+      <optional>
+        <ref name="continuationAttribute"/>
       </optional>
       <interleave>
         <text/>
@@ -596,6 +621,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="a"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -608,6 +636,12 @@ for this emphasis</a:documentation>
       <optional>
         <ref name="emphasisRenderAttribute"/>
       </optional>
+      <optional>
+        <ref name="idAttribute"/>
+      </optional>
+      <optional>
+        <ref name="continuationAttribute"/>
+      </optional>
       <interleave>
         <text/>
         <optional>
@@ -627,6 +661,9 @@ for this emphasis</a:documentation>
         </zeroOrMore>
         <zeroOrMore>
           <ref name="a"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
         </zeroOrMore>
       </interleave>
     </element>
@@ -1128,6 +1165,12 @@ for this emphasis</a:documentation>
       </optional>
       <optional>
         <ref name="emphasisRenderAttribute"/>
+      </optional>
+      <optional>
+        <ref name="idAttribute"/>
+      </optional>
+      <optional>
+        <ref name="continuationAttribute"/>
       </optional>
       <interleave>
         <text/>

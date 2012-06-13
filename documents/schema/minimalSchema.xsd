@@ -115,6 +115,13 @@
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="langAttribute">
+    <xs:annotation>
+      <xs:documentation>Because this xml:lang is different than the one above (for the top level),
+trang wraps the XML Schema attribute definitions in two attributeGroup's with
+different names (xml:lang &amp; xml:lang1). But for some reason the attribute
+definitions now have a use="required", which has to be deleted manually for
+xml:lang1 (until we find a way to properly configure trang).</xs:documentation>
+    </xs:annotation>
     <xs:attributeGroup ref="xml:lang1"/>
   </xs:attributeGroup>
   <xs:attributeGroup name="gradeAttribute">
@@ -431,6 +438,18 @@ for this emphasis</xs:documentation>
   <xs:attributeGroup name="emphasisRenderAttribute">
     <xs:attribute ref="brl:render" use="required"/>
   </xs:attributeGroup>
+  <xs:attributeGroup name="continuationAttribute">
+    <xs:annotation>
+      <xs:documentation>The continuation attribute provides a mechanism to establish a connection
+between emphasis that continues across multiple paragraphs e.g.
+Referenced elements must be located after the referencing element. An &lt;em&gt;
+can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference another &lt;strong&gt;.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute ref="brl:continuation" use="required"/>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="idAttribute">
+    <xs:attribute name="id" use="required" type="xs:ID"/>
+  </xs:attributeGroup>
   <xs:element name="em">
     <xs:complexType mixed="true">
       <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -440,9 +459,12 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:a"/>
+        <xs:element ref="brl:select"/>
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>
+      <xs:attribute name="id" type="xs:ID"/>
+      <xs:attribute ref="brl:continuation"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="strong">
@@ -454,9 +476,12 @@ for this emphasis</xs:documentation>
         <xs:element ref="dtbook:noteref"/>
         <xs:element ref="dtbook:span"/>
         <xs:element ref="dtbook:a"/>
+        <xs:element ref="brl:select"/>
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>
+      <xs:attribute name="id" type="xs:ID"/>
+      <xs:attribute ref="brl:continuation"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="abbr" type="xs:string"/>
