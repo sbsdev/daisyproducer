@@ -127,7 +127,7 @@ class DaisyPipeline:
         successful. Return a list of error messages as delivered by
         the Daisy Pipeline otherwise."""
 
-        xmlschema = etree.XMLSchema(file=join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.xsd'))
+        relaxng = etree.RelaxNG(file=join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.rng'))
         etree.clear_error_log()
         try:
             doc = etree.parse(file_path)
@@ -135,10 +135,22 @@ class DaisyPipeline:
             entries = e.error_log.filter_from_level(etree.ErrorLevels.FATAL)
             return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
 
-        if not xmlschema.validate(doc):
-            entries = xmlschema.error_log
+        if not relaxng.validate(doc):
+            entries = relaxng.error_log
             return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
-
+        # Validate using Schematron tests. We have to do this before the
+        # @brl:* attributes are filtered out.
+        command = (
+            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
+            join(settings.DAISY_PIPELINE_PATH, 'scripts', 'verify',
+                 'ConfigurableValidator.taskScript'),
+            "--validatorInputFile=%s" % file_path,
+            "--validatorInputSchemas=%s" % "-//SBS//SCH dtbook 2005 SBS//EN",
+            )
+        result = DaisyPipeline.replace_file_references(
+            DaisyPipeline.filter_output(Popen(command, stdout=PIPE).communicate()[0].splitlines()), file_path)
+        if result:
+            return result
         tmpFile = filterBrlContractionhints(file_path)
         command = (
             join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
