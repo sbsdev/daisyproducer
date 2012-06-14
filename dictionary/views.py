@@ -3,13 +3,14 @@ import unicodedata
 import louis
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm, BaseWordFormSet, ConfirmSingleWordForm, ConfirmSingleTypedWordForm, ConfirmSingleHomographWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm, BaseWordFormSet, ConfirmSingleWordForm, ConfirmSingleTypedWordForm, ConfirmSingleHomographWordForm, ConflictingWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.documents.models import Document
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.forms.models import modelformset_factory
+from django.forms.formsets import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -228,6 +229,71 @@ def confirm(request, grade):
 
     formset = WordFormSet(queryset=LocalWord.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type'))
     return render_to_response('dictionary/confirm.html', locals(), 
+                              context_instance=RequestContext(request))
+
+@transaction.commit_on_success
+def confirm_conflicting_duplicates(request, grade):
+
+    WordFormSet = formset_factory(ConflictingWordForm, extra=0)
+    if request.method == 'POST':
+        formset = WordFormSet(request.POST)
+        if formset.is_valid():
+            affected_documents = set()
+            # save the correct words in the GlobalWord
+            for form in formset:
+                # FIXME: This is an open attack vector. A user can
+                # change any word in the global dict with a carefuly
+                # crafted post. It might be better not to pass the id.
+                word = GlobalWord(grade=grade, **form.cleaned_data)
+                word.save()
+                # note which documents are affected
+                filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
+                words_to_delete = LocalWord.objects.filter(grade=grade, **filter_args)
+                affected_documents.update([word.document for word in words_to_delete])
+                # delete the conflicting words (and also plain
+                # duplicate non-conflicting words) from the LocalWords
+                words_to_delete.delete()
+            writeLocalTables(list(affected_documents))
+            return HttpResponseRedirect(reverse('todo_index'))
+    else:
+        sql_statement = """
+SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, NULL as global_id
+FROM dictionary_localword AS a, dictionary_localword AS b 
+WHERE a.untranslated = b.untranslated 
+AND a.type = b.type 
+AND a.homograph_disambiguation = b.homograph_disambiguation 
+AND a.grade = %s
+AND a.braille != b.braille
+UNION
+SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, b.id as global_id
+FROM dictionary_localword AS a, dictionary_globalword AS b 
+WHERE a.untranslated = b.untranslated 
+AND a.type = b.type 
+AND a.homograph_disambiguation = b.homograph_disambiguation 
+AND a.grade = %s
+AND a.braille != b.braille"""
+        conflicting_words = LocalWord.objects.raw(sql_statement, (grade, grade))
+    
+        unique_conflicting_words = []
+        seen = set()
+        for word in conflicting_words:
+            if (word.untranslated, word.type, word.homograph_disambiguation) not in seen:
+                unique_conflicting_words.append(word)
+                seen.add((word.untranslated, word.type, word.homograph_disambiguation))
+
+        initial=[
+            {'id': word.global_id,
+             'untranslated': word.untranslated,
+             'type': word.type,
+             'homograph_disambiguation': word.homograph_disambiguation,
+             'braille': [word.braille1, word.braille2],
+             } for word in unique_conflicting_words]
+        initial = sorted(initial, key=lambda x: x['untranslated'])
+        
+        WordFormSet = formset_factory(ConflictingWordForm, extra=0)
+        formset = WordFormSet(initial=initial)
+
+    return render_to_response('dictionary/confirm_conflicting_duplicates.html', locals(), 
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success

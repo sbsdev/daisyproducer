@@ -3,6 +3,8 @@ import re
 
 from daisyproducer.dictionary.models import Word, LocalWord
 
+from django import forms
+
 from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.formsets import DELETION_FIELD_NAME
@@ -144,3 +146,17 @@ class BaseWordFormSet(BaseModelFormSet):
                  words.add(word)
          if not unique:
              raise ValidationError(msg)
+
+class ConflictingWordForm(forms.Form):
+    id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    braille = forms.CharField(widget=forms.Select())
+    type = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    homograph_disambiguation = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(ConflictingWordForm, self).__init__(*args, **kwargs)
+        if not self.is_bound:
+            brailleChoices = [(braille, braille) for braille in self.initial['braille']]
+            self.fields['braille'].widget.choices = brailleChoices
+
