@@ -28,6 +28,7 @@
       </xs:restriction>
     </xs:simpleType>
   </xs:attribute>
+  <xs:attribute name="continuation" type="xs:IDREFS"/>
   <xs:element name="num">
     <xs:complexType mixed="true">
       <xs:attribute name="role" use="required">
@@ -92,6 +93,8 @@
       </xs:choice>
       <xs:attribute name="class" type="xs:string"/>
       <xs:attribute ref="brl:render"/>
+      <xs:attribute name="id" type="xs:ID"/>
+      <xs:attribute ref="brl:continuation"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="volume" substitutionGroup="dtbook:levelcontent">

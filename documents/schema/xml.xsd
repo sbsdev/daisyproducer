@@ -2,14 +2,28 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.w3.org/XML/1998/namespace" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/">
   <xs:import namespace="http://www.daisy.org/z3986/2005/dtbook/" schemaLocation="minimalSchema.xsd"/>
   <xs:import namespace="http://www.daisy.org/z3986/2009/braille/" schemaLocation="brl.xsd"/>
-  <xs:attribute name="lang">
-    <xs:simpleType>
-      <xs:restriction base="xs:token">
-        <xs:enumeration value="de"/>
-        <xs:enumeration value="de-1901"/>
-        <xs:enumeration value="de-CH"/>
-        <xs:enumeration value="de-CH-1901"/>
-      </xs:restriction>
-    </xs:simpleType>
-  </xs:attribute>
+  <xs:attributeGroup name="lang">
+    <xs:attribute name="lang" use="required" form="qualified">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="de"/>
+          <xs:enumeration value="de-1901"/>
+          <xs:enumeration value="de-CH"/>
+          <xs:enumeration value="de-CH-1901"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="lang1">
+    <xs:attribute name="lang" form="qualified">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="de-CH"/>
+          <xs:enumeration value="en"/>
+          <xs:enumeration value="fr"/>
+          <xs:enumeration value="it"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
 </xs:schema>
