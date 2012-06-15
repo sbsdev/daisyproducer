@@ -31,6 +31,7 @@
       <td>{{stats.total_new}} {% trans 'of' %} {{stats.total_words}} ({{stats.percent|floatformat}}%)</td>
     </tr>
   </table>
+  {% include "dictionary/pagination.html" %}
   <hr />
 
   <div id="relations">

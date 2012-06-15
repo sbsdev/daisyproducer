@@ -1,0 +1,16 @@
+{% load i18n %}
+
+{% if words %}
+<hr />
+<p class="pagination">
+  {% if words.has_previous %}
+  <a href="?page={{ words.previous_page_number }}">{% trans 'previous' %}</a>
+  {% endif %}
+  
+  {% trans 'Page' %} {{ words.number }} {% trans 'of' %} {{ words.paginator.num_pages }}
+  
+  {% if words.has_next %}
+  <a href="?page={{ words.next_page_number }}">{% trans 'next' %}</a>
+  {% endif %}
+</p>
+{% endif %}

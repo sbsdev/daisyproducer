@@ -13,11 +13,12 @@
   
   {% include "documents/documentDetails.html" %}
 
-    <table>
+  <table>
     <tr>
-      <td><b>{% trans 'Total local words' %}:</b></td><td>{{formset.total_form_count}}</td>
+      <td><b>{% trans 'Total local words' %}:</b></td><td>{{paginator.count}}</td>
     </tr>
   </table>
+  {% include "dictionary/pagination.html" %}
   <hr />
 
   <div id="relations">

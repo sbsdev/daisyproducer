@@ -7,6 +7,7 @@ from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWord
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.documents.models import Document
 from django.conf import settings
+from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.forms.models import modelformset_factory
@@ -20,6 +21,7 @@ from itertools import chain
 from lxml import etree
 
 BRL_NAMESPACE = {'brl':'http://www.daisy.org/z3986/2009/braille/'}
+MAX_WORDS_PER_PAGE = 25
 
 @transaction.commit_on_success
 def check(request, document_id, grade):
@@ -122,16 +124,27 @@ def check(request, document_id, grade):
     unknown_words = unknown_words + unknown_homographs + unknown_names + unknown_places
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
+    paginator = Paginator(unknown_words, MAX_WORDS_PER_PAGE)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        words = paginator.page(page)
+    except InvalidPage:
+        words = paginator.page(paginator.num_pages)
+
     WordFormSet = modelformset_factory(
         LocalWord, 
         form=RestrictedWordForm,
         exclude=('document', 'isConfirmed', 'grade'), 
-        extra=len(unknown_words), can_delete=True)
+        extra=len(words.object_list), can_delete=True)
 
-    formset = WordFormSet(queryset=LocalWord.objects.none(), initial=unknown_words)
+    formset = WordFormSet(queryset=LocalWord.objects.none(), initial=words.object_list)
 
     stats = { "total_words": len(new_words), 
-              "total_new": len(unknown_words), 
+              "total_new": paginator.count, 
               "percent": 100.0*len(unknown_words)/len(new_words) }
 
     return render_to_response('dictionary/words.html', locals(),
@@ -149,7 +162,7 @@ def local(request, document_id, grade):
             can_delete=True)
 
         formset = WordFormSet(request.POST, 
-                              queryset=LocalWord.objects.filter(document=document))
+                              queryset=LocalWord.objects.filter(grade=grade, document=document))
         if formset.is_valid():
             instances = formset.save()
             writeLocalTables([document])
@@ -158,13 +171,25 @@ def local(request, document_id, grade):
             return render_to_response('dictionary/local.html', locals(),
                                       context_instance=RequestContext(request))
 
+    words_list = LocalWord.objects.filter(grade=grade, document=document).order_by('untranslated', 'type')
+    paginator = Paginator(words_list, MAX_WORDS_PER_PAGE)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        words = paginator.page(page)
+    except InvalidPage:
+        words = paginator.page(paginator.num_pages)
+
     WordFormSet = modelformset_factory(
         LocalWord, 
         form=RestrictedWordForm,
         exclude=('document', 'isConfirmed', 'grade'), 
         can_delete=True, extra=0)
 
-    formset = WordFormSet(queryset=LocalWord.objects.filter(grade=grade).filter(document=document).order_by('untranslated', 'type'))
+    formset = WordFormSet(queryset=words.object_list)
 
     return render_to_response('dictionary/local.html', locals(), 
                               context_instance=RequestContext(request))
@@ -219,7 +244,18 @@ def confirm(request, grade):
         w.save()
     
     words_to_confirm = LocalWord.objects.filter(grade=grade,isConfirmed=False).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
-    formset = WordFormSet(initial=words_to_confirm)
+    paginator = Paginator(words_to_confirm, MAX_WORDS_PER_PAGE)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        words = paginator.page(page)
+    except InvalidPage:
+        words = paginator.page(paginator.num_pages)
+
+    formset = WordFormSet(initial=words.object_list)
     return render_to_response('dictionary/confirm.html', locals(), 
                               context_instance=RequestContext(request))
 
@@ -231,6 +267,7 @@ WHERE a.untranslated = b.untranslated
 AND a.type = b.type 
 AND a.homograph_disambiguation = b.homograph_disambiguation 
 AND a.grade = %s
+AND a.grade = b.grade
 AND a.braille != b.braille
 UNION
 SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, b.id as global_id
@@ -239,6 +276,7 @@ WHERE a.untranslated = b.untranslated
 AND a.type = b.type 
 AND a.homograph_disambiguation = b.homograph_disambiguation 
 AND a.grade = %s
+AND a.grade = b.grade
 AND a.braille != b.braille"""
     return LocalWord.objects.raw(DETECT_CONFLICTING_WORDS, (grade, grade))    
 
