@@ -3,7 +3,7 @@ import unicodedata
 import louis
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm, BaseWordFormSet, ConfirmSingleWordForm, ConfirmSingleTypedWordForm, ConfirmSingleHomographWordForm, ConflictingWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmSingleTypedWordForm, ConfirmSingleHomographWordForm, ConfirmWordForm, ConflictingWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.documents.models import Document
 from django.conf import settings
@@ -171,28 +171,26 @@ def local(request, document_id, grade):
 
 @transaction.commit_on_success
 def confirm(request, grade):
-    if request.method == 'POST':
-        WordFormSet = modelformset_factory(
-            LocalWord, 
-            form=RestrictedConfirmWordForm,
-            formset=BaseWordFormSet,
-            exclude=('document', 'grade'),
-            can_delete=True)
+    if [word for word in get_conflicting_words(grade)]:
+        redirect = 'dictionary_confirm_conflicting_duplicates_g1' if grade == 1 else 'dictionary_confirm_conflicting_duplicates_g2'
+        return HttpResponseRedirect(reverse(redirect))
 
-        formset = WordFormSet(request.POST, 
-                              queryset=LocalWord.objects.filter(isConfirmed=False))
+    WordFormSet = formset_factory(ConfirmWordForm, extra=0)
+    if request.method == 'POST':
+
+        formset = WordFormSet(request.POST)
         if formset.is_valid():
-            instances = formset.save()
-            for instance in instances:
-                if instance.isConfirmed and not instance.isLocal:
+            for form in formset:
+                if not form.cleaned_data['isConfirmed']:
+                    continue
+                filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
+                if not form.cleaned_data['isLocal']:
                     # move confirmed and non-local words to the global dictionary
-                    w = GlobalWord(untranslated=instance.untranslated, 
-                                   braille=instance.braille, grade=instance.grade, 
-                                   type=instance.type, 
-                                   homograph_disambiguation=instance.homograph_disambiguation)
-                    # TODO: handle duplicates here
-                    w.save()
-                    instance.delete()
+                    GlobalWord.objects.create(grade=grade, braille=form.cleaned_data['braille'], **filter_args)
+                    # delete all non-local entries from the LocalWord table
+                    LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
+                else:
+                    LocalWord(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True)
     # FIXME: in principle we need to regenerate the liblouis tables,
     # i.e. the white lists now. However we do this asynchronously
     # (using a cron job) for now. There are several reasons for this:
@@ -220,16 +218,29 @@ def confirm(request, grade):
                       grade=grade, type=0)
         w.save()
     
-    WordFormSet = modelformset_factory(
-        LocalWord, 
-        form=RestrictedConfirmWordForm,
-        formset=BaseWordFormSet,
-        exclude=('document', 'grade'), extra=0,
-        can_delete=True)
-
-    formset = WordFormSet(queryset=LocalWord.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type'))
+    words_to_confirm = LocalWord.objects.filter(grade=grade,isConfirmed=False).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
+    formset = WordFormSet(initial=words_to_confirm)
     return render_to_response('dictionary/confirm.html', locals(), 
                               context_instance=RequestContext(request))
+
+def get_conflicting_words(grade):
+    DETECT_CONFLICTING_WORDS = """
+SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, NULL as global_id
+FROM dictionary_localword AS a, dictionary_localword AS b 
+WHERE a.untranslated = b.untranslated 
+AND a.type = b.type 
+AND a.homograph_disambiguation = b.homograph_disambiguation 
+AND a.grade = %s
+AND a.braille != b.braille
+UNION
+SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, b.id as global_id
+FROM dictionary_localword AS a, dictionary_globalword AS b 
+WHERE a.untranslated = b.untranslated 
+AND a.type = b.type 
+AND a.homograph_disambiguation = b.homograph_disambiguation 
+AND a.grade = %s
+AND a.braille != b.braille"""
+    return LocalWord.objects.raw(DETECT_CONFLICTING_WORDS, (grade, grade))    
 
 @transaction.commit_on_success
 def confirm_conflicting_duplicates(request, grade):
@@ -254,25 +265,11 @@ def confirm_conflicting_duplicates(request, grade):
                 # duplicate non-conflicting words) from the LocalWords
                 words_to_delete.delete()
             writeLocalTables(list(affected_documents))
-            return HttpResponseRedirect(reverse('todo_index'))
+            # once we are done dealing with conflicts we go back to regular confirmation
+            redirect = 'dictionary_confirm_g1' if grade == 1 else 'dictionary_confirm_g2'
+            return HttpResponseRedirect(reverse(redirect))
     else:
-        sql_statement = """
-SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, NULL as global_id
-FROM dictionary_localword AS a, dictionary_localword AS b 
-WHERE a.untranslated = b.untranslated 
-AND a.type = b.type 
-AND a.homograph_disambiguation = b.homograph_disambiguation 
-AND a.grade = %s
-AND a.braille != b.braille
-UNION
-SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, b.id as global_id
-FROM dictionary_localword AS a, dictionary_globalword AS b 
-WHERE a.untranslated = b.untranslated 
-AND a.type = b.type 
-AND a.homograph_disambiguation = b.homograph_disambiguation 
-AND a.grade = %s
-AND a.braille != b.braille"""
-        conflicting_words = LocalWord.objects.raw(sql_statement, (grade, grade))
+        conflicting_words = get_conflicting_words(grade)
     
         unique_conflicting_words = []
         seen = set()
