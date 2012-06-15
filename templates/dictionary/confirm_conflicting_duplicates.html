@@ -1,0 +1,54 @@
+{% extends "documents/todo.html" %}
+{% load i18n %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+
+<h2>{% blocktrans %}Confirm duplicate Words for Grade {{grade}}{% endblocktrans %}</h2>
+
+<div class="issue">
+  
+  <div id="relations">
+    <form method="post" action="">{% csrf_token %}
+      {{ formset.management_form }}
+      <table>
+	{% for form in formset.forms %}
+	{% if forloop.first %}
+	<tr>
+	  {% for field in form.visible_fields %}
+          <th>{{ field.label }}</th>
+	  {% endfor %}
+	</tr>
+	{% endif %}
+	<tr class="{% cycle 'odd' 'even' %}">
+	  {% for field in form.hidden_fields %}
+	  {{ field }} 
+	  {% endfor %}
+	  {% for field in form.visible_fields %}
+	  <td>{{ field }}</td>
+	  {% endfor %}
+	  {% if form.errors %}
+	  <td>
+	    <div class="errorExplanation" id="errorExplanation">
+	      <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span>
+	      {{ form.errors }}
+	    </div>
+	  </td>
+	  {% endif %}
+	</tr>
+	{% empty %}
+	<tr>	  
+	  <td>{% trans 'There are no conflicting duplicate words' %}</td>
+	</tr>
+	{% endfor %}
+      </table>
+      {% if formset.total_form_count > 0 %}
+      <input type="submit" value="{% trans 'Submit' %}" />
+      {% endif %}
+      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
