@@ -205,7 +205,9 @@ def confirm(request, grade):
 
         formset = WordFormSet(request.POST)
         if formset.is_valid():
-            for form in formset:
+            # FIXME: in Djano 1.3+ formset formmsets are iterable, so you can just say 
+            # for form in formset:
+            for form in formset.forms:
                 if not form.cleaned_data['isConfirmed']:
                     continue
                 filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
@@ -289,7 +291,9 @@ def confirm_conflicting_duplicates(request, grade):
         if formset.is_valid():
             affected_documents = set()
             # save the correct words in the GlobalWord
-            for form in formset:
+            # FIXME: in Djano 1.3+ formset formmsets are iterable, so you can just say 
+            # for form in formset:
+            for form in formset.forms:
                 # FIXME: This is an open attack vector. A user can
                 # change any word in the global dict with a carefuly
                 # crafted post. It might be better not to pass the id.
