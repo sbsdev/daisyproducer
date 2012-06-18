@@ -43,7 +43,8 @@ def check(request, document_id, grade):
                 instance.document = document
                 instance.save()
             writeLocalTables([document])
-            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+            redirect = 'dictionary_check_g1' if grade == 1 else 'dictionary_check_g2'
+            return HttpResponseRedirect(reverse(redirect, args=[document_id]))
         else:
             return render_to_response('dictionary/words.html', locals(),
                                       context_instance=RequestContext(request))
@@ -166,7 +167,8 @@ def local(request, document_id, grade):
         if formset.is_valid():
             instances = formset.save()
             writeLocalTables([document])
-            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+            redirect = 'dictionary_local_g1' if grade == 1 else 'dictionary_local_g2'
+            return HttpResponseRedirect(reverse(redirect, args=[document_id]))
         else:
             return render_to_response('dictionary/local.html', locals(),
                                       context_instance=RequestContext(request))
@@ -218,19 +220,21 @@ def confirm(request, grade):
                     LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
                 else:
                     LocalWord(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True)
-    # FIXME: in principle we need to regenerate the liblouis tables,
-    # i.e. the white lists now. However we do this asynchronously
-    # (using a cron job) for now. There are several reasons for this:
-    # 1) It is slow as hell if done inside a transaction. To do this
-    # outside the transaction we need transaction context managers
-    # (https://docs.djangoproject.com/en/1.3/topics/db/transactions/#controlling-transaction-management-in-views)
-    # which are only available in Django 1.3.
-    # 2) We need to serialize the table writing so they do not write
-    # on top of each other. This is easy if it is done periodically.
-    # 3) Of course it would be nice to use some kind of message queue
-    # for this (e.g. rabbitmq and celery), but for now this poor mans
-    # solution seems good enough
-            return HttpResponseRedirect(reverse('todo_index'))
+            # FIXME: in principle we need to regenerate the liblouis tables,
+            # i.e. the white lists now. However we do this asynchronously
+            # (using a cron job) for now. There are several reasons for this:
+            # 1) It is slow as hell if done inside a transaction. To do this
+            # outside the transaction we need transaction context managers
+            # (https://docs.djangoproject.com/en/1.3/topics/db/transactions/#controlling-transaction-management-in-views)
+            # which are only available in Django 1.3.
+            # 2) We need to serialize the table writing so they do not write
+            # on top of each other. This is easy if it is done periodically.
+            # 3) Of course it would be nice to use some kind of message queue
+            # for this (e.g. rabbitmq and celery), but for now this poor mans
+            # solution seems good enough
+            # redirect to self as there might be more words
+            redirect = 'dictionary_confirm_g1' if grade == 1 else 'dictionary_confirm_g2'
+            return HttpResponseRedirect(reverse(redirect))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
                                       context_instance=RequestContext(request))
