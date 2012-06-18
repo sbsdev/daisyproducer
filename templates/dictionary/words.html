@@ -67,9 +67,13 @@
 	  </td>
 	  {% endif %}
 	</tr>
+	{% empty %}
+	<p>{% trans 'No more words to check' %}</p>
 	{% endfor %}
       </table>
+      {% if pagpaginator == None or paginator.count > 0 %}
       <input type="submit" value="{% trans 'Submit' %}" />
+      {% endif %}
       <a href="{% url todo_detail  document.id %}">{% trans 'Cancel' %}</a>
     </form>
   </div>
