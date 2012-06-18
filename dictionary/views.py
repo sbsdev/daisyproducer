@@ -67,7 +67,8 @@ def check(request, document_id, grade):
                            'homograph_disambiguation': homograph} 
                           for homograph in homographs - duplicate_homographs]
     # grab names and places
-    names = set((name.text.lower() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)))
+    names = set((name for names in 
+                 (name.text.lower().split() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)) for name in names))
     duplicate_names = set((smart_unicode(word) for 
                            word in 
                            chain(GlobalWord.objects.filter(grade=grade).filter(type__in=(1,2)).filter(untranslated__in=names).values_list('untranslated', flat=True),
