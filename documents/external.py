@@ -141,16 +141,15 @@ class DaisyPipeline:
         # Validate using Schematron tests. We have to do this before the
         # @brl:* attributes are filtered out.
         command = (
-            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
-            join(settings.DAISY_PIPELINE_PATH, 'scripts', 'verify',
-                 'ConfigurableValidator.taskScript'),
-            "--validatorInputFile=%s" % file_path,
-            "--validatorInputSchemas=%s" % "-//SBS//SCH dtbook 2005 SBS//EN",
+            "java",
+            "-jar", join(settings.DTBOOK2SBSFORM_PATH, 'lib', 'saxon9he.jar'),
+            "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-SBS.sch.xsl'),
+            "-s:%s" % file_path,
             )
-        result = DaisyPipeline.replace_file_references(
-            DaisyPipeline.filter_output(Popen(command, stdout=PIPE).communicate()[0].splitlines()), file_path)
+        result = Popen(command, stderr=PIPE).stderr
+        print(result)
         if result:
-            return result
+            return list(result)
         tmpFile = filterBrlContractionhints(file_path)
         command = (
             join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
