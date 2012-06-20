@@ -3,7 +3,7 @@ import unicodedata
 import louis
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmSingleTypedWordForm, ConfirmSingleHomographWordForm, ConfirmWordForm, ConflictingWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.documents.models import Document
 from django.conf import settings
@@ -342,21 +342,17 @@ def confirm_single(request, grade):
     except LocalWord.DoesNotExist:
         return HttpResponseRedirect(reverse('todo_index'))
 
-    if word.type == 0:
-        formClass = ConfirmSingleWordForm
-    elif word.type == 5:
-        formClass = ConfirmSingleHomographWordForm
-    else:
-        formClass = ConfirmSingleTypedWordForm
-
     if request.method == 'POST':
-        form = formClass(request.POST, instance=word)
+        form = ConfirmSingleWordForm(request.POST)
         if form.is_valid():
-            word = form.save(commit=False)
-            word.document = None
-            word.isConfirmed = True
-            word.grade = grade
-            word.save()
+            filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'braille', 'type', 'homograph_disambiguation'))
+            if not form.cleaned_data['isLocal']:
+                # move confirmed and non-local words to the global dictionary
+                GlobalWord.objects.create(grade=grade, **filter_args)
+                # delete all non-local entries from the LocalWord table
+                LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
+            else:
+                LocalWord(grade=grade, **filter_args).update(isLocal=True, isConfirmed=True)
             # redirect to self to deal with the next word
             redirect = 'dictionary_single_confirm_g1' if grade == 1 else 'dictionary_single_confirm_g2'
             return HttpResponseRedirect(reverse(redirect))
@@ -364,7 +360,13 @@ def confirm_single(request, grade):
             return render_to_response('dictionary/confirm_single.html', locals(),
                                       context_instance=RequestContext(request))
 
-    form = formClass(instance=word)
+    initial={'untranslated': word.untranslated,
+          'type': word.type,
+          'homograph_disambiguation': word.homograph_disambiguation,
+          'braille': word.braille,
+          'isLocal': word.isLocal}
+        
+    form = ConfirmSingleWordForm(initial=initial)
     return render_to_response('dictionary/confirm_single.html', locals(), 
                               context_instance=RequestContext(request))
 

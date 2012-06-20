@@ -91,29 +91,19 @@ class RestrictedWordForm(PartialWordForm):
 
 #         return cleaned_data
 
-class ConfirmSingleWordForm(ModelForm):
-    class Meta:
-        model = LocalWord
-        exclude=('document', 'isConfirmed', 'grade', 'type', 'homograph_disambiguation')
-        widgets = {}
-        # add the title attribute to the widgets
-        for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal'):
-            f = model._meta.get_field(field)
-            formField = f.formfield()
-            if formField:
-                attrs = {'title': formField.label}
-                if field == 'braille':
-                    attrs.update({'class': 'braille'})
-                elif field in ('untranslated', 'homograph_disambiguation'):
-                    attrs.update({'readonly': 'readonly'})
-                widgets[field] = type(formField.widget)(attrs=attrs)
-
-class ConfirmSingleTypedWordForm(ConfirmSingleWordForm):
-    class Meta(ConfirmSingleWordForm.Meta):
-        exclude=('document', 'isConfirmed', 'grade', 'homograph_disambiguation')
+class ConfirmSingleWordForm(forms.Form):
+    untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    braille = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly', 'class': 'braille'}))
+    type = forms.ChoiceField(choices=Word.WORD_TYPE_CHOICES)
+    homograph_disambiguation = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+    isLocal = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(ConfirmSingleWordForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'title': field.label})
+        print self.is_bound
+        print self
         if not self.is_bound:
             if self.initial['type'] == 2:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
@@ -122,10 +112,10 @@ class ConfirmSingleTypedWordForm(ConfirmSingleWordForm):
             else:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
-
-class ConfirmSingleHomographWordForm(ConfirmSingleTypedWordForm):
-    class Meta(ConfirmSingleTypedWordForm.Meta):
-        exclude=('document', 'isConfirmed', 'grade')
+            if self.initial['type'] == 0:
+                self.fields['type'].widget = forms.HiddenInput()
+            if self.initial['homograph_disambiguation'] == '':
+                self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
 class ConfirmWordForm(forms.Form):
     untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
