@@ -25,11 +25,12 @@
 
 <div class="issue">
   
-    <table>
+  <table>
     <tr>
-      <td><b>{% trans 'Total unconfirmed words' %}:</b></td><td>{{formset.total_form_count}}</td>
+      <td><b>{% trans 'Total unconfirmed words' %}:</b></td><td>{{paginator.count}}</td>
     </tr>
   </table>
+  {% include "dictionary/pagination.html" %}
   <hr />
 
   <div id="relations">
@@ -65,9 +66,13 @@
 	  </td>
 	  {% endif %}
 	</tr>
+	{% empty %}
+	<p>{% trans 'No more words to confirm' %}</p>
 	{% endfor %}
       </table>
+      {% if paginator == None or paginator.count > 0 %}
       <input type="submit" value="{% trans 'Submit' %}" />
+      {% endif %}
       <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
     </form>
   </div>

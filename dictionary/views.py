@@ -1,23 +1,27 @@
 import os
 import unicodedata
-
 import louis
+
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedConfirmWordForm, BaseWordFormSet, ConfirmSingleWordForm, ConfirmSingleTypedWordForm, ConfirmSingleHomographWordForm
-from daisyproducer.dictionary.models import Word
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm
+from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.documents.models import Document
 from django.conf import settings
+from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.db.models import Q
 from django.forms.models import modelformset_factory
+from django.forms.formsets import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.encoding import smart_unicode
+
+from itertools import chain
 from lxml import etree
 
 BRL_NAMESPACE = {'brl':'http://www.daisy.org/z3986/2009/braille/'}
+MAX_WORDS_PER_PAGE = 25
 
 @transaction.commit_on_success
 def check(request, document_id, grade):
@@ -26,7 +30,7 @@ def check(request, document_id, grade):
 
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
-            Word, 
+            LocalWord, 
             form=RestrictedWordForm,
             exclude=('document', 'isConfirmed', 'grade'), 
             can_delete=True)
@@ -39,7 +43,8 @@ def check(request, document_id, grade):
                 instance.document = document
                 instance.save()
             writeLocalTables([document])
-            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+            redirect = 'dictionary_check_g1' if grade == 1 else 'dictionary_check_g2'
+            return HttpResponseRedirect(reverse(redirect, args=[document_id]))
         else:
             return render_to_response('dictionary/words.html', locals(),
                                       context_instance=RequestContext(request))
@@ -52,24 +57,31 @@ def check(request, document_id, grade):
     # grab the homographs
     homographs = set(("|".join(homograph.xpath('text()')).lower() 
                       for homograph in tree.xpath('//brl:homograph', namespaces=BRL_NAMESPACE)))
-    duplicate_homographs = set((smart_unicode(word.homograph_disambiguation) for 
-                                word in Word.objects.filter(grade=grade).filter(Q(document=document)|Q(isConfirmed=True)).filter(type=5).filter(homograph_disambiguation__in=homographs)))
+    duplicate_homographs = set((smart_unicode(word) for 
+                                word in 
+                                chain(GlobalWord.objects.filter(grade=grade).filter(type=5).filter(homograph_disambiguation__in=homographs).values_list('homograph_disambiguation', flat=True),
+                                      LocalWord.objects.filter(grade=grade).filter(type=5).filter(document=document).filter(homograph_disambiguation__in=homographs).values_list('homograph_disambiguation', flat=True))))
     unknown_homographs = [{'untranslated': homograph.replace('|', ''), 
                            'braille': louis.translateString(getTables(grade), homograph.replace('|', unichr(0x250A))),
                            'type': 5,
                            'homograph_disambiguation': homograph} 
                           for homograph in homographs - duplicate_homographs]
     # grab names and places
-    names = set((name.text.lower() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)))
-    duplicate_names = set((smart_unicode(word.untranslated) for 
-                           word in Word.objects.filter(grade=grade).filter(Q(document=document)|Q(isConfirmed=True)).filter(type__in=(1,2)).filter(untranslated__in=names)))
+    names = set((name for names in 
+                 (name.text.lower().split() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)) for name in names))
+    duplicate_names = set((smart_unicode(word) for 
+                           word in 
+                           chain(GlobalWord.objects.filter(grade=grade).filter(type__in=(1,2)).filter(untranslated__in=names).values_list('untranslated', flat=True),
+                                 LocalWord.objects.filter(grade=grade).filter(type__in=(1,2)).filter(document=document).filter(untranslated__in=names).values_list('untranslated', flat=True))))
     unknown_names = [{'untranslated': name, 
                       'braille': louis.translateString(getTables(grade, name=True), name), 
                       'type': 2} 
                      for name in names - duplicate_names]
     places = set((place.text.lower() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE)))
-    duplicate_places = set((smart_unicode(word.untranslated) for 
-                            word in Word.objects.filter(grade=grade).filter(Q(document=document)|Q(isConfirmed=True)).filter(type__in=(3,4)).filter(untranslated__in=places)))
+    duplicate_places = set((smart_unicode(word) for 
+                            word in 
+                            chain(GlobalWord.objects.filter(grade=grade).filter(type__in=(3,4)).filter(untranslated__in=places).values_list('untranslated', flat=True),
+                                  LocalWord.objects.filter(grade=grade).filter(type__in=(3,4)).filter(document=document).filter(untranslated__in=places).values_list('untranslated', flat=True))))
     unknown_places = [{'untranslated': place,
                        'braille': louis.translateString(getTables(grade, place=True), place),
                        'type': 4} 
@@ -102,8 +114,10 @@ def check(request, document_id, grade):
     # support EXCEPT so it would be SELECT untranslated FROM new_words
     # w1 LEFT JOIN dict_words w2 ON w1.untranslated=w2.untranslated
     # WHERE w2.untranslated IS NULL;
-    duplicate_words = set((smart_unicode(word.untranslated) for 
-                           word in Word.objects.filter(grade=grade).filter(Q(document=document)|Q(isConfirmed=True)).filter(untranslated__in=new_words)))
+    duplicate_words = set((smart_unicode(word) for 
+                           word in 
+                           chain(GlobalWord.objects.filter(grade=grade).filter(untranslated__in=new_words).values_list('untranslated', flat=True),
+                                 LocalWord.objects.filter(grade=grade).filter(document=document).filter(untranslated__in=new_words).values_list('untranslated', flat=True))))
     unknown_words = [{'untranslated': word, 
                       'braille': louis.translateString(getTables(grade), word),
                       'type' : 0} 
@@ -112,16 +126,27 @@ def check(request, document_id, grade):
     unknown_words = unknown_words + unknown_homographs + unknown_names + unknown_places
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
+    paginator = Paginator(unknown_words, MAX_WORDS_PER_PAGE)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        words = paginator.page(page)
+    except InvalidPage:
+        words = paginator.page(paginator.num_pages)
+
     WordFormSet = modelformset_factory(
-        Word, 
+        LocalWord, 
         form=RestrictedWordForm,
         exclude=('document', 'isConfirmed', 'grade'), 
-        extra=len(unknown_words), can_delete=True)
+        extra=len(words.object_list), can_delete=True)
 
-    formset = WordFormSet(queryset=Word.objects.none(), initial=unknown_words)
+    formset = WordFormSet(queryset=LocalWord.objects.none(), initial=words.object_list)
 
     stats = { "total_words": len(new_words), 
-              "total_new": len(unknown_words), 
+              "total_new": paginator.count, 
               "percent": 100.0*len(unknown_words)/len(new_words) }
 
     return render_to_response('dictionary/words.html', locals(),
@@ -133,114 +158,201 @@ def local(request, document_id, grade):
     document = get_object_or_404(Document, pk=document_id)
     if request.method == 'POST':
         WordFormSet = modelformset_factory(
-            Word, 
+            LocalWord, 
             form=RestrictedWordForm,
             exclude=('document', 'isConfirmed', 'grade'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST, 
-                              queryset=Word.objects.filter(document=document))
+                              queryset=LocalWord.objects.filter(grade=grade, document=document))
         if formset.is_valid():
             instances = formset.save()
             writeLocalTables([document])
-            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+            redirect = 'dictionary_local_g1' if grade == 1 else 'dictionary_local_g2'
+            return HttpResponseRedirect(reverse(redirect, args=[document_id]))
         else:
             return render_to_response('dictionary/local.html', locals(),
                                       context_instance=RequestContext(request))
 
+    words_list = LocalWord.objects.filter(grade=grade, document=document).order_by('untranslated', 'type')
+    paginator = Paginator(words_list, MAX_WORDS_PER_PAGE)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        words = paginator.page(page)
+    except InvalidPage:
+        words = paginator.page(paginator.num_pages)
+
     WordFormSet = modelformset_factory(
-        Word, 
+        LocalWord, 
         form=RestrictedWordForm,
         exclude=('document', 'isConfirmed', 'grade'), 
         can_delete=True, extra=0)
 
-    formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(document=document).order_by('untranslated', 'type'))
+    formset = WordFormSet(queryset=words.object_list)
 
     return render_to_response('dictionary/local.html', locals(), 
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
 def confirm(request, grade):
-    if request.method == 'POST':
-        WordFormSet = modelformset_factory(
-            Word, 
-            form=RestrictedConfirmWordForm,
-            formset=BaseWordFormSet,
-            exclude=('document', 'grade'),
-            can_delete=True)
+    if [word for word in get_conflicting_words(grade)]:
+        redirect = 'dictionary_confirm_conflicting_duplicates_g1' if grade == 1 else 'dictionary_confirm_conflicting_duplicates_g2'
+        return HttpResponseRedirect(reverse(redirect))
 
-        formset = WordFormSet(request.POST, 
-                              queryset=Word.objects.filter(isConfirmed=False))
+    WordFormSet = formset_factory(ConfirmWordForm, extra=0)
+    if request.method == 'POST':
+
+        formset = WordFormSet(request.POST)
         if formset.is_valid():
-            instances = formset.save(commit=False)
-            changedDocuments = set()
-            for instance in instances:
-                if instance.isConfirmed and not instance.isLocal:
-                    # clear the documents if the word is not local
-                    changedDocuments.add(instance.document)
-                    instance.document = None
-                    instance.save()
-    # FIXME: in principle we need to regenerate the liblouis tables,
-    # i.e. the white lists now. However we do this asynchronously
-    # (using a cron job) for now. There are several reasons for this:
-    # 1) It is slow as hell if done inside a transaction. To do this
-    # outside the transaction we need transaction context managers
-    # (https://docs.djangoproject.com/en/1.3/topics/db/transactions/#controlling-transaction-management-in-views)
-    # which are only available in Django 1.3.
-    # 2) We need to serialize the table writing so they do not write
-    # on top of each other. This is easy if it is done periodically.
-    # 3) Of course it would be nice to use some kind of message queue
-    # for this (e.g. rabbitmq and celery), but for now this poor mans
-    # solution seems good enough
-            return HttpResponseRedirect(reverse('todo_index'))
+            # FIXME: in Djano 1.3+ formset formmsets are iterable, so you can just say 
+            # for form in formset:
+            for form in formset.forms:
+                if not form.cleaned_data['isConfirmed']:
+                    continue
+                filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
+                if not form.cleaned_data['isLocal']:
+                    # move confirmed and non-local words to the global dictionary
+                    GlobalWord.objects.create(grade=grade, braille=form.cleaned_data['braille'], **filter_args)
+                    # delete all non-local entries from the LocalWord table
+                    LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
+                else:
+                    LocalWord(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True)
+            # FIXME: in principle we need to regenerate the liblouis tables,
+            # i.e. the white lists now. However we do this asynchronously
+            # (using a cron job) for now. There are several reasons for this:
+            # 1) It is slow as hell if done inside a transaction. To do this
+            # outside the transaction we need transaction context managers
+            # (https://docs.djangoproject.com/en/1.3/topics/db/transactions/#controlling-transaction-management-in-views)
+            # which are only available in Django 1.3.
+            # 2) We need to serialize the table writing so they do not write
+            # on top of each other. This is easy if it is done periodically.
+            # 3) Of course it would be nice to use some kind of message queue
+            # for this (e.g. rabbitmq and celery), but for now this poor mans
+            # solution seems good enough
+            # redirect to self as there might be more words
+            redirect = 'dictionary_confirm_g1' if grade == 1 else 'dictionary_confirm_g2'
+            return HttpResponseRedirect(reverse(redirect))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
                                       context_instance=RequestContext(request))
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
-    unconfirmed_homographs = set(Word.objects.filter(grade=grade).filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
-    covered_entries = set(Word.objects.filter(grade=grade).filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
+    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade).filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
+    covered_entries = set(GlobalWord.objects.filter(grade=grade).filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
 
     for word in unconfirmed_homographs - covered_entries:
-        w = Word(untranslated=word, 
-                 braille=louis.translateString(getTables(grade), word),
-                 grade=grade, type=0)
+        w = LocalWord(untranslated=word, 
+                      braille=louis.translateString(getTables(grade), word),
+                      grade=grade, type=0)
         w.save()
     
-    WordFormSet = modelformset_factory(
-        Word, 
-        form=RestrictedConfirmWordForm,
-        formset=BaseWordFormSet,
-        exclude=('document', 'grade'), extra=0,
-        can_delete=True)
+    words_to_confirm = LocalWord.objects.filter(grade=grade,isConfirmed=False).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
+    paginator = Paginator(words_to_confirm, MAX_WORDS_PER_PAGE)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        words = paginator.page(page)
+    except InvalidPage:
+        words = paginator.page(paginator.num_pages)
 
-    formset = WordFormSet(queryset=Word.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type'))
+    formset = WordFormSet(initial=words.object_list)
     return render_to_response('dictionary/confirm.html', locals(), 
+                              context_instance=RequestContext(request))
+
+def get_conflicting_words(grade):
+    DETECT_CONFLICTING_WORDS = """
+SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, NULL as global_id
+FROM dictionary_localword AS a, dictionary_localword AS b 
+WHERE a.untranslated = b.untranslated 
+AND a.type = b.type 
+AND a.homograph_disambiguation = b.homograph_disambiguation 
+AND a.grade = %s
+AND a.grade = b.grade
+AND a.braille != b.braille
+AND a.id < b.id
+UNION
+SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, b.id as global_id
+FROM dictionary_localword AS a, dictionary_globalword AS b 
+WHERE a.untranslated = b.untranslated 
+AND a.type = b.type 
+AND a.homograph_disambiguation = b.homograph_disambiguation 
+AND a.grade = %s
+AND a.grade = b.grade
+AND a.braille != b.braille"""
+    return LocalWord.objects.raw(DETECT_CONFLICTING_WORDS, (grade, grade))    
+
+@transaction.commit_on_success
+def confirm_conflicting_duplicates(request, grade):
+
+    WordFormSet = formset_factory(ConflictingWordForm, extra=0)
+    if request.method == 'POST':
+        formset = WordFormSet(request.POST)
+        if formset.is_valid():
+            affected_documents = set()
+            # save the correct words in the GlobalWord
+            # FIXME: in Djano 1.3+ formset formmsets are iterable, so you can just say 
+            # for form in formset:
+            for form in formset.forms:
+                # FIXME: This is an open attack vector. A user can
+                # change any word in the global dict with a carefuly
+                # crafted post. It might be better not to pass the id.
+                word = GlobalWord(grade=grade, **form.cleaned_data)
+                word.save()
+                # note which documents are affected
+                filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
+                words_to_delete = LocalWord.objects.filter(grade=grade, **filter_args)
+                affected_documents.update([word.document for word in words_to_delete])
+                # delete the conflicting words (and also plain
+                # duplicate non-conflicting words) from the LocalWords
+                words_to_delete.delete()
+            writeLocalTables(list(affected_documents))
+            # once we are done dealing with conflicts we go back to regular confirmation
+            redirect = 'dictionary_confirm_g1' if grade == 1 else 'dictionary_confirm_g2'
+            return HttpResponseRedirect(reverse(redirect))
+    else:
+        conflicting_words = get_conflicting_words(grade)
+    
+        initial=[
+            {'id': word.global_id,
+             'untranslated': word.untranslated,
+             'type': word.type,
+             'homograph_disambiguation': word.homograph_disambiguation,
+             'braille': [word.braille1, word.braille2],
+             } for word in conflicting_words]
+        initial = sorted(initial, key=lambda x: x['untranslated'])
+        
+        WordFormSet = formset_factory(ConflictingWordForm, extra=0)
+        formset = WordFormSet(initial=initial)
+
+    return render_to_response('dictionary/confirm_conflicting_duplicates.html', locals(), 
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
 def confirm_single(request, grade):
     try:
         # just get one word
-        word = Word.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type')[0:1].get()
-    except Word.DoesNotExist:
+        word = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type')[0:1].get()
+    except LocalWord.DoesNotExist:
         return HttpResponseRedirect(reverse('todo_index'))
 
-    if word.type == 0:
-        formClass = ConfirmSingleWordForm
-    elif word.type == 5:
-        formClass = ConfirmSingleHomographWordForm
-    else:
-        formClass = ConfirmSingleTypedWordForm
-
     if request.method == 'POST':
-        form = formClass(request.POST, instance=word)
+        form = ConfirmSingleWordForm(request.POST)
         if form.is_valid():
-            word = form.save(commit=False)
-            word.document = None
-            word.isConfirmed = True
-            word.grade = grade
-            word.save()
+            filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'braille', 'type', 'homograph_disambiguation'))
+            if not form.cleaned_data['isLocal']:
+                # move confirmed and non-local words to the global dictionary
+                GlobalWord.objects.create(grade=grade, **filter_args)
+                # delete all non-local entries from the LocalWord table
+                LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
+            else:
+                LocalWord(grade=grade, **filter_args).update(isLocal=True, isConfirmed=True)
             # redirect to self to deal with the next word
             redirect = 'dictionary_single_confirm_g1' if grade == 1 else 'dictionary_single_confirm_g2'
             return HttpResponseRedirect(reverse(redirect))
@@ -248,7 +360,13 @@ def confirm_single(request, grade):
             return render_to_response('dictionary/confirm_single.html', locals(),
                                       context_instance=RequestContext(request))
 
-    form = formClass(instance=word)
+    initial={'untranslated': word.untranslated,
+          'type': word.type,
+          'homograph_disambiguation': word.homograph_disambiguation,
+          'braille': word.braille,
+          'isLocal': word.isLocal}
+        
+    form = ConfirmSingleWordForm(initial=initial)
     return render_to_response('dictionary/confirm_single.html', locals(), 
                               context_instance=RequestContext(request))
 

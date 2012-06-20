@@ -161,7 +161,7 @@ class Document(models.Model):
         self.save()
 
     def has_local_words(self):
-        return self.word_set.exists()
+        return self.localword_set.exists()
 
     def save(self):
         if not self.id:

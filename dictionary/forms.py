@@ -1,7 +1,9 @@
 # coding=utf-8
 import re
 
-from daisyproducer.dictionary.models import Word
+from daisyproducer.dictionary.models import Word, LocalWord
+
+from django import forms
 
 from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
@@ -16,7 +18,7 @@ validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters
 
 class PartialWordForm(ModelForm):
     class Meta:
-        model = Word
+        model = LocalWord
         exclude=('document', 'isConfirmed', 'grade')
         widgets = {}
         # add the title attribute to the widgets
@@ -65,53 +67,43 @@ class RestrictedWordForm(PartialWordForm):
 
         return cleaned_data
 
-class RestrictedConfirmWordForm(PartialWordForm):
-    def __init__(self, *args, **kwargs):
-        super(RestrictedConfirmWordForm, self).__init__(*args, **kwargs)
-        if not self.is_bound:
-            if self.initial['type'] == 0:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 1, 2, 3, 4)]
-            elif self.initial['type'] == 2:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
-            elif self.initial['type'] == 4:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
-            else:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
-            self.fields['type'].choices = typeChoices
+# class RestrictedConfirmWordForm(PartialWordForm):
+#     def __init__(self, *args, **kwargs):
+#         super(RestrictedConfirmWordForm, self).__init__(*args, **kwargs)
+#         if not self.is_bound:
+#             if self.initial['type'] == 0:
+#                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 1, 2, 3, 4)]
+#             elif self.initial['type'] == 2:
+#                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
+#             elif self.initial['type'] == 4:
+#                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
+#             else:
+#                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+#             self.fields['type'].choices = typeChoices
 
-    # only clean if a word is confirmed
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        isConfirmed = cleaned_data.get("isConfirmed")
+#     # only clean if a word is confirmed
+#     def clean(self):
+#         cleaned_data = self.cleaned_data
+#         isConfirmed = cleaned_data.get("isConfirmed")
 
-        if isConfirmed:
-            return super(RestrictedConfirmWordForm, self).clean()
+#         if isConfirmed:
+#             return super(RestrictedConfirmWordForm, self).clean()
 
-        return cleaned_data
+#         return cleaned_data
 
-class ConfirmSingleWordForm(ModelForm):
-    class Meta:
-        model = Word
-        exclude=('document', 'isConfirmed', 'grade', 'type', 'homograph_disambiguation')
-        widgets = {}
-        # add the title attribute to the widgets
-        for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal'):
-            f = model._meta.get_field(field)
-            formField = f.formfield()
-            if formField:
-                attrs = {'title': formField.label}
-                if field == 'braille':
-                    attrs.update({'class': 'braille'})
-                elif field in ('untranslated', 'homograph_disambiguation'):
-                    attrs.update({'readonly': 'readonly'})
-                widgets[field] = type(formField.widget)(attrs=attrs)
-
-class ConfirmSingleTypedWordForm(ConfirmSingleWordForm):
-    class Meta(ConfirmSingleWordForm.Meta):
-        exclude=('document', 'isConfirmed', 'grade', 'homograph_disambiguation')
+class ConfirmSingleWordForm(forms.Form):
+    untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    braille = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly', 'class': 'braille'}))
+    type = forms.ChoiceField(choices=Word.WORD_TYPE_CHOICES)
+    homograph_disambiguation = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+    isLocal = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(ConfirmSingleWordForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'title': field.label})
+        print self.is_bound
+        print self
         if not self.is_bound:
             if self.initial['type'] == 2:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
@@ -120,27 +112,37 @@ class ConfirmSingleTypedWordForm(ConfirmSingleWordForm):
             else:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
+            if self.initial['type'] == 0:
+                self.fields['type'].widget = forms.HiddenInput()
+            if self.initial['homograph_disambiguation'] == '':
+                self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
-class ConfirmSingleHomographWordForm(ConfirmSingleTypedWordForm):
-    class Meta(ConfirmSingleTypedWordForm.Meta):
-        exclude=('document', 'isConfirmed', 'grade')
+class ConfirmWordForm(forms.Form):
+    untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    braille = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    type = forms.ChoiceField(choices=Word.WORD_TYPE_CHOICES)
+    homograph_disambiguation = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+    isLocal = forms.BooleanField(required=False)
+    isConfirmed = forms.BooleanField(required=False)
 
-class BaseWordFormSet(BaseModelFormSet):
-     def clean(self):
-         if any(self.errors):
-             return
-         unique = True
-         words = set()
-         msg = "Global words must be unique."
-         for i in range(0, self.total_form_count()):
-             form = self.forms[i]
-             if not form.cleaned_data.get(DELETION_FIELD_NAME):
-                 word = (form.cleaned_data['untranslated'], 
-                         form.cleaned_data['type'], 
-                         form.cleaned_data['homograph_disambiguation'])
-                 if word in words:
-                     form._errors[NON_FIELD_ERRORS] = form.error_class([msg])
-                     unique = False
-                 words.add(word)
-         if not unique:
-             raise ValidationError(msg)
+    def __init__(self, *args, **kwargs):
+        super(ConfirmWordForm, self).__init__(*args, **kwargs)
+        if not self.is_bound:
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+            self.fields['type'].choices = typeChoices
+
+class ConflictingWordForm(forms.Form):
+    id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    braille = forms.CharField(widget=forms.Select())
+    type = forms.ChoiceField(choices=Word.WORD_TYPE_CHOICES)
+    homograph_disambiguation = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(ConflictingWordForm, self).__init__(*args, **kwargs)
+        if not self.is_bound:
+            brailleChoices = [(braille, braille) for braille in self.initial['braille']]
+            self.fields['braille'].widget.choices = brailleChoices
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+            self.fields['type'].choices = typeChoices
+

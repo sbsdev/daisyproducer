@@ -5,22 +5,11 @@
 {% endblock %}
 
 {% block content %}
-<h2>{% blocktrans %}Edit Local Words for Grade {{grade}}{% endblocktrans %}</h2>
+
+<h2>{% blocktrans %}Confirm duplicate Words for Grade {{grade}}{% endblocktrans %}</h2>
 
 <div class="issue">
   
-  <h3>{{ document.title }}</h3>
-  
-  {% include "documents/documentDetails.html" %}
-
-  <table>
-    <tr>
-      <td><b>{% trans 'Total local words' %}:</b></td><td>{{paginator.count}}</td>
-    </tr>
-  </table>
-  {% include "dictionary/pagination.html" %}
-  <hr />
-
   <div id="relations">
     <form method="post" action="">{% csrf_token %}
       {{ formset.management_form }}
@@ -28,17 +17,16 @@
 	{% for form in formset.forms %}
 	{% if forloop.first %}
 	<tr>
-	  {% for field in form %}
-	  {% if field.is_hidden %}
-          <th></th>
-	  {% else %}
+	  {% for field in form.visible_fields %}
           <th>{{ field.label }}</th>
-	  {% endif %}
 	  {% endfor %}
 	</tr>
 	{% endif %}
 	<tr class="{% cycle 'odd' 'even' %}">
-	  {% for field in form %}
+	  {% for field in form.hidden_fields %}
+	  {{ field }} 
+	  {% endfor %}
+	  {% for field in form.visible_fields %}
 	  <td>{{ field }}</td>
 	  {% endfor %}
 	  {% if form.errors %}
@@ -51,13 +39,15 @@
 	  {% endif %}
 	</tr>
 	{% empty %}
-	<p>{% trans 'No local words to display' %}</p>
+	<tr>	  
+	  <td>{% trans 'There are no conflicting duplicate words' %}</td>
+	</tr>
 	{% endfor %}
       </table>
-      {% if paginator == None or paginator.count > 0 %}
+      {% if formset.total_form_count > 0 %}
       <input type="submit" value="{% trans 'Submit' %}" />
       {% endif %}
-      <a href="{% url todo_detail  document.id %}">{% trans 'Cancel' %}</a>
+      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
     </form>
   </div>
 </div>
