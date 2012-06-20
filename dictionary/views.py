@@ -276,6 +276,7 @@ AND a.homograph_disambiguation = b.homograph_disambiguation
 AND a.grade = %s
 AND a.grade = b.grade
 AND a.braille != b.braille
+AND a.id < b.id
 UNION
 SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, b.id as global_id
 FROM dictionary_localword AS a, dictionary_globalword AS b 
@@ -318,20 +319,13 @@ def confirm_conflicting_duplicates(request, grade):
     else:
         conflicting_words = get_conflicting_words(grade)
     
-        unique_conflicting_words = []
-        seen = set()
-        for word in conflicting_words:
-            if (word.untranslated, word.type, word.homograph_disambiguation) not in seen:
-                unique_conflicting_words.append(word)
-                seen.add((word.untranslated, word.type, word.homograph_disambiguation))
-
         initial=[
             {'id': word.global_id,
              'untranslated': word.untranslated,
              'type': word.type,
              'homograph_disambiguation': word.homograph_disambiguation,
              'braille': [word.braille1, word.braille2],
-             } for word in unique_conflicting_words]
+             } for word in conflicting_words]
         initial = sorted(initial, key=lambda x: x['untranslated'])
         
         WordFormSet = formset_factory(ConflictingWordForm, extra=0)
