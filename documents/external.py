@@ -142,7 +142,7 @@ class DaisyPipeline:
         # @brl:* attributes are filtered out.
         command = (
             "java",
-            "-jar", join(settings.DTBOOK2SBSFORM_PATH, 'lib', 'saxon9he.jar'),
+            "-jar", join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'lib', 'saxon9he.jar'),
             "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-SBS.sch.xsl'),
             "-s:%s" % file_path,
             )
