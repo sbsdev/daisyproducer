@@ -105,8 +105,6 @@ class ConfirmSingleWordForm(forms.Form):
         super(ConfirmSingleWordForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'title': field.label})
-        print self.is_bound
-        print self
         if not self.is_bound:
             if self.initial['type'] == 2:
                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
