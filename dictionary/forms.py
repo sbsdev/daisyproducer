@@ -10,6 +10,7 @@ from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.formsets import DELETION_FIELD_NAME
 from django.forms.models import ModelForm, BaseModelFormSet
 from django.core.validators import RegexValidator
+from django.utils.translation import ugettext_lazy as _
 
 VALID_BRAILLE_RE = re.compile(u"^([-v]|[-v]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœāăąćĉċčďđēėęğģĥħĩīįıĳĵķĺļľŀłńņňŋōŏőŕŗřśŝşšţťŧũūŭůűųŵŷźżžǎẁẃẅỳ]+)$")
 validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
@@ -92,11 +93,11 @@ class RestrictedWordForm(PartialWordForm):
 #         return cleaned_data
 
 class ConfirmSingleWordForm(forms.Form):
-    untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
-    braille = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly', 'class': 'braille'}))
-    type = forms.ChoiceField(choices=Word.WORD_TYPE_CHOICES)
-    homograph_disambiguation = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
-    isLocal = forms.BooleanField(required=False)
+    untranslated = forms.CharField(label=_("Untranslated"), widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    braille = forms.CharField(label=_("Braille"), widget=forms.TextInput(attrs={'readonly':'readonly', 'class': 'braille'}))
+    type = forms.ChoiceField(label=_("Markup"), choices=Word.WORD_TYPE_CHOICES)
+    homograph_disambiguation = forms.CharField(label=_("Homograph Disambiguation"), widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+    isLocal = forms.BooleanField(label=_("Local"), required=False)
 
     def __init__(self, *args, **kwargs):
         super(ConfirmSingleWordForm, self).__init__(*args, **kwargs)
@@ -118,12 +119,12 @@ class ConfirmSingleWordForm(forms.Form):
                 self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
 class ConfirmWordForm(forms.Form):
-    untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
-    braille = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
-    type = forms.ChoiceField(choices=Word.WORD_TYPE_CHOICES)
-    homograph_disambiguation = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
-    isLocal = forms.BooleanField(required=False)
-    isConfirmed = forms.BooleanField(required=False)
+    untranslated = forms.CharField(label=_("Untranslated"), widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    braille = forms.CharField(label=_("Braille"), widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    type = forms.ChoiceField(label=_("Markup"), choices=Word.WORD_TYPE_CHOICES)
+    homograph_disambiguation = forms.CharField(label=_("Homograph Disambiguation"), widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+    isLocal = forms.BooleanField(label=_("Local"), required=False)
+    isConfirmed = forms.BooleanField(label=_("Confirmed"), required=False)
 
     def __init__(self, *args, **kwargs):
         super(ConfirmWordForm, self).__init__(*args, **kwargs)
@@ -133,10 +134,10 @@ class ConfirmWordForm(forms.Form):
 
 class ConflictingWordForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
-    untranslated = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
-    braille = forms.CharField(widget=forms.Select())
-    type = forms.ChoiceField(choices=Word.WORD_TYPE_CHOICES)
-    homograph_disambiguation = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+    untranslated = forms.CharField(label=_("Untranslated"), widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    braille = forms.CharField(label=_("Braille"), widget=forms.Select())
+    type = forms.ChoiceField(label=_("Markup"), choices=Word.WORD_TYPE_CHOICES)
+    homograph_disambiguation = forms.CharField(label=_("Homograph Disambiguation"), widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
 
     def __init__(self, *args, **kwargs):
         super(ConflictingWordForm, self).__init__(*args, **kwargs)
