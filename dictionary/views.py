@@ -17,6 +17,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.encoding import smart_unicode
 
+from collections import defaultdict
 from itertools import chain
 from lxml import etree
 
@@ -267,8 +268,10 @@ def confirm(request, grade):
                               context_instance=RequestContext(request))
 
 def get_conflicting_words(grade):
+    from django.db import connection, transaction
+    cursor = connection.cursor()
     DETECT_CONFLICTING_WORDS = """
-SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, NULL as global_id
+SELECT DISTINCT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
 FROM dictionary_localword AS a, dictionary_localword AS b 
 WHERE a.untranslated = b.untranslated 
 AND a.type = b.type 
@@ -276,9 +279,17 @@ AND a.homograph_disambiguation = b.homograph_disambiguation
 AND a.grade = %s
 AND a.grade = b.grade
 AND a.braille != b.braille
-AND a.id < b.id
 UNION
-SELECT a.id, a.untranslated, a.type, a.homograph_disambiguation, a.braille as braille1, b.braille as braille2, b.id as global_id
+SELECT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
+FROM dictionary_localword AS a, dictionary_globalword AS b 
+WHERE a.untranslated = b.untranslated 
+AND a.type = b.type 
+AND a.homograph_disambiguation = b.homograph_disambiguation 
+AND a.grade = %s
+AND a.grade = b.grade
+AND a.braille != b.braille
+UNION
+SELECT a.untranslated, a.type, a.homograph_disambiguation, b.braille, b.id
 FROM dictionary_localword AS a, dictionary_globalword AS b 
 WHERE a.untranslated = b.untranslated 
 AND a.type = b.type 
@@ -286,7 +297,8 @@ AND a.homograph_disambiguation = b.homograph_disambiguation
 AND a.grade = %s
 AND a.grade = b.grade
 AND a.braille != b.braille"""
-    return LocalWord.objects.raw(DETECT_CONFLICTING_WORDS, (grade, grade))    
+    cursor.execute(DETECT_CONFLICTING_WORDS, [grade, grade, grade])
+    return cursor.fetchall()
 
 @transaction.commit_on_success
 def confirm_conflicting_duplicates(request, grade):
@@ -318,14 +330,21 @@ def confirm_conflicting_duplicates(request, grade):
             return HttpResponseRedirect(reverse(redirect))
     else:
         conflicting_words = get_conflicting_words(grade)
-    
+        braille_choices = defaultdict(set)
+        global_ids = defaultdict()
+        for untranslated, type, homograph_disambiguation, braille, global_id in conflicting_words:
+            key = (untranslated, type, homograph_disambiguation)
+            braille_choices[key].update([braille])
+            if global_id > 0:
+                global_ids[key] = global_id
+
         initial=[
-            {'id': word.global_id,
-             'untranslated': word.untranslated,
-             'type': word.type,
-             'homograph_disambiguation': word.homograph_disambiguation,
-             'braille': [word.braille1, word.braille2],
-             } for word in conflicting_words]
+            {'id': global_ids[(untranslated, type, homograph_disambiguation)],
+             'untranslated': untranslated,
+             'type': type,
+             'homograph_disambiguation': homograph_disambiguation,
+             'braille': sorted(braille_choices[(untranslated, type, homograph_disambiguation)]),
+             } for untranslated, type, homograph_disambiguation in braille_choices.keys()]
         initial = sorted(initial, key=lambda x: x['untranslated'])
         
         WordFormSet = formset_factory(ConflictingWordForm, extra=0)
