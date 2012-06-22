@@ -221,7 +221,7 @@ def confirm(request, grade):
                     # delete all non-local entries from the LocalWord table
                     LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
                 else:
-                    LocalWord(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True)
+                    LocalWord.objects.filter(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True)
             # FIXME: in principle we need to regenerate the liblouis tables,
             # i.e. the white lists now. However we do this asynchronously
             # (using a cron job) for now. There are several reasons for this:
@@ -371,7 +371,7 @@ def confirm_single(request, grade):
                 # delete all non-local entries from the LocalWord table
                 LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
             else:
-                LocalWord(grade=grade, **filter_args).update(isLocal=True, isConfirmed=True)
+                LocalWord.objects.filter(grade=grade, **filter_args).update(isLocal=True, isConfirmed=True)
             # redirect to self to deal with the next word
             redirect = 'dictionary_single_confirm_g1' if grade == 1 else 'dictionary_single_confirm_g2'
             return HttpResponseRedirect(reverse(redirect))
