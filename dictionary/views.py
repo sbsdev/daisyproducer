@@ -280,7 +280,7 @@ AND a.grade = %s
 AND a.grade = b.grade
 AND a.braille != b.braille
 UNION
-SELECT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
+SELECT DISTINCT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
 FROM dictionary_localword AS a, dictionary_globalword AS b 
 WHERE a.untranslated = b.untranslated 
 AND a.type = b.type 
@@ -339,7 +339,7 @@ def confirm_conflicting_duplicates(request, grade):
                 global_ids[key] = global_id
 
         initial=[
-            {'id': global_ids[(untranslated, type, homograph_disambiguation)],
+            {'id': global_ids.get((untranslated, type, homograph_disambiguation)),
              'untranslated': untranslated,
              'type': type,
              'homograph_disambiguation': homograph_disambiguation,
