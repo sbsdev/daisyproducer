@@ -97,7 +97,6 @@ asciiToDotsMap = {
     u'$': "46",
     u'_': "456",
     u'<': "56",
-    u'-': "36",
     u'\'': "6",
     u'à': "123568",
     u'á': "168",
@@ -128,7 +127,14 @@ asciiToDotsMap = {
     u'þ': "12348",
     u'ÿ': "134568",
     u'œ': "246789",
-    u'v': "36a", # P36 ohne nachfolgende Trennmarke "m" (für "ver" u.ä.)
+    # P36 ohne nachfolgende Trennmarke "m" (für "ver" u.ä.)
+    # Note: in the SBS braille tables this dot pattern is represented by
+    # the ascii character 'v'. The reason for this inconsistency is that
+    # transcribers want to have a '-' in the user interface. Because the
+    # dictionary doesn't contain normal P36, we can savely use 'i' instead
+    # of 'v' in the database. This is more convenient than having a discordancy
+    # between the user interface and the database.
+    u'-': "36a", 
     u'ā': "4-1",
     u'ă': "4-1",
     u'ą': "4-1",
