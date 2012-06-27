@@ -227,9 +227,9 @@ def writeWhiteListTables(words):
                ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
                 for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))), 
                lambda word: louis.translateString(getTables(2), word))
-    writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)), 
+    writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(1,2))), 
                lambda word: louis.translateString(getTables(2, name=True), word))
-    writeTable('sbs-de-g2-place-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=4)),
+    writeTable('sbs-de-g2-place-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(3,4))),
                lambda word: louis.translateString(getTables(2, place=True), word))
 
 def writeLocalTables(changedDocuments):
@@ -244,9 +244,9 @@ def writeLocalTables(changedDocuments):
                     for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))),
                    lambda word: louis.translateString(getTables(2), word))
         writeTable('sbs-de-g2-name-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type=2)),
+                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(1,2))),
                    lambda word: louis.translateString(getTables(2, name=True), word))
         writeTable('sbs-de-g2-place-white-%s.mod' % document.identifier, 
-                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type= 4)),
+                   ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(3,4))),
                   lambda word: louis.translateString(getTables(2, place=True), word))
         
