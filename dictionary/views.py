@@ -69,7 +69,7 @@ def check(request, document_id, grade):
                           for homograph in homographs - duplicate_homographs]
     # grab names and places
     names = set((name for names in 
-                 (name.text.lower().split() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE)) for name in names))
+                 (name.text.lower().split() for name in tree.xpath('//brl:name', namespaces=BRL_NAMESPACE) if name.text != None) for name in names))
     duplicate_names = set((smart_unicode(word) for 
                            word in 
                            chain(GlobalWord.objects.filter(grade=grade).filter(type__in=(1,2)).filter(untranslated__in=names).values_list('untranslated', flat=True),
@@ -78,7 +78,8 @@ def check(request, document_id, grade):
                       'braille': louis.translateString(getTables(grade, name=True), name), 
                       'type': 2} 
                      for name in names - duplicate_names]
-    places = set((place.text.lower() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE)))
+    places = set((place for places in 
+                 (place.text.lower().split() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE) if place.text != None) for place in places))
     duplicate_places = set((smart_unicode(word) for 
                             word in 
                             chain(GlobalWord.objects.filter(grade=grade).filter(type__in=(3,4)).filter(untranslated__in=places).values_list('untranslated', flat=True),
