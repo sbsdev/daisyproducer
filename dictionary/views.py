@@ -222,7 +222,7 @@ def confirm(request, grade):
                     # delete all non-local entries from the LocalWord table
                     LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
                 else:
-                    LocalWord(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True)
+                    LocalWord.objects.filter(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True)
             # FIXME: in principle we need to regenerate the liblouis tables,
             # i.e. the white lists now. However we do this asynchronously
             # (using a cron job) for now. There are several reasons for this:
@@ -281,7 +281,7 @@ AND a.grade = %s
 AND a.grade = b.grade
 AND a.braille != b.braille
 UNION
-SELECT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
+SELECT DISTINCT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
 FROM dictionary_localword AS a, dictionary_globalword AS b 
 WHERE a.untranslated = b.untranslated 
 AND a.type = b.type 
@@ -340,7 +340,7 @@ def confirm_conflicting_duplicates(request, grade):
                 global_ids[key] = global_id
 
         initial=[
-            {'id': global_ids[(untranslated, type, homograph_disambiguation)],
+            {'id': global_ids.get((untranslated, type, homograph_disambiguation)),
              'untranslated': untranslated,
              'type': type,
              'homograph_disambiguation': homograph_disambiguation,
@@ -372,7 +372,7 @@ def confirm_single(request, grade):
                 # delete all non-local entries from the LocalWord table
                 LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
             else:
-                LocalWord(grade=grade, **filter_args).update(isLocal=True, isConfirmed=True)
+                LocalWord.objects.filter(grade=grade, **filter_args).update(isLocal=True, isConfirmed=True)
             # redirect to self to deal with the next word
             redirect = 'dictionary_single_confirm_g1' if grade == 1 else 'dictionary_single_confirm_g2'
             return HttpResponseRedirect(reverse(redirect))

@@ -131,7 +131,7 @@ asciiToDotsMap = {
     # Note: in the SBS braille tables this dot pattern is represented by
     # the ascii character 'v'. The reason for this inconsistency is that
     # transcribers want to have a '-' in the user interface. Because the
-    # dictionary doesn't contain normal P36, we can savely use 'i' instead
+    # dictionary doesn't contain normal P36, we can savely use '-' instead
     # of 'v' in the database. This is more convenient than having a discordancy
     # between the user interface and the database.
     u'-': "36a", 
