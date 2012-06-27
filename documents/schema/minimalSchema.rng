@@ -143,17 +143,13 @@
     </element>
   </define>
   <define name="langAttribute">
-    <a:documentation>Because this xml:lang is different than the one above (for the top level),
-trang wraps the XML Schema attribute definitions in two attributeGroup's with
-different names (xml:lang &amp; xml:lang1). But for some reason the attribute
-definitions now have a use="required", which has to be deleted manually for
-xml:lang1 (until we find a way to properly configure trang).</a:documentation>
     <attribute name="xml:lang">
       <choice>
-        <value>de-CH</value>
+        <value>gsw</value>
         <value>en</value>
         <value>fr</value>
         <value>it</value>
+        <value>es</value>
       </choice>
     </attribute>
   </define>
@@ -737,6 +733,9 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
       <optional>
         <ref name="brailleClassAttribute"/>
       </optional>
+      <optional>
+        <ref name="langAttribute"/>
+      </optional>
       <interleave>
         <choice>
           <oneOrMore>
@@ -1025,6 +1024,9 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
   <define name="div">
     <element name="div">
       <ref name="brailleClassAttribute"/>
+      <optional>
+        <ref name="langAttribute"/>
+      </optional>
       <interleave>
         <zeroOrMore>
           <ref name="p"/>
@@ -1121,17 +1123,23 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
   </define>
   <define name="v-form">
     <element name="brl:v-form">
-      <text/>
+      <data type="normalizedString">
+        <param name="minLength">1</param>
+      </data>
     </element>
   </define>
   <define name="name">
     <element name="brl:name">
-      <text/>
+      <data type="normalizedString">
+        <param name="minLength">1</param>
+      </data>
     </element>
   </define>
   <define name="place">
     <element name="brl:place">
-      <text/>
+      <data type="normalizedString">
+        <param name="minLength">1</param>
+      </data>
     </element>
   </define>
   <define name="date">
