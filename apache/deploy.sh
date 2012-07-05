@@ -5,6 +5,11 @@
 # to build braille tables
 #    make dist 
 
+source deploy.cfg
+if [[ $? != 0 ]] ; then
+    exit 1
+fi
+
 function is_newer_locally() {
     if ( cd `dirname $1` && md5sum `basename $1` ) | ssh $2 " ( cd $3 &&  md5sum --check --status ) "; then
 	return 1
@@ -18,7 +23,7 @@ function restart_apache() {
 }
 
 function deploy_dtbook2sbsform() {
-    local PACKAGE=~/src/dtbook2sbsform/dtbook2sbsform.zip
+    local PACKAGE=$SRC_ROOT/dtbook2sbsform/dtbook2sbsform.zip
     if is_newer_locally $PACKAGE $1 $2; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
 	scp $PACKAGE $1:$2
@@ -32,7 +37,7 @@ unzip -q `basename $PACKAGE`"
 }
 
 function deploy_dtbook_hyphenator() {
-    local PACKAGE=~/src/dtbook_hyphenator/dtbook_hyphenator.zip
+    local PACKAGE=$SRC_ROOT/dtbook_hyphenator/dtbook_hyphenator.zip
     if is_newer_locally $PACKAGE $1 $2; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
 	scp $PACKAGE $1:$2
@@ -46,7 +51,7 @@ unzip -q `basename $PACKAGE`"
 }
 
 function deploy_braille_tables() {
-    local PACKAGE=`ls -rt ~/src/sbs-braille-tables/sbs-braille-tables-*.tar.gz|tail -1`
+    local PACKAGE=`ls -rt $SRC_ROOT/sbs-braille-tables/sbs-braille-tables-*.tar.gz|tail -1`
     if is_newer_locally $PACKAGE $1 $2; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
 	scp $PACKAGE $1:$2
@@ -63,7 +68,7 @@ sudo make install"
 }
 
 function deploy_pipeline() {
-    local PACKAGE=`ls -rt ~/src/dmfc/dist/pipeline-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].zip|tail -1`
+    local PACKAGE=`ls -rt $SRC_ROOT/dmfc/dist/pipeline-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].zip|tail -1`
     if is_newer_locally $PACKAGE $1 $2; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
 	scp $PACKAGE $1:$2
