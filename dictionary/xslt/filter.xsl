@@ -28,6 +28,9 @@
   <!-- Drop text which is not meant for Braille anyway -->
   <xsl:template match="brl:otherwise"/>
   
+  <!-- Drop names with mixed capitalization -->
+  <xsl:template match="brl:name[matches(string(.), '\p{Ll}\p{Lu}')]"/>
+  
   <!-- Drop foreign and downgraded words -->
   <xsl:template match="*[not(lang('de'))]"/>
   <xsl:template match="*[@brl:grade and number(@brl:grade) &lt; $contraction]"/>
