@@ -101,6 +101,15 @@ def zipDirectory(directory, zipFileName, document_title):
     outputFile.close()
     os.chdir(cwd)
 
+def saxon9he(source, xsl, **params):
+    command = (
+        "java",
+        "-jar", join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'lib', 'saxon9he.jar'),
+        "-xsl:%s" % xsl,
+        "-s:%s" % source)
+    command = command + tuple(["%s=%s" % (key,value) for key,value in params.iteritems()])
+    return Popen(command, stderr=PIPE, stdout=PIPE)
+
 class DaisyPipeline:
 
     @staticmethod
@@ -140,14 +149,7 @@ class DaisyPipeline:
             return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
         # Validate using Schematron tests. We have to do this before the
         # @brl:* attributes are filtered out.
-        command = (
-            "java",
-            "-jar", join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'lib', 'saxon9he.jar'),
-            "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-SBS.sch.xsl'),
-            "-s:%s" % file_path,
-            )
-        result = Popen(command, stderr=PIPE).stderr
-        print(result)
+        result = saxon9he(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-SBS.sch.xsl')).stderr
         if result:
             return list(result)
         tmpFile = filterBrlContractionhints(file_path)

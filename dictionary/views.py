@@ -6,6 +6,7 @@ from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
 from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.documents.models import Document
+from daisyproducer.documents.external import saxon9he
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
@@ -50,9 +51,11 @@ def check(request, document_id, grade):
             return render_to_response('dictionary/words.html', locals(),
                                       context_instance=RequestContext(request))
 
+    # filter some words from the xml
     content = document.latest_version().content
     content.open()
-    tree = etree.parse(content.file)
+    # strip='none': if this parameter is not set, whitespace is removed automatically for documents with a DOCTYPE declaration
+    tree = etree.parse(saxon9he(content.file, os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'), strip='none', contraction=grade).stdout)
     content.close()
 
     # grab the homographs
@@ -86,10 +89,11 @@ def check(request, document_id, grade):
                                   LocalWord.objects.filter(grade=grade).filter(type__in=(3,4)).filter(document=document).filter(untranslated__in=places).values_list('untranslated', flat=True))))
     unknown_places = [{'untranslated': place,
                        'braille': louis.translateString(getTables(grade, place=True), place),
-                       'type': 4} 
+                       'type': 4}
                       for place in places - duplicate_places]
+
     # filter homographs, names and places from the xml
-    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'))
+    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter_names.xsl'))
     transform = etree.XSLT(xsl)
     filtered_tree = transform(tree)
     # grab the rest of the content
@@ -103,6 +107,7 @@ def check(request, document_id, grade):
         # punctuation which we replace with space later on
         if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp', 'Pd', 'Po']
         or c in ['\n', '\r'])
+
     new_words = set((w.lower() for w in content.split() if len(w) > 1))
     # FIXME: We basically do a set difference manually here. This
     # would probably be better if done inside the db. However for that
