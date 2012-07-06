@@ -42,6 +42,10 @@ class PartialWordForm(ModelForm):
             # make the type field "read-only" (restrict it to a single choice)
             typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
+            if self.initial['type'] == 0:
+                self.fields['type'].widget = forms.HiddenInput()
+            if self.initial['homograph_disambiguation'] == '':
+                self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
     def clean_braille(self):
         data = self.cleaned_data['braille']
@@ -118,24 +122,9 @@ class ConfirmSingleWordForm(forms.Form):
             if self.initial['homograph_disambiguation'] == '':
                 self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
-class ConfirmWordForm(forms.Form):
-    untranslated = forms.CharField(label=labels['untranslated'], widget=forms.TextInput(attrs={'readonly':'readonly'}))
-    braille = forms.CharField(label=labels['braille'], widget=forms.TextInput(attrs={'readonly':'readonly'}))
-    type = forms.ChoiceField(label=labels['type'], choices=Word.WORD_TYPE_CHOICES)
-    homograph_disambiguation = forms.CharField(label=labels['homograph_disambiguation'], widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
-    isLocal = forms.BooleanField(label=labels['isLocal'], required=False)
+class ConfirmWordForm(ConfirmSingleWordForm):
     isConfirmed = forms.BooleanField(label=labels['isConfirmed'], required=False)
 
-    def __init__(self, *args, **kwargs):
-        super(ConfirmWordForm, self).__init__(*args, **kwargs)
-        if not self.is_bound:
-            if self.initial['type'] == 2:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
-            elif self.initial['type'] == 4:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
-            else:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
-            self.fields['type'].choices = typeChoices
 
 class ConflictingWordForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)

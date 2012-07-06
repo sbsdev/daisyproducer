@@ -41,15 +41,17 @@
 	{% if forloop.first %}
 	<tr>
 	  {% for field in form %}
-	  {% if field.is_hidden %}
-          <th></th>
-	  {% else %}
-	    {% if field.name == 'isConfirmed' %}
-            <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{{ field.label }}</th>
+	    {% if field.name == 'type' and have_type%}
+	      <th>{{ field.label }}</th>
+	    {% else %}{% if field.name == 'homograph_disambiguation' and have_homograph_disambiguation %}
+	      <th>{{ field.label }}</th>
+	    {% else %}{% if field.is_hidden %}
+	      <th></th>
+	    {% else %}{% if field.name == 'isConfirmed' %}
+	      <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{{ field.label }}</th>
 	    {% else %}
-            <th>{{ field.label }}</th>
-	    {% endif %}
-	  {% endif %}
+	      <th>{{ field.label }}</th>
+	    {% endif %}{% endif %}{% endif %}{% endif %}
 	  {% endfor %}
 	</tr>
 	{% endif %}
@@ -57,6 +59,7 @@
 	  {% for field in form %}
 	  <td>{{ field }}</td>
 	  {% endfor %}
+	  
 	  {% if form.errors %}
 	  <td>
 	    <div class="errorExplanation" id="errorExplanation">

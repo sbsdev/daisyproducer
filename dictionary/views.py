@@ -68,7 +68,7 @@ def check(request, document_id, grade):
     unknown_homographs = [{'untranslated': homograph.replace('|', ''), 
                            'braille': louis.translateString(getTables(grade), homograph.replace('|', unichr(0x250A))),
                            'type': 5,
-                           'homograph_disambiguation': homograph} 
+                           'homograph_disambiguation': homograph}
                           for homograph in homographs - duplicate_homographs]
     # grab names and places
     names = set((name for names in 
@@ -79,7 +79,8 @@ def check(request, document_id, grade):
                                  LocalWord.objects.filter(grade=grade).filter(type__in=(1,2)).filter(document=document).filter(untranslated__in=names).values_list('untranslated', flat=True))))
     unknown_names = [{'untranslated': name, 
                       'braille': louis.translateString(getTables(grade, name=True), name), 
-                      'type': 2} 
+                      'type': 2,
+                      'homograph_disambiguation': ''}
                      for name in names - duplicate_names]
     places = set((place for places in 
                  (place.text.lower().split() for place in tree.xpath('//brl:place', namespaces=BRL_NAMESPACE) if place.text != None) for place in places))
@@ -89,7 +90,8 @@ def check(request, document_id, grade):
                                   LocalWord.objects.filter(grade=grade).filter(type__in=(3,4)).filter(document=document).filter(untranslated__in=places).values_list('untranslated', flat=True))))
     unknown_places = [{'untranslated': place,
                        'braille': louis.translateString(getTables(grade, place=True), place),
-                       'type': 4}
+                       'type': 4,
+                       'homograph_disambiguation': ''}
                       for place in places - duplicate_places]
 
     # filter homographs, names and places from the xml
@@ -127,7 +129,8 @@ def check(request, document_id, grade):
                                  LocalWord.objects.filter(grade=grade).filter(document=document).filter(untranslated__in=new_words).values_list('untranslated', flat=True))))
     unknown_words = [{'untranslated': word, 
                       'braille': louis.translateString(getTables(grade), word),
-                      'type' : 0} 
+                      'type' : 0,
+                      'homograph_disambiguation': ''}
                      for word in new_words - duplicate_words]
 
     unknown_words = unknown_words + unknown_homographs + unknown_names + unknown_places
@@ -150,6 +153,8 @@ def check(request, document_id, grade):
         exclude=('document', 'isConfirmed', 'grade'), 
         extra=len(words.object_list), can_delete=True)
 
+    have_type = any((word['have_type']!='' for word in words.object_list))
+    have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(queryset=LocalWord.objects.none(), initial=words.object_list)
 
     stats = { "total_words": len(new_words), 
@@ -269,6 +274,8 @@ def confirm(request, grade):
     except InvalidPage:
         words = paginator.page(paginator.num_pages)
 
+    have_type = any((word['have_type']!='' for word in words.object_list))
+    have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(initial=words.object_list)
     return render_to_response('dictionary/confirm.html', locals(), 
                               context_instance=RequestContext(request))
