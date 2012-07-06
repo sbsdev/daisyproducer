@@ -1,3 +1,4 @@
+# coding=utf-8
 import datetime
 
 from daisyproducer.documents.models import Document
@@ -9,8 +10,19 @@ class Word(models.Model):
 
     MAX_WORD_LENGTH = 100
     WORD_TYPE_CHOICES = (
+    # (0) keine Einschränkung: die angezeigte Übersetzung dieses Wortes ist die EINZIG MÖGLICHE
+    # und dieses Wort kann kein Name sein (Wort wird zukünftig in .xml-Datei NIE mit brl:name
+    # ausgezeichnet): z.B. Tisch, Stuhl, Automatik
         (0, _('None')),
+    # (1) auch als Name: die angezeigte Übersetzung dieses Wortes ist die EINZIG MÖGLICHE und
+    # dieses Wort muss ein Name sein (Wort darf zukünftig in .xml-Datei mit brl:name
+    # ausgezeichnet werden, muss aber nicht, weil gleiche Übersetzung): z.B. Hug, Meier,
+    # Müller, Hoffmann, Ackermann
         (1, _('Also as a name')),
+    # (2) Name: die angezeigte Übersetzung dieses Wortes gilt nur als Namen. Daneben existiert
+    # ein entsprechender Nicht-Name, welcher anders übersetzt wird (Wort wird zukünftig in
+    # .xml-Datei mit oder ohne brl:name ausgezeichnet, je nach gewünschter Übersetzung): z.B.
+    # Kaufmann, Waldmann, Beat
         (2, _('Name')),
         (3, _('Also as a place')),
         (4, _('Place')),

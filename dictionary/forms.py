@@ -129,7 +129,12 @@ class ConfirmWordForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ConfirmWordForm, self).__init__(*args, **kwargs)
         if not self.is_bound:
-            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+            if self.initial['type'] == 2:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
+            elif self.initial['type'] == 4:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
+            else:
+                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
 
 class ConflictingWordForm(forms.Form):
