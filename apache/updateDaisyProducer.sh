@@ -7,11 +7,11 @@
 # notice and this notice are preserved.
 
 case "$1" in
-production) DEPLOY_ENV=demo;;
-test|*) DEPLOY_ENV=test;;
+production) DEPLOY_ENV=demo.xmlp;;
+test|*) DEPLOY_ENV=xmlp-test;;
 esac
 
-INSTALL_DIR=/srv/$DEPLOY_ENV.xmlp.sbszh.ch/daisyproducer
+INSTALL_DIR=/srv/$DEPLOY_ENV.sbszh.ch/daisyproducer
 
 cd $INSTALL_DIR
 git pull
