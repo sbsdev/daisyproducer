@@ -153,7 +153,7 @@ def check(request, document_id, grade):
         exclude=('document', 'isConfirmed', 'grade'), 
         extra=len(words.object_list), can_delete=True)
 
-    have_type = any((word['have_type']!='' for word in words.object_list))
+    have_type = any((word['type']!='' for word in words.object_list))
     have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(queryset=LocalWord.objects.none(), initial=words.object_list)
 
