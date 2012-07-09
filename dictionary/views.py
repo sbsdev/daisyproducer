@@ -253,14 +253,18 @@ def confirm(request, grade):
                                       context_instance=RequestContext(request))
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
-    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade).filter(type=5).filter(isConfirmed=False).values_list('untranslated', flat=True))
-    covered_entries = set(GlobalWord.objects.filter(grade=grade).filter(type=0).filter(untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))
-
-    for word in unconfirmed_homographs - covered_entries:
-        w = LocalWord(untranslated=word, 
-                      braille=louis.translateString(getTables(grade), word),
-                      grade=grade, type=0)
-        w.save()
+    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False).values_list('untranslated', flat=True))
+    if unconfirmed_homographs:
+        covered_entries = set(chain(
+                LocalWord.objects.filter(grade=grade, type=0, untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True),
+                GlobalWord.objects.filter(grade=grade, type=0, untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True)))
+        
+        for word in unconfirmed_homographs - covered_entries:
+            document = Document.objects.filter(localword__grade=grade, localword__type=5, localword__isConfirmed=False, localword__untranslated=word)[0]
+            w = LocalWord(untranslated=word, 
+                          braille=louis.translateString(getTables(grade), word),
+                          grade=grade, type=0, document=document)
+            w.save()
     
     words_to_confirm = LocalWord.objects.filter(grade=grade,isConfirmed=False).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
     paginator = Paginator(words_to_confirm, MAX_WORDS_PER_PAGE)
