@@ -824,7 +824,11 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
         <ref name="brailleClassAttribute"/>
       </optional>
       <attribute name="type">
-        <value>pl</value>
+        <choice>
+          <value>pl</value>
+          <value>ol</value>
+          <value>ul</value>
+        </choice>
       </attribute>
       <interleave>
         <oneOrMore>
