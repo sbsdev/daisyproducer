@@ -28,6 +28,9 @@
   <!-- Drop text which is not meant for Braille anyway -->
   <xsl:template match="brl:otherwise"/>
   
+  <!-- Drop text in running-line and toc-line elements -->
+  <xsl:template match="brl:runnnig-line|brl:toc-line"/>
+  
   <!-- Drop names with mixed capitalization -->
   <xsl:template match="brl:name[matches(string(.), '\p{Ll}\p{Lu}')]"/>
   
