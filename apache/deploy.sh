@@ -3,7 +3,9 @@
 # to build pipeline:
 #   ant -q -e -f build-core.xml buildReleaseZip
 # to build braille tables
-#    make dist 
+#    make dist
+# to build hyphenation tables
+#    debuild -us -uc
 
 source deploy.cfg
 if [[ $? != 0 ]] ; then
@@ -23,7 +25,7 @@ function restart_apache() {
 }
 
 function deploy_dtbook2sbsform() {
-    local PACKAGE=$SRC_ROOT/dtbook2sbsform/dtbook2sbsform.zip
+    local PACKAGE=$DTBOOK2SBSFORM_ROOT/dtbook2sbsform.zip
     if is_newer_locally $PACKAGE $1 $2; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
 	scp $PACKAGE $1:$2
@@ -37,7 +39,7 @@ unzip -q `basename $PACKAGE`"
 }
 
 function deploy_dtbook_hyphenator() {
-    local PACKAGE=$SRC_ROOT/dtbook_hyphenator/dtbook_hyphenator.zip
+    local PACKAGE=$DTBOOK_HYPHENATOR_ROOT/dtbook_hyphenator.zip
     if is_newer_locally $PACKAGE $1 $2; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
 	scp $PACKAGE $1:$2
@@ -51,7 +53,7 @@ unzip -q `basename $PACKAGE`"
 }
 
 function deploy_braille_tables() {
-    local PACKAGE=`ls -rt $SRC_ROOT/sbs-braille-tables/sbs-braille-tables-*.tar.gz|tail -1`
+    local PACKAGE=`ls -rt $BRAILLE_TABLES_ROOT/sbs-braille-tables-*.tar.gz|tail -1`
     if is_newer_locally $PACKAGE $1 $2; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
 	scp $PACKAGE $1:$2
@@ -67,8 +69,22 @@ sudo make install"
     fi
 }
 
+function deploy_hyphenation_tables() {
+    local PACKAGE=`ls -rt $HYPHENATION_TABLES_ROOT/../sbs-hyphenation-tables_*.deb|tail -1`
+    if is_newer_locally $PACKAGE $1 $2; then
+	echo "`basename $PACKAGE` is newer locally. Deploying it..."
+	scp $PACKAGE $1:$2
+	ssh -t $1 "
+cd $2
+rm -rf `basename $PACKAGE .deb`
+sudo dpkg -i `basename $PACKAGE`"
+    else
+	echo "`basename $PACKAGE` has already been deployed. Skipping it..."
+    fi
+}
+
 function deploy_pipeline() {
-    local PACKAGE=`ls -rt $SRC_ROOT/dmfc/dist/pipeline-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].zip|tail -1`
+    local PACKAGE=`ls -rt $PIPELINE_ROOT/dist/pipeline-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].zip|tail -1`
     if is_newer_locally $PACKAGE $1 $2; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
 	scp $PACKAGE $1:$2
@@ -85,21 +101,22 @@ cp pipeline/transformers/se_tpb_dtbook2latex/dtbook2latex_sbs.xsl pipeline/trans
 }
 
 case "$1" in
-    prod) 
+    prod)
 	deploy_pipeline xmlp /opt
 	deploy_dtbook2sbsform xmlp /opt
 	deploy_dtbook_hyphenator xmlp /opt
 	deploy_braille_tables xmlp ~/src
 	restart_apache xmlp;;
 
-    test) 
+    test)
 	deploy_pipeline xmlp-test /opt
 	deploy_dtbook2sbsform xmlp-test /opt
 	deploy_dtbook_hyphenator xmlp-test /opt
 	deploy_braille_tables xmlp-test ~/src
+	deploy_hyphenation_tables xmlp-test ~/src
 	restart_apache xmlp-test;;
-    
-    dev|*) 
+
+    dev|*)
 	deploy_pipeline localhost ~/tmp
 	deploy_dtbook2sbsform localhost ~/tmp
 	deploy_dtbook_hyphenator localhost ~/tmp;;
