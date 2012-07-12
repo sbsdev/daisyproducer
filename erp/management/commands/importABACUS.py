@@ -7,6 +7,7 @@ import cmislib
 import httplib2
 import httplib
 import os
+import re
 
 class ImportError(Exception):
     pass
@@ -32,9 +33,6 @@ class Command(BaseCommand):
             "source_date": "sbs/auflageJahr",
             "source_edition": "sbs/auflageJahr",
             "source_publisher": "sbs/verlag",
-            # "production_series": "FIXME",
-            # "production_series_number": "FIXME",
-            # "production_source": "FIXME",
             }
         root = "/AbaConnectContainer/Task/Transaction/DocumentData"
 
@@ -46,24 +44,38 @@ class Command(BaseCommand):
             except etree.XMLSyntaxError, e:
                 raise CommandError('Cannot parse ABACUS Export file "%s"' % file, e)
 
-
-            product_number = xpatheval("%s/artikel_nr" % root)[0].text
+            xpatheval = etree.XPathEvaluator(tree)
+            product_number = getText(xpatheval("%s/artikel_nr" % root))
             try:
-                checkout_document(product_number)
+                pass
+#                checkout_document(product_number)
             except ImportError:
                 continue
 
-            xpatheval = etree.XPathEvaluator(tree)
-            params = dict([(key, xpatheval("%s/MetaData/%s" % (root, value))[0].text) for (key, value) in metadata.items()])
+            params = dict([(key, getText(xpatheval("%s/MetaData/%s" % (root, value)))) for (key, value) in metadata.items()])
+            production_series_number = getText(xpatheval("%s/MetaData/sbs/rucksackNr" % root))
+            reihe = getText(xpatheval("%s/MetaData/sbs/reihe" % root))
+            if production_series_number != '0':
+                params["production_series"] = Document.PRODUCTION_SERIES_CHOICES[1][0]
+                params["production_series_number"] = production_series_number
+            elif reihe.upper().find('SJW') != -1:
+                params['production_series'] = Document.PRODUCTION_SERIES_CHOICES[0][0]
+                m = re.search('\d+', reihe) # extract the series number
+                if m != None:
+                    params['production_series_number'] = m.group(0)
+            if getText(xpatheval("%s/MetaData/sbs/Aufwand_A2" % root)) == 'D':
+                params["production_source"] = Document.PRODUCTION_SOURCE_CHOICES[0][0]
             document = Document(**params)
             print document
 #        document.save()
-            os.remove(file) 
+#            os.remove(file) 
 
             self.numberOfDocuments += 1
 
         self.stdout.write('Successfully added %s products.\n' % self.numberOfDocuments)
 
+def getText(nodes):
+    return nodes[0].text if nodes else ''
 
 def checkout_document(product_number):
     url = 'http://pam02.sbszh.ch/alfresco/s/api/cmis'
