@@ -278,7 +278,7 @@ def confirm(request, grade):
     except InvalidPage:
         words = paginator.page(paginator.num_pages)
 
-    have_type = any((word['have_type']!='' for word in words.object_list))
+    have_type = any((word['type']!='' for word in words.object_list))
     have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(initial=words.object_list)
     return render_to_response('dictionary/confirm.html', locals(), 
