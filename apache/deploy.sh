@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # to build pipeline:
-#   ant -q -e -f build-core.xml buildReleaseZip
+#    ant -q -e -f build-core.xml buildReleaseZip
+# to build dtbook2sbsform:
+#    ant dist
+# to build dtbook_hyphenator
+#    ant dist
 # to build braille tables
 #    make dist
 # to build hyphenation tables
