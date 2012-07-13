@@ -74,30 +74,6 @@ class RestrictedWordForm(PartialWordForm):
 
         return cleaned_data
 
-# class RestrictedConfirmWordForm(PartialWordForm):
-#     def __init__(self, *args, **kwargs):
-#         super(RestrictedConfirmWordForm, self).__init__(*args, **kwargs)
-#         if not self.is_bound:
-#             if self.initial['type'] == 0:
-#                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (0, 1, 2, 3, 4)]
-#             elif self.initial['type'] == 2:
-#                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
-#             elif self.initial['type'] == 4:
-#                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
-#             else:
-#                 typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
-#             self.fields['type'].choices = typeChoices
-
-#     # only clean if a word is confirmed
-#     def clean(self):
-#         cleaned_data = self.cleaned_data
-#         isConfirmed = cleaned_data.get("isConfirmed")
-
-#         if isConfirmed:
-#             return super(RestrictedConfirmWordForm, self).clean()
-
-#         return cleaned_data
-
 class ConfirmSingleWordForm(forms.Form):
     untranslated = forms.CharField(label=labels['untranslated'], widget=forms.TextInput(attrs={'readonly':'readonly'}))
     braille = forms.CharField(label=labels['braille'], widget=forms.TextInput(attrs={'readonly':'readonly', 'class': 'braille'}))
