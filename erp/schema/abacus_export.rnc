@@ -53,7 +53,8 @@ start =
                      element katalogEintrag { xsd:NCName },
                      element verlagVerzeichnis { xsd:NCName },
                      element daisy_producer { xsd:token },
-                     element notizen { text }?
+                     element notizen { text }?,
+                     element Aufwand_A2 { "" | "D" }
                   },
                   element ncc {
                      element setInfo { xsd:integer }
