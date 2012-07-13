@@ -1,0 +1,67 @@
+default namespace = ""
+
+start =
+   element AbaConnectContainer {
+      element Task {
+         element Parameter { empty },
+         element Transaction {
+            element DocumentData {
+               attribute command { xsd:NCName },
+               element artikel_nr { xsd:NCName },
+               title,
+               element MetaData {
+                  element dc {
+                     title,
+                     element creator { xsd:string { minLength="1" } },
+                     element source { xsd:token { pattern='(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9x]' }},
+                     element language { "de" | "de-CH" },
+                     element identifier { xsd:NCName },
+                     element date { xsd:date }
+                  },
+                  element sbs {
+                     element KST { xsd:positiveInteger },
+                     element untertitel { text },
+                     element reihe { text }?,
+                     element verlag { xsd:token },
+                     element verlagsort { xsd:token },
+                     element auflageJahr { xsd:token { pattern='.*[0-9]{4}' } },
+                     element printPageNumber { xsd:positiveInteger },
+                     element ausleihNr { text }?,
+                     element prodStatus { xsd:token },
+                     element datenErhalten { xsd:token },
+                     element schriftart { xsd:token },
+                     element endformat { text },
+                     element drucker { xsd:NCName },
+                     element doppelseitig { xsd:NCName },
+                     element bindung { xsd:token },
+                     element breite { xsd:nonNegativeInteger },
+                     element zeilen { xsd:nonNegativeInteger },
+                     element auszug { text },
+                     element zoom { text },
+                     element qualitaet { text },
+                     element prodPageSS { xsd:integer },
+                     element bpz { text },
+                     element ervNr { xsd:integer },
+                     element laufzettelNr { xsd:positiveInteger },
+                     element rucksackNr { xsd:nonNegativeInteger },
+                     element altersgruppe { text },
+                     element gdBuchNr { xsd:nonNegativeInteger },
+                     element prodPagePS { xsd:nonNegativeInteger },
+                     element anzahlBaende { xsd:nonNegativeInteger },
+                     element anzahlRelief { xsd:nonNegativeInteger },
+                     element vorlageHaus { xsd:NCName },
+                     element katalogEintrag { xsd:NCName },
+                     element verlagVerzeichnis { xsd:NCName },
+                     element daisy_producer { xsd:token },
+                     element notizen { text }?
+                  },
+                  element ncc {
+                     element setInfo { xsd:integer }
+                  }
+               }
+            }
+         }
+      }
+   }
+title = element title { text }
+   
