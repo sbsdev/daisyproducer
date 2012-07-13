@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AbaConnectContainer>
+  <Task>
+    <Parameter/>
+    <Transaction>
+      <DocumentData command="mdaDocModify">
+        <artikel_nr>PS12574</artikel_nr>
+        <title>Drei fürs Museum</title>
+        <MetaData>
+          <dc>
+            <title>Drei fürs Museum</title>
+            <creator>Krüger, Jonas Torsten</creator>
+            <source>978-3-8000-5586-9</source>
+            <language>de</language>
+            <identifier>PS12574</identifier>
+            <date>2011-12-06</date>
+          </dc>
+          <sbs>
+            <KST>54230</KST>
+            <untertitel>Die Nacht der Rätsel</untertitel>
+            <verlag>Ueberreuter</verlag>
+            <verlagsort>Wien</verlagsort>
+            <auflageJahr>2011</auflageJahr>
+            <printPageNumber>131</printPageNumber>
+            <ausleihNr/>
+            <prodStatus>IN ARBEIT</prodStatus>
+            <datenErhalten>05.12.2011 (pdf per Mail) / ts</datenErhalten>
+            <schriftart>Kurzschrift</schriftart>
+            <endformat>28 x 28</endformat>
+            <drucker>Endlos</drucker>
+            <doppelseitig>doppelseitig</doppelseitig>
+            <bindung>WmD</bindung>
+            <breite>0</breite>
+            <zeilen>0</zeilen>
+            <auszug/>
+            <zoom/>
+            <qualitaet/>
+            <prodPageSS>0</prodPageSS>
+            <bpz/>
+            <ervNr>0</ervNr>
+            <laufzettelNr>501013</laufzettelNr>
+            <rucksackNr>278</rucksackNr>
+            <altersgruppe>A2</altersgruppe>
+            <gdBuchNr>0</gdBuchNr>
+            <prodPagePS>0</prodPagePS>
+            <anzahlBaende>0</anzahlBaende>
+            <anzahlRelief>0</anzahlRelief>
+            <vorlageHaus>ja</vorlageHaus>
+            <katalogEintrag>ja</katalogEintrag>
+            <verlagVerzeichnis>nein</verlagVerzeichnis>
+            <daisy_producer>ja</daisy_producer>
+            <notizen>Rucksackbuch Nr. 278 / A2, L 1 (Lesezeichen Nr. 1, Februar 2013)</notizen>
+	    <Aufwand_A2>D</Aufwand_A2>
+          </sbs>
+          <ncc>
+            <setInfo>0</setInfo>
+          </ncc>
+        </MetaData>
+      </DocumentData>
+    </Transaction>
+  </Task>
+</AbaConnectContainer>
