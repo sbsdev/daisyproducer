@@ -1,7 +1,9 @@
 from daisyproducer.documents.models import Document
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from django.db import transaction
 from lxml import etree
+from os.path import join
 
 import cmislib
 import httplib2
@@ -36,20 +38,26 @@ class Command(BaseCommand):
             }
         root = "/AbaConnectContainer/Task/Transaction/DocumentData"
 
+        relaxng_schema = etree.parse(join(settings.PROJECT_DIR, 'erp', 'schema', 'abacus_export.rng'),)
+        relaxng = etree.RelaxNG(relaxng_schema)
+
         for file in args:
             try:
                 tree = etree.parse(file)
+                relaxng.assertValid(tree)
             except IOError:
                 raise CommandError('ABACUS Export file "%s" not found' % file)
             except etree.XMLSyntaxError, e:
                 raise CommandError('Cannot parse ABACUS Export file "%s"' % file, e)
+            except lxml.etree.DocumentInvalid, e:
+                raise CommandError('ABACUS Export file "%s" is not valid' % file, e)
 
             xpatheval = etree.XPathEvaluator(tree)
             product_number = xpatheval("%s/artikel_nr" % root)[0].text
             try:
-                pass
-#                checkout_document(product_number)
-            except ImportError:
+                checkout_document(product_number)
+            except ImportError, e:
+                print e
                 continue
 
             params = dict([(key, xpatheval("%s/MetaData/%s" % (root, value))[0].text) for (key, value) in metadata.items()])
