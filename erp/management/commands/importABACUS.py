@@ -45,25 +45,26 @@ class Command(BaseCommand):
                 raise CommandError('Cannot parse ABACUS Export file "%s"' % file, e)
 
             xpatheval = etree.XPathEvaluator(tree)
-            product_number = getText(xpatheval("%s/artikel_nr" % root))
+            product_number = xpatheval("%s/artikel_nr" % root)[0].text
             try:
                 pass
 #                checkout_document(product_number)
             except ImportError:
                 continue
 
-            params = dict([(key, getText(xpatheval("%s/MetaData/%s" % (root, value)))) for (key, value) in metadata.items()])
-            production_series_number = getText(xpatheval("%s/MetaData/sbs/rucksackNr" % root))
-            reihe = getText(xpatheval("%s/MetaData/sbs/reihe" % root))
+            params = dict([(key, xpatheval("%s/MetaData/%s" % (root, value))[0].text) for (key, value) in metadata.items()])
+            production_series_number = xpatheval("%s/MetaData/sbs/rucksackNr" % root)[0].text
             if production_series_number != '0':
                 params["production_series"] = Document.PRODUCTION_SERIES_CHOICES[1][0]
                 params["production_series_number"] = production_series_number
-            elif reihe.upper().find('SJW') != -1:
+            nodes = xpatheval("%s/MetaData/sbs/reihe" % root)
+            reihe = nodes[0].text if nodes else ''
+            if production_series_number == '0' and reihe.upper().find('SJW') != -1:
                 params['production_series'] = Document.PRODUCTION_SERIES_CHOICES[0][0]
                 m = re.search('\d+', reihe) # extract the series number
                 if m != None:
                     params['production_series_number'] = m.group(0)
-            if getText(xpatheval("%s/MetaData/sbs/Aufwand_A2" % root)) == 'D':
+            if xpatheval("%s/MetaData/sbs/Aufwand_A2" % root)[0].text == 'D':
                 params["production_source"] = Document.PRODUCTION_SOURCE_CHOICES[0][0]
             document = Document(**params)
             print document
@@ -73,9 +74,6 @@ class Command(BaseCommand):
             self.numberOfDocuments += 1
 
         self.stdout.write('Successfully added %s products.\n' % self.numberOfDocuments)
-
-def getText(nodes):
-    return nodes[0].text if nodes else ''
 
 def checkout_document(product_number):
     url = 'http://pam02.sbszh.ch/alfresco/s/api/cmis'
