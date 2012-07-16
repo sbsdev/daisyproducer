@@ -830,6 +830,17 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
           <value>ul</value>
         </choice>
       </attribute>
+      <optional>
+        <attribute name="enum">
+          <choice>
+            <value>1</value>
+            <value>a</value>
+            <value>A</value>
+            <value>i</value>
+            <value>I</value>
+          </choice>
+        </attribute>
+      </optional>
       <interleave>
         <oneOrMore>
           <ref name="li"/>
