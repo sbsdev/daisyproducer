@@ -5,6 +5,7 @@ import louis
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
 from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
+from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document
 from daisyproducer.documents.external import saxon9he
 from django.conf import settings
@@ -157,9 +158,10 @@ def check(request, document_id, grade):
     have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(queryset=LocalWord.objects.none(), initial=words.object_list)
 
-    stats = { "total_words": len(new_words), 
-              "total_new": paginator.count, 
-              "percent": 100.0*len(unknown_words)/len(new_words) }
+    # Document statistic
+    stats = DocumentStatistic(document=document, grade=grade, total=len(new_words), unknown=len(unknown_words))
+    percentage = 100.0*stats.unknown/stats.total
+    stats.save()
 
     return render_to_response('dictionary/words.html', locals(),
                               context_instance=RequestContext(request))
