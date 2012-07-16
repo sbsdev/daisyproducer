@@ -154,7 +154,7 @@ def check(request, document_id, grade):
         exclude=('document', 'isConfirmed', 'grade'), 
         extra=len(words.object_list), can_delete=True)
 
-    have_type = any((word['type']!='' for word in words.object_list))
+    have_type = any((word['type']!=0 for word in words.object_list))
     have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(queryset=LocalWord.objects.none(), initial=words.object_list)
 
@@ -280,7 +280,7 @@ def confirm(request, grade):
     except InvalidPage:
         words = paginator.page(paginator.num_pages)
 
-    have_type = any((word['type']!='' for word in words.object_list))
+    have_type = any((word['type']!=0 for word in words.object_list))
     have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(initial=words.object_list)
     return render_to_response('dictionary/confirm.html', locals(), 
