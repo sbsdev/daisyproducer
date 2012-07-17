@@ -12,6 +12,16 @@
   
   <!-- Drop the homograph, name and place elements as they are handled separately-->
   <xsl:template match="brl:homograph|brl:name|brl:place"/>
+  
+  <!-- Make sure the first/last words in running-line and toc-line elements are
+       not joined with other words -->
+  <xsl:template match="brl:running-line|brl:toc-line">
+    <xsl:copy>
+      <xsl:text> </xsl:text>
+      <xsl:apply-templates select="@*|node()"/>
+      <xsl:text> </xsl:text>
+    </xsl:copy>
+  </xsl:template>
 
   <!-- Copy all other nodes and attributes -->
   <xsl:template match="node()|@*">
