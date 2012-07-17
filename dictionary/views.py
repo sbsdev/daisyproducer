@@ -291,32 +291,44 @@ def get_conflicting_words(grade):
     from django.db import connection, transaction
     cursor = connection.cursor()
     DETECT_CONFLICTING_WORDS = """
-SELECT DISTINCT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
-FROM dictionary_localword AS a, dictionary_localword AS b 
-WHERE a.untranslated = b.untranslated 
-AND a.type = b.type 
-AND a.homograph_disambiguation = b.homograph_disambiguation 
-AND a.grade = %s
-AND a.grade = b.grade
-AND a.braille != b.braille
+SELECT DISTINCT word_a.untranslated, word_a.type, word_a.homograph_disambiguation, word_a.braille, 0
+FROM dictionary_localword AS word_a, dictionary_localword AS word_b, documents_document AS doc_a, documents_document AS doc_b
+WHERE word_a.untranslated = word_b.untranslated 
+AND word_a.type = word_b.type 
+AND word_a.homograph_disambiguation = word_b.homograph_disambiguation 
+AND word_a.grade = %s
+AND word_a.grade = word_b.grade
+AND word_a.braille != word_b.braille
+AND word_a.document_id=doc_a.id
+AND word_b.document_id=doc_b.id
+AND doc_a.state_id=3
+AND doc_b.state_id=3
 UNION
-SELECT DISTINCT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
-FROM dictionary_localword AS a, dictionary_globalword AS b 
-WHERE a.untranslated = b.untranslated 
-AND a.type = b.type 
-AND a.homograph_disambiguation = b.homograph_disambiguation 
-AND a.grade = %s
-AND a.grade = b.grade
-AND a.braille != b.braille
+SELECT DISTINCT word_a.untranslated, word_a.type, word_a.homograph_disambiguation, word_a.braille, 0
+FROM dictionary_localword AS word_a, dictionary_localword AS word_b, documents_document AS doc_a, documents_document AS doc_b
+WHERE word_a.untranslated = word_b.untranslated 
+AND word_a.type = word_b.type 
+AND word_a.homograph_disambiguation = word_b.homograph_disambiguation 
+AND word_a.grade = %s
+AND word_a.grade = word_b.grade
+AND word_a.braille != word_b.braille
+AND word_a.document_id=doc_a.id
+AND word_b.document_id=doc_b.id
+AND doc_a.state_id=3
+AND doc_b.state_id=3
 UNION
-SELECT a.untranslated, a.type, a.homograph_disambiguation, b.braille, b.id
-FROM dictionary_localword AS a, dictionary_globalword AS b 
-WHERE a.untranslated = b.untranslated 
-AND a.type = b.type 
-AND a.homograph_disambiguation = b.homograph_disambiguation 
-AND a.grade = %s
-AND a.grade = b.grade
-AND a.braille != b.braille"""
+SELECT word_a.untranslated, word_a.type, word_a.homograph_disambiguation, word_b.braille, word_b.id
+FROM dictionary_localword AS word_a, dictionary_localword AS word_b, documents_document AS doc_a, documents_document AS doc_b
+WHERE word_a.untranslated = word_b.untranslated 
+AND word_a.type = word_b.type 
+AND word_a.homograph_disambiguation = word_b.homograph_disambiguation 
+AND word_a.grade = %s
+AND word_a.grade = word_b.grade
+AND word_a.braille != word_b.braille
+AND word_a.document_id=doc_a.id
+AND word_b.document_id=doc_b.id
+AND doc_a.state_id=3
+AND doc_b.state_id=3"""
     cursor.execute(DETECT_CONFLICTING_WORDS, [grade, grade, grade])
     return cursor.fetchall()
 
