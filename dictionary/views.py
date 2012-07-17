@@ -255,7 +255,7 @@ def confirm(request, grade):
                                       context_instance=RequestContext(request))
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
-    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False).values_list('untranslated', flat=True))
+    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False, document__state__name='finished').values_list('untranslated', flat=True))
     if unconfirmed_homographs:
         covered_entries = set(chain(
                 LocalWord.objects.filter(grade=grade, type=0, untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True),
@@ -268,7 +268,7 @@ def confirm(request, grade):
                           grade=grade, type=0, document=document)
             w.save()
     
-    words_to_confirm = LocalWord.objects.filter(grade=grade,isConfirmed=False).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
+    words_to_confirm = LocalWord.objects.filter(grade=grade, isConfirmed=False, document__state__name='finished').order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
     paginator = Paginator(words_to_confirm, MAX_WORDS_PER_PAGE)
     try:
         page = int(request.GET.get('page', '1'))
@@ -286,6 +286,7 @@ def confirm(request, grade):
     return render_to_response('dictionary/confirm.html', locals(), 
                               context_instance=RequestContext(request))
 
+# TODO only consider words in finished books
 def get_conflicting_words(grade):
     from django.db import connection, transaction
     cursor = connection.cursor()
@@ -319,6 +320,7 @@ AND a.braille != b.braille"""
     cursor.execute(DETECT_CONFLICTING_WORDS, [grade, grade, grade])
     return cursor.fetchall()
 
+# TODO only consider words in finished books
 @transaction.commit_on_success
 def confirm_conflicting_duplicates(request, grade):
 
@@ -376,7 +378,7 @@ def confirm_conflicting_duplicates(request, grade):
 def confirm_single(request, grade):
     try:
         # just get one word
-        word = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type')[0:1].get()
+        word = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False, document__state__name='finished').order_by('untranslated', 'type')[0:1].get()
     except LocalWord.DoesNotExist:
         return HttpResponseRedirect(reverse('todo_index'))
 
