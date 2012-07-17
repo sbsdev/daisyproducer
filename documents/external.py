@@ -101,12 +101,13 @@ def zipDirectory(directory, zipFileName, document_title):
     outputFile.close()
     os.chdir(cwd)
 
-def saxon9he(source, xsl, **params):
+def saxon9he(source, xsl, *args, **params):
     command = (
         "java",
         "-jar", join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'lib', 'saxon9he.jar'),
         "-xsl:%s" % xsl,
         "-s:%s" % source)
+    command = command + tuple(args)
     command = command + tuple(["%s=%s" % (key,value) for key,value in params.iteritems()])
     return Popen(command, stderr=PIPE, stdout=PIPE)
 

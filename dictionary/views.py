@@ -56,7 +56,7 @@ def check(request, document_id, grade):
     content = document.latest_version().content
     content.open()
     # strip='none': if this parameter is not set, whitespace is removed automatically for documents with a DOCTYPE declaration
-    tree = etree.parse(saxon9he(content.file, os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'), strip='none', contraction=grade).stdout)
+    tree = etree.parse(saxon9he(content.file, os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'), '-strip:none', contraction=grade).stdout)
     content.close()
 
     # grab the homographs
