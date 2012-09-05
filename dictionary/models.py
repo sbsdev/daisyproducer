@@ -49,6 +49,7 @@ class GlobalWord(Word):
 class LocalWord(Word):
     isLocal = models.BooleanField(_("Local"), default=False)
     isConfirmed = models.BooleanField(_("Confirmed"), default=False)
+    isDeferred = models.BooleanField(_("Deferred"), default=False)
     document = models.ForeignKey(Document)
 
     class Meta:

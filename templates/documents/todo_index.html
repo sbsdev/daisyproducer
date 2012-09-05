@@ -8,9 +8,11 @@
   <h3>{% trans "Braille Dictionary" %}</h3>
   <h4>{% trans "Grade 1" %}</h4>
   <a href="{% url dictionary_confirm_g1 %}">{% trans "Confirm unknown words" %}</a><br />
+  <a href="{% url dictionary_confirm_deferred_g1 %}" accesskey="v">{% trans "Confirm deferred words" %}</a><br />
   <a href="{% url dictionary_single_confirm_g1 %}" accesskey="v">{% trans "Confirm single words" %}</a><br />
   <h4>{% trans "Grade 2" %}</h4>
   <a href="{% url dictionary_confirm_g2 %}">{% trans "Confirm unknown words" %}</a><br />
+  <a href="{% url dictionary_confirm_deferred_g2 %}" accesskey="v">{% trans "Confirm deferred words" %}</a><br />
   <a href="{% url dictionary_single_confirm_g2 %}" accesskey="k">{% trans "Confirm single words" %}</a><br />
   {% endif %}
 </div>

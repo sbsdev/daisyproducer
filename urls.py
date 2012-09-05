@@ -65,12 +65,24 @@ urlpatterns += patterns('daisyproducer.dictionary.views',
     url(r'^todo/(?P<document_id>\d+)/local_words_g2$', 'local', kwargs={'grade': 2}, name='dictionary_local_g2'),
     url(r'^todo/confirm_words_g1$', 'confirm', kwargs={'grade': 1}, name='dictionary_confirm_g1'),
     url(r'^todo/confirm_words_g2$', 'confirm', kwargs={'grade': 2}, name='dictionary_confirm_g2'),
+    url(r'^todo/confirm_deferred_words_g1$', 'confirm', kwargs={'grade': 1, 'deferred': True}, name='dictionary_confirm_deferred_g1'),
+    url(r'^todo/confirm_deferred_words_g2$', 'confirm', kwargs={'grade': 2, 'deferred': True}, name='dictionary_confirm_deferred_g2'),
     url(r'^todo/confirm_single_word_g1$', 'confirm_single', kwargs={'grade': 1}, name='dictionary_single_confirm_g1'),
     url(r'^todo/confirm_single_word_g2$', 'confirm_single', kwargs={'grade': 2}, name='dictionary_single_confirm_g2'),
     url(r'^todo/confirm_conflicting_duplicates_g1$', 'confirm_conflicting_duplicates', kwargs={'grade': 1},
         name='dictionary_confirm_conflicting_duplicates_g1'),
     url(r'^todo/confirm_conflicting_duplicates_g2$', 'confirm_conflicting_duplicates', kwargs={'grade': 2}, 
         name='dictionary_confirm_conflicting_duplicates_g2'),
+    url(r'^todo/confirm_deferred_conflicting_duplicates_g1$', 'confirm_conflicting_duplicates', kwargs={'grade': 1, 'deferred': True},
+        name='dictionary_confirm_deferred_conflicting_duplicates_g1'),
+    url(r'^todo/confirm_deferred_conflicting_duplicates_g2$', 'confirm_conflicting_duplicates', kwargs={'grade': 2, 'deferred': True}, 
+        name='dictionary_confirm_deferred_conflicting_duplicates_g2'),
+)
+
+# statistics
+urlpatterns += patterns('daisyproducer.statistics.views',
+    url(r'^stats/$', 'index', name='stats_index'),
+    url(r'^stats/csv$', 'all_data_as_csv', name='all_data_as_csv'),
 )
 
 # help and about

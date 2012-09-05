@@ -6,28 +6,24 @@
 
 {% block content %}
 
-<script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
-<script type="text/javascript">
-  // toggle all checkboxes
-  $(document).ready(function(){
-    $('.toggleAllCheckboxes').click(function() {
-      $('input[type=checkbox][name$="isConfirmed"]').each(function (i) {
-        $(this).attr('checked', !this.checked);
-      });
-    });
-  // set all confirmed checkboxes to true
-  $('input[type=checkbox][name$="isConfirmed"]').each(function (i) { $(this).attr('checked', true); });
-  
-  });
-</script>
-
-<h2>{% blocktrans %}Confirm Unknown Words for Grade {{grade}}{% endblocktrans %}</h2>
+<h2>
+  {% if deferred %} {% blocktrans %} Confirm Deferred Words for Grade {{grade}} {% endblocktrans %}
+  {% else %}        {% blocktrans %} Confirm Unknown Words for Grade {{grade}}  {% endblocktrans %}
+  {% endif %}
+</h2>
 
 <div class="issue">
   
   <table>
     <tr>
-      <td><b>{% trans 'Total unconfirmed words' %}:</b></td><td>{{paginator.count}}</td>
+      <td>
+        <b>
+          {% if deferred %} {% trans  'Total deferred words' %}:
+          {% else %}        {% trans  'Total unconfirmed words' %}:
+          {% endif %}
+        </b>
+      </td>
+      <td>{{paginator.count}}</td>
     </tr>
   </table>
   {% include "dictionary/pagination.html" %}
@@ -47,11 +43,9 @@
 	      <th>{{ field.label }}</th>
 	    {% else %}{% if field.is_hidden %}
 	      <th></th>
-	    {% else %}{% if field.name == 'isConfirmed' %}
-	      <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{{ field.label }}</th>
 	    {% else %}
 	      <th>{{ field.label }}</th>
-	    {% endif %}{% endif %}{% endif %}{% endif %}
+	    {% endif %}{% endif %}{% endif %}
 	  {% endfor %}
 	</tr>
 	{% endif %}

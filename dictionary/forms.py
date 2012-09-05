@@ -123,8 +123,10 @@ class ConfirmSingleWordForm(forms.Form):
                 self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
 class ConfirmWordForm(ConfirmSingleWordForm):
-    isConfirmed = forms.BooleanField(label=labels['isConfirmed'], required=False)
+    isDeferred = forms.BooleanField(label=labels['isDeferred'], required=False)
 
+class ConfirmDeferredWordForm(ConfirmSingleWordForm):
+    braille = forms.CharField(label=labels['braille'], widget=forms.TextInput(attrs={'class': 'braille'}))
 
 class ConflictingWordForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
