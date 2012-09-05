@@ -33,42 +33,47 @@
   <xsl:template match="dtb:frontmatter//dtb:level1[not(.//dtb:h1)]">
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'Vorspann ohne Überschrift 1'"/>
+      <xsl:with-param name="blurb" select="'Vorspann ohne Überschrift'"/>
     </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="dtb:bodymatter//dtb:level1[not(dtb:h1)]">
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'ohne Überschrift 1'"/>
+      <xsl:with-param name="blurb" select="concat(format-number(count(preceding-sibling::dtb:level1) + 1, '0'),
+        ' Im original ohne Nummerierung')"/>
     </xsl:apply-templates>
   </xsl:template>
   
   <xsl:template match="dtb:rearmatter//dtb:level1[not(dtb:h1)]">
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'Nachspann ohne Überschrift 1'"/>
+      <xsl:with-param name="blurb" select="'Nachspann ohne Überschrift'"/>
     </xsl:apply-templates>
   </xsl:template>
   
   <xsl:template match="dtb:frontmatter//dtb:level2[not(.//dtb:h2)]">
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="2"/>
-      <xsl:with-param name="blurb" select="'Vorspann ohne Überschrift 2'"/>
+      <xsl:with-param name="blurb" select="'Vorspann ohne Überschrift'"/>
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="dtb:bodymatter//dtb:level2[not(dtb:h2)]">
+  <xsl:template match="dtb:bodymatter//dtb:level2[not(dtb:h2)]|
+                       dtb:bodymatter//dtb:level3[not(dtb:h3)]|
+                       dtb:bodymatter//dtb:level4[not(dtb:h4)]|
+                       dtb:bodymatter//dtb:level5[not(dtb:h5)]|
+                       dtb:bodymatter//dtb:level6[not(dtb:h6)]">
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="2"/>
-      <xsl:with-param name="blurb" select="'ohne Überschrift 2'"/>
+      <xsl:with-param name="blurb" select="'Ohne Überschrift'"/>
     </xsl:apply-templates>
   </xsl:template>
   
   <xsl:template match="dtb:rearmatter//dtb:level2[not(dtb:h2)]">
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'Nachspann ohne Überschrift 2'"/>
+      <xsl:with-param name="blurb" select="'Nachspann ohne Überschrift'"/>
     </xsl:apply-templates>
   </xsl:template>
 

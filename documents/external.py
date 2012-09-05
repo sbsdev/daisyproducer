@@ -265,7 +265,7 @@ class DaisyPipeline:
         tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml")
         p1 = applyXSL('filterBrlContractionhints.xsl', inputFileHandle, subprocess.PIPE)
         p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
-        p3 = applyXSL('filterEmptyTOC.xsl', p2.stdout, subprocess.PIPE)
+        p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
         p4 = applyXSL('addEmptyHeaders.xsl', p3.stdout, tmpFile)
         p4.communicate()
         # map True and False to "true" and "false"
