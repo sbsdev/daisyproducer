@@ -113,6 +113,17 @@ def saxon9he(source, xsl, *args, **params):
     command = command + tuple(["%s=%s" % (key,value) for key,value in params.iteritems()])
     return Popen(command, stderr=PIPE, stdout=PIPE)
 
+class Jing:
+    @staticmethod
+    def filter_output(lines):
+        p = re.compile(r'^.*:([0-9]+):[0-9]+: (error|fatal): (.*)$')
+        return [p.sub(r'line \1: \3', line) for line in lines if p.match(line)]
+
+    @staticmethod
+    def validate(source, schema):
+        command = ("jing", schema, source)
+        return Jing.filter_output(list(Popen(command, stdout=PIPE).stdout))
+
 class DaisyPipeline:
 
     @staticmethod
@@ -139,17 +150,8 @@ class DaisyPipeline:
         successful. Return a list of error messages as delivered by
         the Daisy Pipeline otherwise."""
 
-        relaxng = etree.RelaxNG(file=join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.rng'))
-        etree.clear_error_log()
-        try:
-            doc = etree.parse(file_path)
-        except etree.XMLSyntaxError, e:
-            entries = e.error_log.filter_from_level(etree.ErrorLevels.FATAL)
-            return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
-
-        if not relaxng.validate(doc):
-            entries = relaxng.error_log
-            return [("%s on line %s" % (entry.message, entry.line)) for entry in entries]
+        result = Jing.validate(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.rng'))
+        if result: return result
         # Validate using Schematron tests. We have to do this before the
         # @brl:* attributes are filtered out.
         result = saxon9he(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-SBS.sch.xsl')).stderr
