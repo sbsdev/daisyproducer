@@ -57,6 +57,12 @@ urlpatterns += patterns('daisyproducer.documents.views.manage',
     url(r'^manage/import_metadata_csv/$', 'import_metadata_csv', name='import_metadata_csv'),
 )
 
+urlpatterns += patterns('daisyproducer.statistics.views',
+    # statistics
+    url(r'^manage/stats/$', 'index', name='stats_index'),
+    url(r'^manage/stats/csv$', 'all_data_as_csv', name='all_data_as_csv'),
+)
+
 # work on dictionary
 urlpatterns += patterns('daisyproducer.dictionary.views',
     url(r'^todo/(?P<document_id>\d+)/check_words_g1$', 'check', kwargs={'grade': 1}, name='dictionary_check_g1'),
@@ -77,12 +83,6 @@ urlpatterns += patterns('daisyproducer.dictionary.views',
         name='dictionary_confirm_deferred_conflicting_duplicates_g1'),
     url(r'^todo/confirm_deferred_conflicting_duplicates_g2$', 'confirm_conflicting_duplicates', kwargs={'grade': 2, 'deferred': True}, 
         name='dictionary_confirm_deferred_conflicting_duplicates_g2'),
-)
-
-# statistics
-urlpatterns += patterns('daisyproducer.statistics.views',
-    url(r'^stats/$', 'index', name='stats_index'),
-    url(r'^stats/csv$', 'all_data_as_csv', name='all_data_as_csv'),
 )
 
 # help and about

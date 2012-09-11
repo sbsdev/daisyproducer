@@ -10,5 +10,8 @@
   <a href="{% url manage_create %}">{% trans "Create a new document" %}</a><br />
   <a href="{% url import_metadata_csv %}">{% trans "Import metadata CSV File" %}</a><br />
   {% endif %}
+  {% if perms.statistics.add_document_statistic %}
+  <a href="{% url stats_index %}">{% trans "View statistics" %}</a><br />
+  {% endif %}
 </div>
 {% endblock %}
