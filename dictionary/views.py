@@ -3,7 +3,7 @@ import unicodedata
 import louis
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, FilterForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document, State
@@ -19,7 +19,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.encoding import smart_unicode
-
 from collections import defaultdict
 from itertools import chain
 from lxml import etree
@@ -190,8 +189,15 @@ def local(request, document_id, grade):
         else:
             return render_to_response('dictionary/local.html', locals(),
                                       context_instance=RequestContext(request))
-
-    words_list = LocalWord.objects.filter(grade=grade, document=document).order_by('untranslated', 'type')
+    elif request.method == 'GET':
+        filterform = FilterForm(request.GET)
+        if filterform.is_valid():
+            currentFilter = filterform.cleaned_data['filter']
+    else:
+        filterform = FilterForm()
+    
+    words_list = LocalWord.objects.filter(grade=grade, document=document,
+                                          untranslated__startswith=currentFilter).order_by('untranslated', 'type')
     paginator = Paginator(words_list, MAX_WORDS_PER_PAGE)
     try:
         page = int(request.GET.get('page', '1'))

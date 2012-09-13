@@ -143,3 +143,6 @@ class ConflictingWordForm(forms.Form):
             typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
 
+class FilterForm(forms.Form):
+    filter = forms.CharField(label=_('Filter'), widget=forms.TextInput(attrs={'placeholder': _('Filter...')}), required=False)
+
