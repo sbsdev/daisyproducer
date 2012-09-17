@@ -109,6 +109,7 @@ case "$1" in
 	deploy_pipeline xmlp /opt
 	deploy_dtbook2sbsform xmlp /opt
 	deploy_dtbook_hyphenator xmlp /opt
+	deploy_hyphenation_tables xmlp ~/src
 	deploy_braille_tables xmlp ~/src
 	restart_apache xmlp;;
 
@@ -116,14 +117,15 @@ case "$1" in
 	deploy_pipeline xmlp-test /opt
 	deploy_dtbook2sbsform xmlp-test /opt
 	deploy_dtbook_hyphenator xmlp-test /opt
-	deploy_braille_tables xmlp-test ~/src
 	deploy_hyphenation_tables xmlp-test ~/src
+	deploy_braille_tables xmlp-test ~/src
 	restart_apache xmlp-test;;
 
     dev|*)
 	deploy_pipeline localhost ~/tmp
 	deploy_dtbook2sbsform localhost ~/tmp
-	deploy_dtbook_hyphenator localhost ~/tmp;;
+	deploy_dtbook_hyphenator localhost ~/tmp
+	deploy_hyphenation_tables localhost ~/tmp;;
 
 esac
 
