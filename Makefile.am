@@ -7,9 +7,11 @@ PYTHON_FILES = \
 	$(wildcard *.py) \
 	$(wildcard documents/*.py) \
 	$(wildcard documents/templatetags/*.py) \
-	$(wildcard documents/views/*.py) \
+	$(wildcard documents/views/*.py)
+
+MISC_FILES =  \
 	documents/sql/state.sql \
-	documents/xslt/brailleSanitize.xsl
+	$(wildcard documents/xslt/*.xsl)
 
 TEMPLATE_FILES = \
 	$(wildcard templates/*.html) \
@@ -39,6 +41,7 @@ nobase_dist_pkgdata_DATA = \
 	$(PO_FILES) \
 	$(MO_FILES) \
 	$(PYTHON_FILES) \
+	$(MISC_FILES) \
 	$(TEMPLATE_FILES) \
 	$(PUBLIC_FILES) \
 	$(XOPUS_FILES) \
