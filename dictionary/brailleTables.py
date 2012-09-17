@@ -211,7 +211,7 @@ def word2dots(word):
     return '-'.join(dots)
 
 def writeTable(fileName, words, translate):
-    f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "latin_1", 'liblouis')
+    f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "utf-8", 'liblouis')
     for (untranslated, contracted) in words:
         if translate(smart_unicode(untranslated)) != smart_unicode(contracted):
             # FIXME do we need to translate unichr(0x250A)) back to '|'?
