@@ -18,13 +18,13 @@ class Word(models.Model):
     # dieses Wort muss ein Name sein (Wort darf zukünftig in .xml-Datei mit brl:name
     # ausgezeichnet werden, muss aber nicht, weil gleiche Übersetzung): z.B. Hug, Meier,
     # Müller, Hoffmann, Ackermann
-        (1, _('Also as a name')),
+        (1, _('Name (Type Hoffman)')),
     # (2) Name: die angezeigte Übersetzung dieses Wortes gilt nur als Namen. Daneben existiert
     # ein entsprechender Nicht-Name, welcher anders übersetzt wird (Wort wird zukünftig in
     # .xml-Datei mit oder ohne brl:name ausgezeichnet, je nach gewünschter Übersetzung): z.B.
     # Kaufmann, Waldmann, Beat
         (2, _('Name')),
-        (3, _('Also as a place')),
+        (3, _('Place (Type Langenthal)')),
         (4, _('Place')),
         (5, _('Homograph')),
         )
