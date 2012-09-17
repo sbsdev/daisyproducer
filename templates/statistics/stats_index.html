@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load verbose_name %}
+
+{% block sidebar %}
+<div id="sidebar">
+  <h3>{% trans "Links" %}</h3>
+  <a href="{% url all_data_as_csv %}">{% trans "Get data (.csv)" %}</a><br />
+</div>
+{% endblock %}
+
+{% block title %}{{ block.super }} - {% trans "Statistics" %}{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'Time');
+        data.addColumn('number', 'Total words');
+        data.addColumn('number', 'Unknown words');
+        data.addRows([
+        {% for stat in stats %}
+          [new Date("{{stat.date|date:'Y/m/d/H:i'}}"), {{stat.total}}, {{stat.unknown}}],
+        {% endfor %}
+        ]);
+        var options = {
+          title: 'Number of unknown words in new books',
+          hAxis: {title: 'Time', type:'date'},
+          vAxis: {title: 'Number of words'}
+        };
+        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+
+<h2>{% trans "Statistics" %}</h2>
+<div id="chart_div"></div>
+{% endblock %}

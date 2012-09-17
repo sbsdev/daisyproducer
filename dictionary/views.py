@@ -3,27 +3,30 @@ import unicodedata
 import louis
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, FilterForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
-from daisyproducer.documents.models import Document
+from daisyproducer.statistics.models import DocumentStatistic
+from daisyproducer.documents.models import Document, State
 from daisyproducer.documents.external import saxon9he
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Max
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.encoding import smart_unicode
-
 from collections import defaultdict
 from itertools import chain
 from lxml import etree
 
 BRL_NAMESPACE = {'brl':'http://www.daisy.org/z3986/2009/braille/'}
 MAX_WORDS_PER_PAGE = 25
+
+final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
 @transaction.commit_on_success
 def check(request, document_id, grade):
@@ -34,7 +37,7 @@ def check(request, document_id, grade):
         WordFormSet = modelformset_factory(
             LocalWord, 
             form=RestrictedWordForm,
-            exclude=('document', 'isConfirmed', 'grade'), 
+            exclude=('document', 'isConfirmed', 'isDeferred', 'grade'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST)
@@ -55,7 +58,7 @@ def check(request, document_id, grade):
     content = document.latest_version().content
     content.open()
     # strip='none': if this parameter is not set, whitespace is removed automatically for documents with a DOCTYPE declaration
-    tree = etree.parse(saxon9he(content.file, os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'), strip='none', contraction=grade).stdout)
+    tree = etree.parse(saxon9he(content.file, os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'), '-strip:none', contraction=grade).stdout)
     content.close()
 
     # grab the homographs
@@ -150,16 +153,17 @@ def check(request, document_id, grade):
     WordFormSet = modelformset_factory(
         LocalWord, 
         form=RestrictedWordForm,
-        exclude=('document', 'isConfirmed', 'grade'), 
+        exclude=('document', 'isConfirmed', 'isDeferred', 'grade'), 
         extra=len(words.object_list), can_delete=True)
 
-    have_type = any((word['type']!='' for word in words.object_list))
+    have_type = any((word['type']!=0 for word in words.object_list))
     have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(queryset=LocalWord.objects.none(), initial=words.object_list)
 
-    stats = { "total_words": len(new_words), 
-              "total_new": paginator.count, 
-              "percent": 100.0*len(unknown_words)/len(new_words) }
+    # Document statistic
+    stats = DocumentStatistic(document=document, grade=grade, total=len(new_words), unknown=len(unknown_words))
+    percentage = 100.0*stats.unknown/stats.total
+    stats.save()
 
     return render_to_response('dictionary/words.html', locals(),
                               context_instance=RequestContext(request))
@@ -172,7 +176,7 @@ def local(request, document_id, grade):
         WordFormSet = modelformset_factory(
             LocalWord, 
             form=RestrictedWordForm,
-            exclude=('document', 'isConfirmed', 'grade'), 
+            exclude=('document', 'isConfirmed', 'isDeferred', 'grade'), 
             can_delete=True)
 
         formset = WordFormSet(request.POST, 
@@ -185,8 +189,15 @@ def local(request, document_id, grade):
         else:
             return render_to_response('dictionary/local.html', locals(),
                                       context_instance=RequestContext(request))
-
-    words_list = LocalWord.objects.filter(grade=grade, document=document).order_by('untranslated', 'type')
+    elif request.method == 'GET':
+        filterform = FilterForm(request.GET)
+        if filterform.is_valid():
+            currentFilter = filterform.cleaned_data['filter']
+    else:
+        filterform = FilterForm()
+    
+    words_list = LocalWord.objects.filter(grade=grade, document=document,
+                                          untranslated__startswith=currentFilter).order_by('untranslated', 'type')
     paginator = Paginator(words_list, MAX_WORDS_PER_PAGE)
     try:
         page = int(request.GET.get('page', '1'))
@@ -201,7 +212,7 @@ def local(request, document_id, grade):
     WordFormSet = modelformset_factory(
         LocalWord, 
         form=RestrictedWordForm,
-        exclude=('document', 'isConfirmed', 'grade'), 
+        exclude=('document', 'isConfirmed', 'isDeferred', 'grade'), 
         can_delete=True, extra=0)
 
     formset = WordFormSet(queryset=words.object_list)
@@ -210,12 +221,13 @@ def local(request, document_id, grade):
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
-def confirm(request, grade):
+def confirm(request, grade, deferred=False):
     if [word for word in get_conflicting_words(grade)]:
-        redirect = 'dictionary_confirm_conflicting_duplicates_g1' if grade == 1 else 'dictionary_confirm_conflicting_duplicates_g2'
+        redirect = ('dictionary_confirm_deferred_conflicting_duplicates_g' if deferred
+                        else 'dictionary_confirm_conflicting_duplicates_g') + str(grade)
         return HttpResponseRedirect(reverse(redirect))
 
-    WordFormSet = formset_factory(ConfirmWordForm, extra=0)
+    WordFormSet = formset_factory(ConfirmDeferredWordForm if deferred else ConfirmWordForm, extra=0) 
     if request.method == 'POST':
 
         formset = WordFormSet(request.POST)
@@ -223,16 +235,16 @@ def confirm(request, grade):
             # FIXME: in Djano 1.3+ formset formmsets are iterable, so you can just say 
             # for form in formset:
             for form in formset.forms:
-                if not form.cleaned_data['isConfirmed']:
-                    continue
                 filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
-                if not form.cleaned_data['isLocal']:
+                if not deferred and form.cleaned_data['isDeferred']:
+                    LocalWord.objects.filter(grade=grade, **filter_args).update(isDeferred=True)
+                elif not form.cleaned_data['isLocal']:
                     # move confirmed and non-local words to the global dictionary
                     GlobalWord.objects.create(grade=grade, braille=form.cleaned_data['braille'], **filter_args)
                     # delete all non-local entries from the LocalWord table
                     LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
                 else:
-                    LocalWord.objects.filter(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True)
+                    LocalWord.objects.filter(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True, isDeferred=False)
             # FIXME: in principle we need to regenerate the liblouis tables,
             # i.e. the white lists now. However we do this asynchronously
             # (using a cron job) for now. There are several reasons for this:
@@ -246,14 +258,14 @@ def confirm(request, grade):
             # for this (e.g. rabbitmq and celery), but for now this poor mans
             # solution seems good enough
             # redirect to self as there might be more words
-            redirect = 'dictionary_confirm_g1' if grade == 1 else 'dictionary_confirm_g2'
+            redirect = ('dictionary_confirm_deferred_g' if deferred else 'dictionary_confirm_g') + str(grade)
             return HttpResponseRedirect(reverse(redirect))
         else:
             return render_to_response('dictionary/confirm.html', locals(),
                                       context_instance=RequestContext(request))
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
-    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False).values_list('untranslated', flat=True))
+    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False, isDeferred=deferred, document__state__sort_order=final_sort_order).values_list('untranslated', flat=True))
     if unconfirmed_homographs:
         covered_entries = set(chain(
                 LocalWord.objects.filter(grade=grade, type=0, untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True),
@@ -266,7 +278,7 @@ def confirm(request, grade):
                           grade=grade, type=0, document=document)
             w.save()
     
-    words_to_confirm = LocalWord.objects.filter(grade=grade,isConfirmed=False).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
+    words_to_confirm = LocalWord.objects.filter(grade=grade, isConfirmed=False, isDeferred=deferred, document__state__sort_order=final_sort_order).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
     paginator = Paginator(words_to_confirm, MAX_WORDS_PER_PAGE)
     try:
         page = int(request.GET.get('page', '1'))
@@ -278,47 +290,55 @@ def confirm(request, grade):
     except InvalidPage:
         words = paginator.page(paginator.num_pages)
 
-    have_type = any((word['type']!='' for word in words.object_list))
+    have_type = any((word['type']!=0 for word in words.object_list))
     have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(initial=words.object_list)
-    return render_to_response('dictionary/confirm.html', locals(), 
+    return render_to_response('dictionary/confirm.html', locals(),
                               context_instance=RequestContext(request))
 
 def get_conflicting_words(grade):
     from django.db import connection, transaction
     cursor = connection.cursor()
     DETECT_CONFLICTING_WORDS = """
-SELECT DISTINCT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
-FROM dictionary_localword AS a, dictionary_localword AS b 
-WHERE a.untranslated = b.untranslated 
-AND a.type = b.type 
-AND a.homograph_disambiguation = b.homograph_disambiguation 
-AND a.grade = %s
-AND a.grade = b.grade
-AND a.braille != b.braille
+SELECT DISTINCT word_a.untranslated, word_a.type, word_a.homograph_disambiguation, word_a.braille, 0
+FROM dictionary_localword AS word_a, dictionary_localword AS word_b, documents_document AS doc_a, documents_document AS doc_b
+WHERE word_a.untranslated = word_b.untranslated 
+AND word_a.type = word_b.type 
+AND word_a.homograph_disambiguation = word_b.homograph_disambiguation 
+AND word_a.grade = %s
+AND word_a.grade = word_b.grade
+AND word_a.braille != word_b.braille
+AND word_a.document_id=doc_a.id
+AND word_b.document_id=doc_b.id
+AND doc_a.state_id=%s
+AND doc_b.state_id=%s
 UNION
-SELECT DISTINCT a.untranslated, a.type, a.homograph_disambiguation, a.braille, 0
-FROM dictionary_localword AS a, dictionary_globalword AS b 
-WHERE a.untranslated = b.untranslated 
-AND a.type = b.type 
-AND a.homograph_disambiguation = b.homograph_disambiguation 
-AND a.grade = %s
-AND a.grade = b.grade
-AND a.braille != b.braille
+SELECT DISTINCT word_a.untranslated, word_a.type, word_a.homograph_disambiguation, word_a.braille, 0
+FROM dictionary_localword AS word_a, dictionary_globalword AS word_b, documents_document AS doc_a
+WHERE word_a.untranslated = word_b.untranslated 
+AND word_a.type = word_b.type 
+AND word_a.homograph_disambiguation = word_b.homograph_disambiguation 
+AND word_a.grade = %s
+AND word_a.grade = word_b.grade
+AND word_a.braille != word_b.braille
+AND word_a.document_id=doc_a.id
+AND doc_a.state_id=%s
 UNION
-SELECT a.untranslated, a.type, a.homograph_disambiguation, b.braille, b.id
-FROM dictionary_localword AS a, dictionary_globalword AS b 
-WHERE a.untranslated = b.untranslated 
-AND a.type = b.type 
-AND a.homograph_disambiguation = b.homograph_disambiguation 
-AND a.grade = %s
-AND a.grade = b.grade
-AND a.braille != b.braille"""
-    cursor.execute(DETECT_CONFLICTING_WORDS, [grade, grade, grade])
+SELECT word_a.untranslated, word_a.type, word_a.homograph_disambiguation, word_b.braille, word_b.id
+FROM dictionary_localword AS word_a, dictionary_globalword AS word_b, documents_document AS doc_a
+WHERE word_a.untranslated = word_b.untranslated 
+AND word_a.type = word_b.type 
+AND word_a.homograph_disambiguation = word_b.homograph_disambiguation 
+AND word_a.grade = %s
+AND word_a.grade = word_b.grade
+AND word_a.braille != word_b.braille
+AND word_a.document_id=doc_a.id
+AND doc_a.state_id=%s"""
+    cursor.execute(DETECT_CONFLICTING_WORDS, [grade, final_sort_order, final_sort_order, grade, final_sort_order, grade, final_sort_order])
     return cursor.fetchall()
 
 @transaction.commit_on_success
-def confirm_conflicting_duplicates(request, grade):
+def confirm_conflicting_duplicates(request, grade, deferred=False):
 
     WordFormSet = formset_factory(ConflictingWordForm, extra=0)
     if request.method == 'POST':
@@ -374,7 +394,7 @@ def confirm_conflicting_duplicates(request, grade):
 def confirm_single(request, grade):
     try:
         # just get one word
-        word = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False).order_by('untranslated', 'type')[0:1].get()
+        word = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False, document__state__sort_order=final_sort_order).order_by('untranslated', 'type')[0:1].get()
     except LocalWord.DoesNotExist:
         return HttpResponseRedirect(reverse('todo_index'))
 

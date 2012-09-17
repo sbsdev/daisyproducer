@@ -18,6 +18,13 @@
       <td><b>{% trans 'Total local words' %}:</b></td><td>{{paginator.count}}</td>
     </tr>
   </table>
+
+  <hr />
+  <form method="GET" action="">
+    {% for field in filterform %}{{ field }}{% endfor %}
+    <input type="submit" value="{% trans 'Filter' %}" />
+  </form>
+
   {% include "dictionary/pagination.html" %}
   <hr />
 

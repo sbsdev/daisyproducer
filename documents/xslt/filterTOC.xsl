@@ -10,8 +10,8 @@
 	      doctype-public="-//NISO//DTD dtbook 2005-3//EN"
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
 
-  <!-- Drop empty TOCs-->
-  <xsl:template match="dtb:level1[@class='toc'][normalize-space(string(.)) = '']"/>
+  <!-- Drop TOCs -->
+  <xsl:template match="dtb:level1[@class='toc']"/>
 
   <!-- Copy all other elements and attributes -->
   <xsl:template match="node()|@*">

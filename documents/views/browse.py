@@ -11,7 +11,6 @@ from django.http import HttpResponseRedirect
 from django.views.generic.list_detail import object_list, object_detail
 from django.db.models import Max
 
-
 # browse use case
 def index(request):
     """Show all the documents that are in the final state and order them by title"""

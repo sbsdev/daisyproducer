@@ -14,7 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 VALID_BRAILLE_RE = re.compile(u"^([-]|[-]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœāăąćĉċčďđēėęğģĥħĩīįıĳĵķĺļľŀłńņňŋōŏőŕŗřśŝşšţťŧũūŭůűųŵŷźżžǎẁẃẅỳ]+)$")
 validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
-VALID_HOMOGRAPH_RE = re.compile(u"^(|[a-zàáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+\|[a-zàáâãåæçèéêëìíîïðñòóôõøùúûýþÿœ]+)$")
+VALID_HOMOGRAPH_RE = re.compile(u"^(|\\w+\\|\\w+)$", re.UNICODE)
 validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters are not valid')
 
 labels = dict([(name, LocalWord._meta.get_field(name).verbose_name) for name in LocalWord._meta.get_all_field_names()])
@@ -99,8 +99,10 @@ class ConfirmSingleWordForm(forms.Form):
                 self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
 class ConfirmWordForm(ConfirmSingleWordForm):
-    isConfirmed = forms.BooleanField(label=labels['isConfirmed'], required=False)
+    isDeferred = forms.BooleanField(label=labels['isDeferred'], required=False)
 
+class ConfirmDeferredWordForm(ConfirmSingleWordForm):
+    braille = forms.CharField(label=labels['braille'], widget=forms.TextInput(attrs={'class': 'braille'}))
 
 class ConflictingWordForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
@@ -116,4 +118,7 @@ class ConflictingWordForm(forms.Form):
             self.fields['braille'].widget.choices = brailleChoices
             typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
+
+class FilterForm(forms.Form):
+    filter = forms.CharField(label=_('Filter'), widget=forms.TextInput(attrs={'placeholder': _('Filter...')}), required=False)
 
