@@ -74,7 +74,7 @@ class RestrictedWordForm(PartialWordForm):
 
         return cleaned_data
 
-class ConfirmSingleWordForm(forms.Form):
+class BaseConfirmWordForm(forms.Form):
     untranslated = forms.CharField(label=labels['untranslated'], widget=forms.TextInput(attrs={'readonly':'readonly'}))
     braille = forms.CharField(label=labels['braille'], widget=forms.TextInput(attrs={'readonly':'readonly', 'class': 'braille'}))
     type = forms.ChoiceField(label=labels['type'], choices=Word.WORD_TYPE_CHOICES)
@@ -82,7 +82,7 @@ class ConfirmSingleWordForm(forms.Form):
     isLocal = forms.BooleanField(label=labels['isLocal'], required=False)
 
     def __init__(self, *args, **kwargs):
-        super(ConfirmSingleWordForm, self).__init__(*args, **kwargs)
+        super(BaseConfirmWordForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'title': field.label})
         if not self.is_bound:
@@ -98,10 +98,10 @@ class ConfirmSingleWordForm(forms.Form):
             if self.initial['homograph_disambiguation'] == '':
                 self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
-class ConfirmWordForm(ConfirmSingleWordForm):
+class ConfirmWordForm(BaseConfirmWordForm):
     isDeferred = forms.BooleanField(label=labels['isDeferred'], required=False)
 
-class ConfirmDeferredWordForm(ConfirmSingleWordForm):
+class ConfirmDeferredWordForm(BaseConfirmWordForm):
     braille = forms.CharField(label=labels['braille'], widget=forms.TextInput(attrs={'class': 'braille'}))
 
 class ConflictingWordForm(forms.Form):

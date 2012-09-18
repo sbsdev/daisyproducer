@@ -1,19 +1,28 @@
 {% extends "documents/todo.html" %}
 {% load i18n %}
 {% load verbose_name %}
+{% load in_group %}
 
 {% block sidebar %}
 <div id="sidebar">
   {% if perms.dictionary.add_word %}
   <h3>{% trans "Braille Dictionary" %}</h3>
   <h4>{% trans "Grade 1" %}</h4>
+  {% if not user|in_group:"Braille_Readers" %}
   <a href="{% url dictionary_confirm_g1 %}">{% trans "Confirm unknown words" %}</a><br />
-  <a href="{% url dictionary_confirm_deferred_g1 %}" accesskey="v">{% trans "Confirm deferred words" %}</a><br />
+  <a href="{% url dictionary_confirm_deferred_g1 %}">{% trans "Confirm deferred words" %}</a><br />
+  {% else %}
   <a href="{% url dictionary_single_confirm_g1 %}" accesskey="v">{% trans "Confirm single words" %}</a><br />
+  <a href="{% url dictionary_single_confirm_deferred_g1 %}">{% trans "Confirm single deferred words" %}</a><br />
+  {% endif %}
   <h4>{% trans "Grade 2" %}</h4>
+  {% if not user|in_group:"Braille_Readers" %}
   <a href="{% url dictionary_confirm_g2 %}">{% trans "Confirm unknown words" %}</a><br />
-  <a href="{% url dictionary_confirm_deferred_g2 %}" accesskey="v">{% trans "Confirm deferred words" %}</a><br />
+  <a href="{% url dictionary_confirm_deferred_g2 %}">{% trans "Confirm deferred words" %}</a><br />
+  {% else %}
   <a href="{% url dictionary_single_confirm_g2 %}" accesskey="k">{% trans "Confirm single words" %}</a><br />
+  <a href="{% url dictionary_single_confirm_deferred_g2 %}">{% trans "Confirm deferred single words" %}</a><br />
+  {% endif %}
   {% endif %}
 </div>
 {% endblock %}

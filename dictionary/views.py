@@ -3,7 +3,7 @@ import unicodedata
 import louis
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmSingleWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, FilterForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, FilterForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document, State
@@ -237,14 +237,14 @@ def confirm(request, grade, deferred=False):
             for form in formset.forms:
                 filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
                 if not deferred and form.cleaned_data['isDeferred']:
-                    LocalWord.objects.filter(grade=grade, **filter_args).update(isDeferred=True)
+                    LocalWord.objects.filter(grade=grade, **filter_args).update(isDeferred=True, isLocal=form.cleaned_data['isLocal'])
                 elif not form.cleaned_data['isLocal']:
                     # move confirmed and non-local words to the global dictionary
                     GlobalWord.objects.create(grade=grade, braille=form.cleaned_data['braille'], **filter_args)
                     # delete all non-local entries from the LocalWord table
                     LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
                 else:
-                    LocalWord.objects.filter(grade=grade, **filter_args).update(isLocal=form.cleaned_data['isLocal'], isConfirmed=True, isDeferred=False)
+                    LocalWord.objects.filter(grade=grade, **filter_args).update(isConfirmed=True, isLocal=form.cleaned_data['isLocal'], isDeferred=False)
             # FIXME: in principle we need to regenerate the liblouis tables,
             # i.e. the white lists now. However we do this asynchronously
             # (using a cron job) for now. There are several reasons for this:
@@ -265,7 +265,8 @@ def confirm(request, grade, deferred=False):
                                       context_instance=RequestContext(request))
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
-    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False, isDeferred=deferred, document__state__sort_order=final_sort_order).values_list('untranslated', flat=True))
+    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False, isDeferred=deferred, 
+                                                          document__state__sort_order=final_sort_order).values_list('untranslated', flat=True))
     if unconfirmed_homographs:
         covered_entries = set(chain(
                 LocalWord.objects.filter(grade=grade, type=0, untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True),
@@ -278,7 +279,8 @@ def confirm(request, grade, deferred=False):
                           grade=grade, type=0, document=document)
             w.save()
     
-    words_to_confirm = LocalWord.objects.filter(grade=grade, isConfirmed=False, isDeferred=deferred, document__state__sort_order=final_sort_order).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
+    words_to_confirm = LocalWord.objects.filter(grade=grade, isConfirmed=False, isDeferred=deferred, 
+                                                document__state__sort_order=final_sort_order).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
     paginator = Paginator(words_to_confirm, MAX_WORDS_PER_PAGE)
     try:
         page = int(request.GET.get('page', '1'))
@@ -391,38 +393,42 @@ def confirm_conflicting_duplicates(request, grade, deferred=False):
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
-def confirm_single(request, grade):
+def confirm_single(request, grade, deferred=False):
     try:
         # just get one word
-        word = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False, document__state__sort_order=final_sort_order).order_by('untranslated', 'type')[0:1].get()
+        word = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False, isDeferred=deferred, 
+                                                            document__state__sort_order=final_sort_order).order_by('untranslated', 'type')[0:1].get()
     except LocalWord.DoesNotExist:
         return HttpResponseRedirect(reverse('todo_index'))
 
     if request.method == 'POST':
-        form = ConfirmSingleWordForm(request.POST)
+        form =  ConfirmDeferredWordForm(request.POST) if deferred else ConfirmWordForm(request.POST)
         if form.is_valid():
             filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'braille', 'type', 'homograph_disambiguation'))
-            if not form.cleaned_data['isLocal']:
+            if not deferred and form.cleaned_data['isDeferred']:
+                LocalWord.objects.filter(grade=grade, **filter_args).update(isDeferred=True, isLocal=form.cleaned_data['isLocal'])
+            elif not form.cleaned_data['isLocal']:
                 # move confirmed and non-local words to the global dictionary
                 GlobalWord.objects.create(grade=grade, **filter_args)
                 # delete all non-local entries from the LocalWord table
                 LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
             else:
-                LocalWord.objects.filter(grade=grade, **filter_args).update(isLocal=True, isConfirmed=True)
+                LocalWord.objects.filter(grade=grade, **filter_args).update(isConfirmed=True, isLocal=True, isDeferred=False)
+
             # redirect to self to deal with the next word
-            redirect = 'dictionary_single_confirm_g1' if grade == 1 else 'dictionary_single_confirm_g2'
+            redirect = ('dictionary_single_confirm_deferred_g' if deferred else 'dictionary_single_confirm_g') + str(grade)
             return HttpResponseRedirect(reverse(redirect))
         else:
             return render_to_response('dictionary/confirm_single.html', locals(),
                                       context_instance=RequestContext(request))
 
     initial={'untranslated': word.untranslated,
-          'type': word.type,
-          'homograph_disambiguation': word.homograph_disambiguation,
-          'braille': word.braille,
-          'isLocal': word.isLocal}
+             'type': word.type,
+             'homograph_disambiguation': word.homograph_disambiguation,
+             'braille': word.braille,
+             'isLocal': word.isLocal}
         
-    form = ConfirmSingleWordForm(initial=initial)
+    form = ConfirmDeferredWordForm(initial=initial) if deferred else ConfirmWordForm(initial=initial)
     return render_to_response('dictionary/confirm_single.html', locals(), 
                               context_instance=RequestContext(request))
 

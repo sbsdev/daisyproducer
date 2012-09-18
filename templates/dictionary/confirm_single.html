@@ -6,7 +6,11 @@
 
 {% block content %}
 
-<h2>{% blocktrans %}Confirm Single Word for Grade {{grade}}{% endblocktrans %}</h2>
+<h2>
+  {% if deferred %} {% blocktrans %} Confirm Deferred Words for Grade {{grade}} {% endblocktrans %}
+  {% else %}        {% blocktrans %} Confirm Unknown Words for Grade {{grade}}  {% endblocktrans %}
+  {% endif %}
+</h2>
 
 <div class="issue">
   
