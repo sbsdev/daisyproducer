@@ -28,7 +28,7 @@ class Command(BaseCommand):
             '--grade',
             action='append',
             type="int",
-            help='Grade for which the words should be applied. If not specified they will be applied for grade 0, 1 and 2.'),)
+            help='Grade for which the words should be applied.'),)
 
 
     @transaction.commit_on_success
