@@ -1,5 +1,6 @@
 # coding=utf-8
 import codecs
+from optparse import make_option
 
 from daisyproducer.dictionary.models import GlobalWord
 from daisyproducer.dictionary.forms import VALID_BRAILLE_RE
@@ -21,6 +22,15 @@ class Command(BaseCommand):
     args = 'dictionary_file'
     help = 'Import the given file as a dictionary'
 
+    option_list = BaseCommand.option_list + (
+        make_option(
+            '-g',
+            '--grade',
+            action='append',
+            type="int",
+            help='Grade for which the words should be applied. If not specified they will be applied for grade 0, 1 and 2.'),)
+
+
     @transaction.commit_on_success
     def handle(self, *args, **options):
         if len(args) != 1:
@@ -33,37 +43,39 @@ class Command(BaseCommand):
             raise CommandError('Dictionary file "%s" not found' % args[0])
 
         self.numberOfWords = 0
+        grade = options['grade']
 
+        if not grade:
+            print "No grade specified. No words will be updated"
+            return
+        
         for line in f:
             
             (typeString, untranslated, braille2, braille1) = line.split()
             wordType = typeMap[typeString]
-            print wordType
-            print untranslated
-            print braille1
-            print braille2
             
-            # Grade 1
-            # For the ß rules, grade 1 can be ignored
-            if True:
+            if 1 in grade:
+                # Grade 1
                 if not VALID_BRAILLE_RE.search(braille1):
-                    print "Invalid characters in Braille (grade 1): %s, %s, %s" % (untranslated, braille1)
+                    print "Invalid characters in Braille (grade 1): %s, %s" % (untranslated, braille1)
                     continue
                 w1 = GlobalWord.objects.filter(untranslated=untranslated.replace('|',''), grade=1,
-                    type=wordType, homograph_disambiguation=untranslated if wordType == 5 else '')
+                                               type=wordType, 
+                                               homograph_disambiguation=untranslated if wordType == 5 else '')
                 if not w1.exists():
                     print "Word could not be found in the global dictionary for grade 1: %s" % untranslated
                     continue
                 w1.update(braille=braille1)
                 self.numberOfWords += 1
             
-            # Grade 2
-            if True:
+            if 2 in grade:
+                # Grade 2
                 if not VALID_BRAILLE_RE.search(braille2):
-                    print "Invalid characters in Braille (grade 2): %s, %s, %s" % (untranslated, braille2)
+                    print "Invalid characters in Braille (grade 2): %s, %s" % (untranslated, braille2)
                     continue 
                 w2 = GlobalWord.objects.filter(untranslated=untranslated.replace('|',''), grade=2,
-                    type=wordType, homograph_disambiguation=untranslated if wordType == 5 else '')
+                                               type=wordType, 
+                                               homograph_disambiguation=untranslated if wordType == 5 else '')
                 if not w2.exists():
                     print "Word could not be found in the global dictionary for grade 2: %s" % untranslated
                     continue
