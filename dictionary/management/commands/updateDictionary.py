@@ -26,10 +26,14 @@ class Command(BaseCommand):
         make_option(
             '-g',
             '--grade',
-            action='append',
             type="int",
-            help='Grade for which the words should be applied.'),)
-
+            help='Grade for which the words should be applied.'),
+        make_option(
+            '-f',
+            '--format',
+            type='choice',
+            choices=('2_COLUMN','4_COLUMN'),
+            help='Input format'))
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
@@ -44,43 +48,35 @@ class Command(BaseCommand):
 
         self.numberOfWords = 0
         grade = options['grade']
+        in_format = options['format']
 
         if not grade:
             print "No grade specified. No words will be updated"
             return
+        if not in_format:
+            print "No input format specified. No words will be updated"
+            return
         
         for line in f:
+            if in_format == '4_COLUMN':
+                (typeString, untranslated, braille2, braille1) = line.split()
+                braille = braille1 if grade == 1 else braille2
+                wordType = typeMap[typeString]
+            else:
+                (untranslated, braille) = line.split()
+                wordType = 0
             
-            (typeString, untranslated, braille2, braille1) = line.split()
-            wordType = typeMap[typeString]
-            
-            if 1 in grade:
-                # Grade 1
-                if not VALID_BRAILLE_RE.search(braille1):
-                    print "Invalid characters in Braille (grade 1): %s, %s" % (untranslated, braille1)
-                    continue
-                w1 = GlobalWord.objects.filter(untranslated=untranslated.replace('|',''), grade=1,
-                                               type=wordType, 
-                                               homograph_disambiguation=untranslated if wordType == 5 else '')
-                if not w1.exists():
-                    print "Word could not be found in the global dictionary for grade 1: %s" % untranslated
-                    continue
-                w1.update(braille=braille1)
-                self.numberOfWords += 1
-            
-            if 2 in grade:
-                # Grade 2
-                if not VALID_BRAILLE_RE.search(braille2):
-                    print "Invalid characters in Braille (grade 2): %s, %s" % (untranslated, braille2)
-                    continue 
-                w2 = GlobalWord.objects.filter(untranslated=untranslated.replace('|',''), grade=2,
-                                               type=wordType, 
-                                               homograph_disambiguation=untranslated if wordType == 5 else '')
-                if not w2.exists():
-                    print "Word could not be found in the global dictionary for grade 2: %s" % untranslated
-                    continue
-                w2.update(braille=braille2)
-                self.numberOfWords += 1
+            if not VALID_BRAILLE_RE.search(braille):
+                print "Invalid characters in Braille (grade %s): %s, %s" % (grade, untranslated, braille)
+                continue
+            word = GlobalWord.objects.filter(untranslated=untranslated.replace('|',''), grade=grade,
+                                           type=wordType, 
+                                           homograph_disambiguation=untranslated if wordType == 5 else '')
+            if not word.exists():
+                print "Word could not be found in the global dictionary for grade %s: %s" % (grade, untranslated)
+                continue
+            word.update(braille=braille)
+            self.numberOfWords += 1
         
         self.stdout.write('Successfully update %s words\n' % self.numberOfWords)
 
