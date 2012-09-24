@@ -1,0 +1,7 @@
+#!/bin/sh
+
+INSTALLDIR=/path/to/daisyproducer
+
+# Write the liblouis tables
+cd $INSTALLDIR
+python manage.py writeLiblouisTables
