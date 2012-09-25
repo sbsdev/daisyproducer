@@ -61,21 +61,24 @@ class Command(BaseCommand):
             if in_format == '4_COLUMN':
                 (typeString, untranslated, braille2, braille1) = line.split()
                 braille = braille1 if grade == 1 else braille2
-                wordType = typeMap[typeString]
+                wordType = (typeMap[typeString],)
             else:
                 (untranslated, braille) = line.split()
-                wordType = 0
+                wordType = (0,1,2,3,4)
             
             if not VALID_BRAILLE_RE.search(braille):
                 print "Invalid characters in Braille (grade %s): %s, %s" % (grade, untranslated, braille)
                 continue
-            word = GlobalWord.objects.filter(untranslated=untranslated.replace('|',''), grade=grade,
-                                           type=wordType, 
-                                           homograph_disambiguation=untranslated if wordType == 5 else '')
-            if not word.exists():
+            words = GlobalWord.objects.filter(untranslated=untranslated.replace('|',''), grade=grade,
+                                             type__in=wordType, 
+                                             homograph_disambiguation=untranslated if wordType == 5 else '')
+            if words.count() == 0:
                 print "Word could not be found in the global dictionary for grade %s: %s" % (grade, untranslated)
                 continue
-            word.update(braille=braille)
+            if words.count() > 1:
+                print "Word was found more than once in global dictionary for grade %s: %s (types %s)" % (grade, untranslated, ' + '.join([str(word.type) for word in words]))
+                continue
+            words.update(braille=braille)
             self.numberOfWords += 1
         
         self.stdout.write('Successfully update %s words\n' % self.numberOfWords)
