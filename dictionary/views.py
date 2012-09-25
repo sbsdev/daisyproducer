@@ -265,15 +265,17 @@ def confirm(request, grade, deferred=False):
                                       context_instance=RequestContext(request))
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
-    unconfirmed_homographs = set(LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False, isDeferred=deferred, 
-                                                          document__state__sort_order=final_sort_order).values_list('untranslated', flat=True))
+    unconfirmed_homographs = set((smart_unicode(word) for 
+                                  word in 
+                                  LocalWord.objects.filter(grade=grade, type=5, isConfirmed=False, isDeferred=deferred, 
+                                                           document__state__sort_order=final_sort_order).values_list('untranslated', flat=True)))
     if unconfirmed_homographs:
         covered_entries = set((smart_unicode(word) for 
                                word in 
                                chain(
                     LocalWord.objects.filter(grade=grade, type=0, untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True),
                     GlobalWord.objects.filter(grade=grade, type=0, untranslated__in=unconfirmed_homographs).values_list('untranslated', flat=True))))
-        
+                                 
         for word in unconfirmed_homographs - covered_entries:
             document = Document.objects.filter(localword__grade=grade, localword__type=5, localword__isConfirmed=False, localword__untranslated=word)[0]
             w = LocalWord(untranslated=word, 
