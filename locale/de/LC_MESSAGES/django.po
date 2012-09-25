@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-27 11:10+0200\n"
-"PO-Revision-Date: 2012-04-27 11:13+0200\n"
+"POT-Creation-Date: 2012-09-25 17:06+0200\n"
+"PO-Revision-Date: 2012-09-25 17:15+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,240 +16,252 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: urls.py:81 templates/base.html:31
+#: urls.py:101 templates/base.html:31
 msgid "Help"
 msgstr "Hilfe"
 
-#: urls.py:88 templates/base.html:32
+#: urls.py:108 templates/base.html:32
 msgid "About"
 msgstr "Impressum"
 
-#: dictionary/models.py:12
+#: dictionary/forms.py:123 templates/dictionary/local.html:25
+msgid "Filter"
+msgstr ""
+
+#: dictionary/forms.py:123
+msgid "Filter..."
+msgstr ""
+
+#: dictionary/models.py:16
 msgid "None"
 msgstr "Ohne"
 
-#: dictionary/models.py:13
-msgid "Also as a name"
-msgstr "Auch als Name"
+#: dictionary/models.py:21
+msgid "Name (Type Hoffmann)"
+msgstr ""
 
-#: dictionary/models.py:14
+#: dictionary/models.py:26
 msgid "Name"
 msgstr "Name"
 
-#: dictionary/models.py:15
-msgid "Also as a place"
-msgstr "Auch als Ort"
+#: dictionary/models.py:27
+msgid "Place (Type Langenthal)"
+msgstr ""
 
-#: dictionary/models.py:16
+#: dictionary/models.py:28
 msgid "Place"
-msgstr "Ort"
+msgstr ""
 
 # Homograph
-#: dictionary/models.py:17
+#: dictionary/models.py:29
 msgid "Homograph"
 msgstr "Homograph"
 
-#: dictionary/models.py:20
+#: dictionary/models.py:32
 msgid "Untranslated"
 msgstr "Schwarzschrift"
 
-#: dictionary/models.py:21
+#: dictionary/models.py:33
 msgid "Braille"
 msgstr "Braille"
 
-#: dictionary/models.py:22
+#: dictionary/models.py:34
 msgid "Grade"
 msgstr ""
 
-#: dictionary/models.py:23 templates/documents/todo_detail.html:13
+#: dictionary/models.py:35 templates/documents/todo_detail.html:13
 msgid "Markup"
 msgstr "Markup"
 
-#: dictionary/models.py:24
+#: dictionary/models.py:36
 msgid "Homograph Disambiguation"
 msgstr "Homograph Präzisierung"
 
-#: dictionary/models.py:25
+#: dictionary/models.py:50
 msgid "Local"
 msgstr "Lokal"
 
-#: dictionary/models.py:26
+#: dictionary/models.py:51
 msgid "Confirmed"
 msgstr "Bestätigt"
 
-#: documents/forms.py:88
+#: dictionary/models.py:52
+msgid "Deferred"
+msgstr ""
+
+#: documents/forms.py:92
 msgid "Data from scan"
 msgstr "Eingescannte Daten"
 
-#: documents/forms.py:89
+#: documents/forms.py:93
 msgid "The image files that resulted from the scan"
 msgstr "Eingescannte Bilddateien"
 
-#: documents/forms.py:130 documents/models.py:234
+#: documents/forms.py:134 documents/models.py:239
 msgid "Grade 0"
 msgstr "Basisschrift"
 
-#: documents/forms.py:131 documents/models.py:235
+#: documents/forms.py:135 documents/models.py:240
 #: templates/documents/todo_detail.html:15
-#: templates/documents/todo_index.html:9
+#: templates/documents/todo_index.html:10
 msgid "Grade 1"
 msgstr "Vollschrift"
 
-#: documents/forms.py:132 documents/models.py:236
+#: documents/forms.py:136 documents/models.py:241
 #: templates/documents/todo_detail.html:18
-#: templates/documents/todo_index.html:11
+#: templates/documents/todo_index.html:18
 msgid "Grade 2"
 msgstr "Kurzschrift"
 
-#: documents/forms.py:135
+#: documents/forms.py:139
 msgid "All Accents Detailed"
 msgstr "Alle ausführlich"
 
-#: documents/forms.py:136
+#: documents/forms.py:140
 msgid "All Accents Reduced"
 msgstr "Alle nur mit Grundbuchstaben"
 
-#: documents/forms.py:137
+#: documents/forms.py:141
 msgid "Only Swiss Accents Detailed"
 msgstr "Nur Schweizer Akzente ausführlich"
 
-#: documents/forms.py:149
+#: documents/forms.py:153
 msgid "Standard"
 msgstr "Standard"
 
-#: documents/forms.py:150
+#: documents/forms.py:154
 msgid "At end of volume"
 msgstr "Am Bandende"
 
-#: documents/forms.py:151
+#: documents/forms.py:155
 msgid "At end of level1"
 msgstr "Am Ende von level1"
 
-#: documents/forms.py:152
+#: documents/forms.py:156
 msgid "At end of level2"
 msgstr "Am Ende von level2"
 
-#: documents/forms.py:153
+#: documents/forms.py:157
 msgid "At end of level3"
 msgstr "Am Ende von level3"
 
-#: documents/forms.py:154
+#: documents/forms.py:158
 msgid "At end of level4"
 msgstr "Am Ende von level4"
 
-#: documents/forms.py:156 documents/models.py:239
+#: documents/forms.py:160 documents/models.py:244
 msgid "Cells per Line"
 msgstr "Zellen pro Zeile"
 
-#: documents/forms.py:157 documents/models.py:240
+#: documents/forms.py:161 documents/models.py:245
 msgid "Lines per Page"
 msgstr "Zeilen pro Seite"
 
-#: documents/forms.py:159 documents/models.py:241
+#: documents/forms.py:163 documents/models.py:246
 msgid "Contraction"
 msgstr "Kürzungsgrad"
 
-#: documents/forms.py:164 documents/models.py:242
+#: documents/forms.py:168 documents/models.py:247
 msgid "Hyphenation"
 msgstr "Silbentrennung"
 
-#: documents/forms.py:167
+#: documents/forms.py:171
 msgid "Depth of table of contents"
 msgstr "Angezeigte Ebenen im Inhaltsverzeichnis"
 
-#: documents/forms.py:171
+#: documents/forms.py:175
 msgid "Footer up to level"
 msgstr "Angezeigte Ebenen im Laufindex"
 
-#: documents/forms.py:175
+#: documents/forms.py:179
 msgid "Include SBSForm macros"
 msgstr "SBSForm-Makros mitliefern"
 
-#: documents/forms.py:177 documents/forms.py:205 documents/models.py:243
+#: documents/forms.py:181 documents/forms.py:209 documents/models.py:248
 msgid "Show original page numbers"
 msgstr "Schwarzschrift-Seitenzahlen anzeigen"
 
-#: documents/forms.py:179
+#: documents/forms.py:183
 msgid "Show V-Forms"
 msgstr "Höflichkeitsformen anzeigen"
 
-#: documents/forms.py:181
+#: documents/forms.py:185
 msgid "Downshift Ordinals"
 msgstr "Ordnungszahlen herabsetzen"
 
-#: documents/forms.py:185
+#: documents/forms.py:189
 msgid "Accented Characters"
 msgstr "Akzentbuchstaben"
 
-#: documents/forms.py:189
+#: documents/forms.py:193
 msgid "Placement of Footnotes"
 msgstr "Anordnung der Fussnoten"
 
-#: documents/forms.py:195 documents/forms.py:204
+#: documents/forms.py:199 documents/forms.py:208
 msgid "Generate a table of contents"
 msgstr "Inhaltsverzeichnis erzeugen"
 
-#: documents/forms.py:199
+#: documents/forms.py:203
 msgid "DAISY 2.02 style noterefs"
 msgstr ""
 
-#: documents/forms.py:212
+#: documents/forms.py:216
 msgid "utf-8"
 msgstr ""
 
-#: documents/forms.py:213
+#: documents/forms.py:217
 msgid "iso-8859-1"
 msgstr ""
 
-#: documents/forms.py:214
+#: documents/forms.py:218
 msgid "Shift_JIS"
 msgstr ""
 
-#: documents/forms.py:217
+#: documents/forms.py:221
 msgid "Output encoding"
 msgstr ""
 
-#: documents/forms.py:219
+#: documents/forms.py:223
 msgid "Abbreviation and acronym detection"
 msgstr "Abkürzungs- und Akronym-Erkennung"
 
-#: documents/forms.py:221 documents/forms.py:239
+#: documents/forms.py:225 documents/forms.py:246
 msgid "Sentence detection"
 msgstr "Satzerkennung"
 
-#: documents/forms.py:223
+#: documents/forms.py:227
 msgid "Word detection"
 msgstr "Worterkennung"
 
-#: documents/forms.py:227
+#: documents/forms.py:234
 msgid "32 kbit/s"
 msgstr "32 kbit/s"
 
-#: documents/forms.py:228
+#: documents/forms.py:235
 msgid "48 kbit/s"
 msgstr "48 kbit/s"
 
-#: documents/forms.py:229
+#: documents/forms.py:236
 msgid "64 kbit/s"
 msgstr "64 kbit/s"
 
-#: documents/forms.py:230
+#: documents/forms.py:237
 msgid "128 kbit/s"
 msgstr "128 kbit/s"
 
-#: documents/forms.py:234
+#: documents/forms.py:241
 msgid "MP3 Bitrate"
 msgstr "MP3 Bitrate"
 
-#: documents/forms.py:243
+#: documents/forms.py:250
 msgid "Multi-language support"
 msgstr "Unterstützung von mehreren Sprachen"
 
-#: documents/forms.py:253
+#: documents/forms.py:260
 msgid "CSV File"
 msgstr "CSV-Datei"
 
-#: documents/forms.py:254
+#: documents/forms.py:261
 msgid "CSV File containing document meta data"
 msgstr "CSV-Datei mit den Metadaten des Dokuments"
 
@@ -304,7 +316,7 @@ msgstr "Datum"
 msgid "Date of publication of the DTB"
 msgstr "Publikationsdatum des DTBs"
 
-#: documents/models.py:76
+#: documents/models.py:76 documents/models.py:231
 msgid "Identifier"
 msgstr "Kennung"
 
@@ -436,67 +448,67 @@ msgstr "Letzte Änderung"
 msgid "Created by"
 msgstr "Erstellt von"
 
-#: documents/models.py:244
+#: documents/models.py:249
 msgid "Enable Capitalization"
 msgstr "Grossschreibung einschalten"
 
-#: documents/models.py:245
+#: documents/models.py:250
 msgid "Detailed Accented Characters"
 msgstr "Ausführliche Akzentbuchstaben"
 
-#: documents/models.py:268
+#: documents/models.py:273
 msgid "Plain"
 msgstr "Einfach"
 
-#: documents/models.py:269
+#: documents/models.py:274
 msgid "With original page numbers"
 msgstr "Mit Original-Seitenzahlen"
 
-#: documents/models.py:270
+#: documents/models.py:275
 msgid "Scientific"
 msgstr "Wissenschaftlich"
 
-#: documents/models.py:274
+#: documents/models.py:279
 msgid "justified"
 msgstr "Blocksatz"
 
-#: documents/models.py:275
+#: documents/models.py:280
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: documents/models.py:284
+#: documents/models.py:289
 msgid "Single spacing"
 msgstr ""
 
-#: documents/models.py:285
+#: documents/models.py:290
 msgid "One-and-a-half spacing"
 msgstr ""
 
-#: documents/models.py:286
+#: documents/models.py:291
 msgid "Double spacing"
 msgstr ""
 
-#: documents/models.py:289
+#: documents/models.py:294
 msgid "Fontsize"
 msgstr "Fontgrösse"
 
-#: documents/models.py:290
+#: documents/models.py:295
 msgid "Font"
 msgstr "Font"
 
-#: documents/models.py:291
+#: documents/models.py:296
 msgid "Page style"
 msgstr "Seitenstil"
 
-#: documents/models.py:293
+#: documents/models.py:298
 msgid "Stocksize"
 msgstr "Papiergösse"
 
-#: documents/models.py:294
+#: documents/models.py:299
 msgid "Line Spacing"
 msgstr "Zeilenabstand"
 
-#: documents/models.py:295
+#: documents/models.py:300
 msgid "Replace italics with quote"
 msgstr "Kursiv mit Apostrophe ersetzen"
 
@@ -537,27 +549,40 @@ msgstr ""
 msgid "Swiss Library for the Blind, Visually Impaired and Print Disabled"
 msgstr "Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
-#: templates/dictionary/confirm.html:24
+#: templates/dictionary/confirm.html:10
+#: templates/dictionary/confirm_single.html:10
 #, python-format
-msgid "Confirm Unknown Words for Grade %(grade)s"
+msgid " Confirm Deferred Words for Grade %(grade)s "
+msgstr ""
+
+#: templates/dictionary/confirm.html:11
+#: templates/dictionary/confirm_single.html:11
+#, python-format
+msgid " Confirm Unknown Words for Grade %(grade)s  "
 msgstr "Unbekannte Wörter für Grade %(grade)s bestätigen"
 
-#: templates/dictionary/confirm.html:30
+#: templates/dictionary/confirm.html:21
+msgid "Total deferred words"
+msgstr ""
+
+#: templates/dictionary/confirm.html:22
 msgid "Total unconfirmed words"
 msgstr "Unbestätigte Wörter insgesamt"
 
-#: templates/dictionary/confirm.html:47 templates/dictionary/words.html:48
-#: templates/documents/manage_import_metadata_csv.html:27
-msgid "Toggle All"
-msgstr "Alle umschalten"
+#: templates/dictionary/confirm.html:67
+msgid "No more words to confirm"
+msgstr ""
 
-#: templates/dictionary/confirm.html:70 templates/dictionary/local.html:54
-#: templates/dictionary/words.html:71
+#: templates/dictionary/confirm.html:71
+#: templates/dictionary/confirm_conflicting_duplicates.html:48
+#: templates/dictionary/local.html:65 templates/dictionary/words.html:77
 msgid "Submit"
 msgstr ""
 
-#: templates/dictionary/confirm.html:71 templates/dictionary/local.html:55
-#: templates/dictionary/words.html:72
+#: templates/dictionary/confirm.html:73
+#: templates/dictionary/confirm_conflicting_duplicates.html:50
+#: templates/dictionary/confirm_single.html:23
+#: templates/dictionary/local.html:67 templates/dictionary/words.html:79
 #: templates/documents/browse_sale_cover_pdf.html:25
 #: templates/documents/browse_sale_pdf.html:25
 #: templates/documents/manage_import_metadata_csv.html:81
@@ -568,9 +593,22 @@ msgstr ""
 #: templates/documents/todo_rtf.html:25
 #: templates/documents/todo_sale_pdf.html:25
 #: templates/documents/todo_sbsform.html:25
-#: templates/documents/todo_text_only_fileset.html:25
+#: templates/documents/todo_text_only_dtb.html:36
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: templates/dictionary/confirm_conflicting_duplicates.html:9
+#, python-format
+msgid "Confirm duplicate Words for Grade %(grade)s"
+msgstr ""
+
+#: templates/dictionary/confirm_conflicting_duplicates.html:43
+msgid "There are no conflicting duplicate words"
+msgstr ""
+
+#: templates/dictionary/confirm_single.html:22
+msgid "Confirm"
+msgstr ""
 
 #: templates/dictionary/local.html:8
 #, python-format
@@ -581,6 +619,26 @@ msgstr "Lokale Wörter für Grade %(grade)s bearbeiten"
 msgid "Total local words"
 msgstr "Lokale Wörter insgesamt"
 
+#: templates/dictionary/local.html:61
+msgid "No local words to display"
+msgstr ""
+
+#: templates/dictionary/pagination.html:8
+msgid "previous"
+msgstr ""
+
+#: templates/dictionary/pagination.html:11
+msgid "Page"
+msgstr ""
+
+#: templates/dictionary/pagination.html:11 templates/dictionary/words.html:31
+msgid "of"
+msgstr "von"
+
+#: templates/dictionary/pagination.html:14
+msgid "next"
+msgstr ""
+
 #: templates/dictionary/words.html:20
 #, python-format
 msgid "Check Unknown Words for Grade %(grade)s"
@@ -590,14 +648,19 @@ msgstr "Unbekannte Wörter für Grade %(grade)s überprüfen"
 msgid "Total unknown words"
 msgstr "Unbekannte Wörter insgesamt"
 
-#: templates/dictionary/words.html:31
-msgid "of"
-msgstr "von"
+#: templates/dictionary/words.html:52
+#: templates/documents/manage_import_metadata_csv.html:27
+msgid "Toggle All"
+msgstr "Alle umschalten"
 
-#: templates/dictionary/words.html:48
+#: templates/dictionary/words.html:52
 #: templates/documents/manage_import_metadata_csv.html:27
 msgid "Ignore"
 msgstr "Ignorieren"
+
+#: templates/dictionary/words.html:73
+msgid "No more words to check"
+msgstr ""
 
 #: templates/documents/browse_detail.html:5
 #: templates/documents/browse_detail.html:25
@@ -643,8 +706,8 @@ msgstr "EPUB"
 
 #: templates/documents/browse_detail.html:17
 #: templates/documents/todo_detail.html:30
-msgid "Daisy 2.02 Text-Only fileset"
-msgstr "Daisy 2.02 Text-Only"
+msgid "Text-Only Daisy book"
+msgstr ""
 
 #: templates/documents/browse_detail.html:18
 #: templates/documents/todo_detail.html:31
@@ -687,8 +750,8 @@ msgid "View as EPUB"
 msgstr "Ansicht als EPUB"
 
 #: templates/documents/browse_detail.html:81
-msgid "View as Daisy 2.02 Text-Only fileset"
-msgstr "Ansicht als Daisy 2.02 Text-Only"
+msgid "View as Text-Only Daisy book"
+msgstr ""
 
 #: templates/documents/browse_detail.html:88
 msgid "View as Full-Text Full-Audio book"
@@ -703,13 +766,13 @@ msgstr "Ansicht als Volltext Audio-Buch"
 #: templates/documents/manage_update.html:15
 #: templates/documents/todo_detail.html:111
 #: templates/documents/todo_dtb.html:31 templates/documents/todo_epub.html:31
-#: templates/documents/todo_index.html:55
+#: templates/documents/todo_index.html:68
 #: templates/documents/todo_markup.html:37
 #: templates/documents/todo_ocr.html:36 templates/documents/todo_pdf.html:31
 #: templates/documents/todo_rtf.html:31
 #: templates/documents/todo_sale_pdf.html:31
 #: templates/documents/todo_sbsform.html:31
-#: templates/documents/todo_text_only_fileset.html:31
+#: templates/documents/todo_text_only_dtb.html:42
 msgid "No data to display"
 msgstr "Keine Daten vorhanden"
 
@@ -730,7 +793,7 @@ msgstr "Vorschau Grossdruck Umschlag (Verkauf)"
 #: templates/documents/todo_pdf.html:24 templates/documents/todo_rtf.html:24
 #: templates/documents/todo_sale_pdf.html:24
 #: templates/documents/todo_sbsform.html:24
-#: templates/documents/todo_text_only_fileset.html:24
+#: templates/documents/todo_text_only_dtb.html:35
 msgid "Preview"
 msgstr "Vorschau"
 
@@ -752,6 +815,10 @@ msgstr "Ein neues Dokument erstellen"
 #: templates/documents/manage.html:11
 msgid "Import metadata CSV File"
 msgstr "CSV-Datei mit Metadaten importieren"
+
+#: templates/documents/manage.html:14
+msgid "View statistics"
+msgstr ""
 
 #: templates/documents/manage_create.html:4
 #: templates/documents/manage_create.html:7
@@ -811,7 +878,7 @@ msgid "OCR"
 msgstr "OCR"
 
 #: templates/documents/todo_detail.html:14
-#: templates/documents/todo_index.html:8
+#: templates/documents/todo_index.html:9
 msgid "Braille Dictionary"
 msgstr "Braille Wörterbuch"
 
@@ -866,13 +933,31 @@ msgstr "Ansicht als Volltext Audio-Buch (BETA)"
 msgid "Preview EPUB (BETA)"
 msgstr "Vorschau EPUB (BETA)"
 
-#: templates/documents/todo_index.html:10
 #: templates/documents/todo_index.html:12
+#: templates/documents/todo_index.html:20
 msgid "Confirm unknown words"
 msgstr "Unbekannte Wörter bestätigen"
 
-#: templates/documents/todo_index.html:17
-#: templates/documents/todo_index.html:31
+#: templates/documents/todo_index.html:13
+#: templates/documents/todo_index.html:21
+msgid "Confirm deferred words"
+msgstr ""
+
+#: templates/documents/todo_index.html:15
+#: templates/documents/todo_index.html:23
+msgid "Confirm single words"
+msgstr ""
+
+#: templates/documents/todo_index.html:16
+msgid "Confirm single deferred words"
+msgstr ""
+
+#: templates/documents/todo_index.html:24
+msgid "Confirm deferred single words"
+msgstr ""
+
+#: templates/documents/todo_index.html:30
+#: templates/documents/todo_index.html:44
 msgid "Pending documents"
 msgstr "Pendente Dokumente"
 
@@ -902,7 +987,25 @@ msgstr "Vorschau RTF (BETA)"
 msgid "Preview Braille"
 msgstr "Vorschau Braille"
 
-#: templates/documents/todo_text_only_fileset.html:4
-#: templates/documents/todo_text_only_fileset.html:9
-msgid "Preview Daisy 2.02 Text-Only fileset (BETA)"
-msgstr "Ansicht als Daisy 2.02 Text-Only (BETA)"
+#: templates/documents/todo_text_only_dtb.html:4
+#: templates/documents/todo_text_only_dtb.html:9
+msgid "Preview Text-Only Daisy book"
+msgstr ""
+
+#: templates/documents/todo_text_only_dtb.html:22
+msgid "Unable to complete the preview"
+msgstr ""
+
+#: templates/statistics/stats_index.html:7
+msgid "Links"
+msgstr ""
+
+#: templates/statistics/stats_index.html:8
+msgid "Get data (.csv)"
+msgstr ""
+
+#: templates/statistics/stats_index.html:12
+#: templates/statistics/stats_index.html:40
+msgid "Statistics"
+msgstr ""
+
