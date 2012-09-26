@@ -197,7 +197,7 @@ def local(request, document_id, grade):
         filterform = FilterForm()
     
     words_list = LocalWord.objects.filter(grade=grade, document=document,
-                                          untranslated__startswith=currentFilter).order_by('untranslated', 'type')
+                                          untranslated__contains=currentFilter).order_by('untranslated', 'type')
     paginator = Paginator(words_list, MAX_WORDS_PER_PAGE)
     try:
         page = int(request.GET.get('page', '1'))
