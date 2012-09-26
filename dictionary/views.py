@@ -400,8 +400,9 @@ def confirm_conflicting_duplicates(request, grade, deferred=False):
 def confirm_single(request, grade, deferred=False):
     try:
         # just get one word
-        word = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False, isDeferred=deferred, 
-                                                            document__state__sort_order=final_sort_order).order_by('untranslated', 'type')[0:1].get()
+        words = LocalWord.objects.filter(grade=grade).filter(isConfirmed=False, isDeferred=deferred, 
+                                                            document__state__sort_order=final_sort_order)
+        word = words.order_by('untranslated', 'type')[0:1].get()
     except LocalWord.DoesNotExist:
         return HttpResponseRedirect(reverse('todo_index'))
 
