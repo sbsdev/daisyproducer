@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-25 17:06+0200\n"
-"PO-Revision-Date: 2012-09-25 17:15+0200\n"
+"POT-Creation-Date: 2012-09-26 11:25+0200\n"
+"PO-Revision-Date: 2012-09-26 11:26+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -934,26 +934,17 @@ msgid "Preview EPUB (BETA)"
 msgstr "Vorschau EPUB (BETA)"
 
 #: templates/documents/todo_index.html:12
+#: templates/documents/todo_index.html:15
 #: templates/documents/todo_index.html:20
+#: templates/documents/todo_index.html:23
 msgid "Confirm unknown words"
 msgstr "Unbekannte Wörter bestätigen"
 
 #: templates/documents/todo_index.html:13
-#: templates/documents/todo_index.html:21
-msgid "Confirm deferred words"
-msgstr ""
-
-#: templates/documents/todo_index.html:15
-#: templates/documents/todo_index.html:23
-msgid "Confirm single words"
-msgstr ""
-
 #: templates/documents/todo_index.html:16
-msgid "Confirm single deferred words"
-msgstr ""
-
+#: templates/documents/todo_index.html:21
 #: templates/documents/todo_index.html:24
-msgid "Confirm deferred single words"
+msgid "Confirm deferred words"
 msgstr ""
 
 #: templates/documents/todo_index.html:30
@@ -1008,4 +999,3 @@ msgstr ""
 #: templates/statistics/stats_index.html:40
 msgid "Statistics"
 msgstr ""
-
