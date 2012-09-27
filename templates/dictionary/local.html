@@ -5,6 +5,17 @@
 {% endblock %}
 
 {% block content %}
+
+<script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    // This will put the focus on the filter field when the document loads
+    // (the focus will not be placed at the end of the text however).
+    filter = $('#filter_form > #id_filter');
+    filter.focus();
+  });
+</script>
+
 <h2>{% blocktrans %}Edit Local Words for Grade {{grade}}{% endblocktrans %}</h2>
 
 <div class="issue">
@@ -20,7 +31,7 @@
   </table>
 
   <hr />
-  <form method="GET" action="">
+  <form id="filter_form" method="GET" action="">
     {% for field in filterform %}{{ field }}{% endfor %}
     <input type="submit" value="{% trans 'Filter' %}" />
   </form>
