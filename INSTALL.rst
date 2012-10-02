@@ -25,6 +25,7 @@ Basic requirements
 - docutils_ to render the help page (which is written in
   reStructuredText Markup).
 - south_ to handle changes in the database schema
+- Jing_ for schema validation
 
 .. _Python: http://www.python.org
 .. _Django: http://www.djangoproject.com
@@ -42,6 +43,7 @@ Basic requirements
 .. _mysqldb: http://sourceforge.net/projects/mysql-python
 .. _docutils: http://docutils.sourceforge.net
 .. _south: http://south.aeracode.org/
+.. _Jing: http://www.thaiopensource.com/relaxng/jing.html
 
 Required packages
 ~~~~~~~~~~~~~~~~~
@@ -53,6 +55,7 @@ In terms of (Debian/Ubuntu) packages this translates to
 
 - python
 - python-django
+- python-django-south
 - python-lxml
 - python-docutils
 - python-libxml2
@@ -64,6 +67,7 @@ In terms of (Debian/Ubuntu) packages this translates to
 - texlive-lang-german
 - ttf-tiresias
 - xsltproc
+- jing
 
 Install the basic packages::
 
@@ -71,7 +75,7 @@ Install the basic packages::
   python-lxml python-docutils python-libxml2 python-libxslt1            \
   python-pypdf sun-java6-jre texlive-xetex texlive-latex-extra		\
   texlive-latex-recommended texlive-lang-german ttf-tiresias lmodern 	\
-  xsltproc unzip
+  xsltproc unzip jing
 
 Database
 --------
@@ -161,6 +165,15 @@ espeak::
 
 Then configure the path to lame in
 /opt/pipeline-20090410/pipeline.user.properties and set it to /usr/bin/lame
+
+Large print
++++++++++++
+
+In case you are using the tiresias font but want to enable font
+substitutions, i.e. replace glyphs missing from that font with glyphs
+from another font, you probably want to install the arial font. 
+
+  sudo aptitude install ttf-mscorefonts-installer
 
 Deployment requirements
 -----------------------
