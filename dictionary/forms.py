@@ -98,6 +98,11 @@ class BaseConfirmWordForm(forms.Form):
             if self.initial['homograph_disambiguation'] == '':
                 self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
+    def clean_braille(self):
+        data = self.cleaned_data['braille']
+        validate_braille(data)
+        return data
+        
 class ConfirmWordForm(BaseConfirmWordForm):
     isDeferred = forms.BooleanField(label=labels['isDeferred'], required=False)
 
