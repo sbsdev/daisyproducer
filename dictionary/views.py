@@ -220,6 +220,19 @@ def local(request, document_id, grade):
     return render_to_response('dictionary/local.html', locals(), 
                               context_instance=RequestContext(request))
 
+def update_word_tables(form, grade, deferred):
+    filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
+    if not deferred and form.cleaned_data['isDeferred']:
+        LocalWord.objects.filter(grade=grade, **filter_args).update(isDeferred=True, isLocal=form.cleaned_data['isLocal'])
+    elif form.cleaned_data['isLocal']:
+        LocalWord.objects.filter(grade=grade, **filter_args).update(isConfirmed=True, isLocal=True, 
+                                                                    braille=form.cleaned_data['braille'], isDeferred=False)
+    else:
+        # move confirmed and non-local words to the global dictionary
+        GlobalWord.objects.create(grade=grade, braille=form.cleaned_data['braille'], **filter_args)
+        # delete all entries from the LocalWord table
+        LocalWord.objects.filter(grade=grade, **filter_args).delete()
+    
 @transaction.commit_on_success
 def confirm(request, grade, deferred=False):
     if [word for word in get_conflicting_words(grade)]:
@@ -235,16 +248,7 @@ def confirm(request, grade, deferred=False):
             # FIXME: in Djano 1.3+ formset formmsets are iterable, so you can just say 
             # for form in formset:
             for form in formset.forms:
-                filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
-                if not deferred and form.cleaned_data['isDeferred']:
-                    LocalWord.objects.filter(grade=grade, **filter_args).update(isDeferred=True, isLocal=form.cleaned_data['isLocal'])
-                elif not form.cleaned_data['isLocal']:
-                    # move confirmed and non-local words to the global dictionary
-                    GlobalWord.objects.create(grade=grade, braille=form.cleaned_data['braille'], **filter_args)
-                    # delete all non-local entries from the LocalWord table
-                    LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
-                else:
-                    LocalWord.objects.filter(grade=grade, **filter_args).update(isConfirmed=True, isLocal=form.cleaned_data['isLocal'], isDeferred=False)
+                update_word_tables(form, grade, deferred)
             # FIXME: in principle we need to regenerate the liblouis tables,
             # i.e. the white lists now. However we do this asynchronously
             # (using a cron job) for now. There are several reasons for this:
@@ -409,16 +413,7 @@ def confirm_single(request, grade, deferred=False):
     if request.method == 'POST':
         form =  ConfirmDeferredWordForm(request.POST) if deferred else ConfirmWordForm(request.POST)
         if form.is_valid():
-            filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'braille', 'type', 'homograph_disambiguation'))
-            if not deferred and form.cleaned_data['isDeferred']:
-                LocalWord.objects.filter(grade=grade, **filter_args).update(isDeferred=True, isLocal=form.cleaned_data['isLocal'])
-            elif not form.cleaned_data['isLocal']:
-                # move confirmed and non-local words to the global dictionary
-                GlobalWord.objects.create(grade=grade, **filter_args)
-                # delete all non-local entries from the LocalWord table
-                LocalWord.objects.filter(grade=grade, isLocal=False, **filter_args).delete()
-            else:
-                LocalWord.objects.filter(grade=grade, **filter_args).update(isConfirmed=True, isLocal=True, isDeferred=False)
+            update_word_tables(form, grade, deferred)
 
             # redirect to self to deal with the next word
             redirect = ('dictionary_single_confirm_deferred_g' if deferred else 'dictionary_single_confirm_g') + str(grade)
