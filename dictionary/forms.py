@@ -86,17 +86,22 @@ class BaseConfirmWordForm(forms.Form):
         for field in self.fields.values():
             field.widget.attrs.update({'title': field.label})
         if not self.is_bound:
-            if self.initial['type'] == 2:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
-            elif self.initial['type'] == 4:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
-            else:
-                typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
-            self.fields['type'].choices = typeChoices
-            if self.initial['type'] == 0:
-                self.fields['type'].widget = forms.HiddenInput()
-            if self.initial['homograph_disambiguation'] == '':
-                self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
+            type_value = self.initial['type']
+            homograph_disambiguation_value = self.initial['homograph_disambiguation']
+        else:
+            type_value = int(self['type'].data)
+            homograph_disambiguation_value = self['homograph_disambiguation'].data
+        if type_value == 2:
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (1, 2)]
+        elif type_value == 4:
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id in (3, 4)]
+        else:
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == type_value]
+        self.fields['type'].choices = typeChoices
+        if type_value == 0:
+            self.fields['type'].widget = forms.HiddenInput()
+        if homograph_disambiguation_value == '':
+            self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
 
     def clean_braille(self):
         data = self.cleaned_data['braille']
