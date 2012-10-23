@@ -2,7 +2,7 @@ import shutil, tempfile, os.path
 
 from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory
 from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm
-from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfileForm
+from daisyproducer.documents.models import Document, Version, Attachment, Product, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -314,6 +314,13 @@ def preview_text_only_dtb(request, document_id):
             zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
             zipDirectory(outputDir, zipFile.name, document.title)
             shutil.rmtree(outputDir)
+
+            # put a copy of the ebook to a shared folder where it is fetched by another process that
+            # puts into the distribution system. This will change, as the distribution system should
+            # fetch the ebook directly from the archive. See fhs for a rationale about the dest
+            # folder (http://www.pathname.com/fhs/pub/fhs-2.3.html#VARSPOOLAPPLICATIONSPOOLDATA)
+            ebook = Product.objects.get(document=document, type=2)
+            shutil.copy2(zipFile.name, os.path.join('/var/spool/daisyproducer', ebook.identifier + '.zip'))
     
             return render_to_mimetype_response('application/zip', 
                                                document.title.encode('utf-8'), zipFile.name)
