@@ -1,4 +1,4 @@
-from daisyproducer.documents.models import Document, Version, Attachment, State
+from daisyproducer.documents.models import Document, Version, Attachment, Product, State
 from django.contrib import admin
 
 
@@ -7,6 +7,9 @@ class VersionInline(admin.TabularInline):
 
 class AttachmentInline(admin.TabularInline):
 	model = Attachment
+
+class ProductInline(admin.TabularInline):
+	model = Product
 
 class StateAdmin(admin.ModelAdmin):
 	list_display = ('name', 'all_next_states', 'all_responsible', 'sort_order',)
@@ -18,7 +21,7 @@ class DocumentAdmin(admin.ModelAdmin):
 	list_filter = ('author', 'source_publisher', 'state',)
 	ordering = ('title', 'state',)
 	search_fields = ('title',)
-	inlines = [VersionInline, AttachmentInline,]
+	inlines = [VersionInline, AttachmentInline, ProductInline]
 
 class VersionAdmin(admin.ModelAdmin):
 	list_display = ('created_at',)
@@ -27,7 +30,14 @@ class VersionAdmin(admin.ModelAdmin):
 class AttachmentAdmin(admin.ModelAdmin):
 	list_display = ('comment', 'mime_type',)
 
+class ProductAdmin(admin.ModelAdmin):
+	list_display = ('identifier', 'type', 'document',)
+	list_filter = ('identifier', 'type', 'document',)
+	ordering = ('identifier', 'type', 'document',)
+	search_fields = ('identifier',)
+
 admin.site.register(State,StateAdmin)
 admin.site.register(Document,DocumentAdmin)
 admin.site.register(Version,VersionAdmin)
 admin.site.register(Attachment,AttachmentAdmin)
+admin.site.register(Product,ProductAdmin)

@@ -227,6 +227,18 @@ class Attachment(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+class Product(models.Model):
+    PRODUCT_TYPE_CHOICES = (
+        (0, 'Braille'),
+        (1, 'Large Print'),
+        (2, 'EBook'),
+        )
+    
+    identifier = models.CharField(_("Identifier"), max_length=255, unique=True)
+    type = models.PositiveSmallIntegerField(_("Type"), choices=PRODUCT_TYPE_CHOICES)
+    document = models.ForeignKey(Document)
+
+
 # Profiles
 class BrailleProfile(models.Model):
 
