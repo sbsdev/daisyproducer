@@ -28,7 +28,7 @@
     <table>
     <tr>
       <td><b>{% trans 'Total unknown words' %}:</b></td>
-      <td>{{stats.total}} {% trans 'of' %} {{stats.unknown}} ({{percentage|floatformat}}%)</td>
+      <td>{{stats.unknown}} ({{percentage|floatformat}}%) {% trans 'of' %} {{stats.total}}</td>
     </tr>
   </table>
   {% include "dictionary/pagination.html" %}
