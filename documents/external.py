@@ -41,6 +41,14 @@ def applyXSL(xsl, stdin, stdout):
         )
     return Popen(command, stdin=stdin, stdout=stdout)
     
+def applyXSL2(xsl, stdin, stdout):
+    command = (
+        "java",
+        "-jar", join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'lib', 'saxon9he.jar'),
+        "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', xsl),
+        "-s:-")
+    return Popen(command, stdin=stdin, stdout=stdout)
+
 def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **kwargs):
     tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
     fileBaseName = splitext(basename(inputFile))[0]
@@ -270,8 +278,9 @@ class DaisyPipeline:
         p1 = applyXSL('filterBrlContractionhints.xsl', inputFileHandle, subprocess.PIPE)
         p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
         p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
-        p4 = applyXSL('addEmptyHeaders.xsl', p3.stdout, tmpFile)
-        p4.communicate()
+        p4 = applyXSL('addEmptyHeaders.xsl', p3.stdout, subprocess.PIPE)
+        p5 = applyXSL2('addBoilerplate.xsl', p4.stdout, tmpFile)
+        p5.communicate()
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
