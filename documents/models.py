@@ -238,6 +238,8 @@ class Product(models.Model):
     type = models.PositiveSmallIntegerField(_("Type"), choices=PRODUCT_TYPE_CHOICES)
     document = models.ForeignKey(Document)
 
+    def __unicode__(self):
+        return self.identifier
 
 # Profiles
 class BrailleProfile(models.Model):
