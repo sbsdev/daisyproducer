@@ -305,6 +305,8 @@ def preview_text_only_dtb(request, document_id):
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
+            
+            ebookNumber = form.cleaned_data.pop('ebookNumber')
 
             transformationErrors = DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
             if transformationErrors:
@@ -319,8 +321,9 @@ def preview_text_only_dtb(request, document_id):
             # puts into the distribution system. This will change, as the distribution system should
             # fetch the ebook directly from the archive. See fhs for a rationale about the dest
             # folder (http://www.pathname.com/fhs/pub/fhs-2.3.html#VARSPOOLAPPLICATIONSPOOLDATA)
-            ebook = Product.objects.get(document=document, type=2)
-            shutil.copy2(zipFile.name, os.path.join('/var/spool/daisyproducer', ebook.identifier + '.zip'))
+            # ebook = Product.objects.get(document=document, type=2)
+            # shutil.copy2(zipFile.name, os.path.join('/var/spool/daisyproducer', ebook.identifier + '.zip'))
+            shutil.copy2(zipFile.name, os.path.join('/var/spool/daisyproducer', ebookNumber + '.zip'))
     
             return render_to_mimetype_response('application/zip', 
                                                document.title.encode('utf-8'), zipFile.name)

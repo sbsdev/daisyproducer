@@ -227,7 +227,7 @@ class TextOnlyFilesetForm(forms.Form):
         label=_("Word detection"), required=False)
 
 class TextOnlyDTBForm(forms.Form):
-    pass
+    ebookNumber = forms.RegexField(label=_("EBook Number"),regex="^EB\d{5}")
 
 class DTBForm(forms.Form):
     NARRATOR_BITRATE_CHOICES = (
