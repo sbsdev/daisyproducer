@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-26 11:25+0200\n"
-"PO-Revision-Date: 2012-09-26 11:26+0200\n"
+"POT-Creation-Date: 2012-10-24 11:43+0200\n"
+"PO-Revision-Date: 2012-10-24 11:47+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -24,11 +24,11 @@ msgstr "Hilfe"
 msgid "About"
 msgstr "Impressum"
 
-#: dictionary/forms.py:123 templates/dictionary/local.html:25
+#: dictionary/forms.py:133 templates/dictionary/local.html:36
 msgid "Filter"
 msgstr ""
 
-#: dictionary/forms.py:123
+#: dictionary/forms.py:133
 msgid "Filter..."
 msgstr ""
 
@@ -97,17 +97,17 @@ msgstr "Eingescannte Daten"
 msgid "The image files that resulted from the scan"
 msgstr "Eingescannte Bilddateien"
 
-#: documents/forms.py:134 documents/models.py:239
+#: documents/forms.py:134 documents/models.py:248
 msgid "Grade 0"
 msgstr "Basisschrift"
 
-#: documents/forms.py:135 documents/models.py:240
+#: documents/forms.py:135 documents/models.py:249
 #: templates/documents/todo_detail.html:15
 #: templates/documents/todo_index.html:10
 msgid "Grade 1"
 msgstr "Vollschrift"
 
-#: documents/forms.py:136 documents/models.py:241
+#: documents/forms.py:136 documents/models.py:250
 #: templates/documents/todo_detail.html:18
 #: templates/documents/todo_index.html:18
 msgid "Grade 2"
@@ -149,19 +149,19 @@ msgstr "Am Ende von level3"
 msgid "At end of level4"
 msgstr "Am Ende von level4"
 
-#: documents/forms.py:160 documents/models.py:244
+#: documents/forms.py:160 documents/models.py:253
 msgid "Cells per Line"
 msgstr "Zellen pro Zeile"
 
-#: documents/forms.py:161 documents/models.py:245
+#: documents/forms.py:161 documents/models.py:254
 msgid "Lines per Page"
 msgstr "Zeilen pro Seite"
 
-#: documents/forms.py:163 documents/models.py:246
+#: documents/forms.py:163 documents/models.py:255
 msgid "Contraction"
 msgstr "Kürzungsgrad"
 
-#: documents/forms.py:168 documents/models.py:247
+#: documents/forms.py:168 documents/models.py:256
 msgid "Hyphenation"
 msgstr "Silbentrennung"
 
@@ -177,7 +177,7 @@ msgstr "Angezeigte Ebenen im Laufindex"
 msgid "Include SBSForm macros"
 msgstr "SBSForm-Makros mitliefern"
 
-#: documents/forms.py:181 documents/forms.py:209 documents/models.py:248
+#: documents/forms.py:181 documents/forms.py:209 documents/models.py:257
 msgid "Show original page numbers"
 msgstr "Schwarzschrift-Seitenzahlen anzeigen"
 
@@ -316,7 +316,7 @@ msgstr "Datum"
 msgid "Date of publication of the DTB"
 msgstr "Publikationsdatum des DTBs"
 
-#: documents/models.py:76 documents/models.py:231
+#: documents/models.py:76 documents/models.py:237
 msgid "Identifier"
 msgstr "Kennung"
 
@@ -448,67 +448,71 @@ msgstr "Letzte Änderung"
 msgid "Created by"
 msgstr "Erstellt von"
 
-#: documents/models.py:249
+#: documents/models.py:238
+msgid "Type"
+msgstr ""
+
+#: documents/models.py:258
 msgid "Enable Capitalization"
 msgstr "Grossschreibung einschalten"
 
-#: documents/models.py:250
+#: documents/models.py:259
 msgid "Detailed Accented Characters"
 msgstr "Ausführliche Akzentbuchstaben"
 
-#: documents/models.py:273
+#: documents/models.py:282
 msgid "Plain"
 msgstr "Einfach"
 
-#: documents/models.py:274
+#: documents/models.py:283
 msgid "With original page numbers"
 msgstr "Mit Original-Seitenzahlen"
 
-#: documents/models.py:275
+#: documents/models.py:284
 msgid "Scientific"
 msgstr "Wissenschaftlich"
 
-#: documents/models.py:279
+#: documents/models.py:288
 msgid "justified"
 msgstr "Blocksatz"
 
-#: documents/models.py:280
+#: documents/models.py:289
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: documents/models.py:289
+#: documents/models.py:298
 msgid "Single spacing"
 msgstr ""
 
-#: documents/models.py:290
+#: documents/models.py:299
 msgid "One-and-a-half spacing"
 msgstr ""
 
-#: documents/models.py:291
+#: documents/models.py:300
 msgid "Double spacing"
 msgstr ""
 
-#: documents/models.py:294
+#: documents/models.py:303
 msgid "Fontsize"
 msgstr "Fontgrösse"
 
-#: documents/models.py:295
+#: documents/models.py:304
 msgid "Font"
 msgstr "Font"
 
-#: documents/models.py:296
+#: documents/models.py:305
 msgid "Page style"
 msgstr "Seitenstil"
 
-#: documents/models.py:298
+#: documents/models.py:307
 msgid "Stocksize"
 msgstr "Papiergösse"
 
-#: documents/models.py:299
+#: documents/models.py:308
 msgid "Line Spacing"
 msgstr "Zeilenabstand"
 
-#: documents/models.py:300
+#: documents/models.py:309
 msgid "Replace italics with quote"
 msgstr "Kursiv mit Apostrophe ersetzen"
 
@@ -562,10 +566,12 @@ msgid " Confirm Unknown Words for Grade %(grade)s  "
 msgstr "Unbekannte Wörter für Grade %(grade)s bestätigen"
 
 #: templates/dictionary/confirm.html:21
+#: templates/dictionary/confirm_single.html:21
 msgid "Total deferred words"
 msgstr ""
 
 #: templates/dictionary/confirm.html:22
+#: templates/dictionary/confirm_single.html:22
 msgid "Total unconfirmed words"
 msgstr "Unbestätigte Wörter insgesamt"
 
@@ -575,14 +581,14 @@ msgstr ""
 
 #: templates/dictionary/confirm.html:71
 #: templates/dictionary/confirm_conflicting_duplicates.html:48
-#: templates/dictionary/local.html:65 templates/dictionary/words.html:77
+#: templates/dictionary/local.html:76 templates/dictionary/words.html:77
 msgid "Submit"
 msgstr ""
 
 #: templates/dictionary/confirm.html:73
 #: templates/dictionary/confirm_conflicting_duplicates.html:50
-#: templates/dictionary/confirm_single.html:23
-#: templates/dictionary/local.html:67 templates/dictionary/words.html:79
+#: templates/dictionary/confirm_single.html:35
+#: templates/dictionary/local.html:78 templates/dictionary/words.html:79
 #: templates/documents/browse_sale_cover_pdf.html:25
 #: templates/documents/browse_sale_pdf.html:25
 #: templates/documents/manage_import_metadata_csv.html:81
@@ -606,20 +612,20 @@ msgstr ""
 msgid "There are no conflicting duplicate words"
 msgstr ""
 
-#: templates/dictionary/confirm_single.html:22
+#: templates/dictionary/confirm_single.html:34
 msgid "Confirm"
 msgstr ""
 
-#: templates/dictionary/local.html:8
+#: templates/dictionary/local.html:19
 #, python-format
 msgid "Edit Local Words for Grade %(grade)s"
 msgstr "Lokale Wörter für Grade %(grade)s bearbeiten"
 
-#: templates/dictionary/local.html:18
+#: templates/dictionary/local.html:29
 msgid "Total local words"
 msgstr "Lokale Wörter insgesamt"
 
-#: templates/dictionary/local.html:61
+#: templates/dictionary/local.html:72
 msgid "No local words to display"
 msgstr ""
 
@@ -695,19 +701,19 @@ msgid "XHTML"
 msgstr "XHTML"
 
 #: templates/documents/browse_detail.html:15
-#: templates/documents/todo_detail.html:28
+#: templates/documents/todo_detail.html:29
 msgid "RTF"
 msgstr "RTF"
 
 #: templates/documents/browse_detail.html:16
-#: templates/documents/todo_detail.html:29
+#: templates/documents/todo_detail.html:30
 msgid "EPUB"
 msgstr "EPUB"
 
 #: templates/documents/browse_detail.html:17
-#: templates/documents/todo_detail.html:30
+#: templates/documents/todo_detail.html:27
 msgid "Text-Only Daisy book"
-msgstr ""
+msgstr "EBook"
 
 #: templates/documents/browse_detail.html:18
 #: templates/documents/todo_detail.html:31
@@ -904,7 +910,7 @@ msgstr "Grossdruck (Verkauf)"
 msgid "Configurable Large Print"
 msgstr "Konfigurierbarer Grossdruck"
 
-#: templates/documents/todo_detail.html:27
+#: templates/documents/todo_detail.html:28
 msgid "Preview (BETA)"
 msgstr "Vorschau (BETA)"
 
