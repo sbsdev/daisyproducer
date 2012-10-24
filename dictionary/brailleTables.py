@@ -1,6 +1,8 @@
 # coding=utf-8
 import codecs
 import os.path
+import sys
+
 from collections import namedtuple
 
 import louis
@@ -215,7 +217,10 @@ def writeTable(fileName, words, translate):
     for (untranslated, contracted) in words:
         if translate(smart_unicode(untranslated)) != smart_unicode(contracted):
             # FIXME do we need to translate unichr(0x250A)) back to '|'?
-            f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
+            try:
+                f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
+            except KeyError:
+                sys.stderr.write("Error: unknown char in %s\n" % (contracted,))
     f.close()
 
 def writeWhiteListTables(words):
