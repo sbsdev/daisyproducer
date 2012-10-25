@@ -321,14 +321,16 @@ def preview_text_only_dtb(request, document_id):
             # puts into the distribution system. This will change, as the distribution system should
             # fetch the ebook directly from the archive. See fhs for a rationale about the dest
             # folder (http://www.pathname.com/fhs/pub/fhs-2.3.html#VARSPOOLAPPLICATIONSPOOLDATA)
-            # ebook = Product.objects.get(document=document, type=2)
-            # shutil.copy2(zipFile.name, os.path.join('/var/spool/daisyproducer', ebook.identifier + '.zip'))
             shutil.copy2(zipFile.name, os.path.join('/var/spool/daisyproducer', ebookNumber + '.zip'))
     
             return render_to_mimetype_response('application/zip', 
                                                document.title.encode('utf-8'), zipFile.name)
     else:
-        form = TextOnlyDTBForm()
+        ebook = Product.objects.filter(document=document, type=2)
+        if ebook:
+            form = TextOnlyDTBForm({'ebookNumber': ebook[0].identifier})
+        else:
+            form = TextOnlyDTBForm()
 
     return render_to_response('documents/todo_text_only_dtb.html', locals(),
                               context_instance=RequestContext(request))

@@ -1,13 +1,14 @@
 import csv, codecs, re
 
-from daisyproducer.documents.forms import CSVUploadForm
-from daisyproducer.documents.models import Document, Version
+from daisyproducer.documents.forms import CSVUploadForm, PartialProductForm
+from daisyproducer.documents.models import Document, Version, Product
 from daisyproducer.documents.versionHelper import XMLContent
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.forms import ModelForm
+from django.forms.formsets import formset_factory
 from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.views.generic.create_update import create_object, update_object
@@ -143,6 +144,7 @@ def upload_metadata_csv(request):
     # FIXME: It's pretty annoying to hard code the expected encoding of the csv
     reader = UnicodeReader(open(csv_file.temporary_file_path()), encoding="iso-8859-1", delimiter='\t')
     initial = []
+    products = {}
     seen_sources = set()
     seen_title_author = set()
     for row in reader:
@@ -150,6 +152,9 @@ def upload_metadata_csv(request):
                   'identifier': row[2], 'source': row[3], 
                   'source_edition': row[4], 'source_publisher': row[5],
                   'language': Document.language_choices[0][0]}
+        # collect all products for a given isbn
+        if fields['source'] != '':
+            products.setdefault(fields['source'], set()).add(fields['identifier'])
         # filter entries in the csv that deal with the same isbn or with the same title/author combo
         if fields['source'] in seen_sources or fields['title'] + fields['author'] in seen_title_author:
             continue
@@ -177,11 +182,13 @@ def upload_metadata_csv(request):
     duplicate_sources = [document.source for 
                          document in Document.objects.filter(source__in=new_sources)]
     unique_initial = [row for row in initial if row['identifier'] not in duplicate_identifiers and row['source'] not in duplicate_sources]
-
+    ProductFormset = formset_factory(PartialProductForm, extra=0)
+    product_formset = ProductFormset(initial=[{'isbn': isbn, 'productNumber': number} for (isbn, v) in products.items() for number in v],
+                                     prefix='products')
     DocumentFormSet = modelformset_factory(Document, 
                                            fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number', 'production_source'), 
                                            extra=len(unique_initial), can_delete=True)
-    formset = DocumentFormSet(queryset=Document.objects.none(), initial=unique_initial)
+    document_formset = DocumentFormSet(queryset=Document.objects.none(), initial=unique_initial, prefix='documents')
     return render_to_response('documents/manage_import_metadata_csv.html', locals(),
                               context_instance=RequestContext(request))
 
@@ -196,11 +203,13 @@ def import_metadata_csv(request):
     DocumentFormSet = modelformset_factory(Document, 
                                            fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number', 'production_source'), 
                                            can_delete=True)
-    formset = DocumentFormSet(request.POST)
-    if not formset.is_valid():
+    ProductFormset = formset_factory(PartialProductForm)
+    document_formset = DocumentFormSet(request.POST, prefix='documents')
+    product_formset = ProductFormset(request.POST, prefix='products')
+    if not document_formset.is_valid() or not product_formset.is_valid():
         return render_to_response('documents/manage_import_metadata_csv.html', locals(),
                                   context_instance=RequestContext(request))
-    instances = formset.save()
+    instances = document_formset.save()
     for instance in instances:
         if instance.version_set.count() == 0:
             # create an initial version
@@ -211,4 +220,19 @@ def import_metadata_csv(request):
                 document = instance,
                 created_by = request.user)
             version.content.save("initial_version.xml", content)
+    products = {}
+    for form in product_formset.forms:
+        isbn, product_number = form.cleaned_data['isbn'], form.cleaned_data['productNumber']
+        products.setdefault(isbn, set()).add(product_number)
+    for document in Document.objects.filter(source__in=products.keys()):
+        for product_number in products[document.source]:
+            if product_number.startswith('PS'):
+                type = 0
+            elif product_number.startswith('GD'):
+                type = 1
+            elif product_number.startswith('EB'):
+                type = 2
+            else:
+                continue
+            Product.objects.get_or_create(document=document, type=type, identifier=product_number)
     return HttpResponseRedirect(reverse('manage_index'))

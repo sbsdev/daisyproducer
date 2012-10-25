@@ -270,3 +270,6 @@ class SalePDFForm(ModelForm):
         model = LargePrintProfile
         fields = ('font_size',)
     
+class PartialProductForm(forms.Form):
+    isbn = forms.CharField()
+    productNumber = forms.CharField()
