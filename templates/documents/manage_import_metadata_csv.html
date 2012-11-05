@@ -19,9 +19,9 @@
 
 <h2>{% trans "Bulk import documents" %}</h2>
 <form action="{% url import_metadata_csv %}" method="post">{% csrf_token %}
-  {{ formset.management_form }}
+  {{ document_formset.management_form }}
   <table>
-    {% for form in formset.forms %}
+    {% for form in document_formset.forms %}
     {% if forloop.first %}
     <tr><th>{% trans 'Document' %}</th>
         <th class="toggleAllCheckboxes" title="{% trans 'Toggle All' %}">{% trans 'Ignore' %}</th></tr>
@@ -77,6 +77,9 @@
     <p class="nodata">{% trans "CSV is empty or all records have already been imported" %}</p>
     {% endfor %}
   </table>
+  <table style="display: none;">
+    {{ product_formset }}
+  </table>  
   <input type="submit" value="{% trans 'Import' %}" />
   <a href="{% url manage_index %}">{% trans 'Cancel' %}</a>
 </form>
