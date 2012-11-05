@@ -16,6 +16,7 @@ from django.views.generic.list_detail import object_list, object_detail
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
+VALID_ISBN_RE = re.compile(u"^[0-9-X]{10,18}$")
 
 @login_required
 @permission_required("documents.add_document")
@@ -153,7 +154,7 @@ def upload_metadata_csv(request):
                   'source_edition': row[4], 'source_publisher': row[5],
                   'language': Document.language_choices[0][0]}
         # collect all products for a given isbn
-        if fields['source'] != '':
+        if fields['source'] != '' and VALID_ISBN_RE.match(fields['source']):
             products.setdefault(fields['source'], set()).add(fields['identifier'])
         # filter entries in the csv that deal with the same isbn or with the same title/author combo
         if fields['source'] in seen_sources or fields['title'] + fields['author'] in seen_title_author:
