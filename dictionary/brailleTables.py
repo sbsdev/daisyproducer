@@ -220,7 +220,7 @@ def writeTable(fileName, words, translate):
             try:
                 f.write("word %s %s\n" % (smart_unicode(untranslated), word2dots(smart_unicode(contracted))))
             except KeyError:
-                sys.stderr.write("Error: unknown char in %s (%s, %s)\n" % (smart_unicode(contracted), smart_unicode(untranslated), fileName))
+                sys.stderr.write("Error: unknown char in %s (%s, %s)\n" % (contracted, untranslated, fileName))
     f.close()
 
 def writeWhiteListTables(words):
