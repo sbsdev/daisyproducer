@@ -28,9 +28,16 @@ def all_data_as_csv(request):
     outputFileName = "/tmp/stats_data.csv"
     outputFile = open(outputFileName, 'wb')
     writer = csv.writer(outputFile)
-    writer.writerow(['Document', 'Document', 'Date', 'Total', 'Unknown'])
-    for stat in DocumentStatistic.objects.all():
-        writer.writerow([stat.date, stat.document.identifier, stat.grade, stat.date, stat.total, stat.unknown])
-    
+    writer.writerow(['Date', 'Document', 'Grade', 'Total', 'Unknown'])
+    stats = DocumentStatistic.objects
+    # Only keep first occurence of document
+    stats = stats.raw("""
+SELECT id,max(statistics_documentstatistic.unknown)
+FROM statistics_documentstatistic
+GROUP BY statistics_documentstatistic.document_id
+ORDER BY statistics_documentstatistic.date;
+""")
+    for stat in stats:
+        writer.writerow([stat.date, stat.document.identifier, stat.grade, stat.total, stat.unknown])
     outputFile.close()
     return render_to_mimetype_response('text/csv', 'XMLP Statistical Data', outputFileName)
