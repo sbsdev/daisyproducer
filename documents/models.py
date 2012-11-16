@@ -194,7 +194,7 @@ class Version(models.Model):
     def delete(self, *args, **kwargs):
         super(Version, self).delete(*args, **kwargs)
         # remove the files on the file system
-        content.delete()
+        self.content.delete()
         
     class Meta:
         get_latest_by = "created_at"
