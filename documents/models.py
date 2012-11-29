@@ -196,6 +196,9 @@ class Version(models.Model):
     created_by = models.ForeignKey(User, verbose_name=_("Created by"))
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return u'%s, %s, %s' % (self.comment, self.created_by, self.created_at)
+
     def delete(self, *args, **kwargs):
         # remove the files on the file system
         self.content.delete()
