@@ -3,6 +3,7 @@ from optparse import make_option
 
 from daisyproducer.documents.models import Document
 from django.core.management.base import BaseCommand
+from django.utils.encoding import smart_str
 
 class Command(BaseCommand):
     args = ''
@@ -23,5 +24,5 @@ class Command(BaseCommand):
 
         for document in Document.objects.all():
             if verbosity >= 2:
-                self.stdout.write('Removing excess versions for %s...\n' % document.title)
+                self.stdout.write('Removing excess versions for %s...\n' % smart_str(document.title))
             document.remove_excess_versions(numberOfVersionsKept)
