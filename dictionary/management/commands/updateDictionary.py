@@ -37,6 +37,8 @@ class Command(BaseCommand):
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
+        verbosity = int(options['verbosity'])
+
         if len(args) != 1:
             raise CommandError('Incorrect number of arguments')
         try:
@@ -81,5 +83,6 @@ class Command(BaseCommand):
             words.update(braille=braille)
             self.numberOfWords += 1
         
-        self.stdout.write('Successfully update %s words\n' % self.numberOfWords)
+        if verbosity >= 1:
+            self.stdout.write('Successfully update %s words\n' % self.numberOfWords)
 
