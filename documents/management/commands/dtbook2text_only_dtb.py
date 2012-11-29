@@ -41,14 +41,13 @@ class Command(BaseCommand):
         conversions = 0
 
         for dtbook in args:
-            if verbosity >= 2:
+            if verbosity >= 1:
                 self.stdout.write('Converting %s...\n' % dtbook)
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
             result = DaisyPipeline.dtbook2text_only_dtb(dtbook, outputDir)
             if result:
-                if verbosity >= 1:
-                    for error in result:
-                        self.stderr.write(error + "\n")
+                for error in result:
+                    self.stderr.write(error + "\n")
                 continue
             if outputPath == None:
                 outputPath = os.path.dirname(dtbook)
@@ -64,7 +63,7 @@ class Command(BaseCommand):
             shutil.rmtree(outputDir)
             conversions += 1
 
-        if verbosity >= 2:
+        if verbosity >= 1:
             self.stdout.write('Converted %s %s of %s\n' % (conversions, "file" if conversions == 1 else "files", len(args)))
         
 
