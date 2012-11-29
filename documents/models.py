@@ -181,11 +181,6 @@ class Document(models.Model):
         # remove the folders for versions and attachments on the file system
         rmtree(join(settings.MEDIA_ROOT, str(old_id)))
 
-    def remove_excess_versions(self, numberOfVersionsKept):
-        versions_to_remove = self.version_set.all()[numberOfVersionsKept:]
-        for version in versions_to_remove:
-            version.delete()
-
 def get_version_path(instance, filename):
         return '%s/versions/%s.xml' % (instance.document_id, instance.id)
     

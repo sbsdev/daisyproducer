@@ -21,8 +21,23 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         numberOfVersionsKept = options['numberOfVersionsKept']
         verbosity = int(options['verbosity'])
+        removed = 0
 
         for document in Document.objects.all():
-            if verbosity >= 2:
+            if verbosity >= 1:
                 self.stdout.write('Removing excess versions for %s...\n' % smart_str(document.title))
-            document.remove_excess_versions(numberOfVersionsKept)
+
+            versions = document.version_set.all()
+            versions_to_remove = versions[numberOfVersionsKept:]
+
+            if verbosity >= 2:
+                self.stdout.write('Numbert of versions: %s\n' % len(versions))
+            
+            for version in versions_to_remove:
+                if verbosity >= 2:
+                    self.stdout.write('Removing version for %s...\n' % smart_str(version))
+                version.delete()
+                removed += 1
+
+        if verbosity >= 1:
+            self.stdout.write('Removed %s excess versions\n' % removed)
