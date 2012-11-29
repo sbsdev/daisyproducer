@@ -181,6 +181,11 @@ class Document(models.Model):
         # remove the folders for versions and attachments on the file system
         rmtree(join(settings.MEDIA_ROOT, str(old_id)))
 
+    def remove_excess_versions(self, numberOfVersionsKept):
+        versions_to_remove = self.version_set.all()[numberOfVersionsKept:]
+        for version in versions_to_remove:
+            version.delete()
+
 def get_version_path(instance, filename):
         return '%s/versions/%s.xml' % (instance.document_id, instance.id)
     
@@ -192,9 +197,9 @@ class Version(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def delete(self, *args, **kwargs):
-        super(Version, self).delete(*args, **kwargs)
         # remove the files on the file system
         self.content.delete()
+        super(Version, self).delete(*args, **kwargs)
         
     class Meta:
         get_latest_by = "created_at"
@@ -220,9 +225,9 @@ class Attachment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def delete(self, *args, **kwargs):
-        super(Attachment, self).delete(*args, **kwargs)
         # remove the files on the file system
-        content.delete()
+        self.content.delete()
+        super(Attachment, self).delete(*args, **kwargs)
         
     class Meta:
         ordering = ['-created_at']
