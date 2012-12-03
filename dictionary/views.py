@@ -29,6 +29,7 @@ MAX_WORDS_PER_PAGE = 25
 
 final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
+@login_required
 @transaction.commit_on_success
 def check(request, document_id, grade):
 
@@ -169,6 +170,7 @@ def check(request, document_id, grade):
     return render_to_response('dictionary/words.html', locals(),
                               context_instance=RequestContext(request))
 
+@login_required
 @transaction.commit_on_success
 def local(request, document_id, grade):
 
@@ -232,6 +234,8 @@ def update_word_tables(form, grade, deferred):
         # delete all entries from the LocalWord table
         LocalWord.objects.filter(grade=grade, **filter_args).delete()
     
+@login_required
+@permission_required("dictionary.add_globalword")
 @transaction.commit_on_success
 def confirm(request, grade, deferred=False):
     if [word for word in get_conflicting_words(grade)]:
@@ -346,6 +350,8 @@ AND doc_a.state_id=%s"""
     cursor.execute(DETECT_CONFLICTING_WORDS, [grade, final_sort_order, final_sort_order, grade, final_sort_order, grade, final_sort_order])
     return cursor.fetchall()
 
+@login_required
+@permission_required("dictionary.add_globalword")
 @transaction.commit_on_success
 def confirm_conflicting_duplicates(request, grade, deferred=False):
 
@@ -399,6 +405,8 @@ def confirm_conflicting_duplicates(request, grade, deferred=False):
     return render_to_response('dictionary/confirm_conflicting_duplicates.html', locals(), 
                               context_instance=RequestContext(request))
 
+@login_required
+@permission_required("dictionary.add_globalword")
 @transaction.commit_on_success
 def confirm_single(request, grade, deferred=False):
     try:
