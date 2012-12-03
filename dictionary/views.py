@@ -11,6 +11,7 @@ from daisyproducer.documents.external import saxon9he
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.db.models import Max
 from django.forms.models import modelformset_factory
@@ -430,7 +431,8 @@ def confirm_single(request, grade, deferred=False):
     return render_to_response('dictionary/confirm_single.html', locals(), 
                               context_instance=RequestContext(request))
 
-
+@login_required
+@permission_required("dictionary.change_globalword")
 @transaction.commit_on_success
 def edit_global_words(request):
 
