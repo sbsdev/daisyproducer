@@ -7,7 +7,7 @@ from daisyproducer.documents.models import Document
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 
 @login_required
-@permission_required("statistics.add_document_statistic")
+@permission_required("statistics.add_documentstatistic")
 def index(request):
     """Statistics index page"""
     stats = DocumentStatistic.objects
@@ -22,7 +22,7 @@ ORDER BY statistics_documentstatistic.date;
                               context_instance=RequestContext(request))
 
 @login_required
-@permission_required("statistics.add_document_statistic")
+@permission_required("statistics.add_documentstatistic")
 def all_data_as_csv(request):
     """Get all data as a comma separated values file"""
     outputFileName = "/tmp/stats_data.csv"
