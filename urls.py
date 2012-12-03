@@ -85,6 +85,7 @@ urlpatterns += patterns('daisyproducer.dictionary.views',
         name='dictionary_confirm_deferred_conflicting_duplicates_g1'),
     url(r'^todo/confirm_deferred_conflicting_duplicates_g2$', 'confirm_conflicting_duplicates', kwargs={'grade': 2, 'deferred': True}, 
         name='dictionary_confirm_deferred_conflicting_duplicates_g2'),
+    url(r'^todo/edit_global_words$', 'edit_global_words', name='dictionary_edit_global_words'),
 )
 
 # help and about

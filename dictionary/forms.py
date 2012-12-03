@@ -1,7 +1,7 @@
 # coding=utf-8
 import re
 
-from daisyproducer.dictionary.models import Word, LocalWord
+from daisyproducer.dictionary.models import Word, LocalWord, GlobalWord
 
 from django import forms
 
@@ -74,6 +74,31 @@ class RestrictedWordForm(PartialWordForm):
 
         return cleaned_data
 
+class PartialGlobalWordForm(ModelForm):
+    class Meta:
+        model = GlobalWord
+        widgets = {}
+        # add the title attribute to the widgets
+        for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation'):
+            f = model._meta.get_field(field)
+            formField = f.formfield()
+            if formField:
+                attrs = {'title': formField.label}
+                if field == 'braille':
+                    attrs.update({'class': 'braille'})
+                elif field in ('untranslated', 'homograph_disambiguation'):
+                    attrs.update({'readonly': 'readonly'})
+                widgets[field] = type(formField.widget)(attrs=attrs)
+
+    def __init__(self, *args, **kwargs):
+        super(PartialGlobalWordForm, self).__init__(*args, **kwargs)
+        if not self.is_bound:
+            # make the type field "read-only" (restrict it to a single choice)
+            typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
+            self.fields['type'].choices = typeChoices
+            gradeChoices = [(id, name) for (id, name) in Word.BRAILLE_CONTRACTION_GRADE_CHOICES if id == self.initial['grade']]
+            self.fields['grade'].choices = gradeChoices
+
 class BaseConfirmWordForm(forms.Form):
     untranslated = forms.CharField(label=labels['untranslated'], widget=forms.TextInput(attrs={'readonly':'readonly'}))
     braille = forms.CharField(label=labels['braille'], widget=forms.TextInput(attrs={'readonly':'readonly', 'class': 'braille'}))
@@ -132,3 +157,5 @@ class ConflictingWordForm(forms.Form):
 class FilterForm(forms.Form):
     filter = forms.CharField(label=_('Filter'), widget=forms.TextInput(attrs={'placeholder': _('Filter...')}), required=False)
 
+class FilterWithGradeForm(FilterForm):
+    grade = forms.ChoiceField(label=labels['grade'], choices=(('', _('Any')),) + Word.BRAILLE_CONTRACTION_GRADE_CHOICES, required=False)

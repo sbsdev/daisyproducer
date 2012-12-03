@@ -3,7 +3,7 @@ import unicodedata
 import louis
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, FilterForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, FilterForm, FilterWithGradeForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document, State
@@ -189,12 +189,10 @@ def local(request, document_id, grade):
         else:
             return render_to_response('dictionary/local.html', locals(),
                                       context_instance=RequestContext(request))
-    elif request.method == 'GET':
-        filterform = FilterForm(request.GET)
-        if filterform.is_valid():
-            currentFilter = filterform.cleaned_data['filter']
-    else:
-        filterform = FilterForm()
+
+    filterform = FilterForm(request.GET)
+    if filterform.is_valid():
+        currentFilter = filterform.cleaned_data['filter']
     
     words_list = LocalWord.objects.filter(grade=grade, document=document,
                                           untranslated__contains=currentFilter).order_by('untranslated', 'type')
@@ -432,4 +430,46 @@ def confirm_single(request, grade, deferred=False):
     return render_to_response('dictionary/confirm_single.html', locals(), 
                               context_instance=RequestContext(request))
 
+
+@transaction.commit_on_success
+def edit_global_words(request):
+
+    WordFormSet = modelformset_factory(GlobalWord, extra=0, form=PartialGlobalWordForm)
+    if request.method == 'POST':
+
+        formset = WordFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(reverse('todo_index'))
+        else:
+            return render_to_response('dictionary/edit_globals.html', locals(),
+                                      context_instance=RequestContext(request))
+
+    filterform = FilterWithGradeForm(request.GET)
+    if filterform.is_valid():
+        currentFilter = filterform.cleaned_data['filter']
+        currentGrade = filterform.cleaned_data['grade']
+
+    filter_args = {}
+    for key, value in [('untranslated__contains', currentFilter), ('grade', currentGrade)]:
+        if value:
+            filter_args[key] = value
+
+    words_to_edit = GlobalWord.objects.filter(**filter_args).order_by('untranslated', 'type')
+    paginator = Paginator(words_to_edit, MAX_WORDS_PER_PAGE)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        words = paginator.page(page)
+    except InvalidPage:
+        words = paginator.page(paginator.num_pages)
+
+    have_type = any((word.type != 0 for word in words.object_list))
+    have_homograph_disambiguation = any((word.homograph_disambiguation != '' for word in words.object_list))
+    formset = WordFormSet(queryset=words.object_list)
+    return render_to_response('dictionary/edit_globals.html', locals(),
+                              context_instance=RequestContext(request))
 
