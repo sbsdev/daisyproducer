@@ -23,6 +23,10 @@
   <a href="{% url dictionary_single_confirm_g2 %}" accesskey="k">{% trans "Confirm unknown words" %}</a><br />
   <a href="{% url dictionary_single_confirm_deferred_g2 %}" accesskey="K">{% trans "Confirm deferred words" %}</a><br />
   {% endif %}
+  <h4>{% trans "Edit" %}</h4>
+  {% if not user|in_group:"Braille_Readers" %}
+  <a href="{% url dictionary_edit_global_words %}">{% trans "Edit global words" %}</a><br />
+  {% endif %}
   {% endif %}
 </div>
 {% endblock %}
