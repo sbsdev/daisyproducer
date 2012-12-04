@@ -141,6 +141,11 @@ def check(request, document_id, grade):
     unknown_words = unknown_words + unknown_homographs + unknown_names + unknown_places
     unknown_words.sort(cmp=lambda x,y: cmp(x['untranslated'].lower(), y['untranslated'].lower()))
 
+    # remove words from the local words which are no longer in the document (they might have
+    # been typos that slipped in to the local words and were corrected subsequently)
+    all_duplicates = duplicate_homographs | duplicate_names | duplicate_places | duplicate_words
+    LocalWord.objects.filter(grade=grade, document=document).exclude(untranslated__in=all_duplicates).delete()
+
     paginator = Paginator(unknown_words, MAX_WORDS_PER_PAGE)
     try:
         page = int(request.GET.get('page', '1'))
