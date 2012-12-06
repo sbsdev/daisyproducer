@@ -11,7 +11,7 @@
 # to build hyphenation tables
 #    debuild -us -uc
 
-source deploy.cfg
+source `dirname $0`/deploy.cfg
 if [[ $? != 0 ]] ; then
     exit 1
 fi
