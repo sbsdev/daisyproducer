@@ -303,6 +303,12 @@ class LargePrintProfile(models.Model):
         ('doublespacing', _('Double spacing')),
         )
     
+    ENDNOTE_CHOICES = (
+        ('none', _('Plain Footnotes')),
+        ('document', _('Document Endnotes')),
+        ('chapter', _('Chapter Endnotes')),
+        )
+    
     font_size = models.CharField(_("Fontsize"), default='17pt', max_length=4, choices=FONTSIZE_CHOICES)
     font = models.CharField(_("Font"), default='Tiresias LPfont', max_length=60, choices=FONT_CHOICES)
     page_style = models.CharField(_("Page style"), default='plain', max_length=16, choices=PAGESTYLE_CHOICES)
@@ -310,6 +316,7 @@ class LargePrintProfile(models.Model):
     stock_size = models.CharField(_("Stocksize"), default='a4paper', max_length=16, choices=PAPERSIZE_CHOICES)
     line_spacing = models.CharField(_("Line Spacing"), default='singlespacing', max_length=16, choices=LINESPACING_CHOICES)
     replace_em_with_quote = models.BooleanField(_("Replace italics with quote"))
+    end_notes = models.CharField(_("End Notes"), default='none', max_length=16, choices=ENDNOTE_CHOICES)
 
 class LargePrintProfileForm(ModelForm):
     class Meta:

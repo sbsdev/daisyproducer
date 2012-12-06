@@ -78,6 +78,7 @@ def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **
         "--right_margin=%(right_margin)s" % kwargs if 'right_margin' in kwargs else None,
         "--top_margin=%(top_margin)s" % kwargs if 'top_margin' in kwargs else None,
         "--bottom_margin=%(bottom_margin)s" % kwargs if 'bottom_margin' in kwargs else None,
+        "--endnotes=%(end_notes)s" % kwargs if 'end_notes' in kwargs else None,
         )
     command = filter(None, command) # filter out empty arguments
     call(command)
