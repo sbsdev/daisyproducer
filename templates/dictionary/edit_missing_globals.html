@@ -1,0 +1,72 @@
+{% extends "documents/todo.html" %}
+{% load i18n %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    // This will put the focus on the filter field when the document loads
+    // (the focus will not be placed at the end of the text however).
+    filter = $('#filter_form > #id_filter');
+    filter.focus();
+  });
+</script>
+
+<h2>{% blocktrans %}Edit Missing Global Words{% endblocktrans %}</h2>
+
+<div class="issue">
+  
+  <table>
+    <tr>
+      <td><b>{% trans 'Total missing global words' %}:</b></td><td>{{paginator.count}}</td>
+    </tr>
+  </table>
+
+  {% include "dictionary/pagination.html" %}
+  <hr />
+
+  <div id="relations">
+    <form method="post" action="">{% csrf_token %}
+      {{ formset.management_form }}
+      <table>
+	{% for form in formset.forms %}
+	{% if forloop.first %}
+	<tr>
+	  {% for field in form %}
+	  {% if field.is_hidden %}
+          <th></th>
+	  {% else %}
+          <th>{{ field.label }}</th>
+	  {% endif %}
+	  {% endfor %}
+	</tr>
+	{% endif %}
+	<tr class="{% cycle 'odd' 'even' %}">
+	  {% for field in form %}
+	  <td>{{ field }}</td>
+	  {% endfor %}
+	  {% if form.errors %}
+	  <td>
+	    <div class="errorExplanation" id="errorExplanation">
+	      <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span>
+	      {{ form.errors }}
+	    </div>
+	  </td>
+	  {% endif %}
+	</tr>
+	{% empty %}
+	<p>{% trans 'No local words to display' %}</p>
+	{% endfor %}
+      </table>
+      {% if paginator == None or paginator.count > 0 %}
+      <input type="submit" value="{% trans 'Submit' %}" />
+      {% endif %}
+      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -488,3 +488,54 @@ def edit_global_words(request):
     return render_to_response('dictionary/edit_globals.html', locals(),
                               context_instance=RequestContext(request))
 
+@login_required
+@permission_required("dictionary.change_globalword")
+@transaction.commit_on_success
+def edit_global_words_with_missing_braille(request):
+
+    WordFormSet = modelformset_factory(GlobalWord, form=PartialGlobalWordForm)
+
+    if request.method == 'POST':
+        formset = WordFormSet(request.POST, queryset=GlobalWord.objects.none())
+        if formset.is_valid():
+            formset.save()
+            return HttpResponseRedirect(reverse('todo_index'))
+        else:
+            return render_to_response('dictionary/edit_missing_globals.html', locals(),
+                                      context_instance=RequestContext(request))
+
+    WORDS_WITH_MISSING_BRAILLE = """
+SELECT * FROM dictionary_globalword 
+WHERE type = %s 
+AND untranslated IN 
+  (SELECT untranslated 
+   FROM dictionary_globalword 
+   WHERE type = %s 
+   GROUP BY untranslated 
+   HAVING count(untranslated) = 1)
+ORDER BY grade DESC, untranslated
+"""
+    single_grade_words = GlobalWord.objects.raw(WORDS_WITH_MISSING_BRAILLE, [0, 0])
+    missing_words = [{'untranslated': word.untranslated, 
+                      'braille': louis.translateString(getTables(1 if word.grade == 2 else 2), word.untranslated),
+                      'grade': 1 if word.grade == 2 else 2,
+                      'type' : 0,
+                      'homograph_disambiguation': ''}
+                     for word in single_grade_words]
+
+    paginator = Paginator(missing_words, MAX_WORDS_PER_PAGE)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    
+    try:
+        words = paginator.page(page)
+    except InvalidPage:
+        words = paginator.page(paginator.num_pages)
+
+    WordFormSet = modelformset_factory(GlobalWord, extra=len(words.object_list), form=PartialGlobalWordForm)
+    formset = WordFormSet(queryset=GlobalWord.objects.none(), initial=words.object_list)
+    return render_to_response('dictionary/edit_missing_globals.html', locals(),
+                              context_instance=RequestContext(request))
+
