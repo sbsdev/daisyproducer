@@ -154,6 +154,46 @@ class ConflictingWordForm(forms.Form):
             typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
 
+class GlobalWordBothGradesForm(forms.Form):
+    untranslated = forms.CharField(label=labels['untranslated'], widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    grade1 = forms.CharField(label=_('Grade 1'), widget=forms.TextInput(attrs={'class': 'braille'}))
+    grade2 = forms.CharField(label=_('Grade 2'), widget=forms.TextInput(attrs={'class': 'braille'}))
+    original_grade = forms.IntegerField(widget=forms.HiddenInput())
+    type = forms.ChoiceField(label=labels['type'], choices=Word.WORD_TYPE_CHOICES)
+    homograph_disambiguation = forms.CharField(label=labels['homograph_disambiguation'], widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(GlobalWordBothGradesForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'title': field.label})
+        if not self.is_bound:
+            type_value = self.initial['type']
+            homograph_disambiguation_value = self.initial['homograph_disambiguation']
+            original_grade = self.initial['original_grade']
+        else:
+            type_value = int(self['type'].data)
+            homograph_disambiguation_value = self['homograph_disambiguation'].data
+            original_grade = self['original_grade'].data
+        typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == type_value]
+        self.fields['type'].choices = typeChoices
+        if type_value == 0:
+            self.fields['type'].widget = forms.HiddenInput()
+        if homograph_disambiguation_value == '':
+            self.fields['homograph_disambiguation'].widget = forms.HiddenInput()
+        if original_grade == 1:
+            self.fields['grade1'].widget.attrs.update({'readonly':'readonly'})
+        else:
+            self.fields['grade2'].widget.attrs.update({'readonly':'readonly'})
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        original_grade = cleaned_data['original_grade']
+        if original_grade == 1:
+            validate_braille(cleaned_data['grade2'])
+        else:
+            validate_braille(cleaned_data['grade1'])
+        return cleaned_data
+        
 class FilterForm(forms.Form):
     filter = forms.CharField(label=_('Filter'), widget=forms.TextInput(attrs={'placeholder': _('Filter...')}), required=False)
 

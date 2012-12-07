@@ -3,7 +3,7 @@ import unicodedata
 import louis
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, FilterForm, FilterWithGradeForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, GlobalWordBothGradesForm, FilterForm, FilterWithGradeForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document, State
@@ -493,12 +493,18 @@ def edit_global_words(request):
 @transaction.commit_on_success
 def edit_global_words_with_missing_braille(request):
 
-    WordFormSet = modelformset_factory(GlobalWord, form=PartialGlobalWordForm)
+    WordFormSet = formset_factory(GlobalWordBothGradesForm, extra=0)
 
     if request.method == 'POST':
-        formset = WordFormSet(request.POST, queryset=GlobalWord.objects.none())
+        formset = WordFormSet(request.POST)
         if formset.is_valid():
-            formset.save()
+            for form in formset.forms:
+                GlobalWord.objects.create(
+                    untranslated=form.cleaned_data['untranslated'], 
+                    braille=form.cleaned_data['grade2'] if form.cleaned_data['original_grade'] == 1 else form.cleaned_data['grade1'],
+                    grade=2 if form.cleaned_data['original_grade'] == 1 else 1,
+                    type=form.cleaned_data['type'],
+                    homograph_disambiguation=form.cleaned_data['homograph_disambiguation'])
             return HttpResponseRedirect(reverse('todo_index'))
         else:
             return render_to_response('dictionary/edit_missing_globals.html', locals(),
@@ -515,13 +521,17 @@ AND untranslated IN
    HAVING count(untranslated) = 1)
 ORDER BY grade DESC, untranslated
 """
-    single_grade_words = GlobalWord.objects.raw(WORDS_WITH_MISSING_BRAILLE, [0, 0])
-    missing_words = [{'untranslated': word.untranslated, 
-                      'braille': louis.translateString(getTables(1 if word.grade == 2 else 2), word.untranslated),
-                      'grade': 1 if word.grade == 2 else 2,
-                      'type' : 0,
-                      'homograph_disambiguation': ''}
-                     for word in single_grade_words]
+    missing_words = []
+    for type in [0, 1, 2, 3, 4, 5]:
+        single_grade_words = GlobalWord.objects.raw(WORDS_WITH_MISSING_BRAILLE, [type, type])
+        missing_words.extend([{'untranslated': word.untranslated,
+                               'original_grade': word.grade,
+                               'grade1': word.braille if word.grade == 1 else louis.translateString(getTables(1), word.untranslated),
+                               'grade2': word.braille if word.grade == 2 else louis.translateString(getTables(2), word.untranslated),
+                               'type' : word.type,
+                               'homograph_disambiguation': word.homograph_disambiguation}
+                              for word in single_grade_words])
+    missing_words.sort(key=lambda item: (-item['original_grade'], item['untranslated']))
 
     paginator = Paginator(missing_words, MAX_WORDS_PER_PAGE)
     try:
@@ -534,8 +544,8 @@ ORDER BY grade DESC, untranslated
     except InvalidPage:
         words = paginator.page(paginator.num_pages)
 
-    WordFormSet = modelformset_factory(GlobalWord, extra=len(words.object_list), form=PartialGlobalWordForm)
-    formset = WordFormSet(queryset=GlobalWord.objects.none(), initial=words.object_list)
+    formset = WordFormSet(initial=words.object_list)
     return render_to_response('dictionary/edit_missing_globals.html', locals(),
                               context_instance=RequestContext(request))
+
 
