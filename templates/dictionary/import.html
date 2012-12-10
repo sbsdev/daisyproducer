@@ -1,0 +1,43 @@
+{% extends "documents/todo.html" %}
+{% load i18n %}
+{% block sidebar %}
+{% endblock %}
+{% block content %}
+<h2>{% blocktrans %}Import Global Words{% endblocktrans %}</h2>
+<div class="issue">
+  <div id="relations">
+    <form method="post" action="{% url dictionary_import %}">{% csrf_token %}
+      {{ formset.management_form }}
+      <table>
+        {% for form in formset.forms %}
+          {% if forloop.first %}
+            <tr>
+              {% for field in form %}
+                <th>{{ field.label }}</th>
+              {% endfor %}
+            </tr>
+          {% endif %}
+          <tr class="{% cycle 'odd' 'even' %}">
+            {% for field in form %}
+              <td>{{ field }}</td>
+            {% endfor %}
+            {% if form.errors %}
+              <td>
+                <div class="errorExplanation" id="errorExplanation">
+                  <span>{{ form.errors|length }} error{{ form.errors|pluralize }}:</span> {{ form.errors }}
+                </div>
+              </td>
+            {% endif %}
+          </tr>
+          {% empty %}
+          <p>{% trans 'No words to display' %}</p>
+        {% endfor %}
+      </table>
+      {% if paginator == None or paginator.count > 0 %}
+        <input type="submit" value="{% trans 'Submit' %}" />
+      {% endif %}
+      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -87,6 +87,9 @@ urlpatterns += patterns('daisyproducer.dictionary.views',
         name='dictionary_confirm_deferred_conflicting_duplicates_g2'),
     url(r'^todo/edit_global_words$', 'edit_global_words', name='dictionary_edit_global_words'),
     url(r'^todo/edit_missing_global_words$', 'edit_global_words_with_missing_braille', name='dictionary_edit_global_words_with_missing_braille'),
+    url(r'^todo/export_words$', 'export_words', name='dictionary_export'),
+    url(r'^todo/upload_words$', 'upload_words', name='dictionary_upload'),
+    url(r'^todo/import_words$', 'import_words', name='dictionary_import'),
 )
 
 # help and about
@@ -110,6 +113,9 @@ urlpatterns += patterns('',
                 'title': _('About')}},
         "about"),
 )
+
+# error
+urlpatterns += patterns('', url(r'^error/$', 'error', name='error'))
 
 # authentication
 urlpatterns += patterns('',

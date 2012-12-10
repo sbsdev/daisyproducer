@@ -1,13 +1,17 @@
 import os
 import unicodedata
 import louis
+import codecs
+import tempfile
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, GlobalWordBothGradesForm, FilterForm, FilterWithGradeForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, GlobalWordBothGradesForm, FilterForm, FilterWithGradeForm, DictionaryUploadForm, ImportGlobalWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
+from daisyproducer.dictionary.importExport import exportWords, readWord, findWord
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document, State
 from daisyproducer.documents.external import saxon9he
+from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
@@ -20,6 +24,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.encoding import smart_unicode
+from django.contrib.auth.decorators import login_required, permission_required
 from collections import defaultdict
 from itertools import chain
 from lxml import etree
@@ -548,4 +553,54 @@ ORDER BY grade DESC, untranslated
     return render_to_response('dictionary/edit_missing_globals.html', locals(),
                               context_instance=RequestContext(request))
 
+def export_words(request):
+    if request.method == 'GET':
+        tmp = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".csv").name
+        f = codecs.open(tmp, "w", "utf-8")
+        exportWords(f)
+        f.close()
+        return render_to_mimetype_response('text/csv', 'Global dictionary dump', tmp)
+
+@login_required
+@permission_required("dictionary.change_globalword")
+def upload_words(request):
+    if request.method != 'POST':
+        form = DictionaryUploadForm()
+        return render_to_response('dictionary/upload.html', locals(), 
+                                  context_instance=RequestContext(request))
+    form = DictionaryUploadForm(request.POST, request.FILES)
+    if not form.is_valid():
+        return render_to_response('dictionary/upload.html', locals(), 
+                                  context_instance=RequestContext(request))
+    f = codecs.open(request.FILES['csv'].temporary_file_path(), "r", "utf-8")
+    initial = []
+    try:
+        lineNo = 0
+        for line in f.read().splitlines():
+            lineNo += 1
+            word = readWord(line)
+            if word is not None:
+                initial.append(word)
+    except Exception as e:
+        return render_to_response('error.html', {'message': "%s (line %d)" % (str(e), lineNo), 'code': line})
+    finally:
+        f.close()
+    ImportGlobalWordFormset = formset_factory(ImportGlobalWordForm, extra=0)
+    formset = ImportGlobalWordFormset(initial=initial)
+    return render_to_response('dictionary/import.html', locals(), context_instance=RequestContext(request))
+
+def import_words(request):
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('dictionary_upload'))
+    ImportGlobalWordFormset = formset_factory(ImportGlobalWordForm)
+    formset = ImportGlobalWordFormset(request.POST)
+    if not formset.is_valid():
+        return render_to_response('dictionary/import.html', locals(),
+                                  context_instance=RequestContext(request))
+    for form in formset.forms:
+        word = form.cleaned_data
+        oldWord = findWord(word)
+        oldWord.braille = word['braille']
+        oldWord.save()
+        return HttpResponseRedirect(reverse('todo_index'))
 

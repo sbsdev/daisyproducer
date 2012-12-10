@@ -1,0 +1,18 @@
+{% extends "documents/todo.html" %}
+{% load i18n %}
+{% load verbose_name %}
+{% block sidebar %}
+{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Import Global Words" %}{% endblock %}
+{% block content %}
+
+<h2>{% trans "Import Global Words" %}</h2>
+
+<form enctype="multipart/form-data" method="post" action="{% url dictionary_upload %}">{% csrf_token %}
+    <p>{% include "documents/simpleForm.html" %}
+        <input type="submit" value="{% trans 'Upload' %}" />
+        <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
+    </p>
+</form>
+
+{% endblock %}
