@@ -5,7 +5,7 @@ import os.path
 import re
 from django.utils.encoding import smart_unicode
 from django.core.exceptions import ObjectDoesNotExist
-from daisyproducer.dictionary.models import GlobalWord
+from daisyproducer.dictionary.models import GlobalWord, VALID_BRAILLE_RE
 from difflib import SequenceMatcher
 from itertools import tee, izip
 from re import split
@@ -13,19 +13,14 @@ from re import split
 # What if we get something that's not in typeMap?
 typeMap = {
     '*': 0, # No restriction
-    'd': 0, # Dialect
     'n': 1, # Also as a name
     'N': 2, # Only as a name
     'p': 3, # Also as a place
     'P': 4, # Only as a place
     'H': 5, # Homograph default
-    'h': 5, # Homograph alternative
 }
 
-inverseTypeMap = { 0: '*', 1: 'n', 2: 'N', 3: 'p', 4: 'P', 5: 'H' }
-
-# Duplication of code (daisyproducer.dictionary.forms)
-VALID_BRAILLE_RE = re.compile(u"^([-]|[-]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœāăąćĉċčďđēėęğģĥħĩīįıĳĵķĺļľŀłńņňŋōŏőŕŗřśŝşšţťŧũūŭůűųŵŷźżžǎẁẃẅỳ]+)$")
+inverseTypeMap = dict((v,k) for k, v in typeMap.iteritems())
 
 # Assuming there are only words with grade 1 or grade 2
 def exportWords(f):
