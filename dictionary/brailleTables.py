@@ -2,6 +2,7 @@
 import codecs
 import os.path
 import sys
+import tempfile
 
 from collections import namedtuple
 
@@ -255,3 +256,30 @@ def writeLocalTables(changedDocuments):
                    ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(3,4))),
                   lambda word: louis.translateString(getTables(2, place=True), word))
         
+def write_words_with_wrong_default_translation(words):
+    from django.forms.models import model_to_dict
+
+    def write_csv(f, tables, word):
+        translation = louis.translateString(tables, smart_unicode(word.untranslated))
+        if translation != smart_unicode(word.braille):
+            d = model_to_dict(word, fields=[field.name for field in word._meta.fields])
+            d['translation'] = translation
+            f.write("%(untranslated)s\t%(braille)s\t%(translation)s\t%(grade)s\t%(type)s\t%(homograph_disambiguation)s\n" % d)
+            
+    tmp = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".csv")
+    tmp.close() # we are only interested in a unique filename
+    f = codecs.open(tmp.name, "w", "utf-8")
+
+    for word in words:
+        if word.grade == 1:
+            write_csv(f, getTables(1), word)
+        elif word.grade == 2:
+            if word.type in (1, 2):
+                write_csv(f, getTables(2, name=True), word)
+            if word.type in (3, 4):
+                write_csv(f, getTables(2, place=True), word)
+            if word.type in (0, 1, 3, 5):
+                write_csv(f, getTables(2), word)
+            
+    f.close()
+    return tmp.name

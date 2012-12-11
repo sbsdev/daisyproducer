@@ -90,6 +90,7 @@ urlpatterns += patterns('daisyproducer.dictionary.views',
     url(r'^todo/export_words$', 'export_words', name='dictionary_export'),
     url(r'^todo/upload_words$', 'upload_words', name='dictionary_upload'),
     url(r'^todo/import_words$', 'import_words', name='dictionary_import'),
+    url(r'^todo/export_global_words_with_wrong_default_translation$', 'words_with_wrong_default_translation', name='dictionary_words_with_wrong_default_translation'),
 )
 
 # help and about

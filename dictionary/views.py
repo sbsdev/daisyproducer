@@ -4,7 +4,7 @@ import louis
 import codecs
 import tempfile
 
-from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables
+from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables, write_words_with_wrong_default_translation
 from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, GlobalWordBothGradesForm, FilterForm, FilterWithGradeForm, DictionaryUploadForm, ImportGlobalWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.dictionary.importExport import exportWords, readWord, findWord
@@ -603,4 +603,14 @@ def import_words(request):
         oldWord.braille = word['braille']
         oldWord.save()
         return HttpResponseRedirect(reverse('todo_index'))
+
+@login_required
+@permission_required("dictionary.change_globalword")
+def words_with_wrong_default_translation(request):
+    words = GlobalWord.objects.order_by('untranslated')
+    return render_to_mimetype_response(
+        'text/csv', 
+        'Global words with wrong rule based translation', 
+        write_words_with_wrong_default_translation(words))
+
 
