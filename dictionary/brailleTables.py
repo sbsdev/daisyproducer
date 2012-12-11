@@ -262,9 +262,9 @@ def write_words_with_wrong_default_translation(words):
     def write_csv(f, tables, word):
         translation = louis.translateString(tables, smart_unicode(word.untranslated))
         if translation != smart_unicode(word.braille):
-            d = model_to_dict(word, fields=[field.name for field in word._meta.fields])
-            d['translation'] = translation
-            f.write("%(untranslated)s\t%(braille)s\t%(translation)s\t%(grade)s\t%(type)s\t%(homograph_disambiguation)s\n" % d)
+            f.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (smart_unicode(word.untranslated), 
+                                                  smart_unicode(word.braille), translation, word.grade, 
+                                                  word.type, smart_unicode(word.homograph_disambiguation)))
             
     tmp = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".csv", delete=False)
     tmp.close() # we are only interested in a unique filename
