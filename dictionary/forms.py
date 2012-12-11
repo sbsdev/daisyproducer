@@ -3,20 +3,18 @@ import re
 
 from daisyproducer.dictionary.models import Word, LocalWord, GlobalWord
 from daisyproducer.dictionary.importExport import findWord, colorDiff, validateBraille, compareBraille
+from daisyproducer.dictionary.models import VALID_BRAILLE_RE, VALID_HOMOGRAPH_RE
 
 from django import forms
 
 from django.core.exceptions import ValidationError
-from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.formsets import DELETION_FIELD_NAME
 from django.forms.models import ModelForm, BaseModelFormSet
 from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
-VALID_BRAILLE_RE = re.compile(u"^([-]|[-]?[A-Z0-9&%[^\],;:/?+=(*).\\\\@#\"!>$_<\'àáâãåæçèéêëìíîïðñòóôõøùúûýþÿœāăąćĉċčďđēėęğģĥħĩīįıĳĵķĺļľŀłńņňŋōŏőŕŗřśŝşšţťŧũūŭůűųŵŷźżžǎẁẃẅỳ]+)$")
 validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
-VALID_HOMOGRAPH_RE = re.compile(u"^(|\\w+\\|\\w+)$", re.UNICODE)
 validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters are not valid')
 
 labels = dict([(name, LocalWord._meta.get_field(name).verbose_name) for name in LocalWord._meta.get_all_field_names()])
