@@ -144,6 +144,7 @@ def as_text_only_dtb(request, document_id):
     DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
 
     zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
+    zipFile.close() # we are only interested in a unique filename
     zipDirectory(outputDir, zipFile.name, document.title)
     shutil.rmtree(outputDir)
     
@@ -162,6 +163,7 @@ def as_dtb(request, document_id):
     DaisyPipeline.dtbook2dtb(inputFile, outputDir, **form.cleaned_data)
 
     zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
+    zipFile.close() # we are only interested in a unique filename
     zipDirectory(outputDir, zipFile.name, document.title)
     shutil.rmtree(outputDir)
 

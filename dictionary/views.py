@@ -556,10 +556,11 @@ ORDER BY grade DESC, untranslated
 def export_words(request):
     if request.method == 'GET':
         tmp = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".csv").name
-        f = codecs.open(tmp, "w", "utf-8")
+        tmp.close() # we are only interested in a unique filename
+        f = codecs.open(tmp.name, "w", "utf-8")
         exportWords(f)
         f.close()
-        return render_to_mimetype_response('text/csv', 'Global dictionary dump', tmp)
+        return render_to_mimetype_response('text/csv', 'Global dictionary dump', tmp.name)
 
 @login_required
 @permission_required("dictionary.change_globalword")
