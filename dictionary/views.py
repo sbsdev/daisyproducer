@@ -555,7 +555,7 @@ ORDER BY grade DESC, untranslated
 
 def export_words(request):
     if request.method == 'GET':
-        tmp = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".csv").name
+        tmp = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".csv", delete=False)
         tmp.close() # we are only interested in a unique filename
         f = codecs.open(tmp.name, "w", "utf-8")
         exportWords(f)

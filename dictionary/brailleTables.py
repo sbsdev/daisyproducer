@@ -266,7 +266,7 @@ def write_words_with_wrong_default_translation(words):
             d['translation'] = translation
             f.write("%(untranslated)s\t%(braille)s\t%(translation)s\t%(grade)s\t%(type)s\t%(homograph_disambiguation)s\n" % d)
             
-    tmp = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".csv")
+    tmp = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".csv", delete=False)
     tmp.close() # we are only interested in a unique filename
     f = codecs.open(tmp.name, "w", "utf-8")
 
