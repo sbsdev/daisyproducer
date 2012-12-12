@@ -523,27 +523,28 @@ def edit_global_words_with_missing_braille(request):
                                       context_instance=RequestContext(request))
 
     WORDS_WITH_MISSING_BRAILLE = """
-SELECT * FROM dictionary_globalword 
-WHERE type = %s 
-AND untranslated IN 
-  (SELECT untranslated 
-   FROM dictionary_globalword 
-   WHERE type = %s 
-   GROUP BY untranslated 
-   HAVING count(untranslated) = 1)
-ORDER BY grade DESC, untranslated
+SELECT l.* 
+FROM dictionary_globalword AS l
+WHERE NOT EXISTS
+      (
+      SELECT NULL
+      FROM dictionary_globalword AS r
+      WHERE
+	l.untranslated = r.untranslated AND 
+      	l.type = r.type AND
+      	l.homograph_disambiguation = r.homograph_disambiguation AND
+      	l.grade != r.grade
+      )
+ORDER BY l.grade, l.untranslated
 """
-    missing_words = []
-    for type in [0, 1, 2, 3, 4, 5]:
-        single_grade_words = GlobalWord.objects.raw(WORDS_WITH_MISSING_BRAILLE, [type, type])
-        missing_words.extend([{'untranslated': word.untranslated,
-                               'original_grade': word.grade,
-                               'grade1': word.braille if word.grade == 1 else louis.translateString(getTables(1), word.untranslated),
-                               'grade2': word.braille if word.grade == 2 else louis.translateString(getTables(2), word.untranslated),
-                               'type' : word.type,
-                               'homograph_disambiguation': word.homograph_disambiguation}
-                              for word in single_grade_words])
-    missing_words.sort(key=lambda item: (-item['original_grade'], item['untranslated']))
+    single_grade_words = GlobalWord.objects.raw(WORDS_WITH_MISSING_BRAILLE)
+    missing_words = [{'untranslated': word.untranslated,
+                      'original_grade': word.grade,
+                      'grade1': word.braille if word.grade == 1 else louis.translateString(getTables(1), word.untranslated),
+                      'grade2': word.braille if word.grade == 2 else louis.translateString(getTables(2), word.untranslated),
+                      'type' : word.type,
+                      'homograph_disambiguation': word.homograph_disambiguation}
+                     for word in single_grade_words]
 
     paginator = Paginator(missing_words, MAX_WORDS_PER_PAGE)
     try:
