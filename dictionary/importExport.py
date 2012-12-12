@@ -42,7 +42,10 @@ def exportWords(f):
             braille2 = word.braille
         typeString = inverseTypeMap[word.type]
         untranslated = word.homograph_disambiguation if word.type == 5 else word.untranslated
-        f.write("%s\n" % '\t'.join((typeString, untranslated, braille2, braille1)))
+        f.write("%s\n" % '\t'.join((typeString,
+                                    smart_unicode(untranslated),
+                                    smart_unicode(braille2),
+                                    smart_unicode(braille1))))
 
 def readWord(line):
     try:
