@@ -93,11 +93,18 @@ class PartialGlobalWordForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PartialGlobalWordForm, self).__init__(*args, **kwargs)
         if not self.is_bound:
-            # make the type field "read-only" (restrict it to a single choice)
+            # make the type and grade fields "read-only" (restrict it to a single choice)
             typeChoices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == self.initial['type']]
             self.fields['type'].choices = typeChoices
             gradeChoices = [(id, name) for (id, name) in Word.BRAILLE_CONTRACTION_GRADE_CHOICES if id == self.initial['grade']]
             self.fields['grade'].choices = gradeChoices
+
+class LookupGlobalWordForm(PartialGlobalWordForm):
+    def __init__(self, *args, **kwargs):
+        super(LookupGlobalWordForm, self).__init__(*args, **kwargs)
+        if not self.is_bound:
+            # make the braille field read-only
+            self.fields['braille'].widget = forms.TextInput(attrs={'readonly': 'readonly'})
 
 class BaseConfirmWordForm(forms.Form):
     untranslated = forms.CharField(label=labels['untranslated'], widget=forms.TextInput(attrs={'readonly':'readonly'}))

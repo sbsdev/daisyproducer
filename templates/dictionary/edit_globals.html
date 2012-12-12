@@ -16,7 +16,13 @@
   });
 </script>
 
-<h2>{% blocktrans %}Edit Global Words{% endblocktrans %}</h2>
+<h2>
+  {% if not read_only %}
+    {% blocktrans %}Edit Global Words{% endblocktrans %}
+  {% else %}
+    {% blocktrans %}Lookup Global Words{% endblocktrans %}
+  {% endif %}
+</h2>
 
 <div class="issue">
   
@@ -73,10 +79,12 @@
 	<p>{% trans 'No local words to display' %}</p>
 	{% endfor %}
       </table>
-      {% if paginator == None or paginator.count > 0 %}
-      <input type="submit" value="{% trans 'Submit' %}" />
+      {% if not read_only %}
+        {% if paginator == None or paginator.count > 0 %}
+        <input type="submit" value="{% trans 'Submit' %}" />
+        {% endif %}
+        <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
       {% endif %}
-      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
     </form>
   </div>
 </div>

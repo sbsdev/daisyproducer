@@ -5,7 +5,7 @@ import codecs
 import tempfile
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables, write_words_with_wrong_default_translation
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, GlobalWordBothGradesForm, FilterForm, FilterWithGradeForm, DictionaryUploadForm, ImportGlobalWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, LookupGlobalWordForm, GlobalWordBothGradesForm, FilterForm, FilterWithGradeForm, DictionaryUploadForm, ImportGlobalWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.dictionary.importExport import exportWords, readWord, findWord
 from daisyproducer.statistics.models import DocumentStatistic
@@ -20,7 +20,7 @@ from django.db import transaction
 from django.db.models import Max
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.encoding import smart_unicode
@@ -450,13 +450,15 @@ def confirm_single(request, grade, deferred=False):
                               context_instance=RequestContext(request))
 
 @login_required
-@permission_required("dictionary.change_globalword")
 @transaction.commit_on_success
-def edit_global_words(request):
+def edit_global_words(request, read_only):
 
-    WordFormSet = modelformset_factory(GlobalWord, extra=0, form=PartialGlobalWordForm)
+    read_only = read_only or not request.user.has_perm("dictionary.change_globalword")
+    WordFormSet = modelformset_factory(GlobalWord, extra=0, form=LookupGlobalWordForm if read_only else PartialGlobalWordForm)
+    
     if request.method == 'POST':
-
+        if read_only:
+            return HttpResponse("You don't have the right permissions")
         formset = WordFormSet(request.POST)
         if formset.is_valid():
             formset.save()
