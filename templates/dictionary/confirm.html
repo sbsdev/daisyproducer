@@ -13,6 +13,16 @@
 
 {% block content %}
 
+<script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    // This will put the focus on the filter field when the document loads
+    // (the focus will not be placed at the end of the text however).
+    filter = $('#filter_form > #id_filter');
+    filter.focus();
+  });
+</script>
+
 <h2>
   {% if deferred %} {% blocktrans %} Confirm Deferred Words for Grade {{grade}} {% endblocktrans %}
   {% else %}        {% blocktrans %} Confirm Unknown Words for Grade {{grade}}  {% endblocktrans %}
@@ -33,6 +43,12 @@
       <td>{{paginator.count}}</td>
     </tr>
   </table>
+  
+  <hr />
+  <form id="filter_form" method="GET" action="">
+    {% for field in filterform %}{{ field }}{% endfor %}
+    <input type="submit" value="{% trans 'Filter' %}" />
+  </form>
   {% include "dictionary/pagination.html" %}
   <hr />
 

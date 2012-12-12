@@ -300,7 +300,12 @@ def confirm(request, grade, deferred=False):
                           grade=grade, type=0, document=document)
             w.save()
     
+    filterform = FilterForm(request.GET)
+    if filterform.is_valid():
+        currentFilter = filterform.cleaned_data['filter']
+    
     words_to_confirm = LocalWord.objects.filter(grade=grade, isConfirmed=False, isDeferred=deferred, 
+                                                untranslated__contains=currentFilter,
                                                 document__state__sort_order=final_sort_order).order_by('untranslated', 'type').values('untranslated', 'braille', 'type', 'homograph_disambiguation', 'isLocal').distinct()
     paginator = Paginator(words_to_confirm, MAX_WORDS_PER_PAGE)
     try:
