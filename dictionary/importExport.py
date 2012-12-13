@@ -84,6 +84,13 @@ def findWord(word):
     except ObjectDoesNotExist:
         raise Exception("Word '%s' could not be found in the global dictionary" % word['untranslated'])
 
+def makeWord(word):
+    return GlobalWord(untranslated=word['untranslated'],
+                      grade=word['grade'],
+                      braille=word['braille'],
+                      type=word['type'],
+                      homograph_disambiguation=word['homograph_disambiguation'])
+
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = tee(iterable)
