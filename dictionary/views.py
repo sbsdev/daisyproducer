@@ -538,12 +538,12 @@ WHERE NOT EXISTS
 ORDER BY l.grade, l.untranslated
 """
     single_grade_words = GlobalWord.objects.raw(WORDS_WITH_MISSING_BRAILLE)
-    missing_words = [{'untranslated': word.untranslated,
+    missing_words = [{'untranslated': smart_unicode(word.untranslated),
                       'original_grade': word.grade,
-                      'grade1': word.braille if word.grade == 1 else louis.translateString(getTables(1), word.untranslated),
-                      'grade2': word.braille if word.grade == 2 else louis.translateString(getTables(2), word.untranslated),
+                      'grade1': smart_unicode(word.braille) if word.grade == 1 else louis.translateString(getTables(1), smart_unicode(word.untranslated)),
+                      'grade2': smart_unicode(word.braille) if word.grade == 2 else louis.translateString(getTables(2), smart_unicode(word.untranslated)),
                       'type' : word.type,
-                      'homograph_disambiguation': word.homograph_disambiguation}
+                      'homograph_disambiguation': smart_unicode(word.homograph_disambiguation)}
                      for word in single_grade_words]
 
     paginator = Paginator(missing_words, MAX_WORDS_PER_PAGE)
