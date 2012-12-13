@@ -46,20 +46,23 @@ class Command(BaseCommand):
         for line in f.read().splitlines():
             lineNo += 1
             try:
-                word = readWord(line)
-                if word is None:
-                    continue
-                validateBraille(word['braille'])
-                oldWord = findWord(word)
-                if dry_run:
-                    self.columnize((inverseTypeMap[word['type']], word['grade'], word['untranslated'],
-                                    colorDiff(oldWord.braille, word['braille'], (color.DELETED, color.END), (color.INSERTED, color.END))),
-                                    (4,5,50,50))
-                    compareBraille(word['braille'], oldWord.braille)
-                else:
-                    oldWord.braille = word['braille']
-                    oldWord.save()
-                self.numberOfUpdates += 1
+                for word in readWord(line):
+                    try:
+                        oldWord = findWord(word)
+                        if word['braille'] == oldWord.braille:
+                            continue
+                        validateBraille(word['braille'])
+                        if dry_run:
+                            self.columnize((inverseTypeMap[word['type']], word['grade'], word['untranslated'],
+                                            colorDiff(oldWord.braille, word['braille'], (color.DELETED, color.END), (color.INSERTED, color.END))),
+                                           (4,5,50,50))
+                            compareBraille(word['braille'], oldWord.braille)
+                        else:
+                            oldWord.braille = word['braille']
+                            oldWord.save()
+                        self.numberOfUpdates += 1
+                    except Exception as e:
+                        self.error(lineNo, e)
             except Exception as e:
                 self.error(lineNo, e)
         

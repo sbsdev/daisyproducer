@@ -10,7 +10,6 @@ from difflib import SequenceMatcher
 from itertools import tee, izip
 from re import split
 
-# What if we get something that's not in typeMap?
 typeMap = {
     '*': 0, # No restriction
     'n': 1, # Also as a name
@@ -48,6 +47,7 @@ def exportWords(f):
                                     smart_unicode(braille1))))
 
 def readWord(line):
+    words = []
     try:
         (typeString, untranslated, braille1, braille2) = split('\t', line)
         wordType = typeMap[typeString]
@@ -57,17 +57,12 @@ def readWord(line):
             braille = braille2 if grade == 1 else braille1
             if braille == "":
                 continue
-            if GlobalWord.objects.filter(
-                    type=wordType,
-                    untranslated=untranslated,
-                    grade=grade,
-                    homograph_disambiguation=homograph_disambiguation,
-                    braille=braille).count() == 0:
-                return {'type': wordType,
-                        'untranslated': untranslated,
-                        'grade': grade,
-                        'homograph_disambiguation': homograph_disambiguation,
-                        'braille': braille}
+            words.append({'type': wordType,
+                          'untranslated': untranslated,
+                          'grade': grade,
+                          'homograph_disambiguation': homograph_disambiguation,
+                          'braille': braille})
+        return words
     except Exception:
         raise Exception("Failed parsing word")
 

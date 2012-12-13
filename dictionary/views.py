@@ -587,8 +587,10 @@ def upload_words(request):
         lineNo = 0
         for line in f.read().splitlines():
             lineNo += 1
-            word = readWord(line)
-            if word is not None:
+            for word in readWord(line):
+                try:
+                    if word['braille'] == findWord(word).braille: continue
+                except: pass
                 initial.append(word)
     except Exception as e:
         return render_to_response('error.html', {'message': "%s (line %d)" % (str(e), lineNo), 'code': line})
