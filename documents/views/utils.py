@@ -2,7 +2,7 @@ import mimetypes
 import os
 
 from django.http import HttpResponse
-
+from django.core.servers.basehttp import FileWrapper
 
 mimetypes.init()
 mimetypes.add_type('application/epub+zip','.epub')
@@ -14,19 +14,14 @@ mimetypes.add_type('text/x-sbsform-g2','.bk')
 def render_to_mimetype_response(mimetype, filename, outputFile):
     ext = mimetypes.guess_extension(mimetype)
     assert ext != None
-
-    response = HttpResponse(mimetype=mimetype)
+    
+    wrapper = FileWrapper(file(outputFile))
+    response = HttpResponse(wrapper, mimetype=mimetype)
     response['Content-Disposition'] = "attachment; filename=\"%s%s\"" % (filename, ext)
-
-    f = open(outputFile)
-    try:
-        content = f.read()
-        response.write(content)
-    finally:
-        f.close()
-
+    response['Content-Length'] = os.path.getsize(outputFile)
+    
     # remove the tmp file
     os.remove(outputFile)
-
+    
     return response
 
