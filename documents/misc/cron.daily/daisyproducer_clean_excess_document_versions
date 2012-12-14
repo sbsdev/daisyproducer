@@ -1,0 +1,9 @@
+#!/bin/sh
+
+INSTALLDIR=/path/to/daisyproducer
+
+# Versions of documents are kept indefinitely on the server. This not
+# not really make sense, especially since they are later stored in an
+# archive. So at least only keep a limited set of versions.
+cd $INSTALLDIR
+python manage.py clean_old_versions
