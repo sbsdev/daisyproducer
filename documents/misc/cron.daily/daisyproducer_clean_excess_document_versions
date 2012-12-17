@@ -6,4 +6,4 @@ INSTALLDIR=/path/to/daisyproducer
 # not really make sense, especially since they are later stored in an
 # archive. So at least only keep a limited set of versions.
 cd $INSTALLDIR
-python manage.py clean_old_versions
+python manage.py clean_old_versions --verbosity=0
