@@ -99,6 +99,23 @@ class PartialGlobalWordForm(ModelForm):
             gradeChoices = [(id, name) for (id, name) in Word.BRAILLE_CONTRACTION_GRADE_CHOICES if id == self.initial['grade']]
             self.fields['grade'].choices = gradeChoices
 
+    def clean_braille(self):
+        data = self.cleaned_data['braille']
+        validate_braille(data)
+        return data
+        
+    def clean_homograph_disambiguation(self):
+        type = self.cleaned_data.get('type')
+        homograph_disambiguation = self.cleaned_data.get('homograph_disambiguation')
+        untranslated = self.cleaned_data.get('untranslated')
+        if type != 5 and homograph_disambiguation != "":
+             raise ValidationError("Should be empty for types other than Homograph")
+        if type == 5 and untranslated != homograph_disambiguation.replace('|', ''):
+             raise ValidationError("Should the same as untranslated (modulo '|')")
+        validate_homograph(homograph_disambiguation)
+        return homograph_disambiguation
+
+
 class LookupGlobalWordForm(PartialGlobalWordForm):
     def __init__(self, *args, **kwargs):
         super(LookupGlobalWordForm, self).__init__(*args, **kwargs)
