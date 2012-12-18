@@ -535,7 +535,7 @@ WHERE NOT EXISTS
       	l.homograph_disambiguation = r.homograph_disambiguation AND
       	l.grade != r.grade
       )
-ORDER BY l.grade, l.untranslated
+ORDER BY l.untranslated
 """
     single_grade_words = GlobalWord.objects.raw(WORDS_WITH_MISSING_BRAILLE)
     missing_words = [{'untranslated': smart_unicode(word.untranslated),
