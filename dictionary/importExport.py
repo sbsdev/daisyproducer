@@ -25,7 +25,7 @@ inverseTypeMap = dict((v,k) for k, v in typeMap.iteritems())
 def exportWords(f):
     words = GlobalWord.objects.order_by('untranslated', 'type', 'homograph_disambiguation', 'grade')
     skipNext = False
-    for (word,nextWord) in pairwise(words):
+    for (word,nextWord) in pairwise(words.iterator()):
         if skipNext:
             skipNext = False
             continue

@@ -227,11 +227,11 @@ def writeTable(fileName, words, translate):
 def writeWhiteListTables(words):
     writeTable('sbs-de-g1-white.mod', 
                ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
-                for word in words.filter(grade=1)), 
+                for word in words.filter(grade=1).iterator()), 
                lambda word: louis.translateString(getTables(1), word))
     writeTable('sbs-de-g2-white.mod', 
                ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
-                for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))), 
+                for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5)).iterator()), 
                lambda word: louis.translateString(getTables(2), word))
     writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(1,2))), 
                lambda word: louis.translateString(getTables(2, name=True), word))
@@ -243,11 +243,11 @@ def writeLocalTables(changedDocuments):
         words = LocalWord.objects.filter(document=document).order_by('untranslated')
         writeTable('sbs-de-g1-white-%s.mod' % document.identifier, 
                    ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
-                    for word in words.filter(grade=1)),
+                    for word in words.filter(grade=1).iterator()),
                    lambda word: louis.translateString(getTables(1), word))
         writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
                    ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
-                    for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5))),
+                    for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5)).iterator()),
                    lambda word: louis.translateString(getTables(2), word))
         writeTable('sbs-de-g2-name-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(1,2))),
@@ -270,7 +270,7 @@ def write_words_with_wrong_default_translation(words):
     tmp.close() # we are only interested in a unique filename
     f = codecs.open(tmp.name, "w", "utf-8")
 
-    for word in words:
+    for word in words.iterator():
         if word.grade == 1:
             write_csv(f, getTables(1), word)
         elif word.grade == 2:
