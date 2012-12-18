@@ -171,6 +171,7 @@ div.square {
 form {display: inline;}
 input, select {vertical-align: middle; margin-top: 1px; margin-bottom: 1px;}
 input.braille {font-family: monospace;}
+input[readonly] {background: #eeeeee; border-radius: 3px; border: 1px solid #bbb;} /* make readonly fields more noticeable */
 span.diff {font-family: monospace;}
 span.insert {color:#3B4; font-weight: bold}
 span.delete {color:#E40; font-weight: bold}
