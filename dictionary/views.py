@@ -459,12 +459,21 @@ def confirm_single(request, grade, deferred=False):
 def edit_global_words(request, read_only):
 
     read_only = read_only or not request.user.has_perm("dictionary.change_globalword")
-    WordFormSet = modelformset_factory(GlobalWord, extra=0, form=LookupGlobalWordForm if read_only else PartialGlobalWordForm)
+    WordFormSet = modelformset_factory(GlobalWord, extra=0, 
+                                       form=LookupGlobalWordForm if read_only else PartialGlobalWordForm)
     
-    if request.method == 'POST':
-        if read_only:
-            return HttpResponse("You don't have the right permissions")
-        formset = WordFormSet(request.POST)
+    if request.method == 'POST' and not read_only:
+        filterform = FilterWithGradeForm(request.POST, prefix='filter')
+        if filterform.is_valid():
+            currentFilter = filterform.cleaned_data['filter']
+            currentGrade = filterform.cleaned_data['grade']
+
+        filter_args = {}
+        for key, value in [('untranslated__contains', currentFilter), ('grade', currentGrade)]:
+            if value:
+                filter_args[key] = value
+        queryset = GlobalWord.objects.filter(**filter_args)
+        formset = WordFormSet(request.POST, queryset=queryset, prefix='words')
         if formset.is_valid():
             formset.save()
             return HttpResponseRedirect(reverse('todo_index'))
@@ -472,7 +481,7 @@ def edit_global_words(request, read_only):
             return render_to_response('dictionary/edit_globals.html', locals(),
                                       context_instance=RequestContext(request))
 
-    filterform = FilterWithGradeForm(request.GET)
+    filterform = FilterWithGradeForm(request.GET, prefix='filter')
     if filterform.is_valid():
         currentFilter = filterform.cleaned_data['filter']
         currentGrade = filterform.cleaned_data['grade']
@@ -496,7 +505,7 @@ def edit_global_words(request, read_only):
 
     have_type = any((word.type != 0 for word in words.object_list))
     have_homograph_disambiguation = any((word.homograph_disambiguation != '' for word in words.object_list))
-    formset = WordFormSet(queryset=words.object_list)
+    formset = WordFormSet(queryset=words.object_list, prefix='words')
     return render_to_response('dictionary/edit_globals.html', locals(),
                               context_instance=RequestContext(request))
 

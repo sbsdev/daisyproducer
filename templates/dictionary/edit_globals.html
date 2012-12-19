@@ -49,6 +49,9 @@
   <div id="relations">
     <form method="post" action="">{% csrf_token %}
       {{ formset.management_form }}
+      <table style="display: none;">
+	{{ filterform }}
+      </table>  
       <table>
 	{% for form in formset.forms %}
 	{% if forloop.first %}
