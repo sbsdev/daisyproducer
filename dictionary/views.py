@@ -5,7 +5,7 @@ import codecs
 import tempfile
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables, write_words_with_wrong_default_translation
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, LookupGlobalWordForm, GlobalWordBothGradesForm, FilterForm, FilterWithGradeForm, DictionaryUploadForm, ImportGlobalWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, LookupGlobalWordForm, GlobalWordBothGradesForm, FilterForm, PaginationForm, FilterWithGradeForm, DictionaryUploadForm, ImportGlobalWordForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.dictionary.importExport import exportWords, readWord, findWord
 from daisyproducer.statistics.models import DocumentStatistic
@@ -463,17 +463,27 @@ def edit_global_words(request, read_only):
                                        form=LookupGlobalWordForm if read_only else PartialGlobalWordForm)
     
     if request.method == 'POST' and not read_only:
-        filterform = FilterWithGradeForm(request.POST, prefix='filter')
-        if filterform.is_valid():
-            currentFilter = filterform.cleaned_data['filter']
-            currentGrade = filterform.cleaned_data['grade']
+        invisible_filterform = FilterWithGradeForm(request.POST, prefix='filter')
+        if invisible_filterform.is_valid():
+            currentFilter = invisible_filterform.cleaned_data['filter']
+            currentGrade = invisible_filterform.cleaned_data['grade']
 
+        paginationform = PaginationForm(request.POST, prefix='pagination')
+        if not paginationform.is_valid():
+            return render_to_response('dictionary/edit_globals.html', locals(),
+                                      context_instance=RequestContext(request))
         filter_args = {}
-        for key, value in [('untranslated__contains', currentFilter), ('grade', currentGrade)]:
+        for key, value in [('untranslated__contains', currentFilter), 
+                           ('grade', currentGrade)]:
             if value:
                 filter_args[key] = value
-        queryset = GlobalWord.objects.filter(**filter_args)
-        formset = WordFormSet(request.POST, queryset=queryset, prefix='words')
+
+        words_to_edit = GlobalWord.objects.filter(**filter_args).order_by('untranslated', 'type')
+        paginator = Paginator(words_to_edit, MAX_WORDS_PER_PAGE)
+        currentPage = paginationform.cleaned_data['page']
+        words = paginator.page(currentPage)
+
+        formset = WordFormSet(request.POST, queryset=words.object_list, prefix='words')
         if formset.is_valid():
             formset.save()
             return HttpResponseRedirect(reverse('todo_index'))
@@ -481,10 +491,13 @@ def edit_global_words(request, read_only):
             return render_to_response('dictionary/edit_globals.html', locals(),
                                       context_instance=RequestContext(request))
 
-    filterform = FilterWithGradeForm(request.GET, prefix='filter')
+    filterform = FilterWithGradeForm(request.GET)
     if filterform.is_valid():
         currentFilter = filterform.cleaned_data['filter']
         currentGrade = filterform.cleaned_data['grade']
+
+    invisible_filterform = FilterWithGradeForm(
+        initial={'filter': currentFilter, 'grade': currentGrade}, prefix='filter')
 
     filter_args = {}
     for key, value in [('untranslated__contains', currentFilter), ('grade', currentGrade)]:
@@ -506,6 +519,8 @@ def edit_global_words(request, read_only):
     have_type = any((word.type != 0 for word in words.object_list))
     have_homograph_disambiguation = any((word.homograph_disambiguation != '' for word in words.object_list))
     formset = WordFormSet(queryset=words.object_list, prefix='words')
+    paginationform = PaginationForm(initial={'page': page}, prefix='pagination')
+
     return render_to_response('dictionary/edit_globals.html', locals(),
                               context_instance=RequestContext(request))
 

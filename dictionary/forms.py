@@ -224,6 +224,9 @@ class FilterForm(forms.Form):
 class FilterWithGradeForm(FilterForm):
     grade = forms.ChoiceField(label=labels['grade'], choices=(('', _('Any')),) + Word.BRAILLE_CONTRACTION_GRADE_CHOICES, required=False)
 
+class PaginationForm(forms.Form):
+    page = forms.IntegerField(required=False)
+
 class DictionaryUploadForm(forms.Form):
     csv = forms.FileField(
         label = _("CSV File"), 

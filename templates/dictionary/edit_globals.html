@@ -36,7 +36,7 @@
   <form id="filter_form" method="GET" action="">
     {% for field in filterform %}
       {% if field.name == 'grade' %}
-        {{ field.label }}:</th>
+        {{ field.label }}:
       {% endif %}
       {{ field }}
     {% endfor %}
@@ -50,7 +50,8 @@
     <form method="post" action="">{% csrf_token %}
       {{ formset.management_form }}
       <table style="display: none;">
-	{{ filterform }}
+	{{ invisible_filterform }}
+	{{ paginationform }}
       </table>  
       <table>
 	{% for form in formset.forms %}
