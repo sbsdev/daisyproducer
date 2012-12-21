@@ -2,7 +2,6 @@
 import re
 
 from daisyproducer.dictionary.models import Word, LocalWord, GlobalWord
-from daisyproducer.dictionary.importExport import findWord, colorDiff, validateBraille, compareBraille
 from daisyproducer.dictionary.models import VALID_BRAILLE_RE, VALID_HOMOGRAPH_RE
 
 from django import forms
@@ -231,57 +230,3 @@ class DictionaryUploadForm(forms.Form):
     csv = forms.FileField(
         label = _("CSV File"), 
         help_text = _("CSV File containing global words"))
-    
-class ColorDiffTextInput(forms.TextInput):
-    def render(self, name, value, attrs):
-        if self.attrs.has_key('old'):
-            diff = u"<span class='diff'>%s</span>" % colorDiff(self.attrs['old'], value,
-                                         ("<span class='delete'>", "</span>"), 
-                                         ("<span class='insert'>", "</span>"))
-        else: diff = ""
-        return mark_safe(super(forms.TextInput, self).render(name, value, attrs) + diff)
-    
-class ImportGlobalWordForm(forms.Form):
-    untranslated = forms.CharField(label=labels['untranslated'])
-    type = forms.ChoiceField(label=labels['type'], choices=Word.WORD_TYPE_CHOICES)
-    grade = forms.ChoiceField(label=labels['grade'], choices=Word.BRAILLE_CONTRACTION_GRADE_CHOICES)
-    homograph_disambiguation = forms.CharField(label=labels['homograph_disambiguation'], required=False)
-    braille = forms.CharField(label=labels['braille'], widget=ColorDiffTextInput())
-    
-    def __init__(self, *args, **kwargs):
-        super(ImportGlobalWordForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update({'title': field.label})
-        if self.is_bound:
-            data = {'untranslated': self['untranslated'].data,
-                    'grade': int(self['grade'].data),
-                    'type': int(self['type'].data),
-                    'homograph_disambiguation': self['homograph_disambiguation'].data,
-                    'braille': self['braille'].data}
-        else:
-            data = self.initial
-        self.fields['untranslated'].widget.attrs.update({'readonly': 'readonly'})
-        self.fields['homograph_disambiguation'].widget.attrs.update({'readonly': 'readonly'})
-        self.fields['type'].choices = [(id, name) for (id, name) in Word.WORD_TYPE_CHOICES if id == data['type']]
-        self.fields['grade'].choices = [(id, name) for (id, name) in Word.BRAILLE_CONTRACTION_GRADE_CHOICES if id == data['grade']]
-        self.fields['braille'].widget.attrs.update({'class': 'braille'})
-        try:
-            self.old_braille = findWord(data).braille
-            self.fields['braille'].widget.attrs.update({'old': self.old_braille})
-        except Exception as e: 
-            self.word_not_found_error = e
-    
-    def clean(self):
-        if hasattr(self, 'word_not_found_error'):
-            raise ValidationError(self.word_not_found_error)
-        return self.cleaned_data
-    
-    def clean_braille(self):
-        data = self.cleaned_data['braille']
-        validate_braille(data)
-        if hasattr(self, 'old_braille'):
-            try:
-                compareBraille(data, self.old_braille)
-            except Exception as e:
-                raise ValidationError(e)
-        return data

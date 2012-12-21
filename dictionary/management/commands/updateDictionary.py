@@ -1,6 +1,6 @@
 # coding=utf-8
 import codecs
-from daisyproducer.dictionary.importExport import readWord, validateBraille, compareBraille, findWord, colorDiff
+from daisyproducer.dictionary.importExport import WordReader, compareBraille, validateBraille, getGlobalWord, colorDiff, insertTempWord, clearTempWords, changedWords
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from optparse import make_option
@@ -22,7 +22,7 @@ class Command(BaseCommand):
         if len(args) != 1:
             raise CommandError('Incorrect number of arguments')
         try:
-            f = codecs.open(args[0], "r", "utf-8")
+            f = open(args[0])
         except IndexError:
             raise CommandError('No dictionary file specified')
         except IOError:
@@ -37,35 +37,45 @@ class Command(BaseCommand):
         self.numberOfUpdates = 0
         self.numberOfErrors = 0
         self.numberOfWarnings = 0
-        
+
+        if verbosity >= 1:
+            self.log("Adding words to temporary table...")
+        clearTempWords()
+        reader = WordReader(f)
+        while True:
+            try:
+                word = reader.next()
+                validateBraille(word['braille'])
+                insertTempWord(word)
+            except StopIteration:
+                break
+            except Exception as e:
+                self.error(e, reader.currentLine())
+
+        if verbosity >= 1:
+            self.log("Updating global words...")
         if dry_run:
             self.columnize(("type", "grade", "untranslated", "braille"), (4,5,50,50))
             self.columnize(("----", "-----", "------------", "-------"), (4,5,50,50))
-        
-        lineNo = 0
-        for line in f.read().splitlines():
-            lineNo += 1
+
+        for change in changedWords():
             try:
-                for word in readWord(line):
-                    try:
-                        oldWord = findWord(word)
-                        if word['braille'] == oldWord.braille:
-                            continue
-                        validateBraille(word['braille'])
-                        if dry_run:
-                            self.columnize((inverseTypeMap[word['type']], word['grade'], word['untranslated'],
-                                            colorDiff(oldWord.braille, word['braille'], (color.DELETED, color.END), (color.INSERTED, color.END))),
-                                           (4,5,50,50))
-                            compareBraille(word['braille'], oldWord.braille)
-                        else:
-                            oldWord.braille = word['braille']
-                            oldWord.save()
-                        self.numberOfUpdates += 1
-                    except Exception as e:
-                        self.error(lineNo, e)
+                word = getGlobalWord(change)
+                if dry_run:
+                    self.columnize((inverseTypeMap[word.type], word.grade, word.untranslated,
+                                    colorDiff(word.braille, change['braille'], (color.DELETED, color.END), (color.INSERTED, color.END))),
+                                   (4,5,50,50))
+                try:
+                    compareBraille(change['braille'], word.braille)
+                except Exception as e:
+                    self.warning(e)
+                if not dry_run:
+                    word.braille = change['braille']
+                    word.save()
+                self.numberOfUpdates += 1
             except Exception as e:
-                self.error(lineNo, e)
-        
+                self.error(e)
+
         f.close()
         if verbosity >= 1:
             self.log("\n%s words were successfully updated" % self.numberOfUpdates)
@@ -77,17 +87,21 @@ class Command(BaseCommand):
     def log(self, message):
         self.stdout.write("%s\n" % message)
 
-    def warning(self, lineNo, message):
+    def warning(self, message, lineNo=0):
         self.numberOfWarnings += 1
-        self.log(color.WARNING + "[WARNING] (line %d) %s" % (lineNo, message) + color.END)
+        if lineNo > 0:
+            message = "(line %d) %s" % (lineNo, message)
+        self.log(color.WARNING + "[WARNING] %s" % (message) + color.END)
 
-    def error(self, lineNo, message):
+    def error(self, message, lineNo=0):
         self.numberOfErrors += 1
-        self.log(color.ERROR + "[ERROR] (line %d) %s" % (lineNo, message) + color.END)
-        
+        if lineNo > 0:
+            message = "(line %d) %s" % (lineNo, message)
+        self.log(color.ERROR + "[ERROR] %s" % (message) + color.END)
+
     def columnize(self, columns, widths):
         self.log((u"%s" % ' '.join(["{%d:<%d}" % (i, widths[i]) for i in range(len(columns))])).format(*columns))
-    
+
 class color:
     INSERTED = '\033[1m\033[94m'
     WARNING = '\033[1m\033[93m'

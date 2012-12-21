@@ -1,8 +1,10 @@
 # coding=utf-8
 import codecs
+import csv
 import os
 import os.path
 import re
+from django.db import connection, transaction
 from django.utils.encoding import smart_unicode
 from django.core.exceptions import ObjectDoesNotExist
 from daisyproducer.dictionary.models import GlobalWord, VALID_BRAILLE_RE
@@ -21,7 +23,64 @@ typeMap = {
 
 inverseTypeMap = dict((v,k) for k, v in typeMap.iteritems())
 
-# Assuming there are only words with grade 1 or grade 2
+class UTF8Recoder:
+    def __init__(self, f, encoding):
+        self.reader = codecs.getreader(encoding)(f)
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        nxt = self.reader.next()
+        return nxt.encode("utf-8")
+
+class UnicodeReader:
+    def __init__(self, f, encoding="utf-8", **kwds):
+        f = UTF8Recoder(f, encoding)
+        self.reader = csv.reader(f, **kwds)
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        row = self.reader.next()
+        return [unicode(s, "utf-8") for s in row]
+
+class WordReader:
+    def __init__(self, f):
+        self.reader = UnicodeReader(f, delimiter='\t')
+        self.words = []
+        self.lineNo = 0
+
+    def __iter__(self):
+        return self
+
+    def currentLine(self):
+        return self.lineNo
+
+    def next(self):
+        if len(self.words) > 0:
+            return self.words.pop(0)
+        self.lineNo += 1
+        line = self.reader.next()
+        try:
+            (typeString, untranslated, braille1, braille2) = line
+            wordType = typeMap[typeString]
+            homograph_disambiguation = untranslated if wordType == 5 else ''
+            untranslated = untranslated.replace('|','')
+            for grade in [1,2]:
+                braille = braille2 if grade == 1 else braille1
+                if braille == "":
+                    continue
+                self.words.append({'type': wordType,
+                                   'untranslated': untranslated,
+                                   'grade': grade,
+                                   'homograph_disambiguation': homograph_disambiguation,
+                                   'braille': braille})
+        except Exception as e:
+            raise Exception("Failed parsing word")
+        return self.words.pop(0)
+
 def exportWords(f):
     words = GlobalWord.objects.order_by('untranslated', 'type', 'homograph_disambiguation', 'grade')
     skipNext = False
@@ -46,56 +105,60 @@ def exportWords(f):
                                     smart_unicode(braille2),
                                     smart_unicode(braille1))))
 
-def readWord(line):
-    words = []
-    try:
-        (typeString, untranslated, braille1, braille2) = split('\t', line)
-        wordType = typeMap[typeString]
-        homograph_disambiguation = untranslated if wordType == 5 else ''
-        untranslated = untranslated.replace('|','')
-        for grade in [1,2]:
-            braille = braille2 if grade == 1 else braille1
-            if braille == "":
-                continue
-            words.append({'type': wordType,
-                          'untranslated': untranslated,
-                          'grade': grade,
-                          'homograph_disambiguation': homograph_disambiguation,
-                          'braille': braille})
-        return words
-    except Exception:
-        raise Exception("Failed parsing word")
-
-def validateBraille(braille):
-    if not VALID_BRAILLE_RE.search(braille):
-        raise Exception("Invalid characters in Braille: '%s'" % braille)
-    
-def compareBraille(braille, oldBraille):
-    if wordDistance(braille, oldBraille) < 0.8:
-        raise Exception("New translation differs too much from the current one")
-
-def findWord(word):
+def getGlobalWord(word):
     try:
         return GlobalWord.objects.get(
                     untranslated=word['untranslated'],
                     grade=word['grade'],
-                    type=word['type'], 
+                    type=word['type'],
                     homograph_disambiguation=word['homograph_disambiguation'])
     except ObjectDoesNotExist:
         raise Exception("Word '%s' could not be found in the global dictionary" % word['untranslated'])
 
-def makeWord(word):
-    return GlobalWord(untranslated=word['untranslated'],
-                      grade=word['grade'],
-                      braille=word['braille'],
-                      type=word['type'],
-                      homograph_disambiguation=word['homograph_disambiguation'])
+cursor = connection.cursor()
+
+def insertTempWord(word):
+    INSERT_WORD = """
+INSERT INTO dictionary_importglobalword (untranslated, grade, braille, type, homograph_disambiguation)
+VALUES (%s, %s, %s, %s, %s)
+"""
+    cursor.execute(INSERT_WORD, [word[k] for k in ('untranslated', 'grade', 'braille', 'type', 'homograph_disambiguation')])
+
+def clearTempWords():
+    cursor.execute("DELETE FROM dictionary_importglobalword")
+
+def changedWords():
+    CHANGED_WORDS = """
+SELECT dictionary_importglobalword.*
+FROM dictionary_importglobalword
+LEFT JOIN dictionary_globalword
+ON  dictionary_importglobalword.untranslated             = dictionary_globalword.untranslated
+AND dictionary_importglobalword.grade                    = dictionary_globalword.grade
+AND dictionary_importglobalword.type                     = dictionary_globalword.type
+AND dictionary_importglobalword.braille                  = dictionary_globalword.braille
+AND dictionary_importglobalword.homograph_disambiguation = dictionary_globalword.homograph_disambiguation
+WHERE dictionary_globalword.untranslated IS NULL
+"""
+    cursor.execute(CHANGED_WORDS)
+    return [{'untranslated': word[1],
+             'braille': word[2],
+             'grade': word[3],
+             'type': word[4],
+             'homograph_disambiguation': word[5]} for word in cursor.fetchall()]
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = tee(iterable)
     next(b, None)
     return izip(a, b)
+
+def validateBraille(braille):
+    if not VALID_BRAILLE_RE.search(braille):
+        raise Exception("Invalid characters in Braille: '%s'" % braille)
+
+def compareBraille(braille, oldBraille):
+    if wordDistance(braille, oldBraille) < 0.8:
+        raise Exception("New translation differs too much from the current one")
 
 def sameWordsDifferentGrade(word1, word2):
     return (word1.untranslated == word2.untranslated
