@@ -541,7 +541,7 @@ def edit_global_words_with_missing_braille(request):
                     grade=2 if form.cleaned_data['original_grade'] == 1 else 1,
                     type=form.cleaned_data['type'],
                     homograph_disambiguation=form.cleaned_data['homograph_disambiguation'])
-            return HttpResponseRedirect(reverse('todo_index'))
+            return HttpResponseRedirect(reverse('dictionary_edit_global_words_with_missing_braille'))
         else:
             return render_to_response('dictionary/edit_missing_globals.html', locals(),
                                       context_instance=RequestContext(request))
