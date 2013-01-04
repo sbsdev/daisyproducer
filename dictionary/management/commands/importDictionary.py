@@ -1,7 +1,7 @@
 # coding=utf-8
 import codecs
-from daisyproducer.dictionary.importExport import readWord, makeWord, validateBraille
-
+from daisyproducer.dictionary.importExport import WordReader, validateBraille
+from daisyproducer.dictionary.models import GlobalWord
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
 from django.db import transaction
@@ -21,52 +21,43 @@ class Command(BaseCommand):
             raise CommandError('No dictionary file specified')
         except IOError:
             raise CommandError('Dictionary file "%s" not found' % args[0])
-        
+
         verbosity = int(options['verbosity'])
-        
+
         self.numberOfImports = 0
         self.numberOfErrors = 0
-        self.numberOfWarnings = 0
-        
-        lineNo = 0
-        for line in f.read().splitlines():
-            lineNo += 1
+
+        reader = WordReader(f)
+        while True:
             try:
-                for word in readWord(line):
-                    if '#' in word['untranslated']:
-                        # ignore rows where the untranslated word has some # in it. These lines need to be fixed
-                        self.error("Invalid characters ('#') in untranslated: %s" % word['untranslated'])
-                        continue
-                    try:
-                        validateBraille(word['braille'])
-                        makeWord(word).save()
-                        self.numberOfImports += 1
-                    except IntegrityError:
-                        self.error(lineNo, 'Duplicate word "%s"' % word)
-                    except Exception as e:
-                        self.error(lineNo, e)
+                word = reader.next()
+                if '#' in word['untranslated']:
+                    # ignore rows where the untranslated word has some # in it. These lines need to be fixed
+                    raise Exception("Invalid characters ('#') in untranslated: %s" % word['untranslated'])
+                validateBraille(word['braille'])
+                try:
+                    GlobalWord(**word).save()
+                except IntegrityError:
+                    raise Exception('Duplicate word "%s"' % word)
+                self.numberOfImports += 1
+            except StopIteration:
+                break
             except Exception as e:
-                self.error(lineNo, e)
-        
+                self.error(e, reader.currentLine())
+
         f.close()
         if verbosity >= 1:
             self.log("\n%s words were successfully updated" % self.numberOfImports)
             if self.numberOfErrors > 0:
                 self.log("%s errors" % self.numberOfErrors)
-            if self.numberOfWarnings > 0:
-                self.log("%s warnings" % self.numberOfWarnings)
 
     def log(self, message):
         self.stdout.write("%s\n" % message)
 
-    def warning(self, lineNo, message):
-        self.numberOfWarnings += 1
-        self.log(color.WARNING + "[WARNING] (line %d) %s" % (lineNo, message) + color.END)
-
-    def error(self, lineNo, message):
+    def error(self, message, lineNo=0):
         self.numberOfErrors += 1
         self.log(color.ERROR + "[ERROR] (line %d) %s" % (lineNo, message) + color.END)
-        
+
 class color:
     INSERTED = '\033[1m\033[94m'
     WARNING = '\033[1m\033[93m'

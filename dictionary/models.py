@@ -63,3 +63,18 @@ class LocalWord(Word):
 
     class Meta:
         unique_together = ("untranslated", "type", "grade", "homograph_disambiguation", "document")
+
+# This is only here to create a table in the database. It is not used anywhere to do inserts or selects
+class ImportGlobalWord(models.Model):
+    MAX_WORD_LENGTH = 100
+    WORD_TYPE_CHOICES = GlobalWord.WORD_TYPE_CHOICES
+    BRAILLE_CONTRACTION_GRADE_CHOICES = GlobalWord.BRAILLE_CONTRACTION_GRADE_CHOICES
+    untranslated = models.CharField(_("Untranslated"), max_length=MAX_WORD_LENGTH, db_index=True)
+    braille = models.CharField(_("Braille"), max_length=MAX_WORD_LENGTH)
+    grade = models.PositiveSmallIntegerField(_("Grade"), db_index=True, choices=BRAILLE_CONTRACTION_GRADE_CHOICES)
+    type = models.PositiveSmallIntegerField(_("Markup"), default=0, choices=WORD_TYPE_CHOICES, db_index=True)
+    homograph_disambiguation = models.CharField(_("Homograph Disambiguation"), max_length=MAX_WORD_LENGTH, blank=True)
+    class Meta:
+        unique_together = ("untranslated", "type", "grade", "homograph_disambiguation")
+    def __unicode__(self):
+        return self.untranslated

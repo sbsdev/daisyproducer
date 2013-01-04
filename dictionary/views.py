@@ -5,9 +5,9 @@ import codecs
 import tempfile
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables, write_words_with_wrong_default_translation
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, LookupGlobalWordForm, GlobalWordBothGradesForm, FilterForm, PaginationForm, FilterWithGradeForm, DictionaryUploadForm, ImportGlobalWordForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, LookupGlobalWordForm, GlobalWordBothGradesForm, FilterForm, PaginationForm, FilterWithGradeForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
-from daisyproducer.dictionary.importExport import exportWords, readWord, findWord
+from daisyproducer.dictionary.importExport import exportWords
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document, State
 from daisyproducer.documents.external import saxon9he
@@ -593,51 +593,6 @@ def export_words(request):
         exportWords(f)
         f.close()
         return render_to_mimetype_response('text/csv', 'Global dictionary dump', tmp.name)
-
-@login_required
-@permission_required("dictionary.change_globalword")
-def upload_words(request):
-    if request.method != 'POST':
-        form = DictionaryUploadForm()
-        return render_to_response('dictionary/upload.html', locals(), 
-                                  context_instance=RequestContext(request))
-    form = DictionaryUploadForm(request.POST, request.FILES)
-    if not form.is_valid():
-        return render_to_response('dictionary/upload.html', locals(), 
-                                  context_instance=RequestContext(request))
-    f = codecs.open(request.FILES['csv'].temporary_file_path(), "r", "utf-8")
-    initial = []
-    try:
-        lineNo = 0
-        for line in f.read().splitlines():
-            lineNo += 1
-            for word in readWord(line):
-                try:
-                    if word['braille'] == findWord(word).braille: continue
-                except: pass
-                initial.append(word)
-    except Exception as e:
-        return render_to_response('error.html', {'message': "%s (line %d)" % (str(e), lineNo), 'code': line})
-    finally:
-        f.close()
-    ImportGlobalWordFormset = formset_factory(ImportGlobalWordForm, extra=0)
-    formset = ImportGlobalWordFormset(initial=initial)
-    return render_to_response('dictionary/import.html', locals(), context_instance=RequestContext(request))
-
-def import_words(request):
-    if request.method != 'POST':
-        return HttpResponseRedirect(reverse('dictionary_upload'))
-    ImportGlobalWordFormset = formset_factory(ImportGlobalWordForm)
-    formset = ImportGlobalWordFormset(request.POST)
-    if not formset.is_valid():
-        return render_to_response('dictionary/import.html', locals(),
-                                  context_instance=RequestContext(request))
-    for form in formset.forms:
-        word = form.cleaned_data
-        oldWord = findWord(word)
-        oldWord.braille = word['braille']
-        oldWord.save()
-        return HttpResponseRedirect(reverse('todo_index'))
 
 @login_required
 @permission_required("dictionary.change_globalword")

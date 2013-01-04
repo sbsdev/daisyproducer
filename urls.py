@@ -89,8 +89,6 @@ urlpatterns += patterns('daisyproducer.dictionary.views',
     url(r'^todo/lookup_global_words$', 'edit_global_words', kwargs={'read_only': True}, name='dictionary_lookup_global_words'),
     url(r'^todo/edit_missing_global_words$', 'edit_global_words_with_missing_braille', name='dictionary_edit_global_words_with_missing_braille'),
     url(r'^todo/export_words$', 'export_words', name='dictionary_export'),
-    url(r'^todo/upload_words$', 'upload_words', name='dictionary_upload'),
-    url(r'^todo/import_words$', 'import_words', name='dictionary_import'),
     url(r'^todo/export_global_words_with_wrong_default_translation$', 'words_with_wrong_default_translation', name='dictionary_words_with_wrong_default_translation'),
 )
 
