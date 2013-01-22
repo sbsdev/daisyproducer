@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbaConnectContainer>
+  <Task>
+    <Parameter/>
+    <Transaction>
+      <DocumentData command="mdaDocModify">
+        <artikel_nr>PS13060</artikel_nr>
+        <title>Blinder Stolz</title>
+        <MetaData>
+          <dc>
+            <title>Blinder Stolz</title>
+            <creator>Brown, Sandra</creator>
+            <source>978-3-7645-0453-3</source>
+            <language>de</language>
+            <identifier>PS13060</identifier>
+            <date>2013-01-21</date>
+          </dc>
+          <sbs>
+            <KST>54230</KST>
+            <verlag>Blanvalet</verlag>
+            <verlagsort>München</verlagsort>
+            <auflageJahr>2013</auflageJahr>
+            <printPageNumber>537</printPageNumber>
+            <prodStatus>IN ARBEIT</prodStatus>
+            <datenErhalten>keine Daten</datenErhalten>
+            <schriftart>Kurzschrift</schriftart>
+            <endformat>28 x 28</endformat>
+            <drucker>Endlos</drucker>
+            <doppelseitig>doppelseitig</doppelseitig>
+            <bindung>PG</bindung>
+            <breite>0</breite>
+            <zeilen>0</zeilen>
+            <prodPageSS>0</prodPageSS>
+            <ervNr>0</ervNr>
+            <laufzettelNr>504121</laufzettelNr>
+            <rucksackNr>0</rucksackNr>
+            <gdBuchNr>0</gdBuchNr>
+            <prodPagePS>0</prodPagePS>
+            <anzahlBaende>0</anzahlBaende>
+            <anzahlRelief>0</anzahlRelief>
+            <vorlageHaus>ja</vorlageHaus>
+            <katalogEintrag>ja</katalogEintrag>
+            <verlagVerzeichnis>nein</verlagVerzeichnis>
+            <daisy_producer>ja</daisy_producer>
+          </sbs>
+          <ncc>
+            <setInfo>0</setInfo>
+          </ncc>
+        </MetaData>
+      </DocumentData>
+    </Transaction>
+  </Task>
+</AbaConnectContainer>
