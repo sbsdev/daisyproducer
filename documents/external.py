@@ -196,11 +196,9 @@ class DaisyPipeline:
     def dtbook2pdf(inputFile, outputFile, **kwargs):
         """Transform a dtbook xml file to pdf"""
 
-        defaults = StandardLargePrint.PARAMETER_DEFAULTS.copy()
-        defaults.update(kwargs)
         tmpFile = filterBrlContractionhints(inputFile)
 
-        generatePDF(tmpFile, outputFile, **defaults)
+        generatePDF(tmpFile, outputFile, **kwargs)
         os.remove(tmpFile)
 
     @staticmethod

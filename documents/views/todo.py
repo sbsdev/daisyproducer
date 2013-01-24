@@ -213,7 +213,7 @@ def preview_pdf(request, document_id):
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputFile = "/tmp/%s.pdf" % document_id
-            DaisyPipeline.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
+            StandardLargePrint.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
             return render_to_mimetype_response('application/pdf', 
                                                document.title.encode('utf-8'), outputFile)
     else:
