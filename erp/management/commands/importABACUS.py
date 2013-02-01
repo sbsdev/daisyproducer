@@ -1,19 +1,3 @@
-"""Import a production order from ABACUS.
-
-1. Check the validity of the given XML file
-2. If the XML indicates that this product is not produced with Daisy
-   Producer ignore this file
-3. If the order has been imported before just update the meta data of
-   the existing order and stop
-   1. This basically translates into checking whether the product
-      number has been imported before
-   2. There is a slim possibility that the product number has been
-      falsely reused for a new order but we ignore that case
-4. If the the order hasn't been imported before create the new order
-5. If the order has been archived before fetch the xml from the archive
-6. and check out the product in the archive
-"""
-
 from daisyproducer.documents.models import Document, Version, Product
 from daisyproducer.documents.versionHelper import XMLContent
 from django.conf import settings
@@ -92,25 +76,16 @@ class Command(BaseCommand):
                 logger.debug('Ignoring "%s" as daisy_producer is set to "%s"', params['title'], daisy_producer)
                 continue
 
-            # If the order has been imported before just update the meta data of the existing order
-            documents = Document.objects.filter(product__identifier=product_number)
-            if documents:
+            if get_documents_by_product_number(product_number):
+                # If the order has been imported before just update the meta data of the existing order
+                documents = get_documents_by_product_number(product_number)
                 # FIXME: there should only ever be one document here. Make sure this is so
                 document = documents[0]
                 logger.debug('Document "%s" for order number "%s" has already been imported.', document.title, product_number)
                 update_document(documents, document, params)
-                # If the order has been archived before fetch the xml from the archive
-                fetch_xml(document, product_number)
-                continue
-
-            # check if the book has been produced for another order
-            documents = Document.objects.filter(
-                Q(source=params['source']) | 
-                # in case there is no ISBN number we hope that author and title is unique enough.
-                # If that is not the case, i.e. the title or the author was misspelled we have
-                # bigger problems anyway
-                Q(author=params['author'], title=params['title'])) 
-            if documents:
+            elif get_documents_by_source_or_author_title(params['source'], params['author'], params['title']):
+                # check if the book has been produced for another order
+                documents = get_documents_by_source_or_author_title(params['source'], params['author'], params['title'])
                 # FIXME: what if there are multiple documents that match the query?
                 document = documents[0]
                 logger.debug('Document "%s" has already been imported for a different product.', document.title)
@@ -118,18 +93,16 @@ class Command(BaseCommand):
                 # update the product association
                 logger.debug('Updating product association ["%s" -> "%s"].', document.title, product_number)
                 Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
-                # If the order has been archived before fetch the xml from the archive
-                fetch_xml(document, product_number)
-                continue
+            else:
+                # If the the order hasn't been imported before create the new order
+                logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".', params['title'], product_number)
+                # create and save the document
+                document = Document.objects.create(**params)
+                # create the product association
+                Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
+                # create an empty xml
+                update_xml_with_metadata(document, params)
 
-            # If the the order hasn't been imported before create the new order
-            logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".', params['title'], product_number)
-            # create and save the document
-            document = Document.objects.create(**params)
-            # create the product association
-            Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
-            # create an empty xml
-            update_xml_with_metadata(document, params)
             logger.debug('Import complete. Removing file "%s"', file)
 #            os.remove(file) 
 
@@ -139,6 +112,17 @@ class Command(BaseCommand):
             self.numberOfDocuments += 1
 
         self.stdout.write('Successfully added %s products.\n' % self.numberOfDocuments)
+
+def get_documents_by_product_number(product_number):
+    return Document.objects.filter(product__identifier=product_number)
+
+def get_documents_by_source_or_author_title(source, author, title):
+    return Document.objects.filter(
+        Q(source=source) | 
+        # in case there is no ISBN number we hope that author and title is unique enough.
+        # If that is not the case, i.e. the title or the author was misspelled we have
+        # bigger problems anyway
+        Q(author=author, title=title))
 
 def fetch_xml(document, product_number):
     if already_archived(product_number):
@@ -175,7 +159,8 @@ def get_abacus_user():
 def params_changed(document, params):
     old_params = model_to_dict(document)
     changed_params = [key for key in old_params.keys() if params.has_key(key) and old_params[key] != params[key]]
-    logger.debug('Changed params: %s [%s -> %s]', changed_params, [old_params[key] for key in changed_params], [params[key] for key in changed_params])
+    if changed_params:
+        logger.debug('Changed params: %s [%s -> %s]', changed_params, [old_params[key] for key in changed_params], [params[key] for key in changed_params])
     return any(changed_params)
 
 def update_xml_with_metadata(document, params):
