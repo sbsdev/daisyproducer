@@ -1,3 +1,4 @@
+from daisyproducer.documents.external import DaisyPipeline
 from daisyproducer.documents.models import Document, Version, Product
 from daisyproducer.documents.versionHelper import XMLContent
 from django.conf import settings
@@ -16,6 +17,7 @@ import httplib2
 import logging
 import os
 import re
+import tempfile
 
 logging.basicConfig(format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
@@ -79,14 +81,19 @@ class Command(BaseCommand):
             if get_documents_by_product_number(product_number):
                 # If the order has been imported before just update the meta data of the existing order
                 documents = get_documents_by_product_number(product_number)
-                # FIXME: there should only ever be one document here. Make sure this is so
+                # there should only ever be one document here. Make sure this is so
+                if len(documents) > 1:
+                    logger.error('There is more than one document for the given product %s (%s)', product_number, documents)
                 document = documents[0]
                 logger.debug('Document "%s" for order number "%s" has already been imported.', document.title, product_number)
                 update_document(documents, document, params)
             elif get_documents_by_source_or_author_title(params['source'], params['author'], params['title']):
                 # check if the book has been produced for another order
                 documents = get_documents_by_source_or_author_title(params['source'], params['author'], params['title'])
-                # FIXME: what if there are multiple documents that match the query?
+                # what if there are multiple documents that match the query?
+                if len(documents) > 1:
+                    logger.error('There is more than one document for the given source [%s] or author and title [%s, %s] (%s)', 
+                                 params['source'], params['author'], params['title'], documents)
                 document = documents[0]
                 logger.debug('Document "%s" has already been imported for a different product.', document.title)
                 update_document(documents, document, params)
@@ -185,10 +192,34 @@ def update_xml_with_metadata(document, params):
             created_by = user)
         version.content.save("updated_version.xml", content)
 
+def validate_content(fileName, contentMetaData):
+    # make sure the uploaded version is valid xml
+    exitMessages = DaisyPipeline.validate(fileName)
+    if exitMessages:
+        return exitMessages
+    # make sure the meta data of the uploaded version corresponds
+    # to the meta data in the document
+    xmlContent = XMLContent()
+    try:
+        errorList = xmlContent.validateContentMetaData(fileName , **contentMetaData)
+    except etree.XMLSyntaxError as e:
+        return "The uploaded file is not a valid DTBook XML document:" + e.message
+    if errorList:
+        return "; ".join(
+            ("The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple for errorTuple in errorList))
+
 def update_xml_with_content_from_archive(document, product_number):
     user = get_abacus_user()
     contentString = get_document_content(product_number)
-    # FIXME: validate the content
+    tmpFile, tmpFileName = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")
+    tmpFile = os.fdopen(tmpFile,'w')
+    tmpFile.write(contentString)
+    tmpFile.close()
+    validation_problems = validate_content(tmpFileName, model_to_dict(document))
+    if validation_problems:
+        logger.critical('Archived XML is not valid. Fails with %s', validation_problems)
+        return 
+    os.remove(tmpFile)
     content = ContentFile(contentString)
     version = Version.objects.create(
         comment = "Updated version due fetch from archive",
