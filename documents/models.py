@@ -163,7 +163,7 @@ class Document(models.Model):
     def has_local_words(self):
         return self.localword_set.exists()
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.id:
             self.created_at = datetime.datetime.now()
             self.date = datetime.date.today() 
@@ -173,7 +173,7 @@ class Document(models.Model):
             self.state = State.objects.filter(name='new')[0]
         if not self.identifier:
             self.identifier = "ch-sbs-%s" % str(uuid.uuid4())
-        super(Document, self).save()
+        super(Document, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         old_id = self.id
