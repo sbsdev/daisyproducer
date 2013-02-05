@@ -108,7 +108,7 @@ class Command(BaseCommand):
                 # create the product association
                 Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
                 # create an empty xml
-                update_xml_with_metadata(document, params)
+                update_xml_with_metadata(document)
 
             logger.debug('Import complete. Removing file "%s"', file)
 #            os.remove(file) 
@@ -143,7 +143,7 @@ def update_document(queryset, document, params):
         logger.debug('Import params differ from document meta data. Updating meta data with %s.', params)
         queryset.update(**params)
         # update the meta data
-        update_xml_with_metadata(document, params)
+        update_xml_with_metadata(document, **params)
 
 def get_type(product_number):
     type = None
@@ -170,7 +170,7 @@ def params_changed(document, params):
         logger.debug('Changed params: %s [%s -> %s]', changed_params, [old_params[key] for key in changed_params], [params[key] for key in changed_params])
     return any(changed_params)
 
-def update_xml_with_metadata(document, params):
+def update_xml_with_metadata(document, **params):
     user = get_abacus_user()
     if document.version_set.count() == 0:
         # create an initial version
@@ -211,6 +211,16 @@ def validate_content(fileName, contentMetaData):
 def update_xml_with_content_from_archive(document, product_number):
     user = get_abacus_user()
     contentString = get_document_content(product_number)
+    # fix meta data
+    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'erp', 'xslt', 'fixMetaData.xsl'))
+    stylesheet_params = dict((k, v) for k, v in model_to_dict(document).iteritems() 
+                             if k in ('date', 'identifier', 'production_source'))
+    stylesheet_params['date'] = stylesheet_params['date'].isoformat()
+    stylesheet_params.update(((k, "'%s'" % v)) for (k, v) in stylesheet_params.iteritems())
+    transform = etree.XSLT(xsl)
+    fixed_tree = transform(etree.fromstring(contentString), **stylesheet_params)
+    contentString = etree.tostring(fixed_tree, xml_declaration=True, encoding='utf-8')
+    # write content to file
     tmpFile, tmpFileName = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")
     tmpFile = os.fdopen(tmpFile,'w')
     tmpFile.write(contentString)
@@ -219,7 +229,7 @@ def update_xml_with_content_from_archive(document, product_number):
     if validation_problems:
         logger.critical('Archived XML is not valid. Fails with %s', validation_problems)
         return 
-    os.remove(tmpFile)
+    os.remove(tmpFileName)
     content = ContentFile(contentString)
     version = Version.objects.create(
         comment = "Updated version due fetch from archive",
