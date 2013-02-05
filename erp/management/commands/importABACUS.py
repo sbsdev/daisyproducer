@@ -87,13 +87,15 @@ class Command(BaseCommand):
                 document = documents[0]
                 logger.debug('Document "%s" for order number "%s" has already been imported.', document.title, product_number)
                 update_document(documents, document, params)
-            elif get_documents_by_source_or_author_title(params['source'], params['author'], params['title']):
+            elif get_documents_by_source_or_title_source_edition(
+                params['source'], params['title'], params['source_edition']):
                 # check if the book has been produced for another order
-                documents = get_documents_by_source_or_author_title(params['source'], params['author'], params['title'])
+                documents = get_documents_by_source_or_title_source_edition(
+                    params['source'], params['title'], params['source_edition'])
                 # what if there are multiple documents that match the query?
                 if len(documents) > 1:
-                    logger.error('There is more than one document for the given source [%s] or author and title [%s, %s] (%s)', 
-                                 params['source'], params['author'], params['title'], documents)
+                    logger.error('There is more than one document for the given source [%s] or title and source_edition [%s, %s] (%s)', 
+                                 params['source'], params['title'], params['source_edition'], documents)
                 document = documents[0]
                 logger.debug('Document "%s" has already been imported for a different product.', document.title)
                 update_document(documents, document, params)
@@ -123,13 +125,22 @@ class Command(BaseCommand):
 def get_documents_by_product_number(product_number):
     return Document.objects.filter(product__identifier=product_number)
 
-def get_documents_by_source_or_author_title(source, author, title):
+def get_documents_by_source_or_title_source_edition(source, title, source_edition):
+    if source:
+        return Document.objects.filter(source=source)
+    else:
+        # in case there is no ISBN number we hope that title and
+        # source_edition is unique enough. If that is not the case,
+        # i.e. the title or the source_edition was misspelled we have
+        # bigger problems anyway
+        return Document.objects.filter(title=title, source_edition=source_edition)
+        
     return Document.objects.filter(
         Q(source=source) | 
         # in case there is no ISBN number we hope that author and title is unique enough.
         # If that is not the case, i.e. the title or the author was misspelled we have
         # bigger problems anyway
-        Q(author=author, title=title))
+        Q(title=title, source_edition=source_edition))
 
 def fetch_xml(document, product_number):
     if already_archived(product_number):
@@ -284,7 +295,7 @@ def already_archived(product_number):
 def make_get_key_fn(evaluator):
     def get_key(key):
         node = evaluator(key)
-        return node[0].text if node else None
+        return node[0].text if node and node[0].text else ''
     return get_key
 
 def get_document_content(product_number):
