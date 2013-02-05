@@ -17,7 +17,7 @@ class StateAdmin(admin.ModelAdmin):
 	search_fields = ('name',)
 
 class DocumentAdmin(admin.ModelAdmin):
-	list_display = ('title', 'author', 'source_publisher', 'state',)
+	list_display = ('title', 'author', 'source_publisher', 'source', 'state',)
 	list_filter = ('author', 'source_publisher', 'state',)
 	ordering = ('title', 'state',)
 	search_fields = ('title',)
