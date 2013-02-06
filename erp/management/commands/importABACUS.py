@@ -36,12 +36,15 @@ class Command(BaseCommand):
             raise CommandError('No ABACUS Export file specified')
 
         verbosity = int(options['verbosity'])
-        log_level = logging.DEBUG
-        if verbosity == 1:
-            log_level = logging.DEBUG
-        elif verbosity == 0:
-            log_level = logging.WARNING
-        logger.setLevel(log_level)
+        if verbosity == 0:
+            # no output
+            logging.disable(logging.CRITICAL)
+        elif verbosity == 1:
+            logger.setLevel(logging.WARNING)
+        elif verbosity == 2:
+            logger.setLevel(logging.INFO)
+        elif verbosity == 3:
+            logger.setLevel(logging.DEBUG)
 
         self.numberOfDocuments = 0
 
@@ -273,6 +276,14 @@ def fetch_params(get_key, root):
             params['production_series_number'] = m.group(0)
     if get_key("%s/MetaData/sbs/Aufwand_A2" % root) == 'D':
         params["production_source"] = Document.PRODUCTION_SOURCE_CHOICES[0][0]
+    # if there is an element named verkaufstext then use part of that
+    # as the title and the author
+    verkaufstext = get_key("%s/MetaData/sbs/verkaufstext" % root)
+    if verkaufstext:
+        # the schema test makes sure that there are at least two elems
+        # in the verkaufstext
+        params["author"] = verkaufstext.split('[xx]')[0].strip()
+        params["title"] = verkaufstext.split('[xx]')[1].strip()
     return params
 
 def cmis_request(q):
