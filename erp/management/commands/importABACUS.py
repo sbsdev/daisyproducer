@@ -137,13 +137,6 @@ def get_documents_by_source_or_title_source_edition(source, title, source_editio
         # i.e. the title or the source_edition was misspelled we have
         # bigger problems anyway
         return Document.objects.filter(title=title, source_edition=source_edition)
-        
-    return Document.objects.filter(
-        Q(source=source) | 
-        # in case there is no ISBN number we hope that author and title is unique enough.
-        # If that is not the case, i.e. the title or the author was misspelled we have
-        # bigger problems anyway
-        Q(title=title, source_edition=source_edition))
 
 def fetch_xml(document, product_number):
     if already_archived(product_number):
