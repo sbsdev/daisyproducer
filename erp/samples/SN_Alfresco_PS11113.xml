@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbaConnectContainer>
+  <Task>
+    <Parameter/>
+    <Transaction>
+      <DocumentData command="mdaDocModify">
+        <artikel_nr>PS13000</artikel_nr>
+        <title>Eine für de Thesi</title>
+        <MetaData>
+          <dc>
+            <title>Eine für de Thesi</title>
+            <creator>Gwerder, Anna</creator>
+            <source></source>
+            <language>de</language>
+            <identifier>PS13000</identifier>
+            <date>2011-12-23</date>
+          </dc>
+          <sbs>
+            <KST>54430</KST>
+            <untertitel/>
+            <verlag>DVA</verlag>
+            <verlagsort>Altdorf</verlagsort>
+            <auflageJahr>1. / 2011</auflageJahr>
+            <printPageNumber>311</printPageNumber>
+            <prodStatus>IN ARBEIT</prodStatus>
+            <datenErhalten>13.12.2011 (pdf per Mail) / ts</datenErhalten>
+            <schriftart>Grossdruck s/w</schriftart>
+            <endformat/>
+            <drucker>OCCS250</drucker>
+            <doppelseitig>doppelseitig</doppelseitig>
+            <bindung/>
+            <breite>0</breite>
+            <zeilen>0</zeilen>
+            <auszug/>
+            <zoom/>
+            <qualitaet/>
+            <prodPageSS>0</prodPageSS>
+            <bpz/>
+            <ervNr>0</ervNr>
+            <laufzettelNr>501097</laufzettelNr>
+            <rucksackNr>0</rucksackNr>
+            <altersgruppe/>
+            <gdBuchNr>0</gdBuchNr>
+            <prodPagePS>0</prodPagePS>
+            <anzahlBaende>0</anzahlBaende>
+            <anzahlRelief>0</anzahlRelief>
+            <vorlageHaus>ja</vorlageHaus>
+            <katalogEintrag>ja</katalogEintrag>
+            <verlagVerzeichnis>nein</verlagVerzeichnis>
+            <daisy_producer>ja</daisy_producer>
+	    <Aufwand_A2>D</Aufwand_A2>
+          </sbs>
+          <ncc>
+            <setInfo>0</setInfo>
+          </ncc>
+        </MetaData>
+      </DocumentData>
+    </Transaction>
+  </Task>
+</AbaConnectContainer>
