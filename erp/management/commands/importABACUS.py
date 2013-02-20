@@ -81,8 +81,10 @@ class Command(BaseCommand):
                 logger.debug('Ignoring "%s" as daisy_producer is set to "%s"', params['title'], daisy_producer)
                 continue
 
+            product_number_has_been_seen_before = False
             if get_documents_by_product_number(product_number):
                 # If the order has been imported before just update the meta data of the existing order
+                product_number_has_been_seen_before = True
                 documents = get_documents_by_product_number(product_number)
                 # there should only ever be one document here. Make sure this is so
                 if len(documents) > 1:
@@ -120,6 +122,11 @@ class Command(BaseCommand):
 
             # If the order has been archived before fetch the xml from the archive
             fetch_xml(document, product_number)
+            
+            # if the product_number has never been seen before then we are talking about a new
+            # production, i.e. try to check out the document in the archive
+            if not product_number_has_been_seen_before:
+                checkout_document(product_number)
 
             self.numberOfDocuments += 1
 
@@ -142,8 +149,6 @@ def fetch_xml(document, product_number):
     if already_archived(product_number):
         logger.debug('Product has already been archived. Update XML with content from archive.')
         update_xml_with_content_from_archive(document, product_number)
-        # and check out the product in the archive
-        checkout_document(product_number)
 
 def update_document(queryset, document, params):
     if params_changed(document, params):
