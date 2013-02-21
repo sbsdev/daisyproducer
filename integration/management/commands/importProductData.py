@@ -54,6 +54,7 @@ class Command(BaseCommand):
 
             reader = csv.reader(open(file))
 
+            warned_sources = set()
             for line in reader:
                 product_number, author, title, source_edition, source, verkaufstext = line
             
@@ -84,7 +85,9 @@ class Command(BaseCommand):
                     logger.debug('Product number "%s" already registered.', product_number)
                     continue
                 elif not get_documents_by_source_or_title_source_edition(source, title, source_edition):
-                    logger.warning('No document for source [%s] or title and source_edition [%s, %s]', source, title, source_edition)
+                    if (source, title, source_edition) not in warned_sources:
+                        logger.warning('No document for source [%s] or title and source_edition [%s, %s]', source, title, source_edition)
+                        warned_sources.add((source, title, source_edition))
                     continue
 
                 documents = get_documents_by_source_or_title_source_edition(source, title, source_edition)
