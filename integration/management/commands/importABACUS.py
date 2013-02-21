@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
         root = "/AbaConnectContainer/Task/Transaction/DocumentData"
 
-        relaxng_schema = etree.parse(join(settings.PROJECT_DIR, 'erp', 'schema', 'abacus_export.rng'),)
+        relaxng_schema = etree.parse(join(settings.PROJECT_DIR, 'integration', 'schema', 'abacus_export.rng'),)
         relaxng = etree.RelaxNG(relaxng_schema)
 
         for file in args:
@@ -224,7 +224,7 @@ def update_xml_with_content_from_archive(document, product_number):
     user = get_abacus_user()
     contentString = get_document_content(product_number)
     # fix meta data
-    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'erp', 'xslt', 'fixMetaData.xsl'))
+    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'integration', 'xslt', 'fixMetaData.xsl'))
     stylesheet_params = dict((k, v) for k, v in model_to_dict(document).iteritems() 
                              if k in ('date', 'identifier', 'production_source'))
     stylesheet_params['date'] = stylesheet_params['date'].isoformat()

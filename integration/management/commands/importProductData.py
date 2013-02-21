@@ -1,5 +1,5 @@
 from daisyproducer.documents.models import Document, Version, Product
-from daisyproducer.erp.management.commands.importABACUS import get_type, get_documents_by_product_number, get_documents_by_source_or_title_source_edition
+from daisyproducer.integration.management.commands.importABACUS import get_type, get_documents_by_product_number, get_documents_by_source_or_title_source_edition
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from optparse import make_option
