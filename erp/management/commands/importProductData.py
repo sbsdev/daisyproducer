@@ -1,0 +1,88 @@
+from daisyproducer.documents.models import Document, Version, Product
+from daisyproducer.erp.management.commands.importABACUS import get_type, get_documents_by_product_number, get_documents_by_source_or_title_source_edition
+from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
+
+import csv
+import logging
+import re
+
+VALID_PRODUCT_NUMBER_RE = re.compile(u"^(PS|GD|EB)\d{5}$")
+VALID_ISBN_RE = re.compile(u"^[0-9-X]{10,18}$")
+
+logging.basicConfig(format='%(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
+
+class Command(BaseCommand):
+    args = 'ABACUS_export_file'
+    help = 'Import the product numbers in the given file and associate them with existing documents'
+    output_transaction = True
+
+    @transaction.commit_on_success
+    def handle(self, *args, **options):
+        if len(args) < 1:
+            raise CommandError('No ABACUS Export file specified')
+
+        verbosity = int(options['verbosity'])
+        if verbosity == 0:
+            # no output
+            logging.disable(logging.CRITICAL)
+        elif verbosity == 1:
+            logger.setLevel(logging.WARNING)
+        elif verbosity == 2:
+            logger.setLevel(logging.INFO)
+        elif verbosity == 3:
+            logger.setLevel(logging.DEBUG)
+
+        products_imported = 0
+
+        for file in args:
+            logger.info('Processing "%s"', file)
+
+            reader = csv.reader(open(file))
+
+            for line in reader:
+                product_number, author, title, source_edition, source, verkaufstext = line
+            
+                if not VALID_PRODUCT_NUMBER_RE.match(product_number):
+                    logger.debug('Ignoring invalid product number "%s"', product_number)
+                    continue
+
+                # clean the source field
+                if source == "keine":
+                    source = ""
+
+                # validate the source field
+                if source and not VALID_ISBN_RE.match(source):
+                    logger.warn('Ignoring invalid ISBN "%s"', source)
+                    continue
+
+                # split verkaufstext
+                if verkaufstext:
+                    lines = verkaufstext.splitlines()
+                    if len(lines) >= 2:
+                        author = lines[0].strip()
+                        title = lines[1].strip()
+                    else:
+                        logger.warn('Ignoring invalid verkaufstext "%s"', verkaufstext)
+
+                if get_documents_by_product_number(product_number):
+                    # the product number is already associated with a document
+                    logger.debug('Product number "%s" already registered.', product_number)
+                    continue
+                elif not get_documents_by_source_or_title_source_edition(source, title, source_edition):
+                    logger.warning('No document for source [%s] or title and source_edition [%s, %s]', source, title, source_edition)
+                    continue
+
+                documents = get_documents_by_source_or_title_source_edition(source, title, source_edition)
+                if len(documents) > 1:
+                    logger.error('More than one document for source [%s] or title and source_edition [%s, %s] (%s)', source, title, source_edition, documents)
+                document = documents[0]
+                # update the product association
+                logger.debug('Updating product association ["%s" -> "%s"].', document.title, product_number)
+                Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
+                        
+                products_imported += 1
+            
+        logger.info("%s products imported", products_imported)
+
