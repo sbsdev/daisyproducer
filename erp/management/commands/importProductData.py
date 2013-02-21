@@ -2,6 +2,7 @@ from daisyproducer.documents.models import Document, Version, Product
 from daisyproducer.erp.management.commands.importABACUS import get_type, get_documents_by_product_number, get_documents_by_source_or_title_source_edition
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from optparse import make_option
 
 import csv
 import logging
@@ -18,6 +19,16 @@ class Command(BaseCommand):
     help = 'Import the product numbers in the given file and associate them with existing documents'
     output_transaction = True
 
+    option_list = BaseCommand.option_list + (
+        make_option(
+            '-n', 
+            '--dry-run',
+            action='store_true',
+            dest='dry_run',
+            default=False,
+            help='Do a simulation before actually performing the import'),
+        )
+
     @transaction.commit_on_success
     def handle(self, *args, **options):
         if len(args) < 1:
@@ -33,6 +44,8 @@ class Command(BaseCommand):
             logger.setLevel(logging.INFO)
         elif verbosity == 3:
             logger.setLevel(logging.DEBUG)
+
+        dry_run = options.get('dry_run', False)
 
         products_imported = 0
 
@@ -80,7 +93,8 @@ class Command(BaseCommand):
                 document = documents[0]
                 # update the product association
                 logger.debug('Updating product association ["%s" -> "%s"].', document.title, product_number)
-                Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
+                if not dry_run:
+                    Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
                         
                 products_imported += 1
             
