@@ -71,7 +71,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 0
 DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline-20090410')
 
 # The publisher that should be inserted in the meta data by default
-DAISY_DEFAULT_PUBLISHER = "Swiss Library for the Blind, Visually Impaired and Print Disabled"
+DAISY_DEFAULT_PUBLISHER = "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
