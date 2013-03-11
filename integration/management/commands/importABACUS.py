@@ -248,7 +248,27 @@ def update_xml_with_content_from_archive(document, product_number):
         document = document,
         created_by = user)
     version.content.save("updated_version.xml", content)
-        
+    # also update the content in ueberarbeitung
+    update_xml_in_ueberarbeitung(product_number, contentString)
+
+def update_xml_in_ueberarbeitung(product_number, contentString):
+    path = "PATH:\"/app:company_home/cm:Produktion/cm:Neuproduktion/cm:Überarbeiten//*\""
+    q = "select * from sbs:produkt where sbs:pProduktNo = '%s' AND CONTAINS('%s')" % (product_number, path)
+    resultset = cmis_request(q)
+    if not resultset:
+        raise ImportError("Product %s not found in Überarbeiten" % product_number)
+    product = resultset[0]
+    book = product.getParent()
+    isDaisyFile = lambda child: child.properties['cmis:objectTypeId'] == 'D:sbs:daisyFile'
+    resultset = filter(isDaisyFile, book.getChildren())
+    if not resultset:
+        raise ImportError("No content found for product %s" % product_number)
+    document = resultset[0]
+    latest_document = document.getLatestVersion()
+    stream = latest_document.getContentStream()
+    stream.write(contentString)
+    stream.close()
+
 def fetch_params(get_key, root):
     metadata = {
         "title": "dc/title",
