@@ -280,9 +280,10 @@ class DaisyPipeline:
         p1 = applyXSL('filterBrlContractionhints.xsl', inputFileHandle, subprocess.PIPE)
         p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
         p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
-        p4 = applyXSL('addEmptyHeaders.xsl', p3.stdout, subprocess.PIPE)
-        p5 = applyXSL2('addBoilerplate.xsl', p4.stdout, tmpFile)
-        p5.communicate()
+        p4 = applyXSL('filterComments.xsl', p3.stdout, subprocess.PIPE)
+        p5 = applyXSL('addEmptyHeaders.xsl', p4.stdout, subprocess.PIPE)
+        p6 = applyXSL2('addBoilerplate.xsl', p5.stdout, tmpFile)
+        p6.communicate()
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
