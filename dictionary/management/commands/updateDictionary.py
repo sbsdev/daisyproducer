@@ -15,7 +15,8 @@ class Command(BaseCommand):
         make_option(
             '--dry-run',
             default=False,
-            help='Do a simulation before actually performing the import'))
+            help='Do a simulation before actually performing the import'),
+        )
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
