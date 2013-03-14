@@ -40,7 +40,6 @@ import tempfile
 # TODO 
 # - Guard against calling this job again when the previous run isn't
 #   finished.
- 
 
 logging.basicConfig(format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
@@ -273,10 +272,10 @@ def update_xml_with_content_from_archive(document, product_number):
         document = document,
         created_by = user)
     version.content.save("updated_version.xml", content)
-    # also update the content in ueberarbeitung
-    update_xml_in_ueberarbeitung(product_number, contentString)
+    # also update the content in ueberarbeiten
+    update_xml_in_ueberarbeiten(product_number, contentString)
 
-def update_xml_in_ueberarbeitung(product_number, contentString):
+def update_xml_in_ueberarbeiten(product_number, contentString):
     path = u'PATH:"/app:company_home/cm:Produktion/cm:Neuproduktion/cm:Überarbeiten//*"'
     q = "select * from sbs:produkt where sbs:pProduktNo = '%s' AND CONTAINS('%s')" % (product_number, path)
     resultset = cmis_request(q)
@@ -290,11 +289,12 @@ def update_xml_in_ueberarbeitung(product_number, contentString):
     if not resultset:
         logger.error("No content found for product %s", product_number)
         return
+    logger.debug('Update content in Ueberarbeiten.')
     document = resultset[0]
     latest_document = document.getLatestVersion()
     stream = latest_document.getContentStream()
     stream.write(contentString)
-    stream.close()
+    stream.close()        
 
 def fetch_params(get_key, root):
     metadata = {
@@ -332,10 +332,8 @@ def fetch_params(get_key, root):
     return params
 
 def cmis_request(q):
-    url = 'http://pam02.sbszh.ch/alfresco/s/api/cmis'
-    user = 'test_pam02_eglic'
-    password = 'alfrescotester'
-    cmisClient = cmislib.CmisClient(url, user, password)
+    url = 'http://%s/alfresco/s/api/cmis' % settings.CMIS_HOST
+    cmisClient = cmislib.CmisClient(url, settings.CMIS_USER, settings.CMIS_PASSWORD)
     repo = cmisClient.defaultRepository
 
     resultset = repo.query(q)
@@ -400,7 +398,7 @@ def checkout_document(product_number):
     h = httplib2.Http()
 
     scriptPath = "/Company%20Home/Data%20Dictionary/Scripts/checkout_product.js"
-    url = "http://pam02.sbszh.ch/alfresco/command/script/execute?scriptPath=%s&noderef=%s&ticket=%s" % (scriptPath, product.id, ticket)
+    url = "http://%s/alfresco/command/script/execute?scriptPath=%s&noderef=%s&ticket=%s" % (settings.CMIS_HOST, scriptPath, product.id, ticket)
     response, content = h.request(url)
     if response.status != httplib.OK:
         tree = etree.HTML(content)
@@ -408,9 +406,7 @@ def checkout_document(product_number):
         logger.warning("Checkout of product %s failed with \"%s\"", product.name, error_message[0].text)
 
 def get_auth_ticket():
-    user = 'test_pam02_eglic'
-    password = 'alfrescotester'
-    url = "http://pam02.sbszh.ch/alfresco/service/api/login?u=%s&pw=%s" % (user, password)
+    url = "http://%s/alfresco/service/api/login?u=%s&pw=%s" % (settings.CMIS_HOST, settings.CMIS_USER, settings.CMIS_PASSWORD)
     h = httplib2.Http()
     response, content = h.request(url)
     if response.status == httplib.FORBIDDEN:
