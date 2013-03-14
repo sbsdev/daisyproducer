@@ -19,6 +19,28 @@ import os
 import re
 import tempfile
 
+# This command is meant to be used as a cron job which reads files
+# from the order management system and imports the orders or updates
+# the meta data if the document has already been created for a
+# different order.
+#
+# Once an order has been imported the corresponding file is deleted.
+# This of course fails if the import crashes midway. The file is not
+# deleted and the next run of the cron job will try to import the
+# order again. The import is not idempotent as some of the actions are
+# not inside transactions. The updates in the database (meta data) are
+# wrapped inside a transaction. However the changes to the XML file or
+# the actions in Alfresco cannot be rolled back. For that reason all
+# but a few raise statements have been replaced with logger.error,
+# i.e. log an error if isn't fatal and remove the file even if there
+# was an error. That way we can at least avoid duplicate checkouts in
+# Alfresco but we have essentially no retries.
+
+# TODO 
+# - Guard against calling this job again when the previous run isn't
+#   finished.
+ 
+
 logging.basicConfig(format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -223,6 +245,8 @@ def validate_content(fileName, contentMetaData):
 def update_xml_with_content_from_archive(document, product_number):
     user = get_abacus_user()
     contentString = get_document_content(product_number)
+    if not contentString:
+        return
     # fix meta data
     xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'integration', 'xslt', 'fixMetaData.xsl'))
     stylesheet_params = dict((k, v) for k, v in model_to_dict(document).iteritems() 
@@ -256,13 +280,15 @@ def update_xml_in_ueberarbeitung(product_number, contentString):
     q = "select * from sbs:produkt where sbs:pProduktNo = '%s' AND CONTAINS('%s')" % (product_number, path)
     resultset = cmis_request(q)
     if not resultset:
-        raise ImportError("Product %s not found in Überarbeiten" % product_number)
+        logger.error("Product %s not found in Überarbeiten", product_number)
+        return
     product = resultset[0]
     book = product.getParent()
     isDaisyFile = lambda child: child.properties['cmis:objectTypeId'] == 'D:sbs:daisyFile'
     resultset = filter(isDaisyFile, book.getChildren())
     if not resultset:
-        raise ImportError("No content found for product %s" % product_number)
+        logger.error("No content found for product %s", product_number)
+        return
     document = resultset[0]
     latest_document = document.getLatestVersion()
     stream = latest_document.getContentStream()
@@ -333,13 +359,15 @@ def get_document_content(product_number):
     cmis_request(q)
     resultset = cmis_request(q)
     if not resultset:
-        raise ImportError("Product %s not found" % product_number)
+        logger.error("Product %s not found", product_number)
+        return
     product = resultset[0]
     book = product.getParent()
     isDaisyFile = lambda child: child.properties['cmis:objectTypeId'] == 'D:sbs:daisyFile'
     resultset = filter(isDaisyFile, book.getChildren())
     if not resultset:
-        raise ImportError("No content found for product %s" % product_number)
+        logger.error("No content found for product %s", product_number)
+        return
     document = resultset[0]
     latest_document = document.getLatestVersion()
     stream = latest_document.getContentStream()
@@ -353,7 +381,8 @@ def checkout_document(product_number):
     cmis_request(q)
     resultset = cmis_request(q)
     if not resultset:
-        raise ImportError("Product %s not found" % product_number)
+        logger.error("Product %s not found", product_number)
+        return
 
     if not already_archived(product_number):
         # if it isn't in the archive then the product is new or still
@@ -365,6 +394,8 @@ def checkout_document(product_number):
     product = resultset[0]
 
     ticket = get_auth_ticket()
+    if not ticket:
+        return
     h = httplib2.Http()
 
     scriptPath = "/Company%20Home/Data%20Dictionary/Scripts/checkout_product.js"
@@ -382,10 +413,12 @@ def get_auth_ticket():
     h = httplib2.Http()
     response, content = h.request(url)
     if response.status == httplib.FORBIDDEN:
-        raise ImportError("Authorization with Alfresco failed")
+        logger.error("Authorization with Alfresco failed")
+        return
     tree = etree.fromstring(content)
     ticket = tree.xpath('/ticket')
     if not ticket:
-        raise ImportError("No ticket returned by Alfresco\n%s" % content)
+        logger.error("No ticket returned by Alfresco\n%s", content)
+        return
     return ticket[0].text
 
