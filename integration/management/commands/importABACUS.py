@@ -37,7 +37,7 @@ import tempfile
 # was an error. That way we can at least avoid duplicate checkouts in
 # Alfresco but we have essentially no retries.
 
-# TODO 
+# TODO
 # - Guard against calling this job again when the previous run isn't
 #   finished.
 
@@ -100,7 +100,8 @@ class Command(BaseCommand):
             # this file
             daisy_producer = get_key("%s/MetaData/sbs/daisy_producer" % root)
             if daisy_producer != "ja":
-                logger.debug('Ignoring "%s" as daisy_producer is set to "%s"', params['title'], daisy_producer)
+                logger.debug('Ignoring "%s" as daisy_producer is set to "%s"',
+                             params['title'], daisy_producer)
                 continue
 
             product_number_has_been_seen_before = False
@@ -110,9 +111,11 @@ class Command(BaseCommand):
                 documents = get_documents_by_product_number(product_number)
                 # there should only ever be one document here. Make sure this is so
                 if len(documents) > 1:
-                    logger.error('There is more than one document for the given product %s (%s)', product_number, documents)
+                    logger.error('There is more than one document for the given product %s (%s)',
+                                 product_number, documents)
                 document = documents[0]
-                logger.debug('Document "%s" for order number "%s" has already been imported.', document.title, product_number)
+                logger.debug('Document "%s" for order number "%s" has already been imported.',
+                             document.title, product_number)
                 update_document(documents, document, params)
             elif get_documents_by_source_or_title_source_edition(
                 params['source'], params['title'], params['source_edition']):
@@ -122,16 +125,20 @@ class Command(BaseCommand):
                 # what if there are multiple documents that match the query?
                 if len(documents) > 1:
                     logger.error('There is more than one document for the given source [%s] or title and source_edition [%s, %s] (%s)', 
-                                 params['source'], params['title'], params['source_edition'], documents)
+                                 params['source'], params['title'],
+                                 params['source_edition'], documents)
                 document = documents[0]
-                logger.debug('Document "%s" has already been imported for a different product.', document.title)
+                logger.debug('Document "%s" has already been imported for a different product.',
+                             document.title)
                 update_document(documents, document, params)
                 # update the product association
-                logger.debug('Updating product association ["%s" -> "%s"].', document.title, product_number)
+                logger.debug('Updating product association ["%s" -> "%s"].',
+                             document.title, product_number)
                 Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
             else:
                 # If the the order hasn't been imported before create the new order
-                logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".', params['title'], product_number)
+                logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".',
+                             params['title'], product_number)
                 # create and save the document
                 document = Document.objects.create(**params)
                 # create the product association
@@ -140,11 +147,11 @@ class Command(BaseCommand):
                 update_xml_with_metadata(document)
 
             logger.debug('Import complete. Removing file "%s"', file)
-#            os.remove(file) 
+#            os.remove(file)
 
             # If the order has been archived before fetch the xml from the archive
             fetch_xml(document, product_number)
-            
+
             # if the product_number has never been seen before then we are talking about a new
             # production, i.e. try to check out the document in the archive
             if not product_number_has_been_seen_before:
@@ -174,7 +181,8 @@ def fetch_xml(document, product_number):
 
 def update_document(queryset, document, params):
     if params_changed(document, params):
-        logger.debug('Import params differ from document meta data. Updating meta data with %s.', params)
+        logger.debug('Import params differ from document meta data. Updating meta data with %s.',
+                     params)
         queryset.update(**params)
         # update the meta data
         update_xml_with_metadata(document, **params)
@@ -201,7 +209,10 @@ def params_changed(document, params):
     old_params = model_to_dict(document)
     changed_params = [key for key in old_params.keys() if params.has_key(key) and old_params[key] != params[key]]
     if changed_params:
-        logger.debug('Changed params: %s [%s -> %s]', changed_params, [old_params[key] for key in changed_params], [params[key] for key in changed_params])
+        logger.debug('Changed params: %s [%s -> %s]',
+                     changed_params,
+                     [old_params[key] for key in changed_params],
+                     [params[key] for key in changed_params])
     return any(changed_params)
 
 def update_xml_with_metadata(document, **params):
@@ -264,7 +275,7 @@ def update_xml_with_content_from_archive(document, product_number):
     validation_problems = validate_content(tmpFileName, model_to_dict(document))
     if validation_problems:
         logger.critical('Archived XML is not valid. Fails with %s', validation_problems)
-        return 
+        return
     os.remove(tmpFileName)
     content = ContentFile(contentString)
     version = Version.objects.create(
@@ -294,7 +305,7 @@ def update_xml_in_ueberarbeiten(product_number, contentString):
     latest_document = document.getLatestVersion()
     stream = latest_document.getContentStream()
     stream.write(contentString)
-    stream.close()        
+    stream.close()
 
 def fetch_params(get_key, root):
     metadata = {
@@ -338,7 +349,7 @@ def cmis_request(q):
 
     resultset = repo.query(q)
     return resultset
-    
+
 def already_archived(product_number):
     archive_path = "PATH:\"/app:company_home/cm:Produktion/cm:Archiv//*\""
     # we only need to check out products that are archived already
@@ -387,7 +398,8 @@ def checkout_document(product_number):
         # if it isn't in the archive then the product is new or still
         # being worked on. Then we do not need to check anything out,
         # i.e. we are done
-        logger.debug('Product [%s] is not in archive path [%s], so no need to check it out "%s"', product_number, archive_path)
+        logger.debug('Product [%s] is not in archive path [%s], so no need to check it out "%s"',
+                     product_number, archive_path)
         return
 
     product = resultset[0]
@@ -403,7 +415,8 @@ def checkout_document(product_number):
     if response.status != httplib.OK:
         tree = etree.HTML(content)
         error_message = tree.xpath("//div[@class='errorMessage']")
-        logger.warning("Checkout of product %s failed with \"%s\"", product.name, error_message[0].text)
+        logger.warning("Checkout of product %s failed with \"%s\"",
+                       product.name, error_message[0].text)
 
 def get_auth_ticket():
     url = "http://%s/alfresco/service/api/login?u=%s&pw=%s" % (settings.CMIS_HOST, settings.CMIS_USER, settings.CMIS_PASSWORD)
