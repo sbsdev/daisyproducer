@@ -104,7 +104,7 @@ INSTALLED_APPS = (
     'daisyproducer.documents',
     'daisyproducer.dictionary',
     'daisyproducer.statistics',
-    'daisyproducer.integration',
+    'daisyproducer.abacus_import',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

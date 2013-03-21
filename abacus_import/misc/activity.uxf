@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="11.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.ActivityDiagramText</type>
+    <coordinates>
+      <x>70</x>
+      <y>0</y>
+      <w>1186</w>
+      <h>1149</h>
+    </coordinates>
+    <panel_attributes>title:Import from ABACUS
+Start
+While[SN Alfresco Files]
+	If
+		[product number known]
+		update meta data
+
+		[isbn or \title and source edition known]
+		update meta data
+		associate product with document
+
+		[product number, \isbn and \title and source edition \not known]
+		create document
+		associate product with document
+		create empty xml with meta data
+	EndIf
+	If
+		[document not archived]
+
+		[document archived]
+		update xml with content from archive
+		update xml in Überarbeitung
+	EndIf
+	If
+		[product number known]
+
+		[product number not known]
+		check out document
+	EndIf
+	Remove SN Alfresco File
+[no SN Alfresco files]
+End
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

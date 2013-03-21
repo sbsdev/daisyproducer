@@ -72,94 +72,105 @@ class Command(BaseCommand):
 
         root = "/AbaConnectContainer/Task/Transaction/DocumentData"
 
-        relaxng_schema = etree.parse(join(settings.PROJECT_DIR, 'integration', 'schema', 'abacus_export.rng'),)
+        relaxng_schema = etree.parse(join(settings.PROJECT_DIR, 'abacus_import', 'schema', 'abacus_export.rng'),)
         relaxng = etree.RelaxNG(relaxng_schema)
 
         for file in args:
             try:
-                # Check the validity of the given XML file
-                tree = etree.parse(file)
-                relaxng.assertValid(tree)
+                self.numberOfDocuments += handle_file(file)
+
             except IOError:
-                raise CommandError('ABACUS Export file "%s" not found' % file)
+                raise CommandError('ABACUS Export file "%s" not found.' % file)
             except etree.XMLSyntaxError, e:
-                raise CommandError('Cannot parse ABACUS Export file "%s"' % file, e)
+                logger.exception("Cannot parse ABACUS Export file '%s'.", file)
+                # move file to a special folder where an operator will deal with it
+                os.rename(file, "Failed_" + file)
             except etree.DocumentInvalid, e:
-                raise CommandError('ABACUS Export file "%s" is not valid' % file, e)
-
-            evaluator = etree.XPathEvaluator(tree)
-            get_key = make_get_key_fn(evaluator)
-
-            # fetch the data from the XML file
-            product_number = get_key("%s/artikel_nr" % root)
-            params = fetch_params(get_key, root)
-
-            logger.info('Processing "%s" [%s]...', params['title'], product_number)
-
-            # If the XML indicates that this product is not produced with Daisy Producer ignore
-            # this file
-            daisy_producer = get_key("%s/MetaData/sbs/daisy_producer" % root)
-            if daisy_producer != "ja":
-                logger.debug('Ignoring "%s" as daisy_producer is set to "%s"',
-                             params['title'], daisy_producer)
-                continue
-
-            product_number_has_been_seen_before = False
-            if get_documents_by_product_number(product_number):
-                # If the order has been imported before just update the meta data of the existing order
-                product_number_has_been_seen_before = True
-                documents = get_documents_by_product_number(product_number)
-                # there should only ever be one document here. Make sure this is so
-                if len(documents) > 1:
-                    logger.error('There is more than one document for the given product %s (%s)',
-                                 product_number, documents)
-                document = documents[0]
-                logger.debug('Document "%s" for order number "%s" has already been imported.',
-                             document.title, product_number)
-                update_document(documents, document, params)
-            elif get_documents_by_source_or_title_source_edition(
-                params['source'], params['title'], params['source_edition']):
-                # check if the book has been produced for another order
-                documents = get_documents_by_source_or_title_source_edition(
-                    params['source'], params['title'], params['source_edition'])
-                # what if there are multiple documents that match the query?
-                if len(documents) > 1:
-                    logger.error('There is more than one document for the given source [%s] or title and source_edition [%s, %s] (%s)', 
-                                 params['source'], params['title'],
-                                 params['source_edition'], documents)
-                document = documents[0]
-                logger.debug('Document "%s" has already been imported for a different product.',
-                             document.title)
-                update_document(documents, document, params)
-                # update the product association
-                logger.debug('Updating product association ["%s" -> "%s"].',
-                             document.title, product_number)
-                Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
+                logger.exception("ABACUS Export file '%s' is not valid.", file)
+                # move file to a special folder where an operator will deal with it
+                os.rename(file, "Failed_" + file)
+            except:
+                logger.exception("ABACUS import failed.", file)
+                # move file to a special folder where an operator will deal with it
+                os.rename(file, "Failed_" + file)
             else:
-                # If the the order hasn't been imported before create the new order
-                logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".',
-                             params['title'], product_number)
-                # create and save the document
-                document = Document.objects.create(**params)
-                # create the product association
-                Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
-                # create an empty xml
-                update_xml_with_metadata(document)
-
-            logger.debug('Import complete. Removing file "%s"', file)
-#            os.remove(file)
-
-            # If the order has been archived before fetch the xml from the archive
-            fetch_xml(document, product_number)
-
-            # if the product_number has never been seen before then we are talking about a new
-            # production, i.e. try to check out the document in the archive
-            if not product_number_has_been_seen_before:
-                checkout_document(product_number)
-
-            self.numberOfDocuments += 1
+                logger.debug('Import complete. Removing file "%s"', file)
+                os.remove(file)
 
         self.stdout.write('Successfully added %s products.\n' % self.numberOfDocuments)
+
+def handle_file(file):
+    """Handle one ABACUS file. Return 1 if the import was successful, 0 otherwise."""
+    # Check the validity of the given XML file
+    tree = etree.parse(file)
+    relaxng.assertValid(tree)
+
+    evaluator = etree.XPathEvaluator(tree)
+    get_key = make_get_key_fn(evaluator)
+    
+    # fetch the data from the XML file
+    product_number = get_key("%s/artikel_nr" % root)
+    params = fetch_params(get_key, root)
+
+    logger.info('Processing "%s" [%s]...', params['title'], product_number)
+    
+    # If the XML indicates that this product is not produced with Daisy Producer ignore this file
+    daisy_producer = get_key("%s/MetaData/sbs/daisy_producer" % root)
+    if daisy_producer != "ja":
+        logger.debug('Ignoring "%s" as daisy_producer is set to "%s"',
+                     params['title'], daisy_producer)
+        return 0
+    
+    product_number_has_been_seen_before = False
+    if get_documents_by_product_number(product_number):
+        # If the order has been imported before just update the meta data of the existing order
+        product_number_has_been_seen_before = True
+        documents = get_documents_by_product_number(product_number)
+        # there should only ever be one document here. Make sure this is so
+        if len(documents) > 1:
+            logger.error('There is more than one document for the given product %s (%s)',
+                         product_number, documents)
+        document = documents[0]
+        logger.debug('Document "%s" for order number "%s" has already been imported.',
+                     document.title, product_number)
+        update_document(documents, document, params)
+    elif get_documents_by_source_or_title_source_edition(
+        params['source'], params['title'], params['source_edition']):
+        # check if the book has been produced for another order
+        documents = get_documents_by_source_or_title_source_edition(
+            params['source'], params['title'], params['source_edition'])
+        # what if there are multiple documents that match the query?
+        if len(documents) > 1:
+            logger.error('There is more than one document for the given source [%s] or title and source_edition [%s, %s] (%s)', 
+                         params['source'], params['title'],
+                         params['source_edition'], documents)
+        document = documents[0]
+        logger.debug('Document "%s" has already been imported for a different product.',
+                     document.title)
+        update_document(documents, document, params)
+        # update the product association
+        logger.debug('Updating product association ["%s" -> "%s"].', document.title, product_number)
+        Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
+    else:
+        # If the the order hasn't been imported before create the new order
+        logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".',
+                     params['title'], product_number)
+        # create and save the document
+        document = Document.objects.create(**params)
+        # create the product association
+        Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
+        # create an empty xml
+        update_xml_with_metadata(document)
+        
+    # If the order has been archived before fetch the xml from the archive
+    fetch_xml(document, product_number)
+    
+    # if the product_number has never been seen before then we are talking about a new
+    # production, i.e. try to check out the document in the archive
+    if not product_number_has_been_seen_before:
+        checkout_document(product_number)
+
+    return 1
 
 def get_documents_by_product_number(product_number):
     return Document.objects.filter(product__identifier=product_number)
@@ -259,7 +270,7 @@ def update_xml_with_content_from_archive(document, product_number):
     if not contentString:
         return
     # fix meta data
-    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'integration', 'xslt', 'fixMetaData.xsl'))
+    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'abacus_import', 'xslt', 'fixMetaData.xsl'))
     stylesheet_params = dict((k, v) for k, v in model_to_dict(document).iteritems() 
                              if k in ('date', 'identifier', 'production_source'))
     stylesheet_params['date'] = stylesheet_params['date'].isoformat()
