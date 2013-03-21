@@ -9,7 +9,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from lxml import etree
-from os.path import join
+from os.path import join, basename, dirname
 
 import cmislib
 import datetime
@@ -77,29 +77,31 @@ class Command(BaseCommand):
 
         for file in args:
             try:
-                self.numberOfDocuments += handle_file(file)
+                self.numberOfDocuments += handle_file(file, root, relaxng)
 
             except IOError:
                 raise CommandError('ABACUS Export file "%s" not found.' % file)
             except etree.XMLSyntaxError, e:
                 logger.exception("Cannot parse ABACUS Export file '%s'.", file)
-                # move file to a special folder where an operator will deal with it
-                os.rename(file, "Failed_" + file)
+                rename_failure_file(file)
             except etree.DocumentInvalid, e:
                 logger.exception("ABACUS Export file '%s' is not valid.", file)
-                # move file to a special folder where an operator will deal with it
-                os.rename(file, "Failed_" + file)
+                rename_failure_file(file)
             except:
-                logger.exception("ABACUS import failed.", file)
-                # move file to a special folder where an operator will deal with it
-                os.rename(file, "Failed_" + file)
+                logger.exception("ABACUS import failed.")
+                rename_failure_file(file)
             else:
                 logger.debug('Import complete. Removing file "%s"', file)
                 os.remove(file)
 
         self.stdout.write('Successfully added %s products.\n' % self.numberOfDocuments)
 
-def handle_file(file):
+def rename_failure_file(file):
+    # rename the file so it will no longer be picked up by the cron
+    # job and an operator will deal with it
+    os.rename(file, join(dirname(file), "Failed_" + basename(file)))
+    
+def handle_file(file, root, relaxng):
     """Handle one ABACUS file. Return 1 if the import was successful, 0 otherwise."""
     # Check the validity of the given XML file
     tree = etree.parse(file)
@@ -270,7 +272,7 @@ def update_xml_with_content_from_archive(document, product_number):
     if not contentString:
         return
     # fix meta data
-    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'abacus_import', 'xslt', 'fixMetaData.xsl'))
+    xsl = etree.parse(join(settings.PROJECT_DIR, 'abacus_import', 'xslt', 'fixMetaData.xsl'))
     stylesheet_params = dict((k, v) for k, v in model_to_dict(document).iteritems() 
                              if k in ('date', 'identifier', 'production_source'))
     stylesheet_params['date'] = stylesheet_params['date'].isoformat()
