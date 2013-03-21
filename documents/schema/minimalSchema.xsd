@@ -115,13 +115,6 @@
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="langAttribute">
-    <xs:annotation>
-      <xs:documentation>Because this xml:lang is different than the one above (for the top level),
-trang wraps the XML Schema attribute definitions in two attributeGroup's with
-different names (xml:lang &amp; xml:lang1). But for some reason the attribute
-definitions now have a use="required", which has to be deleted manually for
-xml:lang1 (until we find a way to properly configure trang).</xs:documentation>
-    </xs:annotation>
     <xs:attributeGroup ref="xml:lang1"/>
   </xs:attributeGroup>
   <xs:attributeGroup name="gradeAttribute">
@@ -525,6 +518,7 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
         <xs:element ref="dtbook:byline"/>
       </xs:choice>
       <xs:attribute ref="brl:class"/>
+      <xs:attributeGroup ref="xml:lang1"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="author" substitutionGroup="dtbook:levelcontent">
@@ -566,6 +560,19 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
         <xs:simpleType>
           <xs:restriction base="xs:token">
             <xs:enumeration value="pl"/>
+            <xs:enumeration value="ol"/>
+            <xs:enumeration value="ul"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="enum">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="a"/>
+            <xs:enumeration value="A"/>
+            <xs:enumeration value="i"/>
+            <xs:enumeration value="I"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
@@ -690,6 +697,7 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
         <xs:element ref="dtbook:div"/>
       </xs:choice>
       <xs:attributeGroup ref="dtbook:brailleClassAttribute"/>
+      <xs:attributeGroup ref="xml:lang1"/>
     </xs:complexType>
   </xs:element>
   <xs:group name="contractionhints">

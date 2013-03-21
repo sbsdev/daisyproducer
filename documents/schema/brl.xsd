@@ -57,9 +57,27 @@
   <xs:element name="separator">
     <xs:complexType/>
   </xs:element>
-  <xs:element name="v-form" type="xs:string"/>
-  <xs:element name="name" type="xs:string"/>
-  <xs:element name="place" type="xs:string"/>
+  <xs:element name="v-form">
+    <xs:simpleType>
+      <xs:restriction base="xs:normalizedString">
+        <xs:minLength value="1"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name="name">
+    <xs:simpleType>
+      <xs:restriction base="xs:normalizedString">
+        <xs:minLength value="1"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name="place">
+    <xs:simpleType>
+      <xs:restriction base="xs:normalizedString">
+        <xs:minLength value="1"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
   <xs:element name="date">
     <xs:complexType mixed="true">
       <xs:attribute name="value" use="required">
