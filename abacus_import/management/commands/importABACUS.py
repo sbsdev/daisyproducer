@@ -55,7 +55,8 @@ class Command(BaseCommand):
     @transaction.commit_on_success
     def handle(self, *args, **options):
         if len(args) < 1:
-            raise CommandError('No ABACUS Export file specified')
+            # no files to import, I guess we're done
+            return
 
         verbosity = int(options['verbosity'])
         if verbosity == 0:
@@ -80,7 +81,10 @@ class Command(BaseCommand):
                 self.numberOfDocuments += handle_file(file, root, relaxng)
 
             except IOError:
-                raise CommandError('ABACUS Export file "%s" not found.' % file)
+                # hm, looks like the file is gone. Did another process
+                # take care of it?
+                logger.exception("ABACUS Export file \"%s\" not found.", file)
+                continue
             except etree.XMLSyntaxError, e:
                 logger.exception("Cannot parse ABACUS Export file '%s'.", file)
                 rename_failure_file(file)
