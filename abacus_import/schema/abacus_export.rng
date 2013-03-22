@@ -30,7 +30,7 @@
                 <element name="source">
                   <optional>
                     <data type="token">
-                      <param name="pattern">(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9x]</param>
+                      <param name="pattern">(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9xX]</param>
                     </data>
                   </optional>
                 </element>
@@ -189,7 +189,10 @@
                   </element>
                 </optional>
                 <optional>
-                  <!-- the verkaufstext contains "author[xx]title[xx]subtitleN[xx]..." -->
+                  <!--
+                    the verkaufstext contains "author[xx]title[xx]subtitleN[xx]..." 
+                    the export from abacus also optionaly contains new lines, hence the '\n?
+                  -->
                   <element name="verkaufstext">
                     <data type="token">
                       <param name="pattern">.*\n?\[xx\].+(\n?\[xx\].+)*</param>
