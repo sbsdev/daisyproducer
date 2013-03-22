@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="AbaConnectContainer">
+      <element name="Task">
+        <element name="Parameter">
+          <empty/>
+        </element>
+        <element name="Transaction">
+          <element name="DocumentData">
+            <attribute name="command">
+              <data type="NCName"/>
+            </attribute>
+            <element name="artikel_nr">
+              <data type="NCName"/>
+            </element>
+            <ref name="title"/>
+            <element name="MetaData">
+              <element name="dc">
+                <ref name="title"/>
+                <element name="creator">
+                  <data type="string">
+                    <param name="minLength">1</param>
+                  </data>
+                </element>
+                <!--
+                  make sure the contents of the source element is a text node that has either a
+                  proper isbn number or is the empty string
+                -->
+                <element name="source">
+                  <optional>
+                    <data type="token">
+                      <param name="pattern">(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9x]</param>
+                    </data>
+                  </optional>
+                </element>
+                <element name="language">
+                  <choice>
+                    <value>de</value>
+                    <value>de-CH</value>
+                  </choice>
+                </element>
+                <element name="identifier">
+                  <data type="NCName"/>
+                </element>
+                <element name="date">
+                  <data type="date"/>
+                </element>
+              </element>
+              <element name="sbs">
+                <element name="KST">
+                  <data type="positiveInteger"/>
+                </element>
+                <optional>
+                  <element name="untertitel">
+                    <text/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="reihe">
+                    <text/>
+                  </element>
+                </optional>
+                <element name="verlag">
+                  <data type="token"/>
+                </element>
+                <element name="verlagsort">
+                  <data type="token"/>
+                </element>
+                <element name="auflageJahr">
+                  <data type="token">
+                    <param name="pattern">.*[0-9]{4}</param>
+                  </data>
+                </element>
+                <element name="printPageNumber">
+                  <data type="positiveInteger"/>
+                </element>
+                <optional>
+                  <element name="ausleihNr">
+                    <text/>
+                  </element>
+                </optional>
+                <element name="prodStatus">
+                  <data type="token"/>
+                </element>
+                <element name="datenErhalten">
+                  <data type="token"/>
+                </element>
+                <element name="schriftart">
+                  <data type="token"/>
+                </element>
+                <optional>
+                  <element name="endformat">
+                    <text/>
+                  </element>
+                </optional>
+                <element name="drucker">
+                  <data type="NCName"/>
+                </element>
+                <element name="doppelseitig">
+                  <data type="NCName"/>
+                </element>
+                <optional>
+                  <element name="bindung">
+                    <data type="token"/>
+                  </element>
+                </optional>
+                <element name="breite">
+                  <data type="nonNegativeInteger"/>
+                </element>
+                <element name="zeilen">
+                  <data type="nonNegativeInteger"/>
+                </element>
+                <optional>
+                  <element name="auszug">
+                    <text/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="zoom">
+                    <text/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="qualitaet">
+                    <text/>
+                  </element>
+                </optional>
+                <element name="prodPageSS">
+                  <data type="integer"/>
+                </element>
+                <optional>
+                  <element name="bpz">
+                    <text/>
+                  </element>
+                </optional>
+                <element name="ervNr">
+                  <data type="integer"/>
+                </element>
+                <element name="laufzettelNr">
+                  <data type="positiveInteger"/>
+                </element>
+                <element name="rucksackNr">
+                  <data type="nonNegativeInteger"/>
+                </element>
+                <optional>
+                  <element name="altersgruppe">
+                    <text/>
+                  </element>
+                </optional>
+                <element name="gdBuchNr">
+                  <data type="nonNegativeInteger"/>
+                </element>
+                <element name="prodPagePS">
+                  <data type="nonNegativeInteger"/>
+                </element>
+                <element name="anzahlBaende">
+                  <data type="nonNegativeInteger"/>
+                </element>
+                <element name="anzahlRelief">
+                  <data type="nonNegativeInteger"/>
+                </element>
+                <element name="vorlageHaus">
+                  <data type="NCName"/>
+                </element>
+                <element name="katalogEintrag">
+                  <data type="NCName"/>
+                </element>
+                <element name="verlagVerzeichnis">
+                  <data type="NCName"/>
+                </element>
+                <element name="daisy_producer">
+                  <choice>
+                    <value>ja</value>
+                    <value>nein</value>
+                  </choice>
+                </element>
+                <optional>
+                  <element name="notizen">
+                    <text/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="Aufwand_A2">
+                    <choice>
+                      <value/>
+                      <value>D</value>
+                    </choice>
+                  </element>
+                </optional>
+                <optional>
+                  <!-- the verkaufstext contains "author[xx]title[xx]subtitleN[xx]..." -->
+                  <element name="verkaufstext">
+                    <data type="token">
+                      <param name="pattern">.*\n?\[xx\].+(\n?\[xx\].+)*</param>
+                    </data>
+                  </element>
+                </optional>
+              </element>
+              <element name="ncc">
+                <element name="setInfo">
+                  <data type="integer"/>
+                </element>
+              </element>
+            </element>
+          </element>
+        </element>
+      </element>
+    </element>
+  </start>
+  <define name="title">
+    <element name="title">
+      <text/>
+    </element>
+  </define>
+</grammar>
