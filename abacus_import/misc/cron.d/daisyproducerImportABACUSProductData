@@ -5,6 +5,20 @@ INSTALLDIR=/path/to/daisyproducer
 SPOOL_DIR=/var/spool/daisyproducer
 VERBOSITY=3
 
+pidfile=/var/run/daisyproducerImportABACUSProductData.pid
+if [ -e $pidfile ]; then
+    pid=`cat $pidfile`
+    if /bin/kill -0 $pid > /dev/null 2>&1; then
+	echo "Already running"
+	exit 1
+    else
+	rm $pidfile
+    fi
+fi
+echo $$ > $pidfile
+
 # Import ABACUS product data
 cd $INSTALLDIR
 python manage.py importABACUS --verbosity=$VERBOSITY $SPOOL_DIR/SN_Alfresco_*.xml
+
+rm -f $pidfile
