@@ -325,9 +325,7 @@ def update_xml_in_ueberarbeiten(product_number, contentString):
     logger.debug('Update content in Ueberarbeiten.')
     document = resultset[0]
     latest_document = document.getLatestVersion()
-    stream = latest_document.getContentStream()
-    stream.write(contentString)
-    stream.close()
+    latest_document.setContentStream(contentFile)
 
 def fetch_params(get_key, root):
     metadata = {
