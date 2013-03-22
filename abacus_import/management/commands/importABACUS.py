@@ -56,6 +56,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if len(args) < 1:
             # no files to import, I guess we're done
+            logger.debug("No files to import.")
             return
 
         verbosity = int(options['verbosity'])
