@@ -94,12 +94,16 @@
                     <text/>
                   </element>
                 </optional>
-                <element name="drucker">
-                  <data type="NCName"/>
-                </element>
-                <element name="doppelseitig">
-                  <data type="NCName"/>
-                </element>
+                <optional>
+                  <element name="drucker">
+                    <data type="NCName"/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="doppelseitig">
+                    <data type="NCName"/>
+                  </element>
+                </optional>
                 <optional>
                   <element name="bindung">
                     <data type="token"/>
