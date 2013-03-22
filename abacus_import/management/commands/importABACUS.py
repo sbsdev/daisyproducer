@@ -170,14 +170,14 @@ def handle_file(file, root, relaxng):
         # create an empty xml
         update_xml_with_metadata(document)
         
-    # If the order has been archived before fetch the xml from the archive
-    fetch_xml(document, product_number)
-    
     # if the product_number has never been seen before then we are talking about a new
     # production, i.e. try to check out the document in the archive
     if not product_number_has_been_seen_before:
         checkout_document(product_number)
 
+    # If the order has been archived before fetch the xml from the archive
+    fetch_xml(document, product_number, not product_number_has_been_seen_before)
+    
     return 1
 
 def get_documents_by_product_number(product_number):
@@ -193,10 +193,12 @@ def get_documents_by_source_or_title_source_edition(source, title, source_editio
         # bigger problems anyway
         return Document.objects.filter(title=title, source_edition=source_edition)
 
-def fetch_xml(document, product_number):
+def fetch_xml(document, product_number, checked_out):
+    # we need to know if a checkout has happened so that we can update
+    # ueberarbeiten accordingly
     if already_archived(product_number):
         logger.debug('Product has already been archived. Update XML with content from archive.')
-        update_xml_with_content_from_archive(document, product_number)
+        update_xml_with_content_from_archive(document, product_number, checked_out)
 
 def update_document(queryset, document, params):
     if params_changed(document, params):
@@ -272,7 +274,7 @@ def validate_content(fileName, contentMetaData):
         return "; ".join(
             ("The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple for errorTuple in errorList))
 
-def update_xml_with_content_from_archive(document, product_number):
+def update_xml_with_content_from_archive(document, product_number, checked_out):
     user = get_abacus_user()
     contentString = get_document_content(product_number)
     if not contentString:
@@ -302,8 +304,9 @@ def update_xml_with_content_from_archive(document, product_number):
         document = document,
         created_by = user)
     version.content.save("updated_version.xml", content)
-    # also update the content in ueberarbeiten
-    update_xml_in_ueberarbeiten(product_number, contentString)
+    # also update the content in ueberarbeiten if the product was checked out
+    if checked_out:
+        update_xml_in_ueberarbeiten(product_number, contentString)
 
 def update_xml_in_ueberarbeiten(product_number, contentString):
     path = u'PATH:"/app:company_home/cm:Produktion/cm:Neuproduktion/cm:Überarbeiten//*"'
