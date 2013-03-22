@@ -6,7 +6,7 @@
       <x>70</x>
       <y>0</y>
       <w>1186</w>
-      <h>1149</h>
+      <h>1333</h>
     </coordinates>
     <panel_attributes>title:Import from ABACUS
 Start
@@ -25,17 +25,22 @@ While[SN Alfresco Files]
 		create empty xml with meta data
 	EndIf
 	If
-		[document not archived]
-
-		[document archived]
-		update xml with content from archive
-		update xml in Überarbeitung
-	EndIf
-	If
 		[product number known]
 
 		[product number not known]
 		check out document
+	EndIf
+	If
+		[document not archived]
+
+		[document archived]
+		update xml with content from archive
+		If
+			[document \not checked out]
+
+			[document checked out]
+			update xml in Überarbeitung
+		EndIf
 	EndIf
 	Remove SN Alfresco File
 [no SN Alfresco files]
