@@ -280,7 +280,7 @@ def update_xml_with_content_from_archive(document, product_number):
     # fix meta data
     xsl = etree.parse(join(settings.PROJECT_DIR, 'abacus_import', 'xslt', 'fixMetaData.xsl'))
     stylesheet_params = dict((k, v) for k, v in model_to_dict(document).iteritems() 
-                             if k in ('date', 'identifier', 'production_source'))
+                             if k in ('date', 'identifier', 'production_source', 'source'))
     stylesheet_params['date'] = stylesheet_params['date'].isoformat()
     stylesheet_params.update(((k, "'%s'" % v)) for (k, v) in stylesheet_params.iteritems())
     transform = etree.XSLT(xsl)
