@@ -54,10 +54,6 @@ class Command(BaseCommand):
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
-        if len(args) < 1:
-            # no files to import, I guess we're done
-            logger.debug("No files to import.")
-            return
 
         verbosity = int(options['verbosity'])
         if verbosity == 0:
@@ -69,6 +65,11 @@ class Command(BaseCommand):
             logger.setLevel(logging.INFO)
         elif verbosity == 3:
             logger.setLevel(logging.DEBUG)
+
+        if len(args) < 1:
+            # no files to import, I guess we're done
+            logger.debug("No files to import.")
+            return
 
         self.numberOfDocuments = 0
 
