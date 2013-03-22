@@ -435,6 +435,8 @@ def checkout_document(product_number):
         error_message = tree.xpath("//div[@class='errorMessage']")
         logger.warning("Checkout of product %s failed with \"%s\"",
                        product.name, error_message[0].text)
+    else:
+        logger.debug('Product [%s] checked out.', product_number)
 
 def get_auth_ticket():
     url = "http://%s/alfresco/service/api/login?u=%s&pw=%s" % (settings.CMIS_HOST, settings.CMIS_USER, settings.CMIS_PASSWORD)
