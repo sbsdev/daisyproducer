@@ -3,7 +3,7 @@
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/games
 INSTALLDIR=/path/to/daisyproducer
 SPOOL_DIR=/var/spool/daisyproducer
-VERBOSITY=3
+VERBOSITY=1
 
 pidfile=/var/run/daisyproducerImportABACUSProductData.pid
 if [ -e $pidfile ]; then
