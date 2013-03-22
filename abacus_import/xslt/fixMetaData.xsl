@@ -6,6 +6,7 @@
   
   <xsl:param name="date"/>
   <xsl:param name="identifier"/>
+  <xsl:param name="source"/>
   <xsl:param name="production_source"/>
 
   <xsl:output method="xml" encoding="utf-8" indent="no"
@@ -23,6 +24,13 @@
   <xsl:template match="//dtb:meta[@name = 'dc:Identifier' or @name = 'dtb:uid']/@content">
     <xsl:attribute name="content">
       <xsl:value-of select="$identifier"/>
+    </xsl:attribute>
+  </xsl:template>
+
+  <!-- Override the ISBN -->
+  <xsl:template match="//dtb:meta[@name = 'dc:Source']/@content">
+    <xsl:attribute name="content">
+      <xsl:value-of select="$source"/>
     </xsl:attribute>
   </xsl:template>
 
