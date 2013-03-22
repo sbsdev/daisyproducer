@@ -417,8 +417,7 @@ def checkout_document(product_number):
         # if it isn't in the archive then the product is new or still
         # being worked on. Then we do not need to check anything out,
         # i.e. we are done
-        logger.debug('Product [%s] is not in archive path [%s], so no need to check it out "%s"',
-                     product_number, archive_path)
+        logger.debug('Product [%s] is not in archive path, so no need to check it out.', product_number)
         return
 
     product = resultset[0]
