@@ -324,8 +324,10 @@ def update_xml_in_ueberarbeiten(product_number, contentFile):
         return
     logger.debug('Update content in Ueberarbeiten.')
     document = resultset[0]
-    latest_document = document.getLatestVersion()
-    latest_document.setContentStream(contentFile, contentType='application/xml')
+    logger.debug('Document is checked out: %s', document.isCheckedOut())
+    pwc = document.checkout()
+    pwc.setContentStream(contentFile, contentType='application/xml')
+    pwc.checkin()
 
 def fetch_params(get_key, root):
     metadata = {
