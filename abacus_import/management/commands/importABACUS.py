@@ -294,10 +294,10 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
     tmpFile.write(contentString)
     tmpFile.close()
     validation_problems = validate_content(tmpFileName, model_to_dict(document))
+    os.remove(tmpFileName)
     if validation_problems:
         logger.critical('Archived XML is not valid. Fails with %s', validation_problems)
         return
-    os.remove(tmpFileName)
     content = ContentFile(contentString)
     version = Version.objects.create(
         comment = "Updated version due fetch from archive",
