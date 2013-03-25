@@ -306,9 +306,9 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
     version.content.save("updated_version.xml", content)
     # also update the content in ueberarbeiten if the product was checked out
     if checked_out:
-        update_xml_in_ueberarbeiten(product_number, contentString)
+        update_xml_in_ueberarbeiten(product_number, content)
 
-def update_xml_in_ueberarbeiten(product_number, contentString):
+def update_xml_in_ueberarbeiten(product_number, contentFile):
     path = u'PATH:"/app:company_home/cm:Produktion/cm:Neuproduktion/cm:Überarbeiten//*"'
     q = "select * from sbs:produkt where sbs:pProduktNo = '%s' AND CONTAINS('%s')" % (product_number, path)
     resultset = cmis_request(q)
@@ -325,7 +325,7 @@ def update_xml_in_ueberarbeiten(product_number, contentString):
     logger.debug('Update content in Ueberarbeiten.')
     document = resultset[0]
     latest_document = document.getLatestVersion()
-    latest_document.setContentStream(contentString)
+    latest_document.setContentStream(contentFile, contentType='application/xml')
 
 def fetch_params(get_key, root):
     metadata = {
