@@ -334,7 +334,6 @@ def fetch_params(get_key, root):
         "date": "dc/date",
         "source": "dc/source",
         "language": "dc/language",
-#        "source_date": "sbs/auflageJahr",
         "source_edition": "sbs/auflageJahr",
         "source_publisher": "sbs/verlag",
         }
