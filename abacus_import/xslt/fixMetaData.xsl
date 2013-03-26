@@ -27,7 +27,7 @@
     doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
   
   <!-- Override the author -->
-  <xsl:template match="//dtb:meta[@name = 'dc:Creator]/@content">
+  <xsl:template match="//dtb:meta[@name = 'dc:Creator']/@content">
     <xsl:attribute name="content">
       <xsl:value-of select="$author"/>
     </xsl:attribute>
