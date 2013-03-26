@@ -17,11 +17,10 @@ if [ -e $pidfile ]; then
 fi
 echo $$ > $pidfile
 
-# Import ABACUS product data
-cd $INSTALLDIR
 # get all files older than 10 minutes
 files=`find $SPOOL_DIR -type f -mmin +10 -name 'SN_Alfresco_*.xml'`
 
-python manage.py importABACUS --verbosity=$VERBOSITY $files
+# Import ABACUS product data
+su - -c "cd $INSTALLDIR && python manage.py importABACUS --verbosity=$VERBOSITY $files" www-data 
 
 rm -f $pidfile
