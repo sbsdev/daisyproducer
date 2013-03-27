@@ -5,7 +5,8 @@ INSTALLDIR=/path/to/daisyproducer
 SPOOL_DIR=/var/spool/daisyproducer
 VERBOSITY=1
 
-pidfile=/var/run/daisyproducerImportABACUSProductData.pid
+pidfile=/tmp/daisyproducerImportABACUSProductData.pid
+
 if [ -e $pidfile ]; then
     pid=`cat $pidfile`
     if /bin/kill -0 $pid > /dev/null 2>&1; then
@@ -19,9 +20,9 @@ echo $$ > $pidfile
 
 # get all files older than 10 minutes
 files=`find $SPOOL_DIR -type f -mmin +10 -name 'SN_Alfresco_*.xml'`
-command="cd $INSTALLDIR && python manage.py importABACUS --verbosity=$VERBOSITY $files"
 
 # Import ABACUS product data
-su - -c "$command" www-data 
+cd $INSTALLDIR
+python manage.py importABACUS --verbosity=$VERBOSITY $files
 
 rm -f $pidfile
