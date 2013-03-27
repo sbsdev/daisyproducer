@@ -16,6 +16,7 @@ import datetime
 import httplib
 import httplib2
 import logging
+import logging.config
 import os
 import re
 import tempfile
