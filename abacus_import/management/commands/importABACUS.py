@@ -41,7 +41,7 @@ import tempfile
 # - Guard against calling this job again when the previous run isn't
 #   finished.
 
-logging.basicConfig(format='%(levelname)s: %(message)s')
+logging.config.fileConfig(join(settings.PROJECT_DIR, 'logging.conf'))
 logger = logging.getLogger(__name__)
 
 class ImportError(Exception):
@@ -56,15 +56,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         verbosity = int(options['verbosity'])
-        if verbosity == 0:
-            # no output
-            logging.disable(logging.CRITICAL)
-        elif verbosity == 1:
-            logger.setLevel(logging.WARNING)
-        elif verbosity == 2:
-            logger.setLevel(logging.INFO)
-        elif verbosity == 3:
-            logger.setLevel(logging.DEBUG)
 
         if len(args) < 1:
             # no files to import, I guess we're done
@@ -100,7 +91,8 @@ class Command(BaseCommand):
                 logger.debug('Import complete. Removing file "%s"', file)
                 os.remove(file)
 
-        self.stdout.write('Successfully added %s products.\n' % self.numberOfDocuments)
+        if verbosity != 0:
+            self.stdout.write('Successfully added %s products.\n' % self.numberOfDocuments)
 
 def rename_failure_file(file):
     # rename the file so it will no longer be picked up by the cron
