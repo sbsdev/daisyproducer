@@ -3,7 +3,6 @@
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/games
 INSTALLDIR=/path/to/daisyproducer
 SPOOL_DIR=/var/spool/daisyproducer
-VERBOSITY=1
 
 pidfile=/tmp/daisyproducerImportABACUSProductData.pid
 
@@ -23,6 +22,6 @@ files=`find $SPOOL_DIR -type f -mmin +10 -name 'SN_Alfresco_*.xml'`
 
 # Import ABACUS product data
 cd $INSTALLDIR
-python manage.py importABACUS --verbosity=$VERBOSITY $files
+python manage.py importABACUS $files
 
 rm -f $pidfile
