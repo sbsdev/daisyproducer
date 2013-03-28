@@ -21,45 +21,45 @@ start =
                      element date { xsd:date }
                   },
                   element sbs {
-                     element KST { xsd:positiveInteger },
-                     element untertitel { text }?,
-                     element reihe { text }?,
-                     element verlag { xsd:token }?,
-                     element verlagsort { xsd:token }?,
-                     element auflageJahr { xsd:token { pattern='.*[0-9]{4}' } }?,
-                     element printPageNumber { xsd:nonNegativeInteger },
-                     element ausleihNr { text }?,
-                     element prodStatus { xsd:token },
-                     element datenErhalten { xsd:token }?,
-                     element schriftart { xsd:token },
-                     element endformat { text }?,
-                     element drucker { xsd:NCName }?,
-                     element doppelseitig { xsd:NCName }?,
-                     element bindung { xsd:token }?,
-                     element breite { xsd:nonNegativeInteger },
-                     element zeilen { xsd:nonNegativeInteger },
-                     element auszug { text }?,
-                     element zoom { text }?,
-                     element qualitaet { text }?,
-                     element prodPageSS { xsd:integer },
-                     element bpz { text }?,
-                     element ervNr { xsd:integer },
-                     element laufzettelNr { xsd:nonNegativeInteger },
-                     element rucksackNr { xsd:nonNegativeInteger },
-                     element altersgruppe { text }?,
-                     element gdBuchNr { xsd:nonNegativeInteger },
-                     element prodPagePS { xsd:nonNegativeInteger },
-                     element anzahlBaende { xsd:nonNegativeInteger },
-                     element anzahlRelief { xsd:nonNegativeInteger },
-                     element vorlageHaus { xsd:NCName },
-                     element katalogEintrag { xsd:NCName },
-                     element verlagVerzeichnis { xsd:NCName },
-                     element daisy_producer { "ja" | "nein" },
-                     element notizen { text }?,
-                     element Aufwand_A2 { "" | "D" }?,
+                     element KST { xsd:positiveInteger }
+                   & element untertitel { text }?
+                   & element reihe { text }?
+                   & element verlag { xsd:token }?
+                   & element verlagsort { xsd:token }?
+                   & element auflageJahr { xsd:token { pattern='.*[0-9]{4}' } }?
+                   & element printPageNumber { xsd:nonNegativeInteger }
+                   & element ausleihNr { text }?
+                   & element prodStatus { xsd:token }
+                   & element datenErhalten { xsd:token }?
+                   & element schriftart { xsd:token }
+                   & element endformat { text }?
+                   & element drucker { xsd:NCName }?
+                   & element doppelseitig { xsd:NCName }?
+                   & element bindung { xsd:token }?
+                   & element breite { xsd:nonNegativeInteger }
+                   & element zeilen { xsd:nonNegativeInteger }
+                   & element auszug { text }?
+                   & element zoom { text }?
+                   & element qualitaet { text }?
+                   & element prodPageSS { xsd:integer }
+                   & element bpz { text }?
+                   & element ervNr { xsd:integer }
+                   & element laufzettelNr { xsd:nonNegativeInteger }
+                   & element rucksackNr { xsd:nonNegativeInteger }
+                   & element altersgruppe { text }?
+                   & element gdBuchNr { xsd:nonNegativeInteger }
+                   & element prodPagePS { xsd:nonNegativeInteger }
+                   & element anzahlBaende { xsd:nonNegativeInteger }
+                   & element anzahlRelief { xsd:nonNegativeInteger }
+                   & element vorlageHaus { xsd:NCName }
+                   & element katalogEintrag { xsd:NCName }
+                   & element verlagVerzeichnis { xsd:NCName }
+                   & element daisy_producer { "ja" | "nein" }
+                   & element notizen { text }?
+                   & element Aufwand_A2 { "" | "D" }?
                      # the verkaufstext contains "author[xx]title[xx]subtitleN[xx]..." 
                      # the export from abacus also optionaly contains new lines, hence the '\n?
-                     element verkaufstext { xsd:token { pattern='.*\n?\[xx\].+(\n?\[xx\].+)*' } }?
+                   & element verkaufstext { xsd:token { pattern='.*\n?\[xx\].+(\n?\[xx\].+)*' } }?
                   },
                   element ncc {
                      element setInfo { xsd:integer }
