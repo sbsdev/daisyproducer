@@ -30,12 +30,16 @@ class Command(BaseCommand):
             if verbosity >= 1:
                 self.stdout.write('Exporting content for %s...\n' % product)
 
-            document = Document.objects.get(product__identifier=product)
+            try:
+                document = Document.objects.get(product__identifier=product)
+            except Document.DoesNotExist:
+                self.stderr.write('Product %s does not exist\n' % product)
+                continue
+
             version = document.latest_version()
             copyfile(version.content.path, join(output_dir, product + ".xml"))
             products_exported += 1
-            
+
         if verbosity >= 1:
             self.stdout.write("%s products exported\n" % products_exported)
 
-        

@@ -32,12 +32,16 @@ class Command(BaseCommand):
         for product in args:
             if verbosity >= 1:
                 self.stdout.write('Exporting text only DTB for %s...\n' % product)
-                
-            document = Document.objects.get(product__identifier=product)
+
+            try:
+                document = Document.objects.get(product__identifier=product)
+            except Document.DoesNotExist:
+                self.stderr.write('Product %s does not exist\n' % product)
+                continue
 
             inputFile = document.latest_version().content.path
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
-            
+
             transformationErrors = DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir)
             if transformationErrors:
                 print transformationErrors
@@ -47,8 +51,7 @@ class Command(BaseCommand):
             shutil.rmtree(outputDir)
 
             products_exported += 1
-            
+
         if verbosity >= 1:
             self.stdout.write("%s products exported\n" % products_exported)
 
-        
