@@ -211,7 +211,7 @@ def update_document(document, params):
         # update the meta data
         update_xml_with_metadata(document, **params)
 
-        return document
+    return document
 
 def get_type(product_number):
     type = None
