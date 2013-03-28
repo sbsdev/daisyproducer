@@ -18,7 +18,7 @@ class StateAdmin(admin.ModelAdmin):
 
 class DocumentAdmin(admin.ModelAdmin):
 	list_display = ('title', 'author', 'source_publisher', 'source', 'state',)
-	list_filter = ('author', 'source_publisher', 'state',)
+	list_filter = ('state',)
 	ordering = ('title', 'state',)
 	search_fields = ('title',)
 	inlines = [VersionInline, AttachmentInline, ProductInline]
@@ -32,7 +32,7 @@ class AttachmentAdmin(admin.ModelAdmin):
 
 class ProductAdmin(admin.ModelAdmin):
 	list_display = ('identifier', 'type', 'document',)
-	list_filter = ('identifier', 'type', 'document',)
+	list_filter = ('type',)
 	ordering = ('identifier', 'type', 'document',)
 	search_fields = ('identifier',)
 
