@@ -23,17 +23,19 @@
                     <param name="minLength">1</param>
                   </data>
                 </element>
-                <!--
-                  make sure the contents of the source element is a text node that has either a
-                  proper isbn number or is the empty string
-                -->
-                <element name="source">
-                  <optional>
-                    <data type="token">
-                      <param name="pattern">(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9xX]</param>
-                    </data>
-                  </optional>
-                </element>
+                <optional>
+                  <!--
+                    make sure the contents of the source element is a text node that has either a
+                    proper isbn number or is the empty string
+                  -->
+                  <element name="source">
+                    <optional>
+                      <data type="token">
+                        <param name="pattern">(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9xX]</param>
+                      </data>
+                    </optional>
+                  </element>
+                </optional>
                 <element name="language">
                   <choice>
                     <value>de</value>
