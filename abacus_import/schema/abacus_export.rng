@@ -75,7 +75,7 @@
                   </data>
                 </element>
                 <element name="printPageNumber">
-                  <data type="positiveInteger"/>
+                  <data type="nonNegativeInteger"/>
                 </element>
                 <optional>
                   <element name="ausleihNr">
@@ -144,7 +144,7 @@
                   <data type="integer"/>
                 </element>
                 <element name="laufzettelNr">
-                  <data type="positiveInteger"/>
+                  <data type="nonNegativeInteger"/>
                 </element>
                 <element name="rucksackNr">
                   <data type="nonNegativeInteger"/>
