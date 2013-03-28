@@ -63,17 +63,23 @@
                     <text/>
                   </element>
                 </optional>
-                <element name="verlag">
-                  <data type="token"/>
-                </element>
-                <element name="verlagsort">
-                  <data type="token"/>
-                </element>
-                <element name="auflageJahr">
-                  <data type="token">
-                    <param name="pattern">.*[0-9]{4}</param>
-                  </data>
-                </element>
+                <optional>
+                  <element name="verlag">
+                    <data type="token"/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="verlagsort">
+                    <data type="token"/>
+                  </element>
+                </optional>
+                <optional>
+                  <element name="auflageJahr">
+                    <data type="token">
+                      <param name="pattern">.*[0-9]{4}</param>
+                    </data>
+                  </element>
+                </optional>
                 <element name="printPageNumber">
                   <data type="nonNegativeInteger"/>
                 </element>
