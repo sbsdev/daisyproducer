@@ -85,9 +85,11 @@
                 <element name="prodStatus">
                   <data type="token"/>
                 </element>
-                <element name="datenErhalten">
-                  <data type="token"/>
-                </element>
+                <optional>
+                  <element name="datenErhalten">
+                    <data type="token"/>
+                  </element>
+                </optional>
                 <element name="schriftart">
                   <data type="token"/>
                 </element>

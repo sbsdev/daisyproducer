@@ -30,7 +30,7 @@ start =
                      element printPageNumber { xsd:nonNegativeInteger },
                      element ausleihNr { text }?,
                      element prodStatus { xsd:token },
-                     element datenErhalten { xsd:token },
+                     element datenErhalten { xsd:token }?,
                      element schriftart { xsd:token },
                      element endformat { text }?,
                      element drucker { xsd:NCName }?,
