@@ -27,6 +27,9 @@ class Command(BaseCommand):
         products_exported = 0
 
         for product in args:
+            if verbosity >= 1:
+                self.stdout.write('Exporting content for %s...\n' % product)
+
             document = Document.objects.get(product__identifier=product)
             version = document.latest_version()
             copyfile(version.content.path, join(output_dir, product + ".xml"))
