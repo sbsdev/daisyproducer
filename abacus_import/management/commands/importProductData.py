@@ -59,7 +59,7 @@ class Command(BaseCommand):
                 product_number, author, title, source_edition, source, verkaufstext = line
             
                 if not VALID_PRODUCT_NUMBER_RE.match(product_number):
-                    logger.debug('Ignoring invalid product number "%s"', product_number)
+                    logger.warning('Ignoring invalid product number "%s"', product_number)
                     continue
 
                 # clean the source field
