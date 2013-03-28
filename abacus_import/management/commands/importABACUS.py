@@ -134,7 +134,7 @@ def handle_file(file, root, relaxng):
         document = documents[0]
         logger.debug('Document "%s" for order number "%s" has already been imported.',
                      document.title, product_number)
-        update_document(documents, document, params)
+        document = update_document(document, params)
     elif get_documents_by_source_or_title_source_edition(
         params['source'], params['title'], params['source_edition']):
         # check if the book has been produced for another order
@@ -148,7 +148,7 @@ def handle_file(file, root, relaxng):
         document = documents[0]
         logger.debug('Document "%s" has already been imported for a different product.',
                      document.title)
-        update_document(documents, document, params)
+        document = update_document(document, params)
         # update the product association
         logger.debug('Updating product association ["%s" -> "%s"].', document.title, product_number)
         Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
@@ -193,13 +193,26 @@ def fetch_xml(document, product_number, checked_out):
         logger.debug('Product has already been archived. Update XML with content from archive.')
         update_xml_with_content_from_archive(document, product_number, checked_out)
 
-def update_document(queryset, document, params):
+def update_document(document, params):
+    print params
     if params_changed(document, params):
         logger.debug('Import params differ from document meta data. Updating meta data with %s.',
                      params)
-        queryset.update(**params)
+        # update all the instance field. See also
+        # http://stackoverflow.com/questions/8367609
+        for key,value in params.items():
+            if not Document._meta.get_field(key):
+                logger.error("Trying to update a non-existing document instance field %s", key)
+            else:
+                # this works as long as we do not have any foreign keys or many to
+                # many fields in params.
+                setattr(document, key, value)
+        document.save()
+
         # update the meta data
         update_xml_with_metadata(document, **params)
+
+        return document
 
 def get_type(product_number):
     type = None
@@ -275,7 +288,6 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
     # fix meta data
     xsl = etree.parse(join(settings.PROJECT_DIR, 'abacus_import', 'xslt', 'fixMetaData.xsl'))
     stylesheet_params = model_to_dict(document)
-    logger.debug('Fix meta data with %s.', stylesheet_params)
     stylesheet_params.update(((k, v.isoformat())) for (k, v) in stylesheet_params.iteritems() if isinstance(v, datetime.date))
     stylesheet_params.update(((k, '')) for (k, v) in stylesheet_params.iteritems() if v == None)
     stylesheet_params.update(((k, "'%s'" % v)) for (k, v) in stylesheet_params.iteritems())
