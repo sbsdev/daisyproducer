@@ -47,7 +47,7 @@ class Command(BaseCommand):
                 print transformationErrors
 
             zipFile = join(output_dir, product + ".zip")
-            zipDirectory(outputDir, zipFile, document.title)
+            zipDirectory(outputDir, zipFile, product)
             shutil.rmtree(outputDir)
 
             products_exported += 1

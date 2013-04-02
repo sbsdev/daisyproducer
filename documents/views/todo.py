@@ -315,7 +315,7 @@ def preview_text_only_dtb(request, document_id):
 
             zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
             zipFile.close() # we are only interested in a unique filename
-            zipDirectory(outputDir, zipFile.name, document.title)
+            zipDirectory(outputDir, zipFile.name, ebookNumber)
             shutil.rmtree(outputDir)
 
             # put a copy of the ebook to a shared folder where it is fetched by another process that
