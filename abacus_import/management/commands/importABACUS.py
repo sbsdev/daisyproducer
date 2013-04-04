@@ -27,20 +27,14 @@ import tempfile
 # different order.
 #
 # Once an order has been imported the corresponding file is deleted.
-# This of course fails if the import crashes midway. The file is not
-# deleted and the next run of the cron job will try to import the
-# order again. The import is not idempotent as some of the actions are
-# not inside transactions. The updates in the database (meta data) are
-# wrapped inside a transaction. However the changes to the XML file or
-# the actions in Alfresco cannot be rolled back. For that reason all
-# but a few raise statements have been replaced with logger.error,
-# i.e. log an error if isn't fatal and remove the file even if there
-# was an error. That way we can at least avoid duplicate checkouts in
+# The import is not idempotent as some of the actions are not inside
+# transactions. The updates in the database (meta data) are wrapped
+# inside a transaction. However the changes to the XML file or the
+# actions in Alfresco cannot be rolled back. For that reason all but a
+# few raise statements have been replaced with logger.error, i.e. log
+# an error if isn't fatal and remove the file even if there was an
+# error. That way we can at least avoid duplicate checkouts in
 # Alfresco but we have essentially no retries.
-
-# TODO
-# - Guard against calling this job again when the previous run isn't
-#   finished.
 
 logging.config.fileConfig(join(settings.PROJECT_DIR, 'logging.conf'))
 logger = logging.getLogger(__name__)
