@@ -283,6 +283,7 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
     stylesheet_params = model_to_dict(document)
     stylesheet_params.update(((k, v.isoformat())) for (k, v) in stylesheet_params.iteritems() if isinstance(v, datetime.date))
     stylesheet_params.update(((k, '')) for (k, v) in stylesheet_params.iteritems() if v == None)
+    stylesheet_params.update(((k, v.replace("'", "\'"))) for (k, v) in stylesheet_params.iteritems()) # escape single quotes
     stylesheet_params.update(((k, "'%s'" % v)) for (k, v) in stylesheet_params.iteritems())
     transform = etree.XSLT(xsl)
     fixed_tree = transform(etree.fromstring(contentString), **stylesheet_params)
