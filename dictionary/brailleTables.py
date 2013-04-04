@@ -278,7 +278,7 @@ def write_words_with_wrong_default_translation(words):
                 write_csv(f, getTables(2, name=True), word)
             if word.type in (3, 4):
                 write_csv(f, getTables(2, place=True), word)
-            if word.type in (0, 1, 3, 5):
+            if word.type in (0, 5):
                 write_csv(f, getTables(2), word)
             
     f.close()
