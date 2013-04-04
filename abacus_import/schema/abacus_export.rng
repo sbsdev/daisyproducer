@@ -81,9 +81,11 @@
                       </data>
                     </element>
                   </optional>
-                  <element name="printPageNumber">
-                    <data type="nonNegativeInteger"/>
-                  </element>
+                  <optional>
+                    <element name="printPageNumber">
+                      <data type="nonNegativeInteger"/>
+                    </element>
+                  </optional>
                   <optional>
                     <element name="ausleihNr">
                       <text/>
