@@ -338,6 +338,9 @@ def fetch_params(get_key, root):
         "source_publisher": "sbs/verlag",
         }
     params = dict([(key, get_key("%s/MetaData/%s" % (root, value))) for (key, value) in metadata.items()])
+    # clean the source field
+    if params['source'] == "keine":
+        params['source'] = ""
     params['date'] = datetime.datetime.strptime(params['date'], '%Y-%m-%d').date()
     production_series_number = get_key("%s/MetaData/sbs/rucksackNr" % root)
     if production_series_number != '0':

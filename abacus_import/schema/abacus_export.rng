@@ -18,11 +18,13 @@
             <element name="MetaData">
               <element name="dc">
                 <ref name="title"/>
-                <element name="creator">
-                  <data type="string">
-                    <param name="minLength">1</param>
-                  </data>
-                </element>
+                <optional>
+                  <element name="creator">
+                    <data type="string">
+                      <param name="minLength">1</param>
+                    </data>
+                  </element>
+                </optional>
                 <optional>
                   <!--
                     make sure the contents of the source element is a text node that has either a
@@ -31,7 +33,7 @@
                   <element name="source">
                     <optional>
                       <data type="token">
-                        <param name="pattern">(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9xX]</param>
+                        <param name="pattern">keine|SBS[0-9]{6}|(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9xX]</param>
                       </data>
                     </optional>
                   </element>
@@ -79,6 +81,21 @@
                       <data type="token">
                         <param name="pattern">.*[0-9]{4}</param>
                       </data>
+                    </element>
+                  </optional>
+                  <optional>
+                    <element name="verlagNR">
+                      <data type="token"/>
+                    </element>
+                  </optional>
+                  <optional>
+                    <element name="opusNr">
+                      <data type="token"/>
+                    </element>
+                  </optional>
+                  <optional>
+                    <element name="ismn">
+                      <data type="token"/>
                     </element>
                   </optional>
                   <optional>
@@ -211,9 +228,11 @@
                       the export from abacus also optionaly contains new lines, hence the '\n?
                     -->
                     <element name="verkaufstext">
-                      <data type="token">
-                        <param name="pattern">.*\n?\[xx\].+(\n?\[xx\].+)*</param>
-                      </data>
+                      <optional>
+                        <data type="token">
+                          <param name="pattern">.*\n?\[xx\].+(\n?\[xx\].+)*</param>
+                        </data>
+                      </optional>
                     </element>
                   </optional>
                 </interleave>
