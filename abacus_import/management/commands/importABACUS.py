@@ -17,6 +17,7 @@ import httplib
 import httplib2
 import logging
 import logging.config
+import numbers
 import os
 import re
 import tempfile
@@ -283,8 +284,8 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
     stylesheet_params = model_to_dict(document)
     stylesheet_params.update(((k, v.isoformat())) for (k, v) in stylesheet_params.iteritems() if isinstance(v, datetime.date))
     stylesheet_params.update(((k, '')) for (k, v) in stylesheet_params.iteritems() if v == None)
-    stylesheet_params.update(((k, v.replace("'", "\'"))) for (k, v) in stylesheet_params.iteritems() if isinstance(v, basestring)) # escape single quotes
-    stylesheet_params.update(((k, "'%s'" % v)) for (k, v) in stylesheet_params.iteritems())
+    stylesheet_params.update(((k, etree.XSLT.strparam(v))) for (k, v) in stylesheet_params.iteritems() if isinstance(v, basestring)) # escape single quotes
+    stylesheet_params.update(((k, "%s" % v)) for (k, v) in stylesheet_params.iteritems() if isinstance(v, numbers.Number))
     transform = etree.XSLT(xsl)
     fixed_tree = transform(etree.fromstring(contentString), **stylesheet_params)
     contentString = etree.tostring(fixed_tree, xml_declaration=True, encoding='utf-8')
