@@ -108,17 +108,21 @@
                       <text/>
                     </element>
                   </optional>
-                  <element name="prodStatus">
-                    <data type="token"/>
-                  </element>
+                  <optional>
+                    <element name="prodStatus">
+                      <data type="token"/>
+                    </element>
+                  </optional>
                   <optional>
                     <element name="datenErhalten">
                       <data type="token"/>
                     </element>
                   </optional>
-                  <element name="schriftart">
-                    <data type="token"/>
-                  </element>
+                  <optional>
+                    <element name="schriftart">
+                      <data type="token"/>
+                    </element>
+                  </optional>
                   <optional>
                     <element name="endformat">
                       <text/>
