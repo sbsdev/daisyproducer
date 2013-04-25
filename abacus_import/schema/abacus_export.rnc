@@ -26,7 +26,7 @@ start =
                    & element reihe { text }?
                    & element verlag { xsd:token }?
                    & element verlagsort { xsd:token }?
-                   & element auflageJahr { xsd:token { pattern='.*[0-9]{4}' } }?
+                   & element auflageJahr { xsd:token }?
                    & element verlagNR { xsd:token }?
                    & element opusNr { xsd:token }?
                    & element ismn { xsd:token }?

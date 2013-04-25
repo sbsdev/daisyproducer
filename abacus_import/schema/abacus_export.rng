@@ -78,9 +78,7 @@
                   </optional>
                   <optional>
                     <element name="auflageJahr">
-                      <data type="token">
-                        <param name="pattern">.*[0-9]{4}</param>
-                      </data>
+                      <data type="token"/>
                     </element>
                   </optional>
                   <optional>
