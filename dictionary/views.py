@@ -34,6 +34,13 @@ MAX_WORDS_PER_PAGE = 25
 
 final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
+def filter_hyphenation(b):
+    """Unfortunately hyphenation marks sneaked back into the German
+core liblouis tables, so we have to remove them here. They are only
+used in the actual translation to sbsform but are not wanted when
+proposing braille translations to the user for unknown words."""
+    return b.replace('t', '').replace('w', '')
+
 @login_required
 @transaction.commit_on_success
 def check(request, document_id, grade):
@@ -76,7 +83,7 @@ def check(request, document_id, grade):
                                 chain(GlobalWord.objects.filter(grade=grade).filter(type=5).filter(homograph_disambiguation__in=homographs).values_list('homograph_disambiguation', flat=True),
                                       LocalWord.objects.filter(grade=grade).filter(type=5).filter(document=document).filter(homograph_disambiguation__in=homographs).values_list('homograph_disambiguation', flat=True))))
     unknown_homographs = [{'untranslated': homograph.replace('|', ''), 
-                           'braille': louis.translateString(getTables(grade), homograph.replace('|', unichr(0x250A))),
+                           'braille': filter_hyphenation(louis.translateString(getTables(grade), homograph.replace('|', unichr(0x250A)))),
                            'type': 5,
                            'homograph_disambiguation': homograph}
                           for homograph in homographs - duplicate_homographs]
@@ -88,7 +95,7 @@ def check(request, document_id, grade):
                            chain(GlobalWord.objects.filter(grade=grade).filter(type__in=(1,2)).filter(untranslated__in=names).values_list('untranslated', flat=True),
                                  LocalWord.objects.filter(grade=grade).filter(type__in=(1,2)).filter(document=document).filter(untranslated__in=names).values_list('untranslated', flat=True))))
     unknown_names = [{'untranslated': name, 
-                      'braille': louis.translateString(getTables(grade, name=True), name), 
+                      'braille': filter_hyphenation(louis.translateString(getTables(grade, name=True), name)), 
                       'type': 2,
                       'homograph_disambiguation': ''}
                      for name in names - duplicate_names]
@@ -99,7 +106,7 @@ def check(request, document_id, grade):
                             chain(GlobalWord.objects.filter(grade=grade).filter(type__in=(3,4)).filter(untranslated__in=places).values_list('untranslated', flat=True),
                                   LocalWord.objects.filter(grade=grade).filter(type__in=(3,4)).filter(document=document).filter(untranslated__in=places).values_list('untranslated', flat=True))))
     unknown_places = [{'untranslated': place,
-                       'braille': louis.translateString(getTables(grade, place=True), place),
+                       'braille': filter_hyphenation(louis.translateString(getTables(grade, place=True), place)),
                        'type': 4,
                        'homograph_disambiguation': ''}
                       for place in places - duplicate_places]
@@ -138,7 +145,7 @@ def check(request, document_id, grade):
                            chain(GlobalWord.objects.filter(grade=grade).filter(untranslated__in=new_words).values_list('untranslated', flat=True),
                                  LocalWord.objects.filter(grade=grade).filter(document=document).filter(untranslated__in=new_words).values_list('untranslated', flat=True))))
     unknown_words = [{'untranslated': word, 
-                      'braille': louis.translateString(getTables(grade), word),
+                      'braille': filter_hyphenation(louis.translateString(getTables(grade), word)),
                       'type' : 0,
                       'homograph_disambiguation': ''}
                      for word in new_words - duplicate_words]
@@ -296,7 +303,7 @@ def confirm(request, grade, deferred=False):
         for word in unconfirmed_homographs - covered_entries:
             document = Document.objects.filter(localword__grade=grade, localword__type=5, localword__isConfirmed=False, localword__untranslated=word)[0]
             w = LocalWord(untranslated=word, 
-                          braille=louis.translateString(getTables(grade), word),
+                          braille=filter_hyphenation(louis.translateString(getTables(grade), word)),
                           grade=grade, type=0, document=document)
             w.save()
     
@@ -564,8 +571,8 @@ ORDER BY l.untranslated
     single_grade_words = GlobalWord.objects.raw(WORDS_WITH_MISSING_BRAILLE)
     missing_words = [{'untranslated': smart_unicode(word.untranslated),
                       'original_grade': word.grade,
-                      'grade1': smart_unicode(word.braille) if word.grade == 1 else louis.translateString(getTables(1), smart_unicode(word.untranslated)),
-                      'grade2': smart_unicode(word.braille) if word.grade == 2 else louis.translateString(getTables(2), smart_unicode(word.untranslated)),
+                      'grade1': smart_unicode(word.braille) if word.grade == 1 else filter_hyphenation(louis.translateString(getTables(1)), smart_unicode(word.untranslated)),
+                      'grade2': smart_unicode(word.braille) if word.grade == 2 else filter_hyphenation(louis.translateString(getTables(2)), smart_unicode(word.untranslated)),
                       'type' : word.type,
                       'homograph_disambiguation': smart_unicode(word.homograph_disambiguation)}
                      for word in single_grade_words]
