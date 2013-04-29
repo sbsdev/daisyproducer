@@ -213,6 +213,16 @@ def word2dots(word):
     dots = [asciiToDotsMap[c] for c in word]
     return '-'.join(dots)
 
+def translate(table, word):
+    braille = louis.translateString(table, word)
+    # Unfortunately hyphenation marks sneaked back into the German
+    # core liblouis tables, so we have to remove them here. They are
+    # only used in the actual translation to sbsform but are not
+    # wanted when proposing braille translations to the user for
+    # unknown words.
+    braille = braille.replace('t', '').replace('w', '').replace('a', '').replace('n','')
+    return braille
+
 def writeTable(fileName, words, translate):
     f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "utf-8", 'liblouis')
     for (untranslated, contracted) in words:
@@ -228,15 +238,15 @@ def writeWhiteListTables(words):
     writeTable('sbs-de-g1-white.mod', 
                ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
                 for word in words.filter(grade=1).iterator()), 
-               lambda word: louis.translateString(getTables(1), word))
+               lambda word: translate(getTables(1), word))
     writeTable('sbs-de-g2-white.mod', 
                ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
                 for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5)).iterator()), 
-               lambda word: louis.translateString(getTables(2), word))
+               lambda word: translate(getTables(2), word))
     writeTable('sbs-de-g2-name-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(1,2))), 
-               lambda word: louis.translateString(getTables(2, name=True), word))
+               lambda word: translate(getTables(2, name=True), word))
     writeTable('sbs-de-g2-place-white.mod', ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(3,4))),
-               lambda word: louis.translateString(getTables(2, place=True), word))
+               lambda word: translate(getTables(2, place=True), word))
 
 def writeLocalTables(changedDocuments):
     for document in changedDocuments:
@@ -244,23 +254,23 @@ def writeLocalTables(changedDocuments):
         writeTable('sbs-de-g1-white-%s.mod' % document.identifier, 
                    ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
                     for word in words.filter(grade=1).iterator()),
-                   lambda word: louis.translateString(getTables(1), word))
+                   lambda word: translate(getTables(1), word))
         writeTable('sbs-de-g2-white-%s.mod' % document.identifier, 
                    ((smart_unicode(word.homograph_disambiguation).replace('|', unichr(0x250A)) if word.type == 5 else word.untranslated, word.braille) 
                     for word in words.filter(grade=2).filter(type__in=(0, 1, 3, 5)).iterator()),
-                   lambda word: louis.translateString(getTables(2), word))
+                   lambda word: translate(getTables(2), word))
         writeTable('sbs-de-g2-name-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(1,2))),
-                   lambda word: louis.translateString(getTables(2, name=True), word))
+                   lambda word: translate(getTables(2, name=True), word))
         writeTable('sbs-de-g2-place-white-%s.mod' % document.identifier, 
                    ((word.untranslated, word.braille) for word in words.filter(grade=2).filter(type__in=(3,4))),
-                  lambda word: louis.translateString(getTables(2, place=True), word))
+                  lambda word: translate(getTables(2, place=True), word))
         
 def write_words_with_wrong_default_translation(words):
     from django.forms.models import model_to_dict
 
     def write_csv(f, tables, word):
-        translation = louis.translateString(tables, smart_unicode(word.untranslated))
+        translation = translate(tables, smart_unicode(word.untranslated))
         if translation != smart_unicode(word.braille):
             f.write("%s\t%s\t%s\t%s\t%s\t%s\n" % (smart_unicode(word.untranslated), 
                                                   smart_unicode(word.braille), translation, word.grade, 
