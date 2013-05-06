@@ -159,11 +159,11 @@ class DaisyPipeline:
         successful. Return a list of error messages as delivered by
         the Daisy Pipeline otherwise."""
 
-        result = Jing.validate(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'minimalSchema.rng'))
+        result = Jing.validate(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-3-sbs.rng'))
         if result: return result
         # Validate using Schematron tests. We have to do this before the
         # @brl:* attributes are filtered out.
-        result = saxon9he(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-SBS.sch.xsl')).stderr
+        result = saxon9he(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-3-sbs.sch.xsl')).stderr
         if result:
             return list(result)
         tmpFile = filterBrlContractionhints(file_path)

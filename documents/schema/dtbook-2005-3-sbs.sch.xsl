@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xsl:stylesheet xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:schold="http://www.ascc.net/xml/schematron"
                 xmlns:iso="http://purl.oclc.org/dsdl/schematron"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
                 xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
                 version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is 
@@ -47,23 +45,21 @@
       <xsl:choose>
          <xsl:when test="namespace-uri()=''">
             <xsl:value-of select="name()"/>
+            <xsl:variable name="p_1"
+                          select="1+    count(preceding-sibling::*[name()=name(current())])"/>
+            <xsl:if test="$p_1&gt;1 or following-sibling::*[name()=name(current())]">[<xsl:value-of select="$p_1"/>]</xsl:if>
          </xsl:when>
          <xsl:otherwise>
-            <xsl:text>*:</xsl:text>
+            <xsl:text>*[local-name()='</xsl:text>
             <xsl:value-of select="local-name()"/>
-            <xsl:text>[namespace-uri()='</xsl:text>
-            <xsl:value-of select="namespace-uri()"/>
             <xsl:text>']</xsl:text>
+            <xsl:variable name="p_2"
+                          select="1+   count(preceding-sibling::*[local-name()=local-name(current())])"/>
+            <xsl:if test="$p_2&gt;1 or following-sibling::*[local-name()=local-name(current())]">[<xsl:value-of select="$p_2"/>]</xsl:if>
          </xsl:otherwise>
       </xsl:choose>
-      <xsl:variable name="preceding"
-                    select="count(preceding-sibling::*[local-name()=local-name(current())                                   and namespace-uri() = namespace-uri(current())])"/>
-      <xsl:text>[</xsl:text>
-      <xsl:value-of select="1+ $preceding"/>
-      <xsl:text>]</xsl:text>
    </xsl:template>
    <xsl:template match="@*" mode="schematron-get-full-path">
-      <xsl:apply-templates select="parent::*" mode="schematron-get-full-path"/>
       <xsl:text>/</xsl:text>
       <xsl:choose>
          <xsl:when test="namespace-uri()=''">@<xsl:value-of select="name()"/>
@@ -173,7 +169,8 @@
 
 
 	<!--RULE -->
-<xsl:template match="*[not(self::dtb:dtbook)][@xml:lang or @brl:grade]" priority="1000"
+<xsl:template match="*[not(self::dtb:dtbook)][@xml:lang or @brl:grade]"
+                 priority="1000"
                  mode="M3">
 
 		<!--ASSERT -->
@@ -270,7 +267,7 @@
 
 		<!--ASSERT -->
 <xsl:choose>
-         <xsl:when test="some $continuation in @brl:continuation          satisfies normalize-space(string-join(following::text()[         not(ancestor::dtb:pagenum or ancestor::*[@id and index-of(tokenize($continuation, '\s+'), @id)]) and          following::*[@id and index-of(tokenize($continuation, '\s+'), @id)]], '')) eq ''"/>
+         <xsl:when test="some $continuation in @brl:continuation                               satisfies normalize-space(string-join(following::text()[                               not(ancestor::*[@id and index-of(tokenize($continuation, '\s+'), @id)]) and                               following::*[@id and index-of(tokenize($continuation, '\s+'), @id)]], '')) eq ''"/>
          <xsl:otherwise>
             <xsl:message>Elements that are linked together with continuation attributes must form a whole that is not broken down by other non-empty nodes.</xsl:message>
          </xsl:otherwise>

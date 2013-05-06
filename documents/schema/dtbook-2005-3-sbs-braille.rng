@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://www.daisy.org/z3986/2009/braille/" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <!--
+    =================
+    Contraction hints
+    =================
+  -->
+  <define name="brl.contractionhint">
+    <choice>
+      <ref name="brl.num"/>
+      <ref name="brl.homograph"/>
+      <ref name="brl.v-form"/>
+      <ref name="brl.name"/>
+      <ref name="brl.place"/>
+      <ref name="brl.date"/>
+      <ref name="brl.time"/>
+      <ref name="brl.emph"/>
+    </choice>
+  </define>
+  <define name="brl.num">
+    <element name="num">
+      <attribute name="role">
+        <choice>
+          <value>ordinal</value>
+          <value>cardinal</value>
+          <value>roman</value>
+          <value>fraction</value>
+          <value>mixed</value>
+          <value>isbn</value>
+          <value>phone</value>
+          <value>measure</value>
+        </choice>
+      </attribute>
+      <text/>
+    </element>
+  </define>
+  <define name="brl.homograph">
+    <element name="homograph">
+      <interleave>
+        <oneOrMore>
+          <element name="separator">
+            <empty/>
+          </element>
+        </oneOrMore>
+        <text/>
+      </interleave>
+    </element>
+  </define>
+  <define name="brl.v-form">
+    <element name="v-form">
+      <data type="normalizedString">
+        <param name="minLength">1</param>
+      </data>
+    </element>
+  </define>
+  <define name="brl.name">
+    <element name="name">
+      <data type="normalizedString">
+        <param name="minLength">1</param>
+      </data>
+    </element>
+  </define>
+  <define name="brl.place">
+    <element name="place">
+      <data type="normalizedString">
+        <param name="minLength">1</param>
+      </data>
+    </element>
+  </define>
+  <define name="brl.date">
+    <element name="date">
+      <attribute name="value">
+        <choice>
+          <data type="gMonthDay"/>
+          <data type="date"/>
+        </choice>
+      </attribute>
+      <text/>
+    </element>
+  </define>
+  <define name="brl.time">
+    <element name="time">
+      <attribute name="value">
+        <choice>
+          <data type="time"/>
+          <data type="string">
+            <param name="pattern">\d\d:\d\d</param>
+          </data>
+        </choice>
+      </attribute>
+      <text/>
+    </element>
+  </define>
+  <define name="brl.emph">
+    <element name="emph">
+      <optional>
+        <ref name="brl.emphasisClassAttribute"/>
+      </optional>
+      <optional>
+        <ref name="brl.emphasisRenderAttribute"/>
+      </optional>
+      <optional>
+        <attribute name="id">
+          <ref name="id.type"/>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="brl.continuationAttribute"/>
+      </optional>
+      <interleave>
+        <text/>
+        <optional>
+          <ref name="dtb.pagenum"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="brl.contractionhint"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.abbr"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="brl.emphasisClassAttribute">
+    <a:documentation>The class attribute on emphasis is used to categorize the emphasis tags.
+This will help in deciding what brl:render attribute to set for this emphasis</a:documentation>
+    <attribute name="brl:class">
+      <data type="string" datatypeLibrary=""/>
+    </attribute>
+  </define>
+  <define name="brl.emphasisRenderAttribute">
+    <attribute name="brl:render">
+      <choice>
+        <value>emph</value>
+        <value>quote</value>
+        <value>singlequote</value>
+        <value>ignore</value>
+      </choice>
+    </attribute>
+  </define>
+  <!--
+    ===============================
+    brl:toc-line / brl:running-line
+    ===============================
+  -->
+  <define name="brl.toc-line">
+    <element name="toc-line">
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="dtb.em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="brl.contractionhint"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.span"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <define name="brl.running-line">
+    <element name="running-line">
+      <optional>
+        <ref name="brl.gradeAttribute"/>
+      </optional>
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="dtb.em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="brl.contractionhint"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.span"/>
+        </zeroOrMore>
+      </interleave>
+    </element>
+  </define>
+  <!--
+    ================
+    Volume splitting
+    ================
+  -->
+  <define name="brl.volume">
+    <element name="volume">
+      <ref name="brl.gradeAttribute"/>
+    </element>
+  </define>
+  <!--
+    ==========
+    @brl:class
+    ==========
+  -->
+  <define name="brl.classAttribute" combine="interleave">
+    <a:documentation>brl:class lets you fine tune the Braille formatting (think of it as a form of css for Braille)</a:documentation>
+    <attribute name="brl:class">
+      <data type="string" datatypeLibrary=""/>
+    </attribute>
+  </define>
+  <!--
+    =========================
+    @brl:grade / @brl:accents
+    =========================
+  -->
+  <define name="brl.gradeAttribute" combine="interleave">
+    <attribute name="brl:grade">
+      <data type="nonNegativeInteger">
+        <param name="maxInclusive">2</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="brl.accentsAttribute" combine="interleave">
+    <attribute name="brl:accents">
+      <choice>
+        <value>detailed</value>
+        <value>reduced</value>
+      </choice>
+    </attribute>
+  </define>
+  <!--
+    ========================
+    brl:select / brl:literal
+    ========================
+  -->
+  <define name="brl.select">
+    <element name="select">
+      <element name="when-braille">
+        <interleave>
+          <text/>
+          <zeroOrMore>
+            <ref name="brl.literal"/>
+          </zeroOrMore>
+        </interleave>
+      </element>
+      <element name="otherwise">
+        <text/>
+      </element>
+    </element>
+  </define>
+  <define name="brl.literal">
+    <element name="literal">
+      <optional>
+        <ref name="brl.gradeAttribute"/>
+      </optional>
+      <text/>
+    </element>
+  </define>
+</grammar>
