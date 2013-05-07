@@ -339,7 +339,9 @@ class Pipeline2:
                     "--i-source=%s" % fileName,
                     "--file=%s" % outputZip.name
                     )
-                call(command)
+                returncode = call(command)
+                if returncode != 0:
+                    return ("Conversion to Open Document failed",)
                 with zipfile.ZipFile(outputZip.name) as odtZip:
                     with odtZip.open(join('output-dir', odtFileName)) as odtIn:
                         with open(absoluteOdtFileName, 'w') as odtOut:

@@ -368,10 +368,16 @@ def preview_odt(request, document_id):
         form = ODTForm(request.POST)
         if form.is_valid():
             inputFile = document.latest_version().content.path
-            odt = Pipeline2.dtbook2odt(inputFile)
+            filename = Pipeline2.dtbook2odt(inputFile)
+
+            if isinstance(filename, tuple):
+                # if filename is a tuple we're actually looking at a list of error messages
+                errorMessages = filename
+                return render_to_response('documents/todo_odt.html', locals(),
+                                          context_instance=RequestContext(request))
 
             return render_to_mimetype_response('application/vnd.oasis.opendocument.text', 
-                                               document.title.encode('utf-8'), odt)
+                                               document.title.encode('utf-8'), filename)
     else:
         form = ODTForm()
 

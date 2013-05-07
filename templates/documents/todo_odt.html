@@ -17,6 +17,16 @@
   <div id="relations">
     <form method="post" action="{% url todo_odt document.id %}">{% csrf_token %}
       <p>
+	{% if errorMessages %}
+	<div class="errorExplanation" id="errorExplanation">
+	  {% trans "Unable to complete the preview" %}
+	  <ul>
+	    {% for error in errorMessages %}
+	    <li>{{ error }}</li>
+	    {% endfor %}
+	  </ul>
+	</div>
+	{% endif %}
 	<table>
 	  {{ form.as_table }}
 	</table>
