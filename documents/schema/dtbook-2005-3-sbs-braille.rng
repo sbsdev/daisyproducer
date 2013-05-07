@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="http://www.daisy.org/z3986/2009/braille/" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!--
     =================
     Contraction hints
@@ -18,7 +18,7 @@
     </choice>
   </define>
   <define name="brl.num">
-    <element name="num">
+    <element name="brl:num">
       <attribute name="role">
         <choice>
           <value>ordinal</value>
@@ -35,10 +35,10 @@
     </element>
   </define>
   <define name="brl.homograph">
-    <element name="homograph">
+    <element name="brl:homograph">
       <interleave>
         <oneOrMore>
-          <element name="separator">
+          <element name="brl:separator">
             <empty/>
           </element>
         </oneOrMore>
@@ -47,28 +47,28 @@
     </element>
   </define>
   <define name="brl.v-form">
-    <element name="v-form">
+    <element name="brl:v-form">
       <data type="normalizedString">
         <param name="minLength">1</param>
       </data>
     </element>
   </define>
   <define name="brl.name">
-    <element name="name">
+    <element name="brl:name">
       <data type="normalizedString">
         <param name="minLength">1</param>
       </data>
     </element>
   </define>
   <define name="brl.place">
-    <element name="place">
+    <element name="brl:place">
       <data type="normalizedString">
         <param name="minLength">1</param>
       </data>
     </element>
   </define>
   <define name="brl.date">
-    <element name="date">
+    <element name="brl:date">
       <attribute name="value">
         <choice>
           <data type="gMonthDay"/>
@@ -79,7 +79,7 @@
     </element>
   </define>
   <define name="brl.time">
-    <element name="time">
+    <element name="brl:time">
       <attribute name="value">
         <choice>
           <data type="time"/>
@@ -92,7 +92,7 @@
     </element>
   </define>
   <define name="brl.emph">
-    <element name="emph">
+    <element name="brl:emph">
       <optional>
         <ref name="brl.emphasisClassAttribute"/>
       </optional>
@@ -144,7 +144,7 @@ This will help in deciding what brl:render attribute to set for this emphasis</a
     ===============================
   -->
   <define name="brl.toc-line">
-    <element name="toc-line">
+    <element name="brl:toc-line">
       <interleave>
         <text/>
         <zeroOrMore>
@@ -166,7 +166,7 @@ This will help in deciding what brl:render attribute to set for this emphasis</a
     </element>
   </define>
   <define name="brl.running-line">
-    <element name="running-line">
+    <element name="brl:running-line">
       <optional>
         <ref name="brl.gradeAttribute"/>
       </optional>
@@ -196,7 +196,7 @@ This will help in deciding what brl:render attribute to set for this emphasis</a
     ================
   -->
   <define name="brl.volume">
-    <element name="volume">
+    <element name="brl:volume">
       <ref name="brl.gradeAttribute"/>
     </element>
   </define>
@@ -237,8 +237,8 @@ This will help in deciding what brl:render attribute to set for this emphasis</a
     ========================
   -->
   <define name="brl.select">
-    <element name="select">
-      <element name="when-braille">
+    <element name="brl:select">
+      <element name="brl:when-braille">
         <interleave>
           <text/>
           <zeroOrMore>
@@ -246,13 +246,13 @@ This will help in deciding what brl:render attribute to set for this emphasis</a
           </zeroOrMore>
         </interleave>
       </element>
-      <element name="otherwise">
+      <element name="brl:otherwise">
         <text/>
       </element>
     </element>
   </define>
   <define name="brl.literal">
-    <element name="literal">
+    <element name="brl:literal">
       <optional>
         <ref name="brl.gradeAttribute"/>
       </optional>
