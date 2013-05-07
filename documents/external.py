@@ -322,6 +322,11 @@ class DaisyPipeline:
 
 class Pipeline2:
     @staticmethod
+    def filter_output(lines):
+        p = re.compile(r'^(?:\[ERROR\]|\[WS\] ERROR\([0-9]+\) -) (.*)$')
+        return [p.sub(r'\1', line) for line in lines if p.match(line)]
+
+    @staticmethod
     def dtbook2odt(inputFile):
         """Transform a dtbook xml file to a Open Document Format for Office Applications (ODF)"""
         tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
@@ -339,9 +344,10 @@ class Pipeline2:
                     "--i-source=%s" % fileName,
                     "--file=%s" % outputZip.name
                     )
-                returncode = call(command)
-                if returncode != 0:
-                    return ("Conversion to Open Document failed",)
+                p = Popen(command, stdout=PIPE)
+                errors = Pipeline2.filter_output(p.communicate()[0].splitlines())
+                if p.returncode != 0 or errors:
+                    return ("Conversion to Open Document failed with:",) + tuple(errors)
                 with zipfile.ZipFile(outputZip.name) as odtZip:
                     with odtZip.open(join('output-dir', odtFileName)) as odtIn:
                         with open(absoluteOdtFileName, 'w') as odtOut:
