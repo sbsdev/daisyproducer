@@ -229,6 +229,9 @@ class TextOnlyFilesetForm(forms.Form):
 class TextOnlyDTBForm(forms.Form):
     ebookNumber = forms.RegexField(label=_("EBook Number"),regex="^EB\d{5}")
 
+class ODTForm(forms.Form):
+    pass
+
 class DTBForm(forms.Form):
     NARRATOR_BITRATE_CHOICES = (
         (32, _('32 kbit/s')),

@@ -43,6 +43,7 @@ urlpatterns += patterns('daisyproducer.documents.views.todo',
     url(r'^todo/(?P<document_id>\d+)/preview_library_pdf$', 'preview_library_pdf', name='todo_library_pdf'),
     url(r'^todo/(?P<document_id>\d+)/preview_rtf$', 'preview_rtf', name='todo_rtf'),
     url(r'^todo/(?P<document_id>\d+)/preview_epub$', 'preview_epub', name='todo_epub'),
+    url(r'^todo/(?P<document_id>\d+)/preview_odt$', 'preview_odt', name='todo_odt'),
     url(r'^todo/(?P<document_id>\d+)/preview_text_only_dtb$', 'preview_text_only_dtb', name='todo_text_only_dtb'),
     url(r'^todo/(?P<document_id>\d+)/preview_dtb$', 'preview_dtb', name='todo_dtb'),
 )

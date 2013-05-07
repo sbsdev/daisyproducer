@@ -5,7 +5,7 @@ import math
 import subprocess
 from os.path import join, basename, splitext
 from pyPdf import PdfFileReader
-from shutil import rmtree
+from shutil import rmtree, copyfile
 from subprocess import call, Popen, PIPE
 import re
 import zipfile
@@ -97,7 +97,7 @@ def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **
     os.chdir(currentDir)
     rmtree(tmpDir)
 
-def zipDirectory(directory, zipFileName, document_title):
+def zipDirectory(directory, zipFileName, document_title=None):
     outputFile = zipfile.ZipFile(zipFileName, 'w')
     cwd = os.getcwd()
     os.chdir(directory)
@@ -108,7 +108,7 @@ def zipDirectory(directory, zipFileName, document_title):
             # passed to ZipFile.write is not in the right encoding
             outputFile.write(
                 os.path.join(dirpath, filename), 
-                os.path.join(document_title, dirpath, filename))
+                os.path.join(document_title, dirpath, filename) if document_title else None)
     outputFile.close()
     os.chdir(cwd)
 
@@ -319,6 +319,33 @@ class DaisyPipeline:
             command += ("--%s=%s" % (k,v),)
         call(command)
         os.remove(tmpFile)
+
+class Pipeline2:
+    @staticmethod
+    def dtbook2odt(inputFile):
+        """Transform a dtbook xml file to a Open Document Format for Office Applications (ODF)"""
+        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
+        fileName = basename(inputFile)
+        odtFileName = splitext(fileName)[0] + ".odt"
+        absoluteOdtFileName = join(tempfile.gettempdir(), odtFileName)
+        copyfile(inputFile, join(tmpDir, fileName))
+        with tempfile.NamedTemporaryFile(suffix='.zip') as inputZip:
+            with tempfile.NamedTemporaryFile(suffix='.zip') as outputZip:
+                zipDirectory(tmpDir, inputZip.name)
+                command = (
+                    join(settings.EXTERNAL_PATH, 'pipeline-cli', 'dp2'),
+                    "sbs:dtbook-to-odt",
+                    "--data=%s" % inputZip.name,
+                    "--i-source=%s" % fileName,
+                    "--file=%s" % outputZip.name
+                    )
+                call(command)
+                with zipfile.ZipFile(outputZip.name) as odtZip:
+                    with odtZip.open(join('output-dir', odtFileName)) as odtIn:
+                        with open(absoluteOdtFileName, 'w') as odtOut:
+                            odtOut.write(odtIn.read())
+        rmtree(tmpDir)
+        return absoluteOdtFileName
 
 class StandardLargePrint:
 

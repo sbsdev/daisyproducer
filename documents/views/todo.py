@@ -1,7 +1,7 @@
 import shutil, tempfile, os.path
 
-from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory
-from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm
+from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory, Pipeline2
+from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm, ODTForm
 from daisyproducer.documents.models import Document, Version, Attachment, Product, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -358,5 +358,23 @@ def preview_dtb(request, document_id):
         form = DTBForm()
 
     return render_to_response('documents/todo_dtb.html', locals(),
+                              context_instance=RequestContext(request))
+
+@login_required
+def preview_odt(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    if request.method == 'POST':
+        form = ODTForm(request.POST)
+        if form.is_valid():
+            inputFile = document.latest_version().content.path
+            odt = Pipeline2.dtbook2odt(inputFile)
+
+            return render_to_mimetype_response('application/vnd.oasis.opendocument.text', 
+                                               document.title.encode('utf-8'), odt)
+    else:
+        form = ODTForm()
+
+    return render_to_response('documents/todo_odt.html', locals(),
                               context_instance=RequestContext(request))
 
