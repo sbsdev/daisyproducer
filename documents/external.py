@@ -327,13 +327,15 @@ class Pipeline2:
         return [p.sub(r'\1', line) for line in lines if p.match(line)]
 
     @staticmethod
-    def dtbook2odt(inputFile):
+    def dtbook2odt(inputFile, images=None):
         """Transform a dtbook xml file to a Open Document Format for Office Applications (ODF)"""
         tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
         fileName = basename(inputFile)
         odtFileName = splitext(fileName)[0] + ".odt"
         absoluteOdtFileName = join(tempfile.gettempdir(), odtFileName)
         copyfile(inputFile, join(tmpDir, fileName))
+        for image in images:
+            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
         with tempfile.NamedTemporaryFile(suffix='.zip') as inputZip:
             with tempfile.NamedTemporaryFile(suffix='.zip') as outputZip:
                 zipDirectory(tmpDir, inputZip.name)

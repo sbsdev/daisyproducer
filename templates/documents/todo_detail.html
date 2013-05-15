@@ -72,6 +72,28 @@
   
   <div id="relations">
     
+    <p><strong>{% trans "Images" %}</strong></p>
+    <table style="width:100%">
+      {% for image in document.image_set.all %}
+      <tr>
+	<td><a href="{{ image.content.url }}">{{ image.content.name|basename }}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+    <form enctype="multipart/form-data" method="post"
+	  action="{% url todo_add_image document.id %}">{% csrf_token %}
+      <p>
+	{% with imageForm as form %}
+	{% include "documents/simpleForm.html" %}
+	{% endwith %}
+	<input type="submit" value="{% trans 'Add' %}" /> 
+      </p>
+    </form>
+  </div>
+  <hr />
+
+  <div id="relations">
+    
     <p><strong>{% trans "Attachments" %}</strong></p>
     <table style="width:100%">
       {% for attachment in document.attachment_set.all %}

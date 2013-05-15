@@ -1,8 +1,8 @@
 import shutil, tempfile, os.path
 
 from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory, Pipeline2
-from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm, ODTForm
-from daisyproducer.documents.models import Document, Version, Attachment, Product, LargePrintProfileForm
+from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, PartialImageForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm, ODTForm
+from daisyproducer.documents.models import Document, Version, Attachment, Image, Product, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -45,6 +45,7 @@ def detail(request, document_id):
 
     versionForm = PartialVersionForm()
     attachmentForm = PartialAttachmentForm()
+    imageForm = PartialImageForm()
     documentForm = PartialDocumentForm()
     documentForm.limitChoicesToValidStates(document)
     return render_to_response('documents/todo_detail.html', locals(),
@@ -62,6 +63,7 @@ def add_attachment(request, document_id):
     if not form.is_valid():
         versionForm = PartialVersionForm()
         attachmentForm = form
+        imageForm = PartialImageForm()
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
         return render_to_response('documents/todo_detail.html', locals(),
@@ -82,6 +84,25 @@ def add_attachment(request, document_id):
     
 @login_required
 @transaction.commit_on_success
+def add_image(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+
+    form = PartialImageForm(request.POST, request.FILES)
+    if form.is_valid():
+        # this is a bit of a hack as we need to create (and save) an
+        # attachment before the id is known. We need to know the id before we
+        # can save the content file under /document_id/attachments/file_name
+        image = Image.objects.create(document=document)
+        content_file = request.FILES['content']
+        image.content.save(content_file.name, content_file)
+
+    return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
+
+@login_required
+@transaction.commit_on_success
 def add_version(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
@@ -93,6 +114,7 @@ def add_version(request, document_id):
     if not form.is_valid():
         versionForm = form
         attachmentForm = PartialAttachmentForm()
+        imageForm = PartialImageForm()
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
         return render_to_response('documents/todo_detail.html', locals(),
@@ -368,7 +390,7 @@ def preview_odt(request, document_id):
         form = ODTForm(request.POST)
         if form.is_valid():
             inputFile = document.latest_version().content.path
-            filename = Pipeline2.dtbook2odt(inputFile)
+            filename = Pipeline2.dtbook2odt(inputFile, images=document.image_set.all())
 
             if isinstance(filename, tuple):
                 # if filename is a tuple we're actually looking at a list of error messages

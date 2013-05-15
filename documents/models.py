@@ -2,12 +2,12 @@ import uuid, datetime
 from os.path import join
 from shutil import rmtree
 
+from daisyproducer.documents.storage import OverwriteStorage
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
-
 
 class StateError(Exception):
     def __init__(self, value):
@@ -229,6 +229,37 @@ class Attachment(models.Model):
         
     class Meta:
         ordering = ['-created_at']
+
+def get_image_path(instance, filename):
+        return '%s/images/%s' % (instance.document_id, filename)
+
+class Image(models.Model):
+
+    MIME_TYPE_CHOICES = (
+        ('image/jpeg', 'JPEG image'),
+        )
+
+    document = models.ForeignKey(Document)
+    content = models.FileField(upload_to=get_image_path, storage=OverwriteStorage())
+
+    def __unicode__(self):
+        return u'%s, %s' % (self.document, self.content)
+
+    def delete(self, *args, **kwargs):
+        # remove the files on the file system
+        self.content.delete()
+        super(Image, self).delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        # make sure existing Images are replaced
+        image = Image.objects.filter(document=self.document, content=self.content)
+        if image.exists():
+            image.delete()
+        super(Image, self).save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ('document', 'content')
+        ordering = ['content']
 
 class Product(models.Model):
     PRODUCT_TYPE_CHOICES = (

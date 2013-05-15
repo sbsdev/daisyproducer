@@ -1,5 +1,5 @@
 from daisyproducer.documents.external import DaisyPipeline
-from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfile
+from daisyproducer.documents.models import Document, Version, Attachment, LargePrintProfile, Image
 from daisyproducer.documents.versionHelper import XMLContent
 from django import forms
 from django.core.files.base import ContentFile
@@ -76,6 +76,21 @@ class PartialAttachmentForm(ModelForm):
         model = Attachment
         fields = ('comment', 'content',)
 
+class PartialImageForm(ModelForm):
+
+    # make sure the content has mime type as defined in the Image class
+    def clean_content(self):
+        data = self.files['content']
+        choices = tuple([choice[0] for choice in Image.MIME_TYPE_CHOICES])
+        if data.content_type not in choices:
+            raise forms.ValidationError(
+                "The mime type of the uploaded file must be in %s" % 
+                ', '.join(choices))
+        return data
+
+    class Meta:
+        model = Image
+        fields = ('content',)
 
 class PartialDocumentForm(ModelForm):
 
