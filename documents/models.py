@@ -252,6 +252,13 @@ class Image(models.Model):
 
     def save(self, *args, **kwargs):
         # make sure existing Images are replaced
+        # FIXME: this code is really hideous as it creates about 10
+        # SQL statements behind the scene. It seems to do a save with
+        # an empty content and again another save with the actual
+        # content. On top of that the exists and the delete case a
+        # number of additional trips to the db. However, the use case
+        # (upload of images) is quite rare so the pressure to fix this
+        # isn't that high.
         image = Image.objects.filter(document=self.document, content=self.content)
         if image.exists():
             image.delete()
