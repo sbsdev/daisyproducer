@@ -64,6 +64,9 @@
                         <value>prod:series</value>
                         <value>prod:seriesNumber</value>
                         <value>prod:source</value>
+			<!-- Meta data added by the supplier -->
+                        <value>track:Guidelines</value>
+                        <value>track:Supplier</value>
                     </choice>
                 </attribute>
             </optional>
