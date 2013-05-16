@@ -91,13 +91,21 @@ def add_image(request, document_id):
         return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
     form = PartialImageForm(request.POST, request.FILES)
-    if form.is_valid():
-        # this is a bit of a hack as we need to create (and save) an
-        # attachment before the id is known. We need to know the id before we
-        # can save the content file under /document_id/attachments/file_name
-        image = Image.objects.create(document=document)
-        content_file = request.FILES['content']
-        image.content.save(content_file.name, content_file)
+    if not form.is_valid():
+        versionForm = PartialVersionForm()
+        attachmentForm = PartialAttachmentForm()
+        imageForm = form
+        documentForm = PartialDocumentForm()
+        documentForm.limitChoicesToValidStates(document)
+        return render_to_response('documents/todo_detail.html', locals(),
+                                  context_instance=RequestContext(request))
+
+    # this is a bit of a hack as we need to create (and save) an
+    # attachment before the id is known. We need to know the id before we
+    # can save the content file under /document_id/attachments/file_name
+    image = Image.objects.create(document=document)
+    content_file = request.FILES['content']
+    image.content.save(content_file.name, content_file)
 
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
