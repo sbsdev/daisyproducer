@@ -20,7 +20,6 @@ TEMPLATE_FILES = \
 
 PUBLIC_FILES = \
 	public/images/edit.png \
-	public/javascripts/prototype.js \
 	public/stylesheets/application.css
 
 TEST_FILES = \
