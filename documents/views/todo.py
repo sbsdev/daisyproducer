@@ -102,10 +102,18 @@ def add_image(request, document_id):
 
     # this is a bit of a hack as we need to create (and save) an
     # attachment before the id is known. We need to know the id before we
-    # can save the content file under /document_id/attachments/file_name
+    # can save the content file under /document_id/images/file_name
     image = Image.objects.create(document=document)
     content_file = request.FILES['content']
     image.content.save(content_file.name, content_file)
+
+    if 'application/json' in request.META['HTTP_ACCEPT']:
+        from django.http import HttpResponse
+        from django.utils import simplejson
+        from os.path import basename
+        response_data = simplejson.dumps({'files': [{'name': basename(image.content.name),
+                                                     'url': image.content.url}]})
+        return HttpResponse(response_data, mimetype = 'application/json')
 
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 

@@ -70,16 +70,48 @@
   </div>
   <hr />
   
-  <div id="relations">
-    
+  <div id="imageuploadDropzone">
     <p><strong>{% trans "Images" %}</strong></p>
-    <table style="width:100%">
-      {% for image in document.image_set.all %}
-      <tr>
-	<td><a href="{{ image.content.url }}">{{ image.content.name|basename }}</a></td>
-      </tr>
-      {% endfor %}
+    <table id="imageTable" style="width:100%">
+      <tbody>
+	{% for image in document.image_set.all %}
+	<tr>
+	  <td><a href="{{ image.content.url }}">{{ image.content.name|basename }}</a></td>
+	</tr>
+	{% endfor %}
+      </tbody>
     </table>
+    <!-- Create one form for the jquery upload that supports drag and drop... --> 
+    <script src="/javascripts/jquery-1.9.1.min.js"></script>
+    <script src="/javascripts/vendor/jquery.ui.widget.js"></script>
+    <script src="/javascripts/jquery.iframe-transport.js"></script>
+    <script src="/javascripts/jquery.fileupload.js"></script>
+    <script>
+    $(function () {
+	$('#fileupload').fileupload({
+	    dataType: 'json',
+	    dropZone: $('#imageuploadDropzone'),
+            done: function (e, data) {
+		$.each(data.result.files, function (index, file) {
+		    var str = "<tr><td><a href=\"" + file.url + "\">" + file.name + "</a></td></tr>";
+		    var already = $('#imageTable > tbody > tr > td > a').filter(':contains("' + file.name + '")');
+		    if (already.length == 0) {
+			$('#imageTable > tbody').append(str);
+		    };
+		});
+            }
+	});
+    });
+    </script>
+    <form style="display: none;" id="fileupload" enctype="multipart/form-data" method="post"
+	  action="{% url todo_add_image document.id %}">{% csrf_token %}
+      <p>
+	{% with imageForm as form %}
+	{% include "documents/simpleForm.html" %}
+	{% endwith %}
+      </p>
+    </form>
+    <!-- and an other one that supports the classic single file upload --> 
     <form enctype="multipart/form-data" method="post"
 	  action="{% url todo_add_image document.id %}">{% csrf_token %}
       <p>
