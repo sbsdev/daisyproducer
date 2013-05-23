@@ -80,9 +80,16 @@
 	  <td><a href="{{ image.content.url }}">{{ image.content.name|basename }}</a></td>
 	</tr>
 	{% endfor %}
+	{% for image in images|slice:"7:" %}
+	<tr style="display: none;">
+	  <td><a href="{{ image.content.url }}">{{ image.content.name|basename }}</a></td>
+	</tr>
+	{% endfor %}
+	{% if images|length > 7 %}
 	<tr>
 	  <td>{% blocktrans with rest=images|length|add:"-7" %}{{rest}} more...{% endblocktrans %}</td>
 	</tr>
+	{% endif %}
 	{% endwith %}
       </tbody>
     </table>
@@ -98,10 +105,22 @@
 	    dropZone: $('#imageuploadDropzone'),
             done: function (e, data) {
 		$.each(data.result.files, function (index, file) {
-		    var str = "<tr><td><a href=\"" + file.url + "\">" + file.name + "</a></td></tr>";
-		    var already = $('#imageTable > tbody > tr > td > a').filter(':contains("' + file.name + '")');
+		    var images = $('#imageTable > tbody > tr > td > a')
+		    var already = images.filter(':contains("' + file.name + '")');
 		    if (already.length == 0) {
+			var str = "<tr><td><a href=\"" + file.url + "\">" + file.name + "</a></td></tr>";
+			if (images.length >= 7) {
+			    // make sure only 7 entries are shown
+			    str = "<tr style=\"display: none;\"><td><a href=\"" + file.url + "\">" + file.name + "</a></td></tr>";
+			};
+			if (images.length == 7) {
+			    var moreStr = "<tr><td>1 {% trans "more..." %}</td></tr>";
+			    $('#imageTable > tbody').append(moreStr);
+			};
 			$('#imageTable > tbody').append(str);
+			if (images.length > 7) {
+			    $('#imageTable > tbody > tr > td').filter(':visible').last().text((images.length - 6) + " {% trans "more..." %}");
+			};
 		    };
 		});
             }
