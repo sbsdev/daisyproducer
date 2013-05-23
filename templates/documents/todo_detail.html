@@ -74,11 +74,16 @@
     <p><strong>{% trans "Images" %}</strong></p>
     <table id="imageTable" style="width:100%">
       <tbody>
-	{% for image in document.image_set.all %}
+	{% with images=document.image_set.all %}
+	{% for image in images|slice:":7" %}
 	<tr>
 	  <td><a href="{{ image.content.url }}">{{ image.content.name|basename }}</a></td>
 	</tr>
 	{% endfor %}
+	<tr>
+	  <td>{{ images|length|add:"-7" }} more</td>
+	</tr>
+	{% endwith %}
       </tbody>
     </table>
     <!-- Create one form for the jquery upload that supports drag and drop... --> 
