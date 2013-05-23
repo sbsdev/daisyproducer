@@ -84,7 +84,14 @@ class Document(models.Model):
         blank=True)
     language_choices = (('de', 'de'),
                         ('de-1901', 'de-1901',),
-#                        ('de-CH', 'de-CH',),
+                        # ('de-CH', 'de-CH',),
+                        # ('de-CH-1901', 'de-CH-1901',),
+                        # ('gsw', 'gsw',),
+                        ('en', 'en',),
+                        ('fr', 'fr',),
+                        # ('it', 'it',),
+                        # ('es', 'es',),
+                        # ('und', 'Undefined',),
                         )
     language = models.CharField(
         _("Language"),
