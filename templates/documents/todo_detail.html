@@ -81,7 +81,7 @@
 	</tr>
 	{% endfor %}
 	<tr>
-	  <td>{{ images|length|add:"-7" }} more</td>
+	  <td>{% blocktrans with rest=images|length|add:"-7" %}{{rest}} more...{% endblocktrans %}</td>
 	</tr>
 	{% endwith %}
       </tbody>
