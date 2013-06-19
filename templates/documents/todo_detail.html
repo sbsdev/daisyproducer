@@ -87,7 +87,7 @@
 	{% endfor %}
 	{% if images|length > 7 %}
 	<tr>
-	  <td>{% blocktrans with rest=images|length|add:"-7" %}{{rest}} more...{% endblocktrans %}</td>
+	  <td>{% blocktrans with rest as images|length|add:"-7" %}{{rest}} more...{% endblocktrans %}</td>
 	</tr>
 	{% endif %}
 	{% endwith %}
