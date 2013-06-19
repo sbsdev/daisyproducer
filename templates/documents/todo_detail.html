@@ -74,7 +74,7 @@
     <p><strong>{% trans "Images" %}</strong></p>
     <table id="imageTable" style="width:100%">
       <tbody>
-	{% with images as document.image_set.all %}
+	{% with document.image_set.all as images %}
 	{% for image in images|slice:":7" %}
 	<tr>
 	  <td><a href="{{ image.content.url }}">{{ image.content.name|basename }}</a></td>
@@ -87,7 +87,7 @@
 	{% endfor %}
 	{% if images|length > 7 %}
 	<tr>
-	  <td>{% blocktrans with rest as images|length|add:"-7" %}{{rest}} more...{% endblocktrans %}</td>
+	  <td>{% blocktrans with images|length|add:"-7" as rest %}{{rest}} more...{% endblocktrans %}</td>
 	</tr>
 	{% endif %}
 	{% endwith %}
