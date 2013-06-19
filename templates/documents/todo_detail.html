@@ -74,7 +74,7 @@
     <p><strong>{% trans "Images" %}</strong></p>
     <table id="imageTable" style="width:100%">
       <tbody>
-	{% with images=document.image_set.all %}
+	{% with images as document.image_set.all %}
 	{% for image in images|slice:":7" %}
 	<tr>
 	  <td><a href="{{ image.content.url }}">{{ image.content.name|basename }}</a></td>
