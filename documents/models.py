@@ -90,7 +90,7 @@ class Document(models.Model):
                         ('en', 'en',),
                         ('fr', 'fr',),
                         # ('it', 'it',),
-                        # ('es', 'es',),
+                        ('es', 'es',),
                         # ('und', 'Undefined',),
                         )
     language = models.CharField(
