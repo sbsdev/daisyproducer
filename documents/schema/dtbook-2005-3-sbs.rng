@@ -146,12 +146,6 @@
     </define>
     
     <!-- Allow @brl:class attribute on (almost) anything -->
-    <define name="dtb.attlist.p" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
-    </define>
-    
     <define name="dtb.attlist.blockquote" combine="interleave">
         <optional>
             <ref name="brl.classAttribute"/>
@@ -201,12 +195,6 @@
     </define>
     
     <define name="dtb.attlist.line" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
-    </define>
-    
-    <define name="dtb.attlist.div" combine="interleave">
         <optional>
             <ref name="brl.classAttribute"/>
         </optional>
