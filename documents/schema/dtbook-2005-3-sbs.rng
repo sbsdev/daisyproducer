@@ -145,6 +145,73 @@
         </optional>
     </define>
     
+    <!-- Allow @brl:class attribute on (almost) anything -->
+    <define name="dtb.attlist.p" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.blockquote" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.epigraph" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.author" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.byline" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.list" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.li" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.poem" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.linegroup" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.line" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
+    <define name="dtb.attlist.div" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+    
     <!-- Allow @brl:grade and @brl:accents on dtb:span -->
     <define name="dtb.attlist.span" combine="interleave">
         <optional>
