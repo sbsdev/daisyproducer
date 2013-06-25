@@ -23,7 +23,7 @@ class DocumentAdmin(admin.ModelAdmin):
 	list_display = ('title', 'author', 'source_publisher', 'source', 'state',)
 	list_filter = ('state',)
 	ordering = ('title', 'state',)
-	search_fields = ('title',)
+	search_fields = ('title', 'author')
 	inlines = [VersionInline, AttachmentInline, ImageInline, ProductInline]
 
 class VersionAdmin(admin.ModelAdmin):
