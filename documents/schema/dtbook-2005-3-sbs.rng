@@ -199,7 +199,91 @@
             <ref name="brl.classAttribute"/>
         </optional>
     </define>
-    
+
+    <define name="dtb.attlist.imggroup" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.sidebar" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.dl" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.dt" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.dd" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.hd" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.caption" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.img" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.table" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.thead" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.tfoot" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.tr" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.td" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
+    <define name="dtb.attlist.th" combine="interleave">
+        <optional>
+            <ref name="brl.classAttribute"/>
+        </optional>
+    </define>
+
     <!-- Allow @brl:grade and @brl:accents on dtb:span -->
     <define name="dtb.attlist.span" combine="interleave">
         <optional>
