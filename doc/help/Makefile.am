@@ -1,2 +1,1 @@
-EXTRA_DIST = index.txt
-
+EXTRA_DIST = index.txt about.txt
