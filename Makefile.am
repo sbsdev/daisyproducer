@@ -33,7 +33,7 @@ TEST_DATA_FILES = \
 
 DOC_FILES = \
 	$(wildcard doc/help/*.txt) \
-	README.rst \
+	README.org \
 	INSTALL.org
 
 nobase_dist_pkgdata_DATA = \

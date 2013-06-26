@@ -1,0 +1,38 @@
+* Daisy Producer README
+
+** What is it?
+
+[[http://www.daisy-producer.org][Daisy Producer]] is a system to help you manage the production process
+of accessible media. It assumes that you are transforming the content
+from hard copy or any electronic format to [[http://www.daisy.org/projects/pipeline/][DTBook XML]]. Once you have
+the DTBook XML the [[http://www.daisy.org/projects/pipeline/][Daisy Pipeline]] and [[http://code.google.com/p/liblouis/][liblouis]] can be used to generate
+Daisy Talking Books, Large Print and Braille in a fully automated way.
+
+Daisy producer mainly tracks the status of the transformation process
+and helps you manage your artifacts that are needed in the
+transformation process.
+
+For the generation of accessible media Daisy Producer offers a nice
+interface however the work is essentially done by the Daisy Pipeline
+and liblouis.
+
+** License
+
+[[http://www.daisy-producer.org][Daisy Producer]] is released under the terms of the [[http://www.gnu.org/licenses/agpl.html][GNU Affero General
+Public License (AGPL)]].
+
+** How to participate
+
+To participate in discussion and development, subscribe to our
+mailing list, fetch the code from the [[https://github.com/sbsdev/daisyproducer][code repository]] or submit
+bugs in the [[https://github.com/sbsdev/daisyproducer/issues][issue tracker]].
+
+** Download
+
+The latest release is available from the [[https://github.com/sbsdev/daisyproducer/archive/master.zip][download link]].
+
+** Documentation
+
+[[http://www.daisy-producer.org][Daisy Producer]] comes with built in documentation. See the [[http://127.0.0.1:8000/help/][Help link]] in
+your installation.
+
