@@ -1,0 +1,313 @@
+#+TITLE:     Daisy Producer INSTALL
+#+OPTIONS:   H:4 num:nil toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+
+* Requirements
+
+** Basic requirements
+
+- [[http://www.python.org][Python]] (you need at least Python 2.6.2)
+- [[http://www.djangoproject.com][Django]] 
+- [[http://codespeak.net/lxml/index.html][lxml]]
+- [[http://pybrary.net/pyPdf/][pyPDF]] (used for large print volume size calculation)
+- [[http://www.daisy.org/projects/pipeline/][Daisy Pipeline]] (use the Pipeline Core Packages)
+- [[http://www.tug.org/xetex/][XeTex]] (to generate Large Print from LaTeX)
+- [[http://www.tug.org/texlive/][texlive]] (should contain the extbook and titlesec class which is
+  needed for Large Print)
+- [[http://www.tiresias.org/fonts/lpfont/about_lp.htm][Tiresias LP font]] (a font designed for Large Print publications)
+- [[http://www.java.com/en/download/manual.jsp][Java Runtime]] (Daisy Pipeline needs at least Java 5)
+- [[http://code.google.com/p/liblouis/][liblouis]] You need to install both liblouis, liblouixml and the
+  python bindings.
+- A database for example [[http://www.postgresql.org/][PostgreSQL]] or [[http://www.mysql.com/][MySQL]].
+- A Python database interface like [[http://www.initd.org/][psycopg2]] or [[http://sourceforge.net/projects/mysql-python][mysqldb]] for example.
+- [[http://docutils.sourceforge.net][docutils]] to render the help page (which is written in
+  reStructuredText Markup).
+- [[http://south.aeracode.org/][south]] to handle changes in the database schema
+- [[http://www.thaiopensource.com/relaxng/jing.html][Jing]] for schema validation
+
+** Required packages
+
+*** Basics
+
+In terms of (Debian/Ubuntu) packages this translates to
+
+- python
+- python-django
+- python-django-south
+- python-lxml
+- python-docutils
+- python-libxml2
+- python-libxslt1
+- python-pypdf
+- sun-java6-jre
+- texlive-xetex
+- texlive-latex-extra
+- texlive-lang-german
+- ttf-tiresias
+- xsltproc
+- jing
+
+Install the basic packages:
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install python python-django python-django-south	\
+  python-lxml python-docutils python-libxml2 python-libxslt1            \
+  python-pypdf sun-java6-jre texlive-xetex texlive-latex-extra		\
+  texlive-latex-recommended texlive-lang-german ttf-tiresias lmodern 	\
+  xsltproc unzip jing
+#+END_EXAMPLE
+
+*** Database
+
+**** For PostgreSQL
+
+- postgresql
+- postgresql-client
+- python-psycopg2
+
+Install PostgreSQL:
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install postgresql postgresql-client python-psycopg2
+#+END_EXAMPLE
+
+Set up a database, a user and a database:
+
+#+BEGIN_EXAMPLE
+  sudo -u postgres sh
+  createuser -DRSP daisyproducer
+  # enter the password "sekret" at the prompt
+  createdb -O daisyproducer daisyproducer_prod
+  # adapt pg_hba so that the user daisyproducer can log in with a password
+#+END_EXAMPLE
+
+**** For MySQL
+
+- mysql-server
+- mysql-client
+- python-mysqldb
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install mysql-server mysql-client python-mysqldb
+#+END_EXAMPLE
+
+Again, set up a database, a user and a database:
+
+#+BEGIN_EXAMPLE
+  mysql --user=root
+  CREATE DATABASE daisyproducer_prod;
+  CREATE USER 'daisyproducer'@'localhost' IDENTIFIED BY 'sekret';
+  GRANT ALL ON daisyproducer_prod.* TO 'daisyproducer'@'localhost';
+#+END_EXAMPLE
+
+*** Liblouis
+
+There is a [[http://packages.debian.org/search?keywords=liblouis&searchon=names&suite=all&section=all][Debian package for liblouis]] which can be used. If you want
+the newest liblouis I would recommend to install it from source as
+follows:
+
+#+BEGIN_EXAMPLE
+  # install liblouis dependencies
+  sudo aptitude install pkg-config libxml2-dev
+  # first install liblouis
+  wget http://liblouis.googlecode.com/files/liblouis-2.1.1.tar.gz
+  tar xzf liblouis-2.1.1.tar.gz
+  cd liblouis-2.1.1
+  ./configure --enable-ucs4
+  make
+  sudo make install
+  # also install the python bindings
+  cd python
+  sudo python setup.py install
+  # now install liblouisxml
+  cd
+  wget http://liblouisxml.googlecode.com/files/liblouisxml-2.1.0.tar.gz
+  tar xzf liblouisxml-2.1.0.tar.gz
+  cd liblouisxml-2.1.0
+  ./configure
+  make
+  sudo make install
+  sudo ldconfig
+#+END_EXAMPLE
+
+*** Daisy Pipeline
+The Daisy Pipeline has not been packaged so far and will have to be
+installed somewhere:
+
+#+BEGIN_EXAMPLE
+  cd /opt
+  sudo wget http://downloads.sourceforge.net/project/daisymfc/pipeline/pipeline-20110317-RC/pipeline-20110317-RC.zip
+  sudo unzip pipeline-20110317-RC.zip
+  sudo chmod a+x pipeline-20110317/pipeline.sh
+#+END_EXAMPLE
+
+The Daisy Pipeline has some dependencies as well, namely lame and
+espeak:
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install espeak espeak-data
+  # on Debian you might have to enable the http://debian-multimedia.org/ repository
+  sudo aptitude install lame
+#+END_EXAMPLE
+
+Then configure the path to lame in
+=/opt/pipeline-20090410/pipeline.user.properties= and set it to
+=/usr/bin/lame=.
+
+**** Large print
+In case you are using the tiresias font but want to enable font
+substitutions, i.e. replace glyphs missing from that font with glyphs
+from another font, you probably want to install the arial font. 
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install ttf-mscorefonts-installer
+#+END_EXAMPLE
+
+** Deployment requirements
+- [[http://www.apache.org][Apache]] (apache2)
+- [[http://code.google.com/p/modwsgi/][Python WSGI adapter module for Apache]] (libapache2-mod-wsgi)
+
+Install Apache and WSGI:
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install apache2 libapache2-mod-wsgi
+#+END_EXAMPLE
+
+Enable wsgi for Apache by using a config file in
+/etc/apache2/sites-available along the lines of the one given in the
+apache subdirectory (see also [[http://github.com/egli/daisy-producer/blob/master/apache/demo.xmlp.sbszh.ch][Apache config file example)]]
+
+** Optional requirements
+- [[http://www.rbt.ca/autodoc/][autodoc]] :: (package postgresql-autodoc) if you want to generate the
+             ER diagrams. Note however that autodoc only works if you
+             are sing PostgreSQL as a database.
+
+- [[http://pyyaml.org/][python-yaml]] :: When running the tests (make check), fixtures will be
+                 loaded using yaml.
+
+- [[http://www.sqlite.org/][sqlite]] :: To run the tests you need to have SQLite installed.
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install python-yaml postgresql-autodoc python-pysqlite2 sqlite3
+#+END_EXAMPLE
+
+- libhyphen :: If you want automatically hyphenated Braille you will
+               need to install the hyphenation files from openoffice,
+               the hyphen library and the [[https://github.com/sbsdev/jhyphen][java bindings]] to said
+               library
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install libhyphen-dev swig
+  sudo aptitude install openoffice.org-hyphenation-de
+#+END_EXAMPLE
+
+** Requirements for abacus_import app
+
+The abacus_import app needs a few additional packages to be able to
+communicate with Alfresco.
+
+- [[http://code.google.com/p/cmislib/][cmislib]] :: Provides a CMIS client library for Python that can be
+             used to work with CMIS-compliant repositories such as
+             Alfresco.
+- httplib2 :: A comprehensive HTTP client library in Python
+
+#+BEGIN_EXAMPLE
+  sudo aptitude install python-httplib2
+  sudo aptitude install python-setuptools
+  sudo easy_install cmislib
+#+END_EXAMPLE
+
+* Installation
+
+There is currently no released version of Daisy Producer, so you can
+get it directly from the source code repository:
+
+#+BEGIN_EXAMPLE
+  sudo mkdir /srv/demo.daisyproducer.org
+  sudo chown dpadmin:dpadmin /srv/demo.daisyproducer.org/
+  cd /srv/demo.daisyproducer.org
+  sudo aptitude install git-core autoconf automake
+  git clone git://github.com/egli/daisy-producer.git daisyproducer
+  cd daisyproducer
+  autoreconf -vfi
+  ./configure
+#+END_EXAMPLE
+
+* Configuration
+
+You need to adapt the settings to your environment:
+
+#+BEGIN_EXAMPLE
+  cd /srv/demo.daisyproducer.org/daisyproducer
+  emacs settings.py
+#+END_EXAMPLE
+  
+The following settings have to be adapted for your site:
+
+- DATABASE_ENGINE :: Needs to be either =postgresql_psycopg2= or =mysql=
+- DATABASE_NAME :: set to =daisyproducer_prod=
+- DATABASE_USER :: set to =daisyproducer=
+- DATABASE_PASSWORD :: set to =sekret=
+- DAISY_DEFAULT_PUBLISHER :: set to the name of your organization
+- DAISY_PIPELINE_PATH :: set to =os.path.join('/', 'path', 'to',
+     'pipeline-20100125')=
+- EXTERNAL_PATH :: This is where external utilities (which should
+                   eventually end up in the DAISY Pipeline) are
+                   located. These tools include =dtbook2sbsform= and
+                   =dtbook_hyphenator=. So if =dtbook2sbsform= is
+                   installed in =/opt/dtbook2sbsform= then set
+                   =EXTERNAL_PATH= to =os.path.join('/', 'opt')=.
+
+
+- SECRET_KEY :: 
+- TIME_ZONE :: 
+- SERVE_STATIC_FILES :: set to =False=
+
+For the archive create a directory named archive under the
+daisyproducer directory and give =www-data= write access to it:
+
+#+BEGIN_EXAMPLE
+  mkdir archive
+  sudo chown www-data archive
+#+END_EXAMPLE
+
+Set up the initial database tables:
+
+#+BEGIN_EXAMPLE
+  python manage syncdb
+#+END_EXAMPLE
+
+* Upgrading from an older installation
+
+You will have to install south and migrate the database:
+
+#+BEGIN_EXAMPLE
+  ./manage.py syncdb
+  ./manage.py migrate documents 0001 --fake
+#+END_EXAMPLE
+
+* Application setup
+
+Once the application is installed you will need to configure the
+workflow, the users and the groups. Daisy Producer comes with a
+default workflow, default groups and a demo user (password "demo")
+that you can use to get started. You are of course free to define your
+own workflow, users and groups. 
+
+Once you are familiar with the concepts you can use the [[http://127.0.0.1:8000/admin/][admin
+interface]] to define states and transitions between them.
+
+After you've defined the states and the transitions you will have to
+create groups and define which group is responsible for which state.
+Only members of a group that is responsible for a state will see
+pending jobs in that particular state.
+
+Lastly you will have to assign your users to particular groups to make
+sure they see the pending jobs that they are responsible for.
+
+You will also to have to give permission to add documents to some
+users. This will allow these dedicated users to create new documents
+that will have to worked on. Use the admin interface to either assign
+the permission directly to the user or create a specific group (say
+"Managers") which has the permission to add documents and assign users
+to this group. The demo user has permission to add documents.

@@ -34,7 +34,7 @@ TEST_DATA_FILES = \
 DOC_FILES = \
 	$(wildcard doc/help/*.txt) \
 	README.rst \
-	INSTALL.rst
+	INSTALL.org
 
 nobase_dist_pkgdata_DATA = \
 	$(PO_FILES) \
