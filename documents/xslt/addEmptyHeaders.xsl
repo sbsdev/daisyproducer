@@ -81,7 +81,7 @@
                        dtb:bodymatter//dtb:level5[not(dtb:h5)]|
                        dtb:bodymatter//dtb:level6[not(dtb:h6)]">
     <xsl:apply-templates select="." mode="addHeading">
-      <xsl:with-param name="level" select="2"/>
+      <xsl:with-param name="level" select="substring-after(name(), 'level')"/>
       <xsl:with-param name="blurb" select="'Ohne Überschrift'"/>
     </xsl:apply-templates>
   </xsl:template>
