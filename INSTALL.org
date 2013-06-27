@@ -201,6 +201,18 @@ apache subdirectory (see also [[http://github.com/egli/daisy-producer/blob/maste
   sudo aptitude install openoffice.org-hyphenation-de
 #+END_EXAMPLE
 
+- ucharclasses :: If you want your LaTeX to be able to handle any
+                  unicode font then you will need to install the
+                  [[http://www.ctan.org/tex-archive/macros/xetex/latex/ucharclasses][ucharclasses package]]
+
+
+1. Find your local TeX tree with =kpsewhich -var-value TEXMFLOCAL=
+2. Get ucharclasses.sty from [[http://ctan.org/tex-archive/macros/xetex/latex/ucharclasses][CTAN]]
+3. Install it in your local TeX tree,
+   =/usr/local/share/texmf/tex/ucharclasses= for example
+4. Update the installation with =sudo mktexlsr
+   /usr/local/share/texmf=
+
 ** Requirements for abacus_import app
 
 The abacus_import app needs a few additional packages to be able to
