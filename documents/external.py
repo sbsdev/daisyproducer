@@ -49,7 +49,7 @@ def applyXSL2(xsl, stdin, stdout):
         "-s:-")
     return Popen(command, stdin=stdin, stdout=stdout)
 
-def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **kwargs):
+def generatePDF(inputFile, outputFile, images, taskscript='DTBookToLaTeX.taskScript', **kwargs):
     tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
     fileBaseName = splitext(basename(inputFile))[0]
     latexFileName = join(tmpDir, fileBaseName + ".tex")
@@ -84,6 +84,8 @@ def generatePDF(inputFile, outputFile, taskscript='DTBookToLaTeX.taskScript', **
     call(command)
     # Transform to pdf using xelatex
     pdfFileName = join(tmpDir, fileBaseName + ".pdf")
+    for image in images:
+        copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
     currentDir = os.getcwd()
     os.chdir(tmpDir)
     command = (
@@ -193,12 +195,12 @@ class DaisyPipeline:
         return result
         
     @staticmethod
-    def dtbook2pdf(inputFile, outputFile, **kwargs):
+    def dtbook2pdf(inputFile, outputFile, images, **kwargs):
         """Transform a dtbook xml file to pdf"""
 
         tmpFile = filterBrlContractionhints(inputFile)
 
-        generatePDF(tmpFile, outputFile, **kwargs)
+        generatePDF(tmpFile, outputFile, images, **kwargs)
         os.remove(tmpFile)
 
     @staticmethod
@@ -393,24 +395,24 @@ class StandardLargePrint:
         return tmpFile.name
 
     @staticmethod
-    def determineNumberOfVolumes(file_path, **kwargs):
+    def determineNumberOfVolumes(file_path, images, **kwargs):
         pdfFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".pdf")
-        generatePDF(file_path, pdfFile.name, **kwargs)
+        generatePDF(file_path, pdfFile.name, images, **kwargs)
         pdfReader = PdfFileReader(file(pdfFile.name, "rb"))
         volumes = int(math.ceil(pdfReader.getNumPages() / float(StandardLargePrint.PAGES_PER_VOLUME)))
         pdfFile.close()
         return volumes
 
     @staticmethod
-    def dtbook2pdf(inputFile, outputFile, **kwargs):
+    def dtbook2pdf(inputFile, outputFile, images, **kwargs):
         """Transform a dtbook xml file to pdf"""
         tmpFile = filterBrlContractionhints(inputFile)
         defaults = StandardLargePrint.PARAMETER_DEFAULTS.copy()
         defaults.update(kwargs)
-        numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, **defaults)
+        numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, images, **defaults)
         tmpFile2 = StandardLargePrint.insertVolumeSplitPoints(tmpFile, numberOfVolumes)
 
-        generatePDF(tmpFile2, outputFile, **defaults)
+        generatePDF(tmpFile2, outputFile, images, **defaults)
         os.remove(tmpFile)
         os.remove(tmpFile2)
         

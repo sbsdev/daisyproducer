@@ -251,7 +251,8 @@ def preview_pdf(request, document_id):
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputFile = "/tmp/%s.pdf" % document_id
-            StandardLargePrint.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
+            StandardLargePrint.dtbook2pdf(inputFile, outputFile,
+                                          images=document.image_set.all(), **form.cleaned_data)
             return render_to_mimetype_response('application/pdf', 
                                                document.title.encode('utf-8'), outputFile)
     else:
@@ -266,7 +267,7 @@ def preview_library_pdf(request, document_id):
 
     inputFile = document.latest_version().content.path
     outputFile = "/tmp/%s.pdf" % document_id
-    StandardLargePrint.dtbook2pdf(inputFile, outputFile)
+    StandardLargePrint.dtbook2pdf(inputFile, outputFile, images=document.image_set.all())
     filename = document.title + u" 17pt"
     return render_to_mimetype_response('application/pdf', filename.encode('utf-8'), outputFile)
 
@@ -280,7 +281,8 @@ def preview_sale_pdf(request, document_id):
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputFile = "/tmp/%s.pdf" % document_id
-            StandardLargePrint.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
+            StandardLargePrint.dtbook2pdf(inputFile, outputFile,
+                                          images=document.image_set.all(), **form.cleaned_data)
             filename = document.title + u" " + form.cleaned_data['font_size']
             return render_to_mimetype_response('application/pdf', 
                                                filename.encode('utf-8'), outputFile)

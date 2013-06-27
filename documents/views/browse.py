@@ -53,7 +53,8 @@ def as_pdf(request, document_id):
 
     inputFile = document.latest_version().content.path
     outputFile = "/tmp/%s.pdf" % document_id
-    DaisyPipeline.dtbook2pdf(inputFile, outputFile, **form.cleaned_data)
+    DaisyPipeline.dtbook2pdf(inputFile, outputFile,
+                             images=document.image_set.all(), **form.cleaned_data)
 
     return render_to_mimetype_response('application/pdf', document.title.encode('utf-8'), outputFile)
 
