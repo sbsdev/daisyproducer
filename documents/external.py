@@ -275,10 +275,11 @@ class DaisyPipeline:
         os.remove(tmpFile)
 
     @staticmethod
-    def dtbook2text_only_dtb(inputFile, outputPath, **kwargs):
+    def dtbook2text_only_dtb(inputFile, outputPath, images, **kwargs):
         """Transform a dtbook xml file to a Daisy 3 Text-Only"""
+        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
         inputFileHandle = open(inputFile)
-        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml")
+        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", dir=tmpDir)
         p1 = applyXSL('filterBrlContractionhints.xsl', inputFileHandle, subprocess.PIPE)
         p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
         p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
@@ -286,6 +287,8 @@ class DaisyPipeline:
         p5 = applyXSL('addEmptyHeaders.xsl', p4.stdout, subprocess.PIPE)
         p6 = applyXSL2('addBoilerplate.xsl', p5.stdout, tmpFile)
         p6.communicate()
+        for image in images:
+            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         command = (
@@ -302,6 +305,7 @@ class DaisyPipeline:
         fnull.close()
         inputFileHandle.close()
         tmpFile.close()
+        rmtree(tmpDir)
         return result
 
     @staticmethod

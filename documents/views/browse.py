@@ -146,7 +146,9 @@ def as_text_only_dtb(request, document_id):
     inputFile = document.latest_version().content.path
     outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
 
-    DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
+    DaisyPipeline.dtbook2text_only_dtb(
+        inputFile, outputDir,
+        images=document.image_set.all(), **form.cleaned_data)
 
     zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
     zipFile.close() # we are only interested in a unique filename

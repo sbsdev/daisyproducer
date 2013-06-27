@@ -44,7 +44,10 @@ class Command(BaseCommand):
             if verbosity >= 1:
                 self.stdout.write('Converting %s...\n' % dtbook)
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
-            result = DaisyPipeline.dtbook2text_only_dtb(dtbook, outputDir)
+            result = DaisyPipeline.dtbook2text_only_dtb(
+                dtbook, outputDir,
+                # we assume that there are no images
+                images=[])
             if result:
                 for error in result:
                     self.stderr.write(error + "\n")

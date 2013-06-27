@@ -348,7 +348,9 @@ def preview_text_only_dtb(request, document_id):
             
             ebookNumber = form.cleaned_data.pop('ebookNumber')
 
-            transformationErrors = DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir, **form.cleaned_data)
+            transformationErrors = DaisyPipeline.dtbook2text_only_dtb(
+                inputFile, outputDir,
+                images=document.image_set.all(), **form.cleaned_data)
             if transformationErrors:
                 return render_to_response('documents/todo_text_only_dtb.html', locals(),
                                           context_instance=RequestContext(request))

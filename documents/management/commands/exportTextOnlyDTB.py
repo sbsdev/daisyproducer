@@ -42,7 +42,8 @@ class Command(BaseCommand):
             inputFile = document.latest_version().content.path
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
 
-            transformationErrors = DaisyPipeline.dtbook2text_only_dtb(inputFile, outputDir)
+            transformationErrors = DaisyPipeline.dtbook2text_only_dtb(
+                inputFile, outputDir, images=document.image_set.all(),)
             if transformationErrors:
                 print transformationErrors
 
