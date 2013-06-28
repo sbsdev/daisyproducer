@@ -1,313 +1,467 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns="http://relaxng.org/ns/structure/1.0"
-         xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
-         xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-         xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
-         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-    
+	 xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+	 xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+	 xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+	 datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
     <!-- Schematron title and namespaces -->
-    <sch:title>DTBook 2005-3 Schematron tests for SBS</sch:title>
-    
+    <sch:title>DTBook 2005-3 Schematron tests for SBS
+    </sch:title>
+
     <sch:ns prefix="dtb" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
     <sch:ns prefix="brl" uri="http://www.daisy.org/z3986/2009/braille/"/>
-    
+
     <!-- ===================== -->
     <!-- Vanilla DTBook 2005-3 -->
     <!-- ===================== -->
-    
+
     <include href="dtbook-2005-3.rng" ns="http://www.daisy.org/z3986/2005/dtbook/">
-        
-        <!-- Limit possible values of @xml:lang -->
-        <define name="dtb.LanguageCode">
-            <choice>
-                <value>de</value>
-                <value>de-1901</value>
-                <value>de-CH</value>
-                <value>de-CH-1901</value>
-                <value>gsw</value>
-                <value>en</value>
-                <value>fr</value>
-                <value>it</value>
-                <value>es</value>
-                <value>und</value>
-            </choice>
-        </define>
-        
-        <!-- Limit possible values of @name on dtb:meta -->
-        <define name="dtb.attlist.meta" combine="interleave">
-            <ref name="dtb.i18n"/>
-            <optional>
-                <attribute name="http-equiv">
-                    <data type="NMTOKEN"/>
-                </attribute>
-            </optional>
-            <optional>
-                <attribute name="name">
-                    <choice>
-                        <value>dtb:uid</value>
-                        <value>dc:Title</value>
-                        <value>dc:Creator</value>
-                        <value>dc:Subject</value>
-                        <value>dc:Description</value>
-                        <value>dc:Publisher</value>
-                        <value>dc:Date</value>
-                        <value>dc:Type</value>
-                        <value>dc:Format</value>
-                        <value>dc:Identifier</value>
-                        <value>dc:Source</value>
-                        <value>dc:Language</value>
-                        <value>dc:Rights</value>
-                        <value>dtb:sourceEdition</value>
-                        <value>dtb:sourcePublisher</value>
-                        <value>dtb:sourceRights</value>
-                        <value>dtb:sourceDate</value>
-                        <value>prod:series</value>
-                        <value>prod:seriesNumber</value>
-                        <value>prod:source</value>
-			<!-- Meta data added by the supplier -->
-                        <value>track:Guidelines</value>
-                        <value>track:Supplier</value>
-                    </choice>
-                </attribute>
-            </optional>
-            <attribute name="content"/>
-            <optional>
-                <attribute name="scheme"/>
-            </optional>
-        </define>
-        
+
+	<!-- Limit possible values of @xml:lang -->
+	<define name="dtb.LanguageCode">
+	    <choice>
+	      <value>de</value>
+	      <value>de-1901</value>
+	      <value>de-CH</value>
+	      <value>de-CH-1901</value>
+	      <value>gsw</value>
+	      <value>en</value>
+	      <value>fr</value>
+	      <value>it</value>
+	      <value>es</value>
+	      <value>und</value>
+	    </choice>
+	</define>
+
+	<!-- Limit possible values of @name on dtb:meta -->
+	<define name="dtb.attlist.meta" combine="interleave">
+	    <ref name="dtb.i18n"/>
+	    <optional>
+		<attribute name="http-equiv">
+		    <data type="NMTOKEN"/>
+		</attribute>
+	    </optional>
+	    <optional>
+		<attribute name="name">
+		    <choice>
+		      <value>dtb:uid</value>
+		      <value>dc:Title</value>
+		      <value>dc:Creator</value>
+		      <value>dc:Subject</value>
+		      <value>dc:Description</value>
+		      <value>dc:Publisher</value>
+		      <value>dc:Date</value>
+		      <value>dc:Type</value>
+		      <value>dc:Format</value>
+		      <value>dc:Identifier</value>
+		      <value>dc:Source</value>
+		      <value>dc:Language</value>
+		      <value>dc:Rights</value>
+		      <value>dtb:sourceEdition</value>
+		      <value>dtb:sourcePublisher</value>
+		      <value>dtb:sourceRights</value>
+		      <value>dtb:sourceDate</value>
+		      <value>prod:series</value>
+		      <value>prod:seriesNumber</value>
+		      <value>prod:source</value>
+		      <!-- Meta data added by the supplier -->
+		      <value>track:Guidelines</value>
+		      <value>track:Supplier</value>
+		    </choice>
+		</attribute>
+	    </optional>
+	    <attribute name="content"/>
+	    <optional>
+		<attribute name="scheme"/>
+	    </optional>
+	</define>
+
+	<!-- Allow toc-line and running-line in headings -->
+	<define name="dtb.h1" combine="interleave">
+	  <element name="h1">
+	    <ref name="dtb.attlist.h1"/>
+	    <interleave>
+	      <zeroOrMore>
+		<ref name="dtb.inline"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.running-line"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.toc-line"/>
+	      </zeroOrMore>
+	    </interleave>
+	  </element>
+	</define>
+
+	<define name="dtb.h2" combine="interleave">
+	  <element name="h2">
+	    <ref name="dtb.attlist.h2"/>
+	    <interleave>
+	      <zeroOrMore>
+		<ref name="dtb.inline"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.running-line"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.toc-line"/>
+	      </zeroOrMore>
+	    </interleave>
+	  </element>
+	</define>
+
+	<define name="dtb.h3" combine="interleave">
+	  <element name="h3">
+	    <ref name="dtb.attlist.h3"/>
+	    <interleave>
+	      <zeroOrMore>
+		<ref name="dtb.inline"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.running-line"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.toc-line"/>
+	      </zeroOrMore>
+	    </interleave>
+	  </element>
+	</define>
+
+	<define name="dtb.h4" combine="interleave">
+	  <element name="h4">
+	    <ref name="dtb.attlist.h4"/>
+	    <interleave>
+	      <zeroOrMore>
+		<ref name="dtb.inline"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.running-line"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.toc-line"/>
+	      </zeroOrMore>
+	    </interleave>
+	  </element>
+	</define>
+
+	<define name="dtb.h5" combine="interleave">
+	  <element name="h5">
+	    <ref name="dtb.attlist.h5"/>
+	    <interleave>
+	      <zeroOrMore>
+		<ref name="dtb.inline"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.running-line"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.toc-line"/>
+	      </zeroOrMore>
+	    </interleave>
+	  </element>
+	</define>
+
+	<define name="dtb.h6" combine="interleave">
+	  <element name="h6">
+	    <ref name="dtb.attlist.h6"/>
+	    <interleave>
+	      <zeroOrMore>
+		<ref name="dtb.inline"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.running-line"/>
+	      </zeroOrMore>
+	      <zeroOrMore>
+		<ref name="brl.toc-line"/>
+	      </zeroOrMore>
+	    </interleave>
+	  </element>
+	</define>
+
+	<!-- Allow volume separators in level and div -->
+	<define name="dtb.docblockorinline">
+	  <choice>
+	    <ref name="dtb.doctitle"/>
+	    <ref name="dtb.docauthor"/>
+	    <ref name="dtb.covertitle"/>
+	    <ref name="dtb.bridgehead"/>
+	    <ref name="dtb.block"/>
+	    <ref name="dtb.inlineinblock"/>
+	    <ref name="brl.volume"/>
+	  </choice>
+	</define>
+
+	<!-- Allow volume separators in bodymatter, rearmatter -->
+	<define name="dtb.bodymatter">
+	  <element name="bodymatter">
+	    <ref name="dtb.attlist.bodymatter"/>
+	    <interleave>
+	      <oneOrMore>
+		<choice>
+		  <ref name="dtb.level"/>
+		  <ref name="dtb.level1"/>
+		</choice>
+	      </oneOrMore>
+	      <zeroOrMore>
+		<ref name="brl.volume"/>
+	      </zeroOrMore>
+	    </interleave>
+	  </element>
+	</define>
+
+	<define name="dtb.rearmatter">
+	  <element name="rearmatter">
+	    <ref name="dtb.attlist.rearmatter"/>
+	    <interleave>
+	      <oneOrMore>
+		<choice>
+		  <ref name="dtb.level"/>
+		  <ref name="dtb.level1"/>
+		</choice>
+	      </oneOrMore>
+	      <zeroOrMore>
+		<ref name="brl.volume"/>
+	      </zeroOrMore>
+	    </interleave>
+	  </element>
+	</define>
+
     </include>
-    
+
     <!-- ======= -->
     <!-- Braille -->
     <!-- ======= -->
-    
+
     <include href="dtbook-2005-3-sbs-braille.rng" ns="http://www.daisy.org/z3986/2009/braille/"/>
-    
+
     <!-- Allow contraction hints and brl:select anywhere an inline element is allowed -->
     <define name="dtb.externalinline" combine="choice" ns="http://www.daisy.org/z3986/2005/dtbook/">
-        <choice>
-            <ref name="brl.contractionhint" ns="http://www.daisy.org/z3986/2009/braille/"/>
-            <ref name="brl.select" ns="http://www.daisy.org/z3986/2009/braille/"/>
-        </choice>
+	<choice>
+	    <ref name="brl.contractionhint" ns="http://www.daisy.org/z3986/2009/braille/"/>
+	    <ref name="brl.select" ns="http://www.daisy.org/z3986/2009/braille/"/>
+	</choice>
     </define>
-    
-    <!-- TODO Allow toc-line and running-line in headings -->
-    
-    <!-- TODO Allow volume separators in bodymatter, rearmatter, level -->
-    
+
     <!-- Allow @brl:class attribute on h1, h2, h3, h4, h5, h6, p, div  -->
     <define name="dtb.attlist.h1" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.h2" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.h3" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.h4" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.h5" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.h6" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.p" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.div" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <!-- Allow @brl:class attribute on (almost) anything -->
     <define name="dtb.attlist.blockquote" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.epigraph" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.author" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.byline" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.list" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.li" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.poem" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.linegroup" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
-    
+
     <define name="dtb.attlist.line" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.imggroup" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.sidebar" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.dl" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.dt" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.dd" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.hd" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.caption" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.img" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.table" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.thead" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.tfoot" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.tr" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.td" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
     </define>
 
     <define name="dtb.attlist.th" combine="interleave">
-        <optional>
-            <ref name="brl.classAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
+    </define>
+
+    <!-- Allow @brl:render on dtb:em -->
+    <define name="dtb.attlist.em" combine="interleave">
+	<optional>
+	    <ref name="brl.emphasisRenderAttribute"/>
+	</optional>
     </define>
 
     <!-- Allow @brl:grade and @brl:accents on dtb:span -->
     <define name="dtb.attlist.span" combine="interleave">
-        <optional>
-            <ref name="brl.gradeAttribute"/>
-        </optional>
-        <optional>
-            <ref name="brl.accentsAttribute"/>
-        </optional>
+	<optional>
+	    <ref name="brl.gradeAttribute"/>
+	</optional>
+	<optional>
+	    <ref name="brl.accentsAttribute"/>
+	</optional>
     </define>
-    
+
     <!-- Don't allow an element with @xml:lang|@brl:grade to have descendants
-         with @xml:lang or @brl:grade, unless the element is <dtbook> -->
+	 with @xml:lang or @brl:grade, unless the element is <dtbook> -->
     <sch:pattern name="sbs_lang_grade" id="sbs_lang_grade">
-        <sch:rule context="*[not(self::dtb:dtbook)][@xml:lang or @brl:grade]">
-            <sch:assert test="not(descendant::*[@xml:lang or @brl:grade])">
-                An element with xml:lang or brl:grade can not have descendants with xml:lang or brl:grade.
-            </sch:assert>
-        </sch:rule>
+	<sch:rule context="*[not(self::dtb:dtbook)][@xml:lang or @brl:grade]">
+	    <sch:assert test="not(descendant::*[@xml:lang or @brl:grade])">
+		An element with xml:lang or brl:grade can not have descendants with xml:lang or brl:grade.
+	    </sch:assert>
+	</sch:rule>
     </sch:pattern>
-    
+
     <!-- ============ -->
     <!-- Continuation -->
     <!-- ============ -->
-    
+
     <include href="dtbook-2005-3-sbs-continuation.rng" ns="http://www.daisy.org/z3986/2009/braille/"/>
-    
 </grammar>
