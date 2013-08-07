@@ -105,6 +105,8 @@ def exportWords(f):
                                     smart_unicode(braille2),
                                     smart_unicode(braille1))))
 
+# First look for the same word but with different braille translation, then look for
+# the same word but with different type.
 def getGlobalWord(word):
     try:
         return GlobalWord.objects.get(
@@ -113,7 +115,15 @@ def getGlobalWord(word):
                     type=word['type'],
                     homograph_disambiguation=word['homograph_disambiguation'])
     except ObjectDoesNotExist:
-        raise Exception("Word '%s' could not be found in the global dictionary" % word['untranslated'])
+        try:
+            return GlobalWord.objects.get(
+                        untranslated=word['untranslated'],
+                        grade=word['grade'],
+                        braille=word['braille'],
+                        homograph_disambiguation=word['homograph_disambiguation'])
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
+            pass
+    raise Exception("Word could not be found in the global dictionary: %s" % word)
 
 cursor = connection.cursor()
 
@@ -127,7 +137,8 @@ VALUES (%s, %s, %s, %s, %s)
 def clearTempWords():
     cursor.execute("DELETE FROM dictionary_importglobalword")
 
-def changedWords():
+# Get all the words from dictionary_importglobalword that are not already in dictionary_globalword
+def changedOrNewWords():
     CHANGED_WORDS = """
 SELECT dictionary_importglobalword.*
 FROM dictionary_importglobalword
