@@ -1,8 +1,10 @@
 # coding=utf-8
+import codecs
 from daisyproducer.dictionary.importExport import WordReader, columnize
 from daisyproducer.dictionary.models import GlobalWord
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.encoding import smart_unicode
 from django.db import transaction
 from optparse import make_option
 
@@ -34,6 +36,8 @@ class Command(BaseCommand):
         if not dry_run:
             self.log("Warning: this action cannot be undone. Specify the --dry-run option to do a simulation first.")
             raw_input("Hit Enter to continue, or Ctrl-C to abort.")
+
+        self.logger = codecs.getwriter(self.stdout.encoding)(self.stdout)
 
         self.numberOfDeletes = 0
         self.numberOfErrors = 0
@@ -82,7 +86,7 @@ class Command(BaseCommand):
                 self.log("%s errors" % self.numberOfErrors)
 
     def log(self, message):
-        self.stdout.write("%s\n" % message)
+        self.logger.write(u"%s\n" % smart_unicode(message))
 
     def error(self, message, lineNo=0):
         self.numberOfErrors += 1
