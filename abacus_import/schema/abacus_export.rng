@@ -33,7 +33,7 @@
                   <element name="source">
                     <optional>
                       <data type="token">
-                        <param name="pattern">keine|SBS[0-9]{6}|(978-)?[0-9]-\d([0-9]|-){7}\d-[0-9xX]</param>
+                        <param name="pattern">keine|SBS[0-9]{6}|(978-)?\d{1,5}-\d{1,7}-\d{1,6}-[0-9xX]</param>
                       </data>
                     </optional>
                   </element>
