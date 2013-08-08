@@ -6,7 +6,7 @@ import os.path
 import re
 from django.db import connection, transaction
 from django.utils.encoding import smart_unicode
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from daisyproducer.dictionary.models import GlobalWord, VALID_BRAILLE_RE
 from difflib import SequenceMatcher
 from itertools import tee, izip
@@ -186,3 +186,7 @@ def colorDiff(old, new, deleteTags, insertTags):
                                                        insertTags[0] + new[j1:j2] + insertTags[1])
                    for (tag,i1,i2,j1,j2) in opcodes)
 
+def columnize(columns, widths):
+    return (u' '.join(["{%d:<%d}" % (i, widths[i] + sum(len(s) for s in re.findall(r'\[[0-9]+(?:;[0-9]+)?m', columns[i])))
+                                    for i in range(len(columns))])
+           ).format(*[smart_unicode(c) for c in columns])

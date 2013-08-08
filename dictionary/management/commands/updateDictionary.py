@@ -1,7 +1,6 @@
 # coding=utf-8
-import codecs
-import re
-from daisyproducer.dictionary.importExport import WordReader, compareBraille, validateBraille, getGlobalWord, colorDiff, insertTempWord, clearTempWords, changedOrNewWords
+from daisyproducer.dictionary.importExport import WordReader, compareBraille, validateBraille, getGlobalWord, colorDiff, insertTempWord, clearTempWords, changedOrNewWords, columnize
+from daisyproducer.dictionary.models import GlobalWord
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from optparse import make_option
@@ -10,7 +9,7 @@ inverseTypeMap = { 0: '*', 1: 'n', 2: 'N', 3: 'p', 4: 'P', 5: 'H' }
 
 class Command(BaseCommand):
     args = 'dictionary_file'
-    help = 'Update the global dictionary with the given file'
+    help = 'Update the global dictionary with the given file (which must be encoded in UTF-8)'
 
     option_list = BaseCommand.option_list + (
         make_option(
@@ -29,18 +28,20 @@ class Command(BaseCommand):
             raise CommandError('No dictionary file specified')
         except IOError:
             raise CommandError('Dictionary file "%s" not found' % args[0])
-        
+
         verbosity = int(options['verbosity'])
         dry_run = options['dry_run']
         if not dry_run:
             self.log("Warning: this action cannot be undone. Specify the --dry-run option to do a simulation first.")
             raw_input("Hit Enter to continue, or Ctrl-C to abort.")
-        
+
         self.numberOfUpdates = 0
         self.numberOfInserts = 0
         self.numberOfErrors = 0
         self.numberOfWarnings = 0
 
+        if dry_run:
+            verbosity = 2
         if verbosity >= 1:
             self.log("Adding words to temporary table...")
         clearTempWords()
@@ -57,9 +58,8 @@ class Command(BaseCommand):
 
         if verbosity >= 1:
             self.log("Updating global words...")
-        if dry_run:
             self.log("==================================================================================================================")
-            self.log(self.columnize(("type", "grade", "untranslated", "braille"), (5,5,50,50)))
+            self.log(columnize(("type", "grade", "untranslated", "braille"), (5,5,50,50)))
             self.log("==================================================================================================================")
 
         for change in changedOrNewWords():
@@ -69,46 +69,47 @@ class Command(BaseCommand):
                     word = getGlobalWord(change)
                 except: pass
                 if (word != None):
-                    warning = None
-                    if change['type'] != word.type:
-                        warning = self.warning("Type changed")
-                    else:
-                        try:
-                            compareBraille(change['braille'], word.braille)
-                        except Exception as e:
-                            warning = self.warning("Significant change")
-                    self.log(self.columnize((inverseTypeMap[word.type] if change['type'] == word.type else
-                                                      color.DELETED + inverseTypeMap[word.type] + color.END + ".." +
-                                                      color.INSERTED + inverseTypeMap[change['type']] + color.END,
-                                             str(word.grade),
-                                             word.untranslated,
-                                             colorDiff(word.braille, change['braille'], (color.DELETED, color.END), (color.INSERTED, color.END))),
-                                            (5,5,50,50))
-                             + ((" # %s" % warning) if warning != None else ""))
+                    if verbosity >= 1:
+                        warning = None
+                        if change['type'] != word.type:
+                            warning = self.warning("Type changed")
+                        else:
+                            try:
+                                compareBraille(change['braille'], word.braille)
+                            except Exception as e:
+                                warning = self.warning("Significant change")
+                        self.log(columnize((inverseTypeMap[word.type] if change['type'] == word.type else
+                                                     color.DELETED + inverseTypeMap[word.type] + color.END + ".." +
+                                                     color.INSERTED + inverseTypeMap[change['type']] + color.END,
+                                            str(word.grade),
+                                            word.untranslated,
+                                            colorDiff(word.braille, change['braille'], (color.DELETED, color.END), (color.INSERTED, color.END))),
+                                           (5,5,50,50))
+                                 + ((" # %s" % warning) if warning != None else ""))
                     if not dry_run:
                         word.braille = change['braille']
+                        word.type = change['type']
                         word.save()
                     self.numberOfUpdates += 1
                 else:
-                    self.log(color.INSERTED
-                             + self.columnize((inverseTypeMap[change['type']],
-                                               str(change['grade']),
-                                               change['untranslated'],
-                                               change['braille']),
-                                              (5,5,50,50))
-                             + color.END
-                             + " # %s" % self.warning("New word"))
+                    if verbosity >= 1:
+                        self.log(color.INSERTED
+                                 + columnize((inverseTypeMap[change['type']],
+                                              str(change['grade']),
+                                              change['untranslated'],
+                                              change['braille']),
+                                             (5,5,50,50))
+                                 + color.END
+                                 + " # %s" % self.warning("New word"))
                     if not dry_run:
                         GlobalWord(**change).save()
                     self.numberOfInserts += 1
             except Exception as e:
                 self.log(self.error(e))
-                
-        if dry_run:
-            self.log("==================================================================================================================")
         
         f.close()
         if verbosity >= 1:
+            self.log("==================================================================================================================")
             self.log("%s words were successfully updated" % self.numberOfUpdates)
             self.log("%s words were added" % self.numberOfInserts)
             if self.numberOfErrors > 0:
@@ -130,11 +131,6 @@ class Command(BaseCommand):
         if lineNo > 0:
             message = "(line %d) %s" % (lineNo, message)
         return color.ERROR + "[ERROR] %s" % (message) + color.END
-
-    def columnize(self, columns, widths):
-        return (u"%s" % ' '.join(["{%d:<%d}" % (i, widths[i] + sum(len(s) for s in re.findall(r'\[[0-9]+(?:;[0-9]+)?m', columns[i])))
-                                               for i in range(len(columns))])
-               ).format(*columns)
 
 class color:
     INSERTED = r'[01;32m'
