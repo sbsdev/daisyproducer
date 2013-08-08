@@ -182,8 +182,9 @@ def wordDistance(old, new):
 
 def colorDiff(old, new, deleteTags, insertTags):
     opcodes = SequenceMatcher(None, old, new).get_opcodes()
-    return u''.join(old[i1:i2] if tag == 'equal' else (deleteTags[0] + old[i1:i2] + deleteTags[1] + 
-                                                       insertTags[0] + new[j1:j2] + insertTags[1])
+    return u''.join(smart_unicode(old[i1:i2]) if tag == 'equal'
+                        else (deleteTags[0] + smart_unicode(old[i1:i2]) + deleteTags[1] +
+                              insertTags[0] + smart_unicode(new[j1:j2]) + insertTags[1])
                    for (tag,i1,i2,j1,j2) in opcodes)
 
 def columnize(columns, widths):
