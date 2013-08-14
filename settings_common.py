@@ -9,16 +9,21 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = (
     ('Christian Egli', 'christian.egli@sbs.ch'),
+    ('Bert Frees', 'bert.frees@sbs.ch'),
 )
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'postgresql_psycopg2'  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'daisyproducer_dev'  # Or path to database file if using sqlite3.
-DATABASE_USER = 'eglic'             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'daisyproducer_dev',     # Or path to database file if using sqlite3.
+        'USER': 'eglic',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
 
 EMAIL_HOST = 'smtp.sbszh.ch'
 MAIL_SUBJECT_PREFIX = '[Daisyproducer] '
@@ -56,6 +61,9 @@ LOGIN_REDIRECT_URL = '/todo'
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
+# URL prefix for static files.
+STATIC_URL = '/media/'
+
 # Format for date and datetime strings.
 DATE_FORMAT = 'Y-m-d H:i'
 DATETIME_FORMAT = 'j M y H:i'
@@ -76,9 +84,8 @@ DAISY_DEFAULT_PUBLISHER = "SBS Schweizerische Bibliothek für Blinde, Seh- und L
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 )
 
 RESTRUCTUREDTEXT_FILTER_SETTINGS = {'doctitle_xform': 0}
@@ -87,8 +94,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 )
 
 ROOT_URLCONF = 'daisyproducer.urls'
@@ -111,5 +119,6 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.messages',
     'south',
 )
