@@ -124,7 +124,7 @@
   <define name="brl.emphasisClassAttribute">
     <a:documentation>The class attribute on emphasis is used to categorize the emphasis tags.
 This will help in deciding what brl:render attribute to set for this emphasis</a:documentation>
-    <attribute name="brl:class">
+    <attribute name="class">
       <data type="string" datatypeLibrary=""/>
     </attribute>
   </define>
