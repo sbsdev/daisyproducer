@@ -18,7 +18,12 @@ class Command(BaseCommand):
         make_option(
             '--dry-run',
             default=False,
-            help='Do a simulation before actually performing the action'),)
+            help='Do a simulation before actually performing the action'),
+        make_option(
+            '--force',
+            default=False,
+            help='Ignore any warnings and just delete the words'),
+        )
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
@@ -35,7 +40,9 @@ class Command(BaseCommand):
 
         verbosity = int(options['verbosity'])
         dry_run = options['dry_run']
-        if not dry_run:
+        force = options['force']
+
+        if not dry_run and not force:
             self.log("Warning: this action cannot be undone. Specify the --dry-run option to do a simulation first.")
             raw_input("Hit Enter to continue, or Ctrl-C to abort.")
 
