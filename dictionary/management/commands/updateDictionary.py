@@ -18,7 +18,6 @@ class Command(BaseCommand):
             '--dry-run',
             default=False,
             help='Do a simulation before actually performing the import'),
-        )
         make_option(
             '--force',
             default=False,
