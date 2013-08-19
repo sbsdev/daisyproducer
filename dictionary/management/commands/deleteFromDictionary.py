@@ -37,7 +37,7 @@ class Command(BaseCommand):
             self.log("Warning: this action cannot be undone. Specify the --dry-run option to do a simulation first.")
             raw_input("Hit Enter to continue, or Ctrl-C to abort.")
 
-        self.logger = codecs.getwriter(self.stdout.encoding)(self.stdout)
+        self.logger = codecs.getwriter(self.stdout.encoding if self.stdout.isatty() else 'utf-8')(self.stdout)
 
         self.numberOfDeletes = 0
         self.numberOfErrors = 0
