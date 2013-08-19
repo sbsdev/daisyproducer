@@ -31,13 +31,13 @@ class Command(BaseCommand):
         except IOError:
             raise CommandError('Dictionary file "%s" not found' % args[0])
 
+        self.logger = codecs.getwriter(self.stdout.encoding if self.stdout.isatty() else 'utf-8')(self.stdout)
+
         verbosity = int(options['verbosity'])
         dry_run = options['dry_run']
         if not dry_run:
             self.log("Warning: this action cannot be undone. Specify the --dry-run option to do a simulation first.")
             raw_input("Hit Enter to continue, or Ctrl-C to abort.")
-
-        self.logger = codecs.getwriter(self.stdout.encoding if self.stdout.isatty() else 'utf-8')(self.stdout)
 
         self.numberOfDeletes = 0
         self.numberOfErrors = 0
