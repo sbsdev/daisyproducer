@@ -384,6 +384,12 @@
 	</optional>
     </define>
 
+    <define name="dtb.attlist.bridgehead" combine="interleave">
+	<optional>
+	    <ref name="brl.classAttribute"/>
+	</optional>
+    </define>
+
     <define name="dtb.attlist.caption" combine="interleave">
 	<optional>
 	    <ref name="brl.classAttribute"/>
