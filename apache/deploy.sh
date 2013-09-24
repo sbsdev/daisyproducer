@@ -104,9 +104,56 @@ cp pipeline/transformers/se_tpb_dtbook2latex/dtbook2latex_sbs.xsl pipeline/trans
     fi
 }
 
+function deploy_dp2() {
+    local PACKAGE=`ls -rt $DP2_ROOT/target/pipeline2-[0-9].[0-9].zip|tail -1`
+    if is_newer_locally $PACKAGE $1 $2; then
+	echo "`basename $PACKAGE` is newer locally. Deploying it..."
+	scp $PACKAGE $1:$2
+	ssh $1 "
+cd $2
+unzip -o -q `basename $PACKAGE`"
+    else
+	echo "`basename $PACKAGE` has already been deployed. Skipping it..."
+    fi
+}
+
+M2_REPO=${HOME}/.m2/repository
+
+function deploy_dp2_module() {
+    local MODULE=($(echo $1 | tr ":" " "))
+    local GROUP_ID=${MODULE[0]}
+    local ARTIFACT_ID=${MODULE[1]}
+    local PACKAGING=${MODULE[2]}
+    local VERSION CLASSIFIER
+    if [ -n "${MODULE[4]}" ]; then
+        CLASSIFIER=-${MODULE[3]}
+        VERSION=${MODULE[4]}
+    else
+        VERSION=${MODULE[3]}
+    fi
+    local PACKAGE=${M2_REPO}/$(echo $GROUP_ID | tr "." "/")/${ARTIFACT_ID}/${VERSION}/${ARTIFACT_ID}-${VERSION}${CLASSIFIER}.${PACKAGING}
+    if is_newer_locally $PACKAGE $2 $3; then
+	echo "`basename $PACKAGE` is newer locally. Deploying it..."
+	# remove old module
+	ssh $2 "
+cd $3
+rm -rf ${ARTIFACT_ID}-*${CLASSIFIER}.${PACKAGING}"
+	scp $PACKAGE $2:$3
+    else
+	echo "`basename $PACKAGE` has already been deployed. Skipping it..."
+    fi
+}
+
 case "$1" in
     prod)
 	deploy_pipeline xmlp /opt
+	deploy_dp2 xmlp /opt
+	deploy_dp2_module ch.sbs.pipeline.modules:dtbook-to-odt:jar::1.0.0-SNAPSHOT xmlp /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:odt-utils:jar::1.0.0-SNAPSHOT xmlp /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.libs:libreoffice-uno:jar::4.0.2-SNAPSHOT xmlp /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.libs:jodconverter-core:jar::3.0-beta-4-SNAPSHOT xmlp /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:asciimathml:jar::1.0.0-SNAPSHOT xmlp /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:image-utils:jar::1.0.0-SNAPSHOT xmlp /opt/daisy-pipeline/modules
 	deploy_dtbook2sbsform xmlp /opt
 	deploy_dtbook_hyphenator xmlp /opt
 	deploy_hyphenation_tables xmlp ~/src
@@ -115,6 +162,13 @@ case "$1" in
 
     test)
 	deploy_pipeline xmlp-test /opt
+	deploy_dp2 xmlp-test /opt
+	deploy_dp2_module ch.sbs.pipeline.modules:dtbook-to-odt:jar::1.0.0-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:odt-utils:jar::1.0.0-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.libs:libreoffice-uno:jar::4.0.2-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.libs:jodconverter-core:jar::3.0-beta-4-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:asciimathml:jar::1.0.0-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:image-utils:jar::1.0.0-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
 	deploy_dtbook2sbsform xmlp-test /opt
 	deploy_dtbook_hyphenator xmlp-test /opt
 	deploy_hyphenation_tables xmlp-test ~/src
@@ -123,6 +177,13 @@ case "$1" in
 
     dev|*)
 	deploy_pipeline localhost ~/tmp
+	deploy_dp2 localhost ~/tmp
+	deploy_dp2_module ch.sbs.pipeline.modules:dtbook-to-odt:jar::1.0.0-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:odt-utils:jar::1.0.0-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.libs:libreoffice-uno:jar::4.0.2-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.libs:jodconverter-core:jar::3.0-beta-4-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:asciimathml:jar::1.0.0-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
+	deploy_dp2_module org.daisy.pipeline.modules:image-utils:jar::1.0.0-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
 	deploy_dtbook2sbsform localhost ~/tmp
 	deploy_dtbook_hyphenator localhost ~/tmp
 	deploy_hyphenation_tables localhost ~/tmp;;
