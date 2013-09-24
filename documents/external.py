@@ -346,7 +346,7 @@ class Pipeline2:
             with tempfile.NamedTemporaryFile(suffix='.zip') as outputZip:
                 zipDirectory(tmpDir, inputZip.name)
                 command = (
-                    join(settings.EXTERNAL_PATH, 'pipeline-cli', 'dp2'),
+                    join(settings.EXTERNAL_PATH, 'daisy-pipeline', 'cli', 'dp2'),
                     "sbs:dtbook-to-odt",
                     "--data=%s" % inputZip.name,
                     "--i-source=%s" % fileName,
