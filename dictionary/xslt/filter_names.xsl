@@ -17,8 +17,9 @@
        not joined with other words -->
   <xsl:template match="brl:running-line|brl:toc-line">
     <xsl:copy>
+      <xsl:apply-templates select="@*"/>
       <xsl:text> </xsl:text>
-      <xsl:apply-templates select="@*|node()"/>
+      <xsl:apply-templates select="node()"/>
       <xsl:text> </xsl:text>
     </xsl:copy>
   </xsl:template>
