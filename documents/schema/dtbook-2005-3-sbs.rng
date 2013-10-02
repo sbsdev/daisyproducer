@@ -445,6 +445,13 @@
 	</optional>
     </define>
 
+    <!-- Allow @brl:render on dtb:strong -->
+    <define name="dtb.attlist.strong" combine="interleave">
+	<optional>
+	    <ref name="brl.emphasisRenderAttribute"/>
+	</optional>
+    </define>
+
     <!-- Allow @brl:grade and @brl:accents on dtb:span -->
     <define name="dtb.attlist.span" combine="interleave">
 	<optional>
