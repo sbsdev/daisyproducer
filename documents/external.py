@@ -284,9 +284,10 @@ class DaisyPipeline:
         p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
         p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
         p4 = applyXSL('filterComments.xsl', p3.stdout, subprocess.PIPE)
-        p5 = applyXSL('addEmptyHeaders.xsl', p4.stdout, subprocess.PIPE)
-        p6 = applyXSL2('addBoilerplate.xsl', p5.stdout, tmpFile)
-        p6.communicate()
+        p5 = applyXSL('filterLinenumSpans.xsl', p4.stdout, subprocess.PIPE)
+        p6 = applyXSL('addEmptyHeaders.xsl', p5.stdout, subprocess.PIPE)
+        p7 = applyXSL2('addBoilerplate.xsl', p6.stdout, tmpFile)
+        p7.communicate()
         for image in images:
             copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
         # map True and False to "true" and "false"
