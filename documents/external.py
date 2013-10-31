@@ -334,14 +334,16 @@ class Pipeline2:
         return [p.sub(r'\1', line) for line in lines if p.match(line)]
 
     @staticmethod
-    def dtbook2odt(inputFile, images=None):
+    def dtbook2odt(inputFile, imageFiles=None, **kwargs):
         """Transform a dtbook xml file to a Open Document Format for Office Applications (ODF)"""
         tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
         fileName = basename(inputFile)
         odtFileName = splitext(fileName)[0] + ".odt"
         absoluteOdtFileName = join(tempfile.gettempdir(), odtFileName)
         copyfile(inputFile, join(tmpDir, fileName))
-        for image in images:
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+        for image in imageFiles:
             copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
         with tempfile.NamedTemporaryFile(suffix='.zip') as inputZip:
             with tempfile.NamedTemporaryFile(suffix='.zip') as outputZip:
@@ -351,8 +353,15 @@ class Pipeline2:
                     "sbs:dtbook-to-odt",
                     "--data=%s" % inputZip.name,
                     "--i-source=%s" % fileName,
-                    "--file=%s" % outputZip.name
+                    "--file=%s" % outputZip.name,
+                    "--x-asciimath=%(asciimath)s" % kwargs if 'asciimath' in kwargs else None,
+                    "--x-phonetics=%(phonetics)s" % kwargs if 'phonetics' in kwargs else None,
+                    "--x-images=%(images)s" % kwargs if '' in kwargs else None,
+                    "--x-line-numbers=%(line_numbers)s" % kwargs if 'line_numbers' in kwargs else None,
+                    "--x-page-numbers=%(page_numbers)s" % kwargs if 'page_numbers' in kwargs else None,
+                    "--x-answer=%(answer)s" % kwargs if 'answer' in kwargs else None,
                     )
+                command = filter(None, command) # filter out empty arguments
                 p = Popen(command, stdout=PIPE)
                 errors = Pipeline2.filter_output(p.communicate()[0].splitlines())
                 if p.returncode != 0 or errors:

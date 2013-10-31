@@ -410,7 +410,9 @@ def preview_odt(request, document_id):
         form = ODTForm(request.POST)
         if form.is_valid():
             inputFile = document.latest_version().content.path
-            filename = Pipeline2.dtbook2odt(inputFile, images=document.image_set.all())
+            filename = Pipeline2.dtbook2odt(inputFile,
+                                            imageFiles=document.image_set.all(),
+                                            **form.cleaned_data)
 
             if isinstance(filename, tuple):
                 # if filename is a tuple we're actually looking at a list of error messages

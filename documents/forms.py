@@ -245,7 +245,42 @@ class TextOnlyDTBForm(forms.Form):
     ebookNumber = forms.RegexField(label=_("EBook Number"),regex="^EB\d{5}")
 
 class ODTForm(forms.Form):
-    pass
+    MATH_CHOICES = (
+        ('ASCIIMATH', _('AsciiMath')),
+        ('MATHML', _('MathML')),
+        ('BOTH', _('Both')),
+        )
+    IMAGE_CHOICES = (
+        ('NONE', _('None')),
+        ('LINK', _('Linked')),
+        ('EMBED', _('Embedded')),
+        )
+    asciimath = forms.ChoiceField(
+        label=_("Math"),
+#        help_text=_("Select how to render AsciiMath"),
+        choices=MATH_CHOICES,
+        initial='asciimath')
+    phonetics = forms.BooleanField(
+        label=_("Phonetics"),
+#        help_text=_("Select whether to show Phonetics"),
+        required=False, initial=True)
+    images = forms.ChoiceField(
+        label=_("Images"),
+        choices=IMAGE_CHOICES,
+        initial='Embedded')
+    line_numbers = forms.BooleanField(
+        label=_("Line Numbers"),
+#        help_text=_("Select whether to show line numbers"),
+        required=False, initial=True)
+    page_numbers = forms.BooleanField(
+        label=_("Page Numbers"),
+#        help_text=_("Select whether to show page numbers"),
+        required=False, initial=True)
+    answer = forms.CharField(
+        label=_("Answer Markup"),
+#        help_text=_("Markup for answer fields"),
+        initial="_..",
+        )
 
 class DTBForm(forms.Form):
     NARRATOR_BITRATE_CHOICES = (
