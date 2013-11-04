@@ -345,31 +345,30 @@ class Pipeline2:
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         for image in imageFiles:
             copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
-        with tempfile.NamedTemporaryFile(suffix='.zip') as inputZip:
-            with tempfile.NamedTemporaryFile(suffix='.zip') as outputZip:
-                zipDirectory(tmpDir, inputZip.name)
-                command = (
-                    join(settings.EXTERNAL_PATH, 'daisy-pipeline', 'cli', 'dp2'),
-                    "sbs:dtbook-to-odt",
-                    "--data=%s" % inputZip.name,
-                    "--i-source=%s" % fileName,
-                    "--file=%s" % outputZip.name,
-                    "--x-asciimath=%(asciimath)s" % kwargs if 'asciimath' in kwargs else None,
-                    "--x-phonetics=%(phonetics)s" % kwargs if 'phonetics' in kwargs else None,
-                    "--x-images=%(images)s" % kwargs if '' in kwargs else None,
-                    "--x-line-numbers=%(line_numbers)s" % kwargs if 'line_numbers' in kwargs else None,
-                    "--x-page-numbers=%(page_numbers)s" % kwargs if 'page_numbers' in kwargs else None,
-                    "--x-answer=%(answer)s" % kwargs if 'answer' in kwargs else None,
-                    )
-                command = filter(None, command) # filter out empty arguments
-                p = Popen(command, stdout=PIPE)
-                errors = Pipeline2.filter_output(p.communicate()[0].splitlines())
-                if p.returncode != 0 or errors:
-                    return ("Conversion to Open Document failed with:",) + tuple(errors)
-                with zipfile.ZipFile(outputZip.name) as odtZip:
-                    with odtZip.open(join('output-dir', odtFileName)) as odtIn:
-                        with open(absoluteOdtFileName, 'w') as odtOut:
-                            odtOut.write(odtIn.read())
+        with tempfile.NamedTemporaryFile(suffix='.zip') as outputZip:
+            command = (
+                # just asume dp2 is installed under /opt (which is
+                # the case if you install the deb
+                join('/', 'opt', 'daisy-pipeline2', 'cli', 'dp2'),
+                "sbs:dtbook-to-odt",
+                "--i-source=%s" % join(tmpDir, fileName),
+                "--output=%s" % outputZip.name,
+                "--x-asciimath=%(asciimath)s" % kwargs if 'asciimath' in kwargs else None,
+                "--x-phonetics=%(phonetics)s" % kwargs if 'phonetics' in kwargs else None,
+                "--x-images=%(images)s" % kwargs if '' in kwargs else None,
+                "--x-line-numbers=%(line_numbers)s" % kwargs if 'line_numbers' in kwargs else None,
+                "--x-page-numbers=%(page_numbers)s" % kwargs if 'page_numbers' in kwargs else None,
+                "--x-answer=%(answer)s" % kwargs if 'answer' in kwargs else None,
+                )
+            command = filter(None, command) # filter out empty arguments
+            p = Popen(command, stdout=PIPE)
+            errors = Pipeline2.filter_output(p.communicate()[0].splitlines())
+            if p.returncode != 0 or errors:
+                return ("Conversion to Open Document failed with:",) + tuple(errors)
+            with zipfile.ZipFile(outputZip.name) as odtZip:
+                with odtZip.open(join('output-dir', odtFileName)) as odtIn:
+                    with open(absoluteOdtFileName, 'w') as odtOut:
+                        odtOut.write(odtIn.read())
         rmtree(tmpDir)
         return absoluteOdtFileName
 
