@@ -16,6 +16,10 @@ if [[ $? != 0 ]] ; then
     exit 1
 fi
 
+DP2_PACKAGE=`ls -rt $DP2_PACKAGE_ROOT/daisy-pipeline2-[0-9].[0-9]-SNAPSHOT.deb|tail -1`
+ODT_PACKAGE=`ls -rt $ODT_PACKAGE_ROOT/dtbook-to-odt-[0-9].[0-9].[0-9]-SNAPSHOT.deb|tail -1`
+HYPHENATION_TABLES_PACKAGE=`ls -rt $HYPHENATION_TABLES_ROOT/../sbs-hyphenation-tables_*.deb|tail -1`
+
 function is_newer_locally() {
     if ( cd `dirname $1` && md5sum `basename $1` ) | ssh $2 " ( cd $3 &&  md5sum --check --status ) "; then
 	return 1
@@ -73,20 +77,6 @@ sudo make install"
     fi
 }
 
-function deploy_hyphenation_tables() {
-    local PACKAGE=`ls -rt $HYPHENATION_TABLES_ROOT/../sbs-hyphenation-tables_*.deb|tail -1`
-    if is_newer_locally $PACKAGE $1 $2; then
-	echo "`basename $PACKAGE` is newer locally. Deploying it..."
-	scp $PACKAGE $1:$2
-	ssh -t $1 "
-cd $2
-rm -rf `basename $PACKAGE .deb`
-sudo dpkg -i `basename $PACKAGE`"
-    else
-	echo "`basename $PACKAGE` has already been deployed. Skipping it..."
-    fi
-}
-
 function deploy_pipeline() {
     local PACKAGE=`ls -rt $PIPELINE_ROOT/dist/pipeline-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].zip|tail -1`
     if is_newer_locally $PACKAGE $1 $2; then
@@ -104,41 +94,25 @@ cp pipeline/transformers/se_tpb_dtbook2latex/dtbook2latex_sbs.xsl pipeline/trans
     fi
 }
 
-function deploy_dp2() {
-    local PACKAGE=`ls -rt $DP2_ROOT/target/pipeline2-[0-9].[0-9].zip|tail -1`
-    if is_newer_locally $PACKAGE $1 $2; then
-	echo "`basename $PACKAGE` is newer locally. Deploying it..."
-	scp $PACKAGE $1:$2
-	ssh $1 "
-cd $2
-unzip -o -q `basename $PACKAGE`"
-    else
-	echo "`basename $PACKAGE` has already been deployed. Skipping it..."
-    fi
+function deb_is_newer_locally() {
+    local DEB=$1
+    local PACKAGE=`dpkg-deb -f $DEB Package`
+    local HOST=$2
+    local VERSION=`dpkg-deb -f $DEB version`
+    ssh $HOST "dpkg --compare-versions `dpkg-query -W -f='${Version}' $PACKAGE` lt $VERSION"
 }
 
-M2_REPO=${HOME}/.m2/repository
-
-function deploy_dp2_module() {
-    local MODULE=($(echo $1 | tr ":" " "))
-    local GROUP_ID=${MODULE[0]}
-    local ARTIFACT_ID=${MODULE[1]}
-    local PACKAGING=${MODULE[2]}
-    local VERSION CLASSIFIER
-    if [ -n "${MODULE[4]}" ]; then
-        CLASSIFIER=-${MODULE[3]}
-        VERSION=${MODULE[4]}
-    else
-        VERSION=${MODULE[3]}
-    fi
-    local PACKAGE=${M2_REPO}/$(echo $GROUP_ID | tr "." "/")/${ARTIFACT_ID}/${VERSION}/${ARTIFACT_ID}-${VERSION}${CLASSIFIER}.${PACKAGING}
-    if is_newer_locally $PACKAGE $2 $3; then
+function deploy_deb() {
+    local PACKAGE=$1
+    local HOST=$2
+    local DEST=$3
+    if deb_is_newer_locally $PACKAGE $HOST; then
 	echo "`basename $PACKAGE` is newer locally. Deploying it..."
-	# remove old module
-	ssh $2 "
-cd $3
-rm -rf ${ARTIFACT_ID}-*${CLASSIFIER}.${PACKAGING}"
-	scp $PACKAGE $2:$3
+	scp $PACKAGE $HOST:$DEST
+	ssh -t $HOST "
+cd $DEST
+rm -rf `basename $PACKAGE .deb`
+sudo dpkg -i `basename $PACKAGE`"
     else
 	echo "`basename $PACKAGE` has already been deployed. Skipping it..."
     fi
@@ -147,46 +121,32 @@ rm -rf ${ARTIFACT_ID}-*${CLASSIFIER}.${PACKAGING}"
 case "$1" in
     prod)
 	deploy_pipeline xmlp /opt
-	deploy_dp2 xmlp /opt
-	deploy_dp2_module ch.sbs.pipeline.modules:dtbook-to-odt:jar::1.0.0-SNAPSHOT xmlp /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:odt-utils:jar::1.0.0-SNAPSHOT xmlp /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.libs:libreoffice-uno:jar::4.0.2-SNAPSHOT xmlp /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.libs:jodconverter-core:jar::3.0-beta-4-SNAPSHOT xmlp /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:asciimathml:jar::1.0.0-SNAPSHOT xmlp /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:image-utils:jar::1.0.0-SNAPSHOT xmlp /opt/daisy-pipeline/modules
+	deploy_deb $DP2_PACKAGE xmlp ~/src
+	deploy_deb $ODT_PACKAGE xmlp ~/src
 	deploy_dtbook2sbsform xmlp /opt
 	deploy_dtbook_hyphenator xmlp /opt
-	deploy_hyphenation_tables xmlp ~/src
+	deploy_deb $HYPHENATION_TABLES_PACKAGE xmlp ~/src
 	deploy_braille_tables xmlp ~/src
 	restart_apache xmlp;;
 
     test)
 	deploy_pipeline xmlp-test /opt
-	deploy_dp2 xmlp-test /opt
-	deploy_dp2_module ch.sbs.pipeline.modules:dtbook-to-odt:jar::1.0.0-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:odt-utils:jar::1.0.0-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.libs:libreoffice-uno:jar::4.0.2-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.libs:jodconverter-core:jar::3.0-beta-4-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:asciimathml:jar::1.0.0-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:image-utils:jar::1.0.0-SNAPSHOT xmlp-test /opt/daisy-pipeline/modules
+	deploy_deb $DP2_PACKAGE xmlp-test ~/src
+	deploy_deb $ODT_PACKAGE xmlp-test ~/src
 	deploy_dtbook2sbsform xmlp-test /opt
 	deploy_dtbook_hyphenator xmlp-test /opt
-	deploy_hyphenation_tables xmlp-test ~/src
+	deploy_deb $HYPHENATION_TABLES_PACKAGE xmlp-test ~/src
 	deploy_braille_tables xmlp-test ~/src
 	restart_apache xmlp-test;;
 
     dev|*)
 	deploy_pipeline localhost ~/tmp
-	deploy_dp2 localhost ~/tmp
-	deploy_dp2_module ch.sbs.pipeline.modules:dtbook-to-odt:jar::1.0.0-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:odt-utils:jar::1.0.0-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.libs:libreoffice-uno:jar::4.0.2-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.libs:jodconverter-core:jar::3.0-beta-4-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:asciimathml:jar::1.0.0-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
-	deploy_dp2_module org.daisy.pipeline.modules:image-utils:jar::1.0.0-SNAPSHOT localhost ~/tmp/daisy-pipeline/modules
+	deploy_deb $DP2_PACKAGE localhost /tmp
+	deploy_deb $ODT_PACKAGE localhost /tmp
 	deploy_dtbook2sbsform localhost ~/tmp
 	deploy_dtbook_hyphenator localhost ~/tmp
-	deploy_hyphenation_tables localhost ~/tmp;;
+	deploy_deb $HYPHENATION_TABLES_PACKAGE localhost /tmp
+	deploy_braille_tables localhost ~/tmp;;
 
 esac
 
