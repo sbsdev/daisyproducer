@@ -99,7 +99,11 @@ function deb_is_newer_locally() {
     local PACKAGE=`dpkg-deb -f $DEB Package`
     local HOST=$2
     local VERSION=`dpkg-deb -f $DEB version`
-    ssh $HOST "dpkg --compare-versions `dpkg-query -W -f='${Version}' $PACKAGE` lt $VERSION"
+    local REMOTE_VERSION=$(ssh $HOST "dpkg-query -W -f='\${Version}' $PACKAGE 2>/dev/null")
+    if [ -z "$REMOTE_VERSION" ]; then
+	REMOTE_VERSION=0
+    fi
+    ssh $HOST "dpkg --compare-versions $REMOTE_VERSION lt $VERSION"
 }
 
 function deploy_deb() {
