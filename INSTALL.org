@@ -197,7 +197,6 @@ apache subdirectory (see also [[http://github.com/egli/daisy-producer/blob/maste
                library
 
 #+BEGIN_EXAMPLE
-  sudo aptitude install libhyphen-dev swig
   sudo aptitude install openoffice.org-hyphenation-de
 #+END_EXAMPLE
 
