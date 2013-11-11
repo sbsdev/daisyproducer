@@ -251,7 +251,7 @@ class ODTForm(forms.Form):
         ('BOTH', _('Both')),
         )
     IMAGE_CHOICES = (
-        ('NONE', _('None')),
+        ('DROP', _('None')),
         ('LINK', _('Linked')),
         ('EMBED', _('Embedded')),
         )
@@ -259,7 +259,7 @@ class ODTForm(forms.Form):
         label=_("Math"),
 #        help_text=_("Select how to render AsciiMath"),
         choices=MATH_CHOICES,
-        initial='asciimath')
+        initial='BOTH')
     phonetics = forms.BooleanField(
         label=_("Phonetics"),
 #        help_text=_("Select whether to show Phonetics"),
@@ -267,7 +267,7 @@ class ODTForm(forms.Form):
     images = forms.ChoiceField(
         label=_("Images"),
         choices=IMAGE_CHOICES,
-        initial='Embedded')
+        initial='LINK')
     line_numbers = forms.BooleanField(
         label=_("Line Numbers"),
 #        help_text=_("Select whether to show line numbers"),
