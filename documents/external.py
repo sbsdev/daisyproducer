@@ -355,7 +355,7 @@ class Pipeline2:
                 "--output=%s" % outputZip.name,
                 "--x-asciimath=%(asciimath)s" % kwargs if 'asciimath' in kwargs else None,
                 "--x-phonetics=%(phonetics)s" % kwargs if 'phonetics' in kwargs else None,
-                "--x-images=%(images)s" % kwargs if '' in kwargs else None,
+                "--x-images=%(images)s" % kwargs if 'images' in kwargs else None,
                 "--x-line-numbers=%(line_numbers)s" % kwargs if 'line_numbers' in kwargs else None,
                 "--x-page-numbers=%(page_numbers)s" % kwargs if 'page_numbers' in kwargs else None,
                 "--x-answer=%(answer)s" % kwargs if 'answer' in kwargs else None,
