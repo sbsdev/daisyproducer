@@ -11,10 +11,10 @@
 # to build hyphenation tables
 #    debuild -us -uc
 
-source `dirname $0`/deploy.cfg
-if [[ $? != 0 ]] ; then
-    exit 1
-fi
+CURDIR=$(cd $(dirname "$0") && pwd)
+
+source $CURDIR/deploy.cfg || exit 1
+source $CURDIR/deploy-utils.sh
 
 DP2_PACKAGE=`ls -rt $DP2_PACKAGE_ROOT/daisy-pipeline2-[0-9].[0-9]-SNAPSHOT.deb|tail -1`
 ODT_PACKAGE=`ls -rt $ODT_PACKAGE_ROOT/dtbook-to-odt-[0-9].[0-9].[0-9]-SNAPSHOT.deb|tail -1`
@@ -122,7 +122,32 @@ sudo dpkg -i `basename $PACKAGE`"
     fi
 }
 
+function deploy_deb2() {
+    local GA=$1             # group:artifact
+    local VERSION=$2        # new version
+    local HOST=$3           # host machine
+    local PACKAGE=$4        # debian package name (must correspond to $GA)
+    local LOCAL_TMP=$5      # tmp directory on this machine
+    local REMOTE_TMP=$6     # tmp directory on remote machine
+    local INSTALLED_DEB_VERSION FILENAME
+    INSTALLED_DEB_VERSION="$( deb_get_installed_version $HOST $PACKAGE )"
+    if [ -z "$INSTALLED_DEB_VERSION" ] || is_newer_deb $VERSION $INSTALLED_DEB_VERSION $GA:deb: ; then
+        FILENAME="$( echo $GA | tr ':' '.' )-$VERSION.deb"
+        mvn_download_artifact $GA:deb::$VERSION "$LOCAL_TMP/$FILENAME" || return 1
+        scp "$LOCAL_TMP/$FILENAME" "$HOST:$REMOTE_TMP/$FILENAME"
+        ssh -t $HOST "sudo dpkg -i $REMOTE_TMP/$FILENAME"
+    else
+        echo "$PACKAGE $VERSION has already been deployed. Skipping it..."
+    fi
+}
+
 case "$1" in
+
+    foo)
+        deploy_deb2 org.daisy.pipeline:assembly 1.6.0 localhost daisy-pipeline2 ~/Desktop ~/Desktop
+        deploy_deb2 ch.sbs.pipeline.modules:dtbook-to-odt 1.0.0-SNAPSHOT localhost dtbook-to-odt ~/Desktop ~/Desktop
+        ;;
+
     prod)
 	deploy_pipeline xmlp /opt
 	deploy_deb $DP2_PACKAGE xmlp ~/src
