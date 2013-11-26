@@ -95,6 +95,7 @@ def generatePDF(inputFile, outputFile, images, taskscript='DTBookToLaTeX.taskScr
         )
     call(command)
     call(command) # call LaTeX again to make sure the toc is inserted
+    call(command) # call LaTeX again to make sure all the cross refs are correct
     os.rename(pdfFileName, outputFile)
     os.chdir(currentDir)
     rmtree(tmpDir)
