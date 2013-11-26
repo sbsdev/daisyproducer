@@ -1139,21 +1139,21 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
   </define>
   <define name="v-form">
     <element name="brl:v-form">
-      <data type="token">
+      <data type="normalizedString">
         <param name="minLength">1</param>
       </data>
     </element>
   </define>
   <define name="name">
     <element name="brl:name">
-      <data type="token">
+      <data type="normalizedString">
         <param name="minLength">1</param>
       </data>
     </element>
   </define>
   <define name="place">
     <element name="brl:place">
-      <data type="token">
+      <data type="normalizedString">
         <param name="minLength">1</param>
       </data>
     </element>
