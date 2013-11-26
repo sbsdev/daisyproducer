@@ -89,13 +89,13 @@ def generatePDF(inputFile, outputFile, images, taskscript='DTBookToLaTeX.taskScr
     currentDir = os.getcwd()
     os.chdir(tmpDir)
     command = (
-        "xelatex",
-        "-halt-on-error",
+         # use latexmk to make sure latex is run enough times so that toc and all the page refs are properly resolved
+        "latexmk",
+        "-quiet",
+        "-xelatex",
         latexFileName,
         )
     call(command)
-    call(command) # call LaTeX again to make sure the toc is inserted
-    call(command) # call LaTeX again to make sure all the cross refs are correct
     os.rename(pdfFileName, outputFile)
     os.chdir(currentDir)
     rmtree(tmpDir)

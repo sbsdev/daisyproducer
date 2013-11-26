@@ -14,6 +14,7 @@
 - [[http://www.tug.org/xetex/][XeTex]] (to generate Large Print from LaTeX)
 - [[http://www.tug.org/texlive/][texlive]] (should contain the extbook and titlesec class which is
   needed for Large Print)
+- [[http://users.phys.psu.edu/~collins/software/latexmk-jcc/][latexmk]] (automates the process of compiling a LaTeX document)
 - [[http://www.tiresias.org/fonts/lpfont/about_lp.htm][Tiresias LP font]] (a font designed for Large Print publications)
 - [[http://www.java.com/en/download/manual.jsp][Java Runtime]] (Daisy Pipeline needs at least Java 5)
 - [[http://code.google.com/p/liblouis/][liblouis]] You need to install both liblouis, liblouixml and the
@@ -43,6 +44,7 @@ In terms of (Debian/Ubuntu) packages this translates to
 - texlive-xetex
 - texlive-latex-extra
 - texlive-lang-german
+- latexmk
 - ttf-tiresias
 - xsltproc
 - jing
@@ -53,8 +55,8 @@ Install the basic packages:
   sudo aptitude install python python-django python-django-south	\
   python-lxml python-docutils python-libxml2 python-libxslt1            \
   python-pypdf sun-java6-jre texlive-xetex texlive-latex-extra		\
-  texlive-latex-recommended texlive-lang-german ttf-tiresias lmodern 	\
-  xsltproc unzip jing
+  texlive-latex-recommended texlive-lang-german latexmk ttf-tiresias    \
+  lmodern xsltproc unzip jing
 #+END_EXAMPLE
 
 *** Database
