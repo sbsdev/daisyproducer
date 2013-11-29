@@ -673,6 +673,11 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
   <define name="span">
     <element name="span">
       <optional>
+        <attribute name="class">
+          <value>brl:computer</value>
+        </attribute>
+      </optional>
+      <optional>
         <ref name="langAttribute"/>
       </optional>
       <choice>
