@@ -170,7 +170,9 @@ class DaisyPipeline:
         if result: return result
         # Validate using Schematron tests. We have to do this before the
         # @brl:* attributes are filtered out.
-        result = saxon9he(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-3-sbs.sch.xsl')).stderr
+        # FIXME: don't perform this check if we're validation against the
+        # '2005-3-sbs-minimal' variant
+        result = saxon9he(file_path, join(settings.PROJECT_DIR, 'documents', 'schema', 'dtbook-2005-3-sbs-full.sch.xsl')).stderr
         if result:
             return list(result)
         tmpFile = filterBrlContractionhints(file_path)

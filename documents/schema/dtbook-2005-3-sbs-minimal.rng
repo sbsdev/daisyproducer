@@ -6,7 +6,7 @@
   <define name="dtbook">
     <element name="dtbook">
       <attribute name="version">
-        <value>2005-3</value>
+        <value>2005-3-sbs-minimal</value>
       </attribute>
       <attribute name="xml:lang">
         <choice>
@@ -673,11 +673,6 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
   <define name="span">
     <element name="span">
       <optional>
-        <attribute name="class">
-          <value>brl:computer</value>
-        </attribute>
-      </optional>
-      <optional>
         <ref name="langAttribute"/>
       </optional>
       <choice>
@@ -929,9 +924,9 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
   </define>
   <define name="pagenum">
     <element name="pagenum">
-      <attribute name="id">
-        <data type="NCName"/>
-      </attribute>
+      <optional>
+        <ref name="idAttribute"/>
+      </optional>
       <attribute name="page">
         <value>normal</value>
       </attribute>
@@ -1111,6 +1106,9 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
       <zeroOrMore>
         <ref name="emph"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="computer"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="num">
@@ -1213,6 +1211,11 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
           <ref name="abbr"/>
         </zeroOrMore>
       </interleave>
+    </element>
+  </define>
+  <define name="computer">
+    <element name="brl:computer">
+      <text/>
     </element>
   </define>
   <define name="volume">

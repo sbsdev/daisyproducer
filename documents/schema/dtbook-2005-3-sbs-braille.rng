@@ -15,6 +15,7 @@
       <ref name="brl.date"/>
       <ref name="brl.time"/>
       <ref name="brl.emph"/>
+      <ref name="brl.computer"/>
     </choice>
   </define>
   <define name="brl.num">
@@ -119,6 +120,11 @@
           <ref name="dtb.abbr"/>
         </zeroOrMore>
       </interleave>
+    </element>
+  </define>
+  <define name="brl.computer">
+    <element name="brl:computer">
+      <text/>
     </element>
   </define>
   <define name="brl.emphasisClassAttribute">
