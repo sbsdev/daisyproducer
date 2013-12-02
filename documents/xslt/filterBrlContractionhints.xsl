@@ -18,7 +18,15 @@
       <xsl:apply-templates select="@*|*|text()|processing-instruction()|comment()" />
     </xsl:element>
   </xsl:template>
-
+  
+  <!-- Change version from "2005-3-sbs-full" or "2005-3-sbs-minimal" to "2005-3" -->
+  <!-- FIXME: Maybe this doesn't belong in filterBrlContractionHints because
+       the SBS schema adds a bit more to the default schema than only the
+       braille elements/attributes/classes. -->
+  <xsl:template match="dtb:dtbook/@version">
+    <xsl:attribute name="version">2005-3</xsl:attribute>
+  </xsl:template>
+  
   <!-- Drop the brl:running-line elements without retaining their content -->
   <xsl:template match="brl:running-line"/>
 
