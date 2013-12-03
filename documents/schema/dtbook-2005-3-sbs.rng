@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <define name="full">
+    <externalRef href="dtbook-2005-3-sbs-full.rng"/>
+  </define>
+  <define name="minimal">
+    <externalRef href="dtbook-2005-3-sbs-minimal.rng"/>
+  </define>
+  <start>
+    <choice>
+      <ref name="full"/>
+      <ref name="minimal"/>
+    </choice>
+  </start>
+</grammar>
