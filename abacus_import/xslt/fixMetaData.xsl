@@ -26,6 +26,16 @@
     doctype-public="-//NISO//DTD dtbook 2005-3//EN"
     doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
   
+  <!-- Change version from "2005-3" to "2005-3-sbs-minimal", i.e we
+       assume that an existing document that has version "2005-3"
+       complies with the minimal schema -->
+  <!-- This might break in some cases where we have used the "2005-3"
+       version for full DTBook documents such as text books. But let's
+       solve these problems when they show up. -->
+  <xsl:template match="dtb:dtbook/@version[string(.)='2005-3']">
+    <xsl:attribute name="version">2005-3-sbs-minimal</xsl:attribute>
+  </xsl:template>
+
   <!-- Override the author -->
   <xsl:template match="//dtb:meta[@name = 'dc:Creator']/@content">
     <xsl:attribute name="content">
