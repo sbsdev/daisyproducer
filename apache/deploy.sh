@@ -16,9 +16,9 @@ if [[ $? != 0 ]] ; then
     exit 1
 fi
 
-DP2_PACKAGE=`ls -rt $DP2_PACKAGE_ROOT/daisy-pipeline2-[0-9].[0-9]-SNAPSHOT.deb|tail -1`
-ODT_PACKAGE=`ls -rt $ODT_PACKAGE_ROOT/dtbook-to-odt-[0-9].[0-9].[0-9]-SNAPSHOT.deb|tail -1`
-HYPHENATION_TABLES_PACKAGE=`ls -rt $HYPHENATION_TABLES_ROOT/../sbs-hyphenation-tables_*.deb|tail -1`
+DP2_PACKAGE=`ls -rt $DP2_PACKAGE_ROOT/daisy-pipeline2_*_all.deb|tail -1`
+ODT_PACKAGE=`ls -rt $ODT_PACKAGE_ROOT/dtbook-to-odt_*_all.deb|tail -1`
+HYPHENATION_TABLES_PACKAGE=`ls -rt $HYPHENATION_TABLES_ROOT/target/sbs-hyphenation-tables_*_all.deb|tail -1`
 TCOLORBOX_PACKAGE=`ls -rt $DEBIAN_PACKAGES_ROOT/tcolorbox_*_all.deb|tail -1`
 
 function is_newer_locally() {
