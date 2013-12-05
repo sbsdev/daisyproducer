@@ -19,6 +19,7 @@ fi
 DP2_PACKAGE=`ls -rt $DP2_PACKAGE_ROOT/daisy-pipeline2-[0-9].[0-9]-SNAPSHOT.deb|tail -1`
 ODT_PACKAGE=`ls -rt $ODT_PACKAGE_ROOT/dtbook-to-odt-[0-9].[0-9].[0-9]-SNAPSHOT.deb|tail -1`
 HYPHENATION_TABLES_PACKAGE=`ls -rt $HYPHENATION_TABLES_ROOT/../sbs-hyphenation-tables_*.deb|tail -1`
+TCOLORBOX_PACKAGE=`ls -rt $DEBIAN_PACKAGES_ROOT/tcolorbox_*_all.deb|tail -1`
 
 function is_newer_locally() {
     if ( cd `dirname $1` && md5sum `basename $1` ) | ssh $2 " ( cd $3 &&  md5sum --check --status ) "; then
@@ -124,6 +125,7 @@ sudo dpkg -i `basename $PACKAGE`"
 
 case "$1" in
     prod)
+	deploy_deb $TCOLORBOX_PACKAGE xmlp ~/src
 	deploy_pipeline xmlp /opt
 	deploy_deb $DP2_PACKAGE xmlp ~/src
 	deploy_deb $ODT_PACKAGE xmlp ~/src
@@ -134,6 +136,7 @@ case "$1" in
 	restart_apache xmlp;;
 
     test)
+	deploy_deb $TCOLORBOX_PACKAGE xmlp-test ~/src
 	deploy_pipeline xmlp-test /opt
 	deploy_deb $DP2_PACKAGE xmlp-test ~/src
 	deploy_deb $ODT_PACKAGE xmlp-test ~/src
@@ -144,6 +147,7 @@ case "$1" in
 	restart_apache xmlp-test;;
 
     dev|*)
+	deploy_deb $TCOLORBOX_PACKAGE localhost /tmp
 	deploy_pipeline localhost ~/tmp
 	deploy_deb $DP2_PACKAGE localhost /tmp
 	deploy_deb $ODT_PACKAGE localhost /tmp
