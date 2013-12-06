@@ -1,70 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar xmlns="http://relaxng.org/ns/structure/1.0"
-         xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
-         xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
-         xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-         ns="http://www.daisy.org/z3986/2009/braille/"
-         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-    
-    <!-- ================= -->
-    <!-- @brl:continuation -->
-    <!-- ================= -->
-    
-    <define name="brl.continuationAttribute">
-        <a:documentation>
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <!-- ================= -->
+  <!-- @brl:continuation -->
+  <!-- ================= -->
+  <define name="brl.continuationAttribute">
+    <a:documentation>
             The continuation attribute provides a mechanism to establish a connection
             between emphasis that continues across multiple paragraphs e.g.
             Referenced elements must be located after the referencing element. An &lt;em&gt;
             can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference another
             &lt;strong&gt;.
         </a:documentation>
-        <attribute name="brl:continuation">
-            <data type="IDREFS"/>
-        </attribute>
-    </define>
-    
-    <!-- @id must be unique -->
-    <sch:pattern name="sbs_id" id="sbs_id">
+    <attribute name="brl:continuation">
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <!-- @id must be unique -->
+  <sch:pattern name="sbs_id" id="sbs_id">
         <sch:rule context="*[@id]">
             <sch:assert test="some $id in @id satisfies count(//*[@id eq $id]) = 1">
                 id attributes must be unique.
             </sch:assert>
+
         </sch:rule>
+
     </sch:pattern>
-    
-    <!-- http://www.daisy.org/z3998/2012/auth/cm/#z3998.continuation.attrib -->
-    <!-- http://www.daisy.org/z3998/2012/schema/mod/z3998-linking.rng -->
-    <sch:pattern name="z3998_continuation" id="z3998_continuation">
+  <!-- http://www.daisy.org/z3998/2012/auth/cm/#z3998.continuation.attrib -->
+  <!-- http://www.daisy.org/z3998/2012/schema/mod/z3998-linking.rng -->
+  <sch:pattern name="z3998_continuation" id="z3998_continuation">
         <sch:rule context="*[@brl:continuation]">
             <sch:assert test="every $id in tokenize(@brl:continuation, '\s+') satisfies count(index-of(tokenize(@brl:continuation, '\s+'), $id)) = 1">
                 The continuation attribute must not reference the same ID multiple times.
             </sch:assert>
+
             <sch:assert test="every $id in tokenize(@brl:continuation, '\s+') satisfies current() &lt;&lt; //*[@id eq $id]">
                 Elements referenced by a continuation attribute must be located after the referencing element (i.e., in document order).
             </sch:assert>
+
             <sch:assert test="every $id in tokenize(@brl:continuation, '\s+') satisfies name(//*[@id eq $id]) eq name(current())">
                 Elements referenced by a continuation attribute must have the same QName as the referencing element.
             </sch:assert>
+
             <sch:assert test="every $id in tokenize(@brl:continuation, '\s+') satisfies not(current() is //*[@id eq $id])">
                 Elements carrying a continuation attribute must not reference themselves.
             </sch:assert>
+
             <!-- This rule is in the specification but not in z3998-linking.rng -->
             <sch:assert test="every $id in tokenize(@brl:continuation, '\s+') satisfies not(//*[@id eq $id and @brl:continuation])">
                 Elements that are referenced as continuations must not have a continuation attribute themselves.
             </sch:assert>
+
         </sch:rule>
+
     </sch:pattern>
-    
-    <!-- Additional restrictions for SBS -->
-    <sch:pattern name="sbs_continuation" id="sbs_continuation">
+  <!-- Additional restrictions for SBS -->
+  <sch:pattern name="sbs_continuation" id="sbs_continuation">
         <sch:rule context="*[@brl:continuation]">
-            <sch:assert test="some $continuation in @brl:continuation
-                              satisfies normalize-space(string-join(following::text()[
-                              not(ancestor::*[@id and index-of(tokenize($continuation, '\s+'), @id)]) and
-                              following::*[@id and index-of(tokenize($continuation, '\s+'), @id)]], '')) eq ''">
+            <sch:assert test="some $continuation in @brl:continuation                               satisfies normalize-space(string-join(following::text()[                               not(ancestor::*[@id and index-of(tokenize($continuation, '\s+'), @id)]) and                               following::*[@id and index-of(tokenize($continuation, '\s+'), @id)]], '')) eq ''">
                 Elements that are linked together with continuation attributes must form a whole that is not broken down by other non-empty nodes.
             </sch:assert>
-        </sch:rule>
-    </sch:pattern>
 
+        </sch:rule>
+
+    </sch:pattern>
 </grammar>

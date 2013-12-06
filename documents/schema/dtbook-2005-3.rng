@@ -775,25 +775,20 @@
 <!-- Many parameter entities come from the [XHTML11STRICT] strict DTD. -->
 <!-- jpritchett@rfbd.org:  2006-07-06.  Removed definition of %StyleSheet, since it is no longer needed -->
 <grammar ns="http://www.daisy.org/z3986/2005/dtbook/" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-  
   <!-- MDeMeglio 2012-12-13 separated out smilref attr -->
   <define name="dtb.smilref.attr" combine="interleave">
     <attribute name="smilref"/>
   </define>
-  
   <!-- MGylling 2012-12-13 ID types -->
   <define name="id.type">
-    <data type="ID"></data>
+    <data type="ID"/>
   </define>
-  
   <define name="idref.type">
-    <data type="IDREF"></data>
+    <data type="IDREF"/>
   </define>
-  
   <define name="idrefs.type">
-    <data type="IDREFS"></data>
+    <data type="IDREFS"/>
   </define>
-  
   <!--
     dtbookContent designates that each dtbook has a <head> of
     metainformation preceding the <book> content.
@@ -804,13 +799,11 @@
     in <book>.
   -->
   <start>
-      <element name="dtbook">
-        <ref name="dtb.attlist.dtbook"/>
-        <ref name="dtb.dtbookcontent"/>
-      </element>
+    <element name="dtbook">
+      <ref name="dtb.attlist.dtbook"/>
+      <ref name="dtb.dtbookcontent"/>
+    </element>
   </start>
-  
-  
   <define name="dtb.Character">
     <data type="string" datatypeLibrary=""/>
   </define>
@@ -1127,13 +1120,12 @@
     having common references to images, with different accompanying text
     descriptions.
   -->
-  
   <define name="dtb.attrs">
     <ref name="dtb.coreattrs"/>
     <ref name="dtb.i18n"/>
     <optional>
       <ref name="dtb.smilref.attr"/>
-      <!--<attribute name="smilref"/>-->
+      <!-- <attribute name="smilref"/> -->
     </optional>
     <ref name="dtb.showin"/>
   </define>
@@ -1180,7 +1172,7 @@
       </attribute>
     </optional>
     <optional>
-      <!--<attribute name="smilref"/>-->
+      <!-- <attribute name="smilref"/> -->
       <ref name="dtb.smilref.attr"/>
     </optional>
     <ref name="dtb.i18n"/>
@@ -2674,7 +2666,7 @@
     <ref name="dtb.externalNamespaces"/>
     <ref name="dtb.i18n"/>
     <optional>
-      <!--<attribute name="smilref"/>-->
+      <!-- <attribute name="smilref"/> -->
       <ref name="dtb.smilref.attr"/>
     </optional>
     <ref name="dtb.showin"/>
@@ -2723,7 +2715,7 @@
     <ref name="dtb.externalNamespaces"/>
     <ref name="dtb.i18n"/>
     <optional>
-      <!--<attribute name="smilref"/>-->
+      <!-- <attribute name="smilref"/> -->
       <ref name="dtb.smilref.attr"/>
     </optional>
     <ref name="dtb.showin"/>
@@ -2886,7 +2878,7 @@
       </choice>
     </attribute>
     <optional>
-      <!--<attribute name="smilref"/>-->
+      <!-- <attribute name="smilref"/> -->
       <ref name="dtb.smilref.attr"/>
     </optional>
     <ref name="dtb.showin"/>
@@ -2926,7 +2918,6 @@
     document, usually inserted at the point within the file immediately
     preceding the first item of content on a new page.
   -->
-  
   <define name="dtb.pagenum">
     <element name="pagenum">
       <ref name="dtb.attlist.pagenum"/>
@@ -2945,8 +2936,7 @@
     such as large <img> or <table>, put the sequence of <pagenum> on
     the page where that content starts.
   -->
-  
-    <define name="dtb.attlist.pagenum" combine="interleave">
+  <define name="dtb.attlist.pagenum" combine="interleave">
     <ref name="dtb.attrsrqd"/>
     <optional>
       <attribute name="page" a:defaultValue="normal">
@@ -2958,7 +2948,6 @@
       </attribute>
     </optional>
   </define>
-  
   <!--
     Use: noteref marks one or more characters that reference a footnote
     or endnote <note>. Contrast with <annoref>. <noteref> and <note>
@@ -4169,6 +4158,5 @@
     <ref name="dtb.cellhalign"/>
     <ref name="dtb.cellvalign"/>
   </define>
-    
 </grammar>
 <!-- End dtbook-2005-3.dtd -->

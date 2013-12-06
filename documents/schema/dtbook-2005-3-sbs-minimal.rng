@@ -550,7 +550,12 @@ publishers of book websites, etc</a:documentation>
       <attribute name="external">
         <value>true</value>
       </attribute>
-      <text/>
+      <interleave>
+        <text/>
+        <zeroOrMore>
+          <ref name="contractionhints"/>
+        </zeroOrMore>
+      </interleave>
     </element>
   </define>
   <define name="emphasisClassAttribute">
