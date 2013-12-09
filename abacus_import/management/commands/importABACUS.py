@@ -216,6 +216,8 @@ def get_type(product_number):
         type = 1
     elif product_number.startswith('EB'):
         type = 2
+    elif product_number.startswith('ET'):
+        type = 3
     return type
 
 def get_abacus_user():

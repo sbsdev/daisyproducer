@@ -8,7 +8,7 @@ import csv
 import logging
 import re
 
-VALID_PRODUCT_NUMBER_RE = re.compile(u"^(PS|GD|EB)\d{5}$")
+VALID_PRODUCT_NUMBER_RE = re.compile(u"^(PS|GD|EB|ET)\d{5}$")
 VALID_ISBN_RE = re.compile(u"^[0-9-X]{10,18}$")
 
 logging.basicConfig(format='%(levelname)s: %(message)s')

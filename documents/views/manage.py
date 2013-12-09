@@ -233,6 +233,8 @@ def import_metadata_csv(request):
                 type = 1
             elif product_number.startswith('EB'):
                 type = 2
+            elif product_number.startswith('ET'):
+                type = 3
             else:
                 continue
             Product.objects.get_or_create(document=document, type=type, identifier=product_number)

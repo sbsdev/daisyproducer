@@ -280,6 +280,7 @@ class Product(models.Model):
         (0, 'Braille'),
         (1, 'Large Print'),
         (2, 'EBook'),
+        (3, 'E-Text'),
         )
     
     identifier = models.CharField(_("Identifier"), max_length=255, unique=True)
