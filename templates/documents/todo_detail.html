@@ -103,6 +103,7 @@
 	$('#fileupload').fileupload({
 	    dataType: 'json',
 	    dropZone: $('#imageuploadDropzone'),
+	    sequentialUploads: true,
             done: function (e, data) {
 		$.each(data.result.files, function (index, file) {
 		    var images = $('#imageTable > tbody > tr > td > a')
