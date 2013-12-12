@@ -100,19 +100,20 @@ def add_image(request, document_id):
         return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
-    # this is a bit of a hack as we need to create (and save) an
-    # attachment before the id is known. We need to know the id before we
-    # can save the content file under /document_id/images/file_name
-    image = Image.objects.create(document=document)
-    content_file = request.FILES['content']
-    image.content.save(content_file.name, content_file)
+    content = request.FILES['content']
+    try:
+        image = Image.objects.get(document=document, content__endswith=content)
+        image.content.save(content.name, content)
+    except Image.DoesNotExist:
+        image = Image(document=document, content=content)
+        image.save()
 
     if 'application/json' in request.META['HTTP_ACCEPT']:
         from django.http import HttpResponse
         from django.utils import simplejson
-        from os.path import basename
-        response_data = simplejson.dumps({'files': [{'name': basename(image.content.name),
-                                                     'url': image.content.url}]})
+        response_data = simplejson.dumps(
+            {'files': [{'name': os.path.basename(image.content.name),
+                        'url': image.content.url}]})
         return HttpResponse(response_data, mimetype = 'application/json')
 
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
