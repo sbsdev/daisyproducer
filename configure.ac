@@ -1,4 +1,4 @@
-AC_INIT([daisyproducer], [0.8])
+AC_INIT([daisyproducer], [1.0])
 AM_INIT_AUTOMAKE([foreign])
 
 # AM_PATH_PYTHON
