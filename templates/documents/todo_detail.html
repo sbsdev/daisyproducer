@@ -103,7 +103,8 @@
 	$('#fileupload').fileupload({
 	    dataType: 'json',
 	    dropZone: $('#imageuploadDropzone'),
-	    sequentialUploads: true,
+	    singleFileUploads: false,
+	    limitMultiFileUploadSize: 10000000,
             done: function (e, data) {
 		$.each(data.result.files, function (index, file) {
 		    var images = $('#imageTable > tbody > tr > td > a')

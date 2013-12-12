@@ -100,20 +100,21 @@ def add_image(request, document_id):
         return render_to_response('documents/todo_detail.html', locals(),
                                   context_instance=RequestContext(request))
 
-    content = request.FILES['content']
-    try:
-        image = Image.objects.get(document=document, content__endswith=content)
-        image.content.save(content.name, content)
-    except Image.DoesNotExist:
-        image = Image(document=document, content=content)
-        image.save()
+    content_files = request.FILES.getlist('content')
+    files = []
+    for content in content_files:
+        try:
+            image = Image.objects.get(document=document, content__endswith=content)
+            image.content.save(content.name, content)
+        except Image.DoesNotExist:
+            image = Image(document=document, content=content)
+            image.save()
+        files.append({'name': os.path.basename(image.content.name), 'url': image.content.url})
 
     if 'application/json' in request.META['HTTP_ACCEPT']:
         from django.http import HttpResponse
         from django.utils import simplejson
-        response_data = simplejson.dumps(
-            {'files': [{'name': os.path.basename(image.content.name),
-                        'url': image.content.url}]})
+        response_data = simplejson.dumps({'files': files})
         return HttpResponse(response_data, mimetype = 'application/json')
 
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
