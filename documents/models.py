@@ -211,7 +211,7 @@ class Version(models.Model):
         ordering = ['-created_at']
 
 def get_attachment_path(instance, filename):
-        return '%s/attachments/%s' % (instance.document_id, filename)
+    return '%s/attachments/%s' % (instance.document_id, filename)
 
 class Attachment(models.Model):
 
@@ -238,7 +238,7 @@ class Attachment(models.Model):
         ordering = ['-created_at']
 
 def get_image_path(instance, filename):
-        return '%s/images/%s' % (instance.document_id, filename)
+    return '%s/images/%s' % (instance.document_id, filename)
 
 class Image(models.Model):
 
