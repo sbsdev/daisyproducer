@@ -19,6 +19,12 @@ class StateAdmin(admin.ModelAdmin):
 	ordering = ('sort_order',)
 	search_fields = ('name',)
 
+def delete_with_content(modeladmin, request, queryset):
+	for obj in queryset:
+		obj.delete()
+
+delete_with_content.short_description = "Delete selected items with content"
+
 class DocumentAdmin(admin.ModelAdmin):
 	list_display = ('title', 'author', 'source_publisher', 'source', 'state',)
 	date_hierarchy = 'date'
@@ -26,6 +32,7 @@ class DocumentAdmin(admin.ModelAdmin):
 	ordering = ('title', 'state',)
 	search_fields = ('title', 'author')
 	inlines = [VersionInline, AttachmentInline, ImageInline, ProductInline]
+	actions = [delete_with_content]
 
 class VersionAdmin(admin.ModelAdmin):
 	list_display = ('created_at',)
@@ -33,12 +40,6 @@ class VersionAdmin(admin.ModelAdmin):
 
 class AttachmentAdmin(admin.ModelAdmin):
 	list_display = ('comment', 'mime_type',)
-
-def delete_with_content(modeladmin, request, queryset):
-	for image in queryset:
-		image.delete()
-
-delete_with_content.short_description = "Delete selected images with content"
 
 class ImageAdmin(admin.ModelAdmin):
 	list_display = ('content',)
