@@ -34,8 +34,17 @@ class VersionAdmin(admin.ModelAdmin):
 class AttachmentAdmin(admin.ModelAdmin):
 	list_display = ('comment', 'mime_type',)
 
+def delete_with_content(modeladmin, request, queryset):
+	for image in queryset:
+		image.content.delete()
+	queryset.delete()
+
+delete_with_content.short_description = "Delete selected images with content"
+
 class ImageAdmin(admin.ModelAdmin):
 	list_display = ('content',)
+	list_filter = ('document',)
+	actions = [delete_with_content]
 
 class ProductAdmin(admin.ModelAdmin):
 	list_display = ('identifier', 'type', 'document',)
