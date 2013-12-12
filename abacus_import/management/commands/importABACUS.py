@@ -1,6 +1,6 @@
 # coding=utf-8
 from daisyproducer.documents.external import DaisyPipeline
-from daisyproducer.documents.models import Document, Version, Product
+from daisyproducer.documents.models import Document, Version, Product, State
 from daisyproducer.documents.versionHelper import XMLContent
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -152,9 +152,17 @@ def handle_file(file, root, relaxng):
         logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".',
                      params['title'], product_number)
         # create and save the document
+        product_type = get_type(product_number)
+        if product_type == 3:
+            # etext books should have 'in_production' as initial state
+            try:
+                params['state'] = State.objects.get(name='in_production')
+            except State.DoesNotExist:
+                params['state'] = State.objects.order_by('sort_order')[0]
+
         document = Document.objects.create(**params)
         # create the product association
-        Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
+        Product.objects.create(identifier=product_number, type=product_type, document=document)
         # create an empty xml
         update_xml_with_metadata(document)
         

@@ -176,7 +176,7 @@ class Document(models.Model):
             self.date = datetime.date.today() 
         self.modified_at = datetime.datetime.now()             
         # set initial state
-        if not self.pk:
+        if not self.pk and not self.state:
             self.state = State.objects.filter(name='new')[0]
         if not self.identifier:
             self.identifier = "ch-sbs-%s" % str(uuid.uuid4())
