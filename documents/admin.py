@@ -36,8 +36,7 @@ class AttachmentAdmin(admin.ModelAdmin):
 
 def delete_with_content(modeladmin, request, queryset):
 	for image in queryset:
-		image.content.delete()
-	queryset.delete()
+		image.delete()
 
 delete_with_content.short_description = "Delete selected images with content"
 
