@@ -276,6 +276,10 @@ class ODTForm(forms.Form):
         label=_("Page Numbers"),
 #        help_text=_("Select whether to show page numbers"),
         required=False, initial=True)
+    page_numbers_float = forms.BooleanField(
+        label=_("Floating Page Numbers"),
+#        help_text=_("Select whether page numbers should float to the end of a paragraph"),
+        required=False, initial=False)
     answer = forms.CharField(
         label=_("Answer Markup"),
 #        help_text=_("Markup for answer fields"),

@@ -366,6 +366,7 @@ class Pipeline2:
                 "--x-line-numbers=%(line_numbers)s" % kwargs if 'line_numbers' in kwargs else None,
                 "--x-page-numbers=%(page_numbers)s" % kwargs if 'page_numbers' in kwargs else None,
                 "--x-answer=%(answer)s" % kwargs if 'answer' in kwargs else None,
+                "--x-page-numbers-float=%(page-numbers-float)s" % kwargs if 'page-numbers-float' in kwargs else None,
                 )
             command = filter(None, command) # filter out empty arguments
             p = Popen(command, stdout=PIPE)
