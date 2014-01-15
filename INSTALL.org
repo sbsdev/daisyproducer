@@ -10,6 +10,7 @@
 - [[http://www.djangoproject.com][Django]] 
 - [[http://codespeak.net/lxml/index.html][lxml]]
 - [[http://pybrary.net/pyPdf/][pyPDF]] (used for large print volume size calculation)
+- [[https://pypi.python.org/pypi/python-stdnum/0.9][python-stdnum]] (for isbn validation)
 - [[http://www.daisy.org/projects/pipeline/][Daisy Pipeline]] (use the Pipeline Core Packages)
 - [[http://www.tug.org/xetex/][XeTex]] (to generate Large Print from LaTeX)
 - [[http://www.tug.org/texlive/][texlive]] (should contain the extbook and titlesec class which is
@@ -40,6 +41,7 @@ In terms of (Debian/Ubuntu) packages this translates to
 - python-libxml2
 - python-libxslt1
 - python-pypdf
+- python-stdnum
 - sun-java6-jre
 - texlive-xetex
 - texlive-latex-extra
@@ -54,9 +56,9 @@ Install the basic packages:
 #+BEGIN_EXAMPLE
   sudo aptitude install python python-django python-django-south	\
   python-lxml python-docutils python-libxml2 python-libxslt1            \
-  python-pypdf sun-java6-jre texlive-xetex texlive-latex-extra		\
-  texlive-latex-recommended texlive-lang-german latexmk ttf-tiresias    \
-  lmodern xsltproc unzip jing
+  python-pypdf python-stdnum sun-java6-jre texlive-xetex                \
+  texlive-latex-extra texlive-latex-recommended texlive-lang-german     \
+  latexmk ttf-tiresias lmodern xsltproc unzip jing
 #+END_EXAMPLE
 
 *** Database

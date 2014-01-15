@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.forms.models import model_to_dict
 from lxml import etree
 from os.path import join, basename, dirname
+from stdnum.isbn import is_valid
 
 import cmislib
 import datetime
@@ -43,8 +44,15 @@ logger = logging.getLogger(__name__)
 class ImportError(Exception):
     pass
 
+class ValidationError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 class Command(BaseCommand):
-    args = 'ABACUS_export_file'
+    args = 'ABACUS_export_files'
     help = 'Import the given file as a new document'
     output_transaction = True
 
@@ -80,6 +88,9 @@ class Command(BaseCommand):
             except etree.DocumentInvalid, e:
                 logger.exception("ABACUS Export file '%s' is not valid.", file)
                 rename_failure_file(file)
+            except ValidationError, e:
+                logger.exception("ABACUS Export file '%s' contains an invalid ISBN '%s'.", file, e.value)
+                rename_failure_file(file)
             except:
                 logger.exception("ABACUS import failed.")
                 rename_failure_file(file)
@@ -109,6 +120,9 @@ def handle_file(file, root, relaxng):
     params = fetch_params(get_key, root)
 
     logger.info('Processing "%s" [%s]...', params['title'], product_number)
+
+    if not is_valid(params['source']):
+        raise ValidationError(params['source'])
     
     # If the XML indicates that this product is not produced with Daisy Producer ignore this file
     daisy_producer = get_key("%s/MetaData/sbs/daisy_producer" % root)
