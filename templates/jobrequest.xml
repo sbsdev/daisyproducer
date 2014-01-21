@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jobRequest xmlns='http://www.daisy.org/ns/pipeline/data'>
+  <script href='http://example.org/ws/scripts/{{ script }}'/>
+  {% for port, file in inputs %}
+  <input name='{{ port }}'>
+    <item value='file:{{ file|urlencode }}'/>
+  </input>
+  {% endfor %}
+  {% for name, value in options %}
+  <option name='{{ name }}'>{{ value }}</option>
+  {% endfor %}
+</jobRequest>

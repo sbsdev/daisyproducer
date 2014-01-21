@@ -1,21 +1,22 @@
-import os
-import tempfile
-import textwrap
+import logging
+import louis
 import math
+import os
+import re
 import subprocess
+import tempfile
+import zipfile
+
 from os.path import join, basename, splitext
 from pyPdf import PdfFileReader
 from shutil import rmtree, copyfile
 from subprocess import call, Popen, PIPE
-import re
-import zipfile
 
-import libxml2
-import libxslt
-import louis
-from daisyproducer.version import getVersion
 from django.conf import settings
-from lxml import etree
+from daisyproducer.documents.pipeline2.client import make_job_request, post_job, wait_for_job, delete_job
+from daisyproducer.version import getVersion
+
+logger = logging.getLogger(__name__)
 
 def filterBrlContractionhints(file_path):
     """Filter all the brl:contractionhints from the given file_path.
@@ -335,6 +336,7 @@ class DaisyPipeline:
         os.remove(tmpFile)
 
 class Pipeline2:
+
     @staticmethod
     def filter_output(lines):
         p = re.compile(r'^(?:\[ERROR\]|\[WS\] ERROR\([0-9]+\) -) (.*)$')
@@ -343,42 +345,40 @@ class Pipeline2:
     @staticmethod
     def dtbook2odt(inputFile, imageFiles=None, **kwargs):
         """Transform a dtbook xml file to a Open Document Format for Office Applications (ODF)"""
+        
         tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
         fileName = basename(inputFile)
         odtFileName = splitext(fileName)[0] + ".odt"
-        absoluteOdtFileName = join(tempfile.gettempdir(), odtFileName)
-        copyfile(inputFile, join(tmpDir, fileName))
+        tmpOdtFileName = join(tempfile.gettempdir(), odtFileName)
+        tmpInputFile = join(tmpDir, fileName)
+        copyfile(inputFile, tmpInputFile)
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
         for image in imageFiles:
             copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
-        with tempfile.NamedTemporaryFile(suffix='.zip') as outputZip:
-            command = (
-                # just asume dp2 is installed under /opt (which is
-                # the case if you install the deb
-                join('/', 'opt', 'daisy-pipeline2', 'cli', 'dp2'),
-                "sbs:dtbook-to-odt",
-                "--i-source=%s" % join(tmpDir, fileName),
-                "--output=%s" % outputZip.name,
-                "--x-asciimath=%(asciimath)s" % kwargs if 'asciimath' in kwargs else None,
-                "--x-phonetics=%(phonetics)s" % kwargs if 'phonetics' in kwargs else None,
-                "--x-images=%(images)s" % kwargs if 'images' in kwargs else None,
-                "--x-line-numbers=%(line_numbers)s" % kwargs if 'line_numbers' in kwargs else None,
-                "--x-page-numbers=%(page_numbers)s" % kwargs if 'page_numbers' in kwargs else None,
-                "--x-answer=%(answer)s" % kwargs if 'answer' in kwargs else None,
-                "--x-page-numbers-float=%(page-numbers-float)s" % kwargs if 'page-numbers-float' in kwargs else None,
-                )
-            command = filter(None, command) # filter out empty arguments
-            p = Popen(command, stdout=PIPE)
-            errors = Pipeline2.filter_output(p.communicate()[0].splitlines())
-            if p.returncode != 0 or errors:
-                return ("Conversion to Open Document failed with:",) + tuple(errors)
-            with zipfile.ZipFile(outputZip.name) as odtZip:
-                with odtZip.open(join('output-dir', odtFileName)) as odtIn:
-                    with open(absoluteOdtFileName, 'w') as odtOut:
-                        odtOut.write(odtIn.read())
+
+        request = make_job_request("sbs:dtbook-to-odt", 
+                                   {'source': tmpInputFile}, 
+                                   {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
+        job = post_job(request)
+        logger.info("Job with id %s submitted to the server", job['id'])
+        job = wait_for_job(job)
+        if job['status'] == "DONE":
+            try:
+                outputDir = [r for r in job['results'] if r['type'] == "option" and r['name'] == "output-dir"][0]
+                odtFile = [f for f in outputDir['files'] if f['href'] == "%s/idx/output-dir/%s" % (outputDir['href'], odtFileName)][0]
+                copyfile(odtFile['file'], tmpOdtFileName)
+                if not delete_job(job['id']):
+                    logger.warn("The job %s has not been deleted from the server", job['id'])
+                rmtree(tmpDir)
+                return tmpOdtFileName
+            except IndexError:
+                pass
+
         rmtree(tmpDir)
-        return absoluteOdtFileName
+        errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
+        logger.error("Conversion to Open Document failed with %s. See %s", errors, job['log'])
+        return ("Conversion to Open Document failed with:",) + errors
 
 class StandardLargePrint:
 
