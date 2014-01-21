@@ -22,7 +22,7 @@ def send_request(uri, request_handler, response_handler, method, data=None):
         return response_handler(response)
     except httplib.HTTPException:
         logger.exception("%s failed for %s", method, uri)
-    return None
+        raise
 
 def get_resource(uri):
     """Return a string representation of a resource"""
