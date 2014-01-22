@@ -32,12 +32,12 @@ LOGGING = {
         #     'filename': '/var/log/daisyproducer_abacus_import.log',
         #     'formatter': 'simple'
         #     },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/daisyproducer.log',
-            'formatter': 'simple'
-            },
+        # 'file': {
+        #     'level': 'INFO',
+        #     'class': 'logging.FileHandler',
+        #     'filename': '/var/log/daisyproducer.log',
+        #     'formatter': 'simple'
+        #     },
         'console':{
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
