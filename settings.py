@@ -22,6 +22,10 @@ LOGGING = {
             },
         },
     'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+            },
         'abacus': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
@@ -42,12 +46,12 @@ LOGGING = {
         },
     'loggers': {
         'abacus': {
-            'handlers': ['abacus'],
+            'handlers': ['null'],
             'level': 'DEBUG',
             'propagate': False,
             },
         'daisyproducer.documents': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
             },
