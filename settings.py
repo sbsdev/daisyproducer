@@ -26,12 +26,12 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.NullHandler',
             },
-        'abacus': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/daisyproducer_abacus_import.log',
-            'formatter': 'simple'
-            },
+        # 'abacus': {
+        #     'level': 'INFO',
+        #     'class': 'logging.FileHandler',
+        #     'filename': '/var/log/daisyproducer_abacus_import.log',
+        #     'formatter': 'simple'
+        #     },
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
