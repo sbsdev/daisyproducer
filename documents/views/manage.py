@@ -4,6 +4,7 @@ from daisyproducer.documents.forms import CSVUploadForm, PartialProductForm
 from daisyproducer.documents.models import Document, Version, Product
 from daisyproducer.documents.versionHelper import XMLContent
 from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.db import transaction
@@ -11,33 +12,29 @@ from django.forms import ModelForm
 from django.forms.formsets import formset_factory
 from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
-from django.views.generic.create_update import create_object, update_object
-from django.views.generic.list_detail import object_list, object_detail
+from django.views.generic import ListView, DetailView
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
 VALID_ISBN_RE = re.compile(u"^[0-9-X]{10,18}$")
 
-@login_required
-@permission_required("documents.add_document")
-def index(request):
-    response = object_list(
-        request,
-        queryset = Document.objects.select_related('state').all().order_by('state','title'),
-        template_name = 'documents/manage_index.html',
-    )
-    return response
+class ManageListView(ListView):
+    template_name = 'documents/manage_index.html'
+    queryset = Document.objects.select_related('state').all().order_by('state','title')
+
+    @method_decorator(login_required)
+    @method_decorator(permission_required("documents.add_document"))
+    def dispatch(self, *args, **kwargs):
+        return super(ManageListView, self).dispatch(*args, **kwargs)
     
-@login_required
-@permission_required("documents.add_document")
-def detail(request, document_id):
-    response = object_detail(
-        request,
-        queryset = Document.objects.select_related('state').all(),
-        template_name = 'documents/manage_detail.html',
-        object_id = document_id,
-    )
-    return response
+class ManageDetailView(DetailView):
+    template_name = 'documents/manage_detail.html'
+    queryset = Document.objects.select_related('state').all()
+
+    @method_decorator(login_required)
+    @method_decorator(permission_required("documents.add_document"))
+    def dispatch(self, *args, **kwargs):
+        return super(ManageDetailView, self).dispatch(*args, **kwargs)
 
 class PartialDocumentForm(ModelForm):
     class Meta:

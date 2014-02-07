@@ -8,40 +8,37 @@ from daisyproducer.documents.models import State, Document, BrailleProfileForm, 
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.views.generic.list_detail import object_list, object_detail
+from django.views.generic import ListView, DetailView
 from django.db.models import Max
 
-# browse use case
-def index(request):
-    """Show all the documents that are in the final state and order them by title"""
-    # we only show this view to anonymous users
-    if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('todo_index'))
+class BrowseListView(ListView):
+    template_name = 'documents/browse_index.html'
 
-    final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
-    response = object_list(
-        request,
-        queryset = Document.objects.filter(state__sort_order=final_sort_order).order_by('title'),
-        template_name = 'documents/browse_index.html'
-    )
-    return response
+    def get_queryset(self):
+        final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
+        return Document.objects.filter(state__sort_order=final_sort_order).order_by('title')
 
-def detail(request, document_id):
-    response = object_detail(
-        request,
-        queryset = Document.objects.all(),
-        object_id = document_id,
-        template_name = 'documents/browse_detail.html',
-        extra_context = {
+    def dispatch(self, *args, **kwargs):
+        # we only show this view to anonymous users
+        if self.request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('todo_index'))
+        return super(BrowseListView, self).dispatch(*args, **kwargs)
+
+class BrowseDetailView(DetailView):
+    template_name = 'documents/browse_detail.html'
+    queryset = Document.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(BrowseDetailView, self).get_context_data(**kwargs)
+        context.update({
             'lpform' : LargePrintProfileForm(),
             'bform' : BrailleProfileForm(),
             'sform' : SBSFormForm(),
             'xhtmlform' : XHTMLForm(),
             'rtfform' : RTFForm(),
             'textonlydtbform' : TextOnlyDTBForm(),
-            'dtbform' : DTBForm()}
-        )
-    return response
+            'dtbform' : DTBForm()})
+        return context
 
 def as_pdf(request, document_id):
     form = LargePrintProfileForm(request.POST)

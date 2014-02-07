@@ -5,6 +5,7 @@ from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionFor
 from daisyproducer.documents.models import Document, Version, Attachment, Image, Product, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
@@ -12,30 +13,25 @@ from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.views.generic.list_detail import object_list
+from django.views.generic.list import ListView
 
+class TodoListView(ListView):
+    template_name = 'documents/todo_index.html'
 
-@login_required
-def index(request):
-    """Show all the documents that are relevant for the groups that
-    the user has and group them by action"""
-    # FIXME: this can be simplified in a more modern version of django
-    # (see http://docs.djangoproject.com/en/dev/ref/models/querysets/#in)
-    # to the following: 
-    # user_groups = request.user.groups
-    user_groups = request.user.groups.values('pk').query
-    response = object_list(
-        request,
+    def get_queryset(self):
+        user_groups = self.request.user.groups.all()
         queryset = Document.objects.select_related('state').filter(
             # only show documents that aren't assigned to anyone else,
-            Q(assigned_to=request.user) | Q(assigned_to__isnull=True),
+            Q(assigned_to=self.request.user) | Q(assigned_to__isnull=True),
             # and which are in a state for which my group is responsible
             state__responsible__in=user_groups
-            ).order_by('state','title'),
-        template_name = 'documents/todo_index.html'
-    )
-    return response
-    
+        ).order_by('state','title')
+        return queryset
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(TodoListView, self).dispatch(*args, **kwargs)
+
 @login_required
 def detail(request, document_id):
     try:

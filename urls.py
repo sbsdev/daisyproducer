@@ -6,7 +6,11 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic.base import TemplateView
 
+from daisyproducer.documents.views.manage import ManageListView, ManageDetailView
+from daisyproducer.documents.views.browse import BrowseListView, BrowseDetailView
+from daisyproducer.documents.views.todo import TodoListView
 
 PROJECT_DIR = os.path.dirname(__file__)
 
@@ -14,9 +18,8 @@ admin.autodiscover()
 
 # browse finished documents
 urlpatterns = patterns('daisyproducer.documents.views.browse',
-    url(r'^$', 'index', name='browse_index'),
-    url(r'^(?P<document_id>\d+)/$', 'detail', name='browse_detail'),
-
+    url(r'^$', BrowseListView.as_view(), name='browse_index'),
+    url(r'^(?P<pk>\d+)/$', BrowseDetailView.as_view(), name='browse_detail'),
     url(r'^(?P<document_id>\d+).pdf$', 'as_pdf', name='browse_pdf'),
     url(r'^(?P<document_id>\d+).brl$', 'as_brl', name='browse_brl'),
     url(r'^(?P<document_id>\d+).sbsform$', 'as_sbsform', name='browse_sbsform'),
@@ -29,7 +32,7 @@ urlpatterns = patterns('daisyproducer.documents.views.browse',
 
 # work on pending documents
 urlpatterns += patterns('daisyproducer.documents.views.todo',
-    url(r'^todo/$', 'index', name='todo_index'),
+    url(r'^todo/$', TodoListView.as_view(), name='todo_index'),
     url(r'^todo/(?P<document_id>\d+)/$', 'detail', name='todo_detail'),
     url(r'^todo/(?P<document_id>\d+)/addVersion$', 'add_version', name='todo_add_version'),
     url(r'^todo/(?P<document_id>\d+)/addImage$', 'add_image', name='todo_add_image'),
@@ -51,8 +54,8 @@ urlpatterns += patterns('daisyproducer.documents.views.todo',
 
 # management of documents and meta data
 urlpatterns += patterns('daisyproducer.documents.views.manage',
-    url(r'^manage/$', 'index', name='manage_index'),
-    url(r'^manage/(?P<document_id>\d+)/$', 'detail', name='manage_detail'),
+    url(r'^manage/$', ManageListView.as_view(), name='manage_index'),
+    url(r'^manage/(?P<pk>\d+)/$', ManageDetailView.as_view(), name='manage_detail'),
     url(r'^manage/create/$', 'create', name='manage_create'),
     url(r'^manage/(?P<document_id>\d+)/update/$', 'update', name='manage_update'),
     url(r'^manage/upload_metadata_csv/$', 'upload_metadata_csv', name='upload_metadata_csv'),
@@ -99,21 +102,31 @@ def getRSTContent(file_name):
     f = open(os.path.join(PROJECT_DIR, 'doc', 'help', file_name))
     return f.read()
 
+class HelpView(TemplateView):
+    template_name = "help.html"
+    def get_context_data(self, **kwargs):
+        context = super(HelpView, self).get_context_data(**kwargs)
+        context.update({
+            'content': getRSTContent('index.txt'),
+            'title': _('Help')
+        })
+        return context
+
+class AboutView(HelpView):
+    def get_context_data(self, **kwargs):
+        context = super(AboutView, self).get_context_data(**kwargs)
+        context.update({
+            'content': getRSTContent('about.txt'),
+            'title': _('About')
+        })
+        return context
+
+
 urlpatterns += patterns('',
     # help
-    url(r'^help/$', 'django.views.generic.simple.direct_to_template', 
-        {'template': 'help.html',
-         'extra_context': {
-                'content': getRSTContent('index.txt'),
-                'title': _('Help')}},
-        "help"),
+    url(r'^help/$', HelpView.as_view(), name="help"),
     # about
-    url(r'^about/$', 'django.views.generic.simple.direct_to_template', 
-        {'template': 'help.html',
-         'extra_context': {
-                'content': getRSTContent('about.txt'),
-                'title': _('About')}},
-        "about"),
+    url(r'^about/$', AboutView.as_view(), name="about"),
 )
 
 # error
