@@ -1,4 +1,5 @@
 {% extends "documents/manage.html" %}
+{% load url from future %}
 {% load i18n %}
 {% load verbose_name %}
 
@@ -9,10 +10,10 @@
 <div id="sidebar">
   {% if perms.documents.change_document %}
   <h3>{% trans "Meta Data" %}</h3>
-  <a href="{% url manage_update object.id %}" accesskey="m">{% trans "Update" %}</a><br />
+  <a href="{% url 'manage_update' object.id %}" accesskey="m">{% trans "Update" %}</a><br />
   {% endif %}
   <h3>{% trans "TODO" %}</h3>
-  <a href="{% url todo_detail object.id %}" accesskey="e" >{% trans "Details" %}</a><br />
+  <a href="{% url 'todo_detail' object.id %}" accesskey="e" >{% trans "Details" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}

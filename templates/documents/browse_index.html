@@ -1,4 +1,5 @@
 {% extends "documents/browse.html" %}
+{% load url from future %}
 {% load i18n %}
 {% load verbose_name %}
 
@@ -30,7 +31,7 @@
   <tbody>
     {% for document in object_list %}
     <tr class="{% cycle 'even' 'odd' %}">
-      <td><a href="{% url browse_detail document.id %}">{{ document.title }}</a></td>
+      <td><a href="{% url 'browse_detail' document.id %}">{{ document.title }}</a></td>
       <td>{{ document.author }}</td>
       <td>{{ document.source_publisher }}</td>
     </tr>

@@ -1,4 +1,5 @@
 {% extends "documents/todo.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block title %}{{ block.super }} - {% trans "Preview EPUB (BETA)" %} - {{ document.title }}{% endblock %}
@@ -15,14 +16,14 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form method="post" action="{% url todo_epub document.id %}">{% csrf_token %}
+    <form method="post" action="{% url 'todo_epub' document.id %}">{% csrf_token %}
       <p>
 	<table>
 	  {{ form.as_table }}
 	</table>
       <p>
 	<input type="submit" value="{% trans 'Preview' %}" />
-	<a href="{% url todo_detail document.id %}">{% trans 'Cancel' %}</a>
+	<a href="{% url 'todo_detail' document.id %}">{% trans 'Cancel' %}</a>
       </p>
     </form>
   </div>

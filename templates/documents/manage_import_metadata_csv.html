@@ -1,4 +1,5 @@
 {% extends "documents/manage.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block title %}{{ block.super }} - {% trans "Bulk import documents" %}{% endblock %}
@@ -18,7 +19,7 @@
 </script>
 
 <h2>{% trans "Bulk import documents" %}</h2>
-<form action="{% url import_metadata_csv %}" method="post">{% csrf_token %}
+<form action="{% url 'import_metadata_csv' %}" method="post">{% csrf_token %}
   {{ document_formset.management_form }}
   <table>
     {% for form in document_formset.forms %}
@@ -81,7 +82,7 @@
     {{ product_formset }}
   </table>  
   <input type="submit" value="{% trans 'Import' %}" />
-  <a href="{% url manage_index %}">{% trans 'Cancel' %}</a>
+  <a href="{% url 'manage_index' %}">{% trans 'Cancel' %}</a>
 </form>
 
 {% endblock %}

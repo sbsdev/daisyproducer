@@ -1,4 +1,5 @@
 {% extends "documents/todo.html" %}
+{% load url from future %}
 {% load i18n %}
 {% block sidebar %}
 {% endblock %}
@@ -6,7 +7,7 @@
 <h2>{% blocktrans %}Import Global Words{% endblocktrans %}</h2>
 <div class="issue">
   <div id="relations">
-    <form method="post" action="{% url dictionary_import %}">{% csrf_token %}
+    <form method="post" action="{% url 'dictionary_import' %}">{% csrf_token %}
       {{ formset.management_form }}
       <table>
         {% for form in formset.forms %}
@@ -36,7 +37,7 @@
       {% if paginator == None or paginator.count > 0 %}
         <input type="submit" value="{% trans 'Submit' %}" />
       {% endif %}
-      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
+      <a href="{% url 'todo_index' %}">{% trans 'Cancel' %}</a>
     </form>
   </div>
 </div>

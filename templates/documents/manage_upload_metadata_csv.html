@@ -1,4 +1,5 @@
 {% extends "documents/manage.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block title %}{{ block.super }} - {% trans "Bulk import documents" %}{% endblock %}
@@ -6,10 +7,10 @@
 {% block content %}
 <h2>{% trans "Bulk import documents" %}</h2>
 
-<form enctype="multipart/form-data" method="post" action="{% url upload_metadata_csv %}">{% csrf_token %}
+<form enctype="multipart/form-data" method="post" action="{% url 'upload_metadata_csv' %}">{% csrf_token %}
   <p>{% include "documents/simpleForm.html" %}
     <input type="submit" value="{% trans 'Import' %}" />
-    <a href="{% url manage_index %}">{% trans 'Cancel' %}</a>
+    <a href="{% url 'manage_index' %}">{% trans 'Cancel' %}</a>
   </p>
 </form>
 

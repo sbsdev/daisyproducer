@@ -1,4 +1,6 @@
+{% load url from future %}
 {% load i18n %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,8 +29,8 @@
       {% if user.is_staff %}
       <li><a href="/admin" class="administration">{% trans "Administration" %}</a></li>
       {% endif %}
-      <li><a href="{% url help %}" class="help">{% trans "Help" %}</a></li>
-      <li><a href="{% url about %}" class="about">{% trans "About" %}</a></li>
+      <li><a href="{% url 'help' %}" class="help">{% trans "Help" %}</a></li>
+      <li><a href="{% url 'about' %}" class="about">{% trans "About" %}</a></li>
     </ul>
   </div>
 
@@ -38,12 +40,12 @@
     <div id="main-menu">
       <ul>
 	{% if perms.documents %}
-	<li><a href="{% url manage_index %}" accesskey="7"{% block tab-manage %}{% endblock %}>{% trans "Manage" %}</a></li>
+	<li><a href="{% url 'manage_index' %}" accesskey="7"{% block tab-manage %}{% endblock %}>{% trans "Manage" %}</a></li>
 	{% endif %}
 	{% if user.is_authenticated %}
-	<li><a href="{% url todo_index %}"{% block tab-todo %}{% endblock %}>{% trans "TODO" %}</a></li>
+	<li><a href="{% url 'todo_index' %}"{% block tab-todo %}{% endblock %}>{% trans "TODO" %}</a></li>
 	{% else %}
-	<li><a href="{% url browse_index %}"{% block tab-browse %}{% endblock %}>{% trans "Browse" %}</a></li>
+	<li><a href="{% url 'browse_index' %}"{% block tab-browse %}{% endblock %}>{% trans "Browse" %}</a></li>
 	{% endif %}
       </ul>
     </div>

@@ -1,4 +1,5 @@
 {% extends "documents/todo.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block title %}{{ block.super }} - {% trans "Document Markup" %} - {{ document.title }}{% endblock %}
@@ -15,7 +16,7 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form method="post" action="{% url todo_markup  document.id %}">{% csrf_token %}
+    <form method="post" action="{% url 'todo_markup' document.id %}">{% csrf_token %}
       <p>
 	{% if form.has_errors %}
 	<div class="errorExplanation" id="errorExplanation">
@@ -28,7 +29,7 @@
       </p>
       <p>
 	<input type="submit" value="{% trans 'Save' %}" />
-	<a href="{% url todo_detail  document.id %}">{% trans 'Cancel' %}</a>
+	<a href="{% url 'todo_detail'  document.id %}">{% trans 'Cancel' %}</a>
       </p>
     </form>
   </div>

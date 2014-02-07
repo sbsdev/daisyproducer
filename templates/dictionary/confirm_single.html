@@ -1,4 +1,5 @@
 {% extends "documents/todo.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block sidebar %}
@@ -32,7 +33,7 @@
 	{{ form.as_table }}
       </table>
       <input type="submit" value="{% trans 'Confirm' %}" />
-      <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
+      <a href="{% url 'todo_index' %}">{% trans 'Cancel' %}</a>
     </form>
   </div>
 </div>

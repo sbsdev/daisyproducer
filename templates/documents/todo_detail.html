@@ -1,4 +1,5 @@
 {% extends "documents/todo.html" %}
+{% load url from future %}
 {% load i18n %}
 {% load basename %}
 {% load verbose_name %}
@@ -9,27 +10,27 @@
 {% if document %}
 <div id="sidebar">
   <h3>{% trans "Edit" %}</h3>
-  <!-- <a href="{% url todo_ocr document.id %}" accesskey="o" >{% trans "OCR" %}</a><br /> -->
-  <a href="{% url todo_markup document.id %}">{% trans "Markup" %}</a><br />
+  <!-- <a href="{% url 'todo_ocr' document.id %}" accesskey="o" >{% trans "OCR" %}</a><br /> -->
+  <a href="{% url 'todo_markup' document.id %}">{% trans "Markup" %}</a><br />
   <h3>{% trans "Braille Dictionary" %}</h3>
   <h4>{% trans "Grade 1" %}</h4>
-  <a href="{% url dictionary_check_g1 document.id %}">{% trans "Unknown words" %}</a><br />
-  <a href="{% url dictionary_local_g1 document.id %}" accesskey="v">{% trans "Local words" %}</a><br />
+  <a href="{% url 'dictionary_check_g1' document.id %}">{% trans "Unknown words" %}</a><br />
+  <a href="{% url 'dictionary_local_g1' document.id %}" accesskey="v">{% trans "Local words" %}</a><br />
   <h4>{% trans "Grade 2" %}</h4>
-  <a href="{% url dictionary_check_g2 document.id %}">{% trans "Unknown words" %}</a><br />
-  <a href="{% url dictionary_local_g2 document.id %}" accesskey="k">{% trans "Local words" %}</a><br />
+  <a href="{% url 'dictionary_check_g2' document.id %}">{% trans "Unknown words" %}</a><br />
+  <a href="{% url 'dictionary_local_g2' document.id %}" accesskey="k">{% trans "Local words" %}</a><br />
   <h3>{% trans "Preview" %}</h3>
-  <a href="{% url todo_xhtml document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
-  <a href="{% url todo_sbsform document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
-  <a href="{% url todo_library_pdf document.id %}">{% trans "Large Print (Library)" %}</a><br />
-  <a href="{% url todo_sale_pdf document.id %}">{% trans "Large Print (Sale)" %}</a><br />
-  <a href="{% url todo_pdf document.id %}">{% trans "Configurable Large Print" %}</a><br />
-  <a href="{% url todo_text_only_dtb document.id %}">{% trans "Text-Only Daisy book" %}</a><br />
+  <a href="{% url 'todo_xhtml' document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
+  <a href="{% url 'todo_sbsform' document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
+  <a href="{% url 'todo_library_pdf' document.id %}">{% trans "Large Print (Library)" %}</a><br />
+  <a href="{% url 'todo_sale_pdf' document.id %}">{% trans "Large Print (Sale)" %}</a><br />
+  <a href="{% url 'todo_pdf' document.id %}">{% trans "Configurable Large Print" %}</a><br />
+  <a href="{% url 'todo_text_only_dtb' document.id %}">{% trans "Text-Only Daisy book" %}</a><br />
   <h3>{% trans "Preview (BETA)" %}</h3>
-  <a href="{% url todo_odt document.id %}">{% trans "Open Document" %}</a><br />
-  <a href="{% url todo_rtf document.id %}">{% trans "RTF" %}</a><br />
-  <a href="{% url todo_epub document.id %}">{% trans "EPUB" %}</a><br />
-  <a href="{% url todo_dtb document.id %}">{% trans "Full-Text Full-Audio book" %}</a><br />
+  <a href="{% url 'todo_odt' document.id %}">{% trans "Open Document" %}</a><br />
+  <a href="{% url 'todo_rtf' document.id %}">{% trans "RTF" %}</a><br />
+  <a href="{% url 'todo_epub' document.id %}">{% trans "EPUB" %}</a><br />
+  <a href="{% url 'todo_dtb' document.id %}">{% trans "Full-Text Full-Audio book" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
@@ -59,7 +60,7 @@
     </table>
 
     <form enctype="multipart/form-data" method="post" 
-	  action="{% url todo_add_version document.id %}">{% csrf_token %}
+	  action="{% url 'todo_add_version' document.id %}">{% csrf_token %}
       <p>
 	{% with versionForm as form %}
 	{% include "documents/simpleForm.html" %}
@@ -130,7 +131,7 @@
     });
     </script>
     <form style="display: none;" id="fileupload" enctype="multipart/form-data" method="post"
-	  action="{% url todo_add_image document.id %}">{% csrf_token %}
+	  action="{% url 'todo_add_image' document.id %}">{% csrf_token %}
       <p>
 	{% with imageForm as form %}
 	{% include "documents/simpleForm.html" %}
@@ -139,7 +140,7 @@
     </form>
     <!-- and an other one that supports the classic single file upload --> 
     <form enctype="multipart/form-data" method="post"
-	  action="{% url todo_add_image document.id %}">{% csrf_token %}
+	  action="{% url 'todo_add_image' document.id %}">{% csrf_token %}
       <p>
 	{% with imageForm as form %}
 	{% include "documents/simpleForm.html" %}
@@ -165,7 +166,7 @@
       {% endfor %}
     </table>
     <form enctype="multipart/form-data" method="post"
-	  action="{% url todo_add_attachment document.id %}">{% csrf_token %}
+	  action="{% url 'todo_add_attachment' document.id %}">{% csrf_token %}
       <p>
 	{% with attachmentForm as form %}
 	{% include "documents/simpleForm.html" %}
@@ -178,7 +179,7 @@
 
   <div id="relations">
     <p><strong>{% trans "State" %}</strong></p>
-    <form method="post" action="{% url todo_transition  document.id %}">{% csrf_token %}
+    <form method="post" action="{% url 'todo_transition'  document.id %}">{% csrf_token %}
       <p>
 	{% with documentForm as form %}
 	{% include "documents/simpleForm.html" %}

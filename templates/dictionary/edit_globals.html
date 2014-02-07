@@ -1,4 +1,5 @@
 {% extends "documents/todo.html" %}
+{% load url from future %}
 {% load i18n %}
 
 {% block sidebar %}
@@ -87,7 +88,7 @@
         {% if paginator == None or paginator.count > 0 %}
         <input type="submit" value="{% trans 'Submit' %}" />
         {% endif %}
-        <a href="{% url todo_index %}">{% trans 'Cancel' %}</a>
+        <a href="{% url 'todo_index' %}">{% trans 'Cancel' %}</a>
       {% endif %}
     </form>
   </div>
