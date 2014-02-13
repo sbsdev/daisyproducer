@@ -380,6 +380,45 @@ class Pipeline2:
         logger.error("Conversion to Open Document failed with %s. See %s", errors, job['log'])
         return ("Conversion to Open Document failed with:",) + errors
 
+    @staticmethod
+    def dtbook2sbsform(inputFile, imageFiles=[], **kwargs):
+        """Transform a dtbook xml file to an SBSForm"""
+
+        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
+        fileName = basename(inputFile)
+        sbsformFileName = splitext(fileName)[0] + ".sbsform"
+        tmpSbsformFileName = join(tempfile.gettempdir(), sbsformFileName)
+        tmpInputFile = join(tmpDir, fileName)
+        copyfile(inputFile, tmpInputFile)
+        kwargs["version"] = getVersion()
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+        for image in imageFiles:
+            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
+
+        request = make_job_request("sbs:dtbook-to-sbsform", 
+                                   {'source': tmpInputFile}, 
+                                   {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
+        job = post_job(request)
+        logger.info("Job with id %s submitted to the server", job['id'])
+        job = wait_for_job(job)
+        if job['status'] == "DONE":
+            try:
+                outputDir = [r for r in job['results'] if r['type'] == "option" and r['name'] == "output-dir"][0]
+                sbsformFile = [f for f in outputDir['files'] if f['href'] == "%s/idx/output-dir/%s" % (outputDir['href'], sbsformFileName)][0]
+                copyfile(sbsformFile['file'], tmpSbsformFileName)
+                if not delete_job(job['id']):
+                    logger.warn("The job %s has not been deleted from the server", job['id'])
+                rmtree(tmpDir)
+                return tmpSbsformFileName
+            except IndexError:
+                pass
+
+        rmtree(tmpDir)
+        errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
+        logger.error("Conversion to SBSForm failed with %s. See %s", errors, job['log'])
+        return ("Conversion to SBSForm failed with:",) + errors
+
 class StandardLargePrint:
 
     PAGES_PER_VOLUME=200

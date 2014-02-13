@@ -241,6 +241,38 @@ def preview_sbsform(request, document_id):
                               context_instance=RequestContext(request))
 
 @login_required
+def preview_sbsform_new(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+
+    if request.method == 'POST':
+        form = SBSFormForm(request.POST)
+        if form.is_valid():
+            inputFile = document.latest_version().content.path
+            outputFile = Pipeline2.dtbook2sbsform(
+                inputFile,
+                document_identifier=document.identifier,
+                use_local_dictionary=document.has_local_words(),
+                **form.cleaned_data)
+
+            if isinstance(outputFile, tuple):
+                # if filename is a tuple we're actually looking at a list of error messages
+                errorMessages = outputFile
+                return render_to_response('documents/todo_sbsform.html', locals(),
+                                          context_instance=RequestContext(request))
+
+            contraction = form.cleaned_data['contraction']
+            contraction_to_mimetype_mapping = {0 : 'text/x-sbsform-g0',
+                                               1 : 'text/x-sbsform-g1',
+                                               2 : 'text/x-sbsform-g2'}
+            mimetype = contraction_to_mimetype_mapping.get(contraction, 'text/x-sbsform-g2')
+            return render_to_mimetype_response(mimetype, document.title.encode('utf-8'), outputFile)
+    else:
+        form = SBSFormForm()
+
+    return render_to_response('documents/todo_sbsform.html', locals(),
+                              context_instance=RequestContext(request))
+
+@login_required
 def preview_pdf(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 

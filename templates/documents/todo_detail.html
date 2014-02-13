@@ -28,6 +28,7 @@
   <a href="{% url 'todo_text_only_dtb' document.id %}">{% trans "Text-Only Daisy book" %}</a><br />
   <h3>{% trans "Preview (BETA)" %}</h3>
   <a href="{% url 'todo_odt' document.id %}">{% trans "Open Document" %}</a><br />
+  <a href="{% url 'todo_sbsform_new' document.id %}" accesskey="b" >{% trans "SBSForm (Pipeline2)" %}</a><br />
   <a href="{% url 'todo_rtf' document.id %}">{% trans "RTF" %}</a><br />
   <a href="{% url 'todo_epub' document.id %}">{% trans "EPUB" %}</a><br />
   <a href="{% url 'todo_dtb' document.id %}">{% trans "Full-Text Full-Audio book" %}</a><br />
