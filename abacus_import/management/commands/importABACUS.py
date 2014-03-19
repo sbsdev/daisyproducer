@@ -121,7 +121,11 @@ def handle_file(file, root, relaxng):
 
     logger.info('Processing "%s" [%s]...', params['title'], product_number)
 
-    if not is_valid(params['source']):
+    # validate the ISBN but allow for some weird exceptions (same as in schema)
+    if not (params['source'] == '' or
+            params['source'] == 'keine' or
+            re.match('SBS[0-9]{6}', params['source']) or
+            is_valid(params['source'])):
         raise ValidationError(params['source'])
     
     # If the XML indicates that this product is not produced with Daisy Producer ignore this file
