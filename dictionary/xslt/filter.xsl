@@ -14,7 +14,7 @@
   <xsl:strip-space elements="brl:select"/>
   
   <!-- Drop a, i.e. urls, etc as they will be shown in grade 0 anyway -->
-  <xsl:template match="dtb:a"/>
+  <xsl:template match="dtb:a|brl:computer"/>
   
   <!-- Drop the abbr elements -->
   <xsl:template match="dtb:abbr"/>
