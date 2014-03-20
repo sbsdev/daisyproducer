@@ -18,11 +18,11 @@ class BrowseListView(ListView):
         final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
         return Document.objects.filter(state__sort_order=final_sort_order).order_by('title')
 
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         # we only show this view to anonymous users
-        if self.request.user.is_authenticated():
+        if request.user.is_authenticated():
             return HttpResponseRedirect(reverse('todo_index'))
-        return super(BrowseListView, self).dispatch(*args, **kwargs)
+        return super(BrowseListView, self).dispatch(request, *args, **kwargs)
 
 class BrowseDetailView(DetailView):
     template_name = 'documents/browse_detail.html'

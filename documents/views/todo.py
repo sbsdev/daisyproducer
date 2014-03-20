@@ -29,8 +29,8 @@ class TodoListView(ListView):
         return queryset
 
     @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(TodoListView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(TodoListView, self).dispatch(request, *args, **kwargs)
 
 @login_required
 def detail(request, document_id):

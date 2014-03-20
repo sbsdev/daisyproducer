@@ -24,8 +24,8 @@ class ManageListView(ListView):
 
     @method_decorator(login_required)
     @method_decorator(permission_required("documents.add_document"))
-    def dispatch(self, *args, **kwargs):
-        return super(ManageListView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(ManageListView, self).dispatch(request, *args, **kwargs)
     
 class ManageDetailView(DetailView):
     template_name = 'documents/manage_detail.html'
@@ -33,8 +33,8 @@ class ManageDetailView(DetailView):
 
     @method_decorator(login_required)
     @method_decorator(permission_required("documents.add_document"))
-    def dispatch(self, *args, **kwargs):
-        return super(ManageDetailView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        return super(ManageDetailView, self).dispatch(request, *args, **kwargs)
 
 class PartialDocumentForm(ModelForm):
     class Meta:
