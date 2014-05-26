@@ -65,10 +65,3 @@ check:
 
 check-coverage:
 	django-admin test --pythonpath=. --settings=settings_unittest_with_coverage
-
-# Deployment
-deploy_test:
-	ssh -t xmlp-test ~/updateDaisyProducer.sh test
-
-deploy_production:
-	ssh -t xmlp ~/updateDaisyProducer.sh production
