@@ -334,9 +334,8 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
         created_by = user)
     version.content.save("updated_version.xml", content)
     # also update the content in ueberarbeiten if the product was checked out
-    # FIXME: update xml in ueberarbeiten currently doesn't work due to a bug in Alfresco
-    # if checked_out:
-    #     update_xml_in_ueberarbeiten(product_number, content)
+    if checked_out:
+        update_xml_in_ueberarbeiten(product_number, ContentFile(contentString))
 
 def update_xml_in_ueberarbeiten(product_number, contentFile):
     path = u'PATH:"/app:company_home/cm:Produktion/cm:Neuproduktion/cm:Überarbeiten//*"'
