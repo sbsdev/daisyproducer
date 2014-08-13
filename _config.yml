@@ -1,8 +1,7 @@
 # Site settings
 title: Daisyproducer
-email: your-email@domain.com
 description: "An integrated production management system for accessible media."
-baseurl: ""
+baseurl: "http://sbsdev.github.io/daisyproducer/"
 url: "http://www.daisyproducer.org"
 copyright: Swiss Library for the Blind, Visually Impaired and Print Disabled
 github_username:  sbsdev
