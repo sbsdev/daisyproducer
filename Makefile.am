@@ -1,4 +1,4 @@
-SUBDIRS = doc web
+SUBDIRS = doc
 
 PO_FILES = locale/de/LC_MESSAGES/django.po
 MO_FILES = $(PO_FILES:.po=.mo)
