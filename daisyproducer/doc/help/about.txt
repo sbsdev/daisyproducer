@@ -13,10 +13,10 @@ you have the DTBook XML the `Daisy Pipeline`_ and liblouis_ can be
 used to generate Daisy Talking Books, Large Print and Braille in a
 fully automated way.
 
-.. _Daisy Producer: http://www.daisy-producer.org
+.. _Daisy Producer: http://www.daisyproducer.org
 .. _DTBook XML: http://www.daisy.org/projects/pipeline/
 .. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
-.. _liblouis: http://code.google.com/p/liblouis/
+.. _liblouis: http://www.liblouis.org/
 
 License
 =======
@@ -34,5 +34,5 @@ list`_, fetch the code from the `code repository`_ or submit bugs in the
 `issue tracker`_.
 
 .. _mailing list:
-.. _code repository: http://github.com/egli/daisy-producer
-.. _issue tracker: http://github.com/egli/daisy-producer/issues
+.. _code repository: http://github.com/sbsdev/daisyproducer
+.. _issue tracker: http://github.com/sbsdev/daisyproducer/issues

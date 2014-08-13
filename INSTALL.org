@@ -18,7 +18,7 @@
 - [[http://users.phys.psu.edu/~collins/software/latexmk-jcc/][latexmk]] (automates the process of compiling a LaTeX document)
 - [[http://www.tiresias.org/fonts/lpfont/about_lp.htm][Tiresias LP font]] (a font designed for Large Print publications)
 - [[http://www.java.com/en/download/manual.jsp][Java Runtime]] (Daisy Pipeline needs at least Java 5)
-- [[http://code.google.com/p/liblouis/][liblouis]] You need to install both liblouis, liblouixml and the
+- [[http://www.liblouis.org/][liblouis]] You need to install both liblouis, liblouixml and the
   python bindings.
 - A database for example [[http://www.postgresql.org/][PostgreSQL]] or [[http://www.mysql.com/][MySQL]].
 - A Python database interface like [[http://www.initd.org/][psycopg2]] or [[http://sourceforge.net/projects/mysql-python][mysqldb]] for example.
@@ -114,9 +114,9 @@ follows:
   # install liblouis dependencies
   sudo aptitude install pkg-config libxml2-dev
   # first install liblouis
-  wget http://liblouis.googlecode.com/files/liblouis-2.1.1.tar.gz
-  tar xzf liblouis-2.1.1.tar.gz
-  cd liblouis-2.1.1
+  wget http://www.liblouis.org/downloads/liblouis-2.5.4.tar.gz
+  tar xzf liblouis-2.5.4.tar.gz
+  cd liblouis-2.5.4
   ./configure --enable-ucs4
   make
   sudo make install
@@ -125,9 +125,9 @@ follows:
   sudo python setup.py install
   # now install liblouisxml
   cd
-  wget http://liblouisxml.googlecode.com/files/liblouisxml-2.1.0.tar.gz
-  tar xzf liblouisxml-2.1.0.tar.gz
-  cd liblouisxml-2.1.0
+  wget http://code.google.com/p/liblouisutdml/downloads/detail?name=liblouisutdml-2.5.0.tar.gz
+  tar xzf liblouisutdml-2.5.0.tar.gz
+  cd liblouisutdml-2.5.0
   ./configure
   make
   sudo make install
@@ -179,7 +179,7 @@ Install Apache and WSGI:
 
 Enable wsgi for Apache by using a config file in
 /etc/apache2/sites-available along the lines of the one given in the
-apache subdirectory (see also [[http://github.com/egli/daisy-producer/blob/master/apache/demo.xmlp.sbszh.ch][Apache config file example)]]
+apache subdirectory (see also [[http://github.com/sbsdev/daisyproducer/blob/master/apache/demo.xmlp.sbszh.ch][Apache config file example)]]
 
 ** Optional requirements
 - [[http://www.rbt.ca/autodoc/][autodoc]] :: (package postgresql-autodoc) if you want to generate the
@@ -242,7 +242,7 @@ get it directly from the source code repository:
   sudo chown dpadmin:dpadmin /srv/demo.daisyproducer.org/
   cd /srv/demo.daisyproducer.org
   sudo aptitude install git-core autoconf automake
-  git clone git://github.com/egli/daisy-producer.git daisyproducer
+  git clone git://github.com/sbsdev/daisyproducer.git daisyproducer
   cd daisyproducer
   autoreconf -vfi
   ./configure

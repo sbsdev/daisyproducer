@@ -21,10 +21,10 @@ For the generation of accessible media Daisy Producer offers a nice
 interface however the work is essentially done by the Daisy Pipeline
 and liblouis.
 
-.. _Daisy Producer: http://www.daisy-producer.org
+.. _Daisy Producer: http://www.daisyproducer.org
 .. _DTBook XML: http://www.daisy.org/projects/pipeline/
 .. _Daisy Pipeline: http://www.daisy.org/projects/pipeline/
-.. _liblouis: http://code.google.com/p/liblouis/
+.. _liblouis: http://www.liblouis.org/
 
 .. contents:: 
 

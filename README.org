@@ -2,7 +2,7 @@
 
 ** What is it?
 
-[[http://www.daisy-producer.org][Daisy Producer]] is a system to help you manage the production process
+[[http://www.daisyproducer.org][Daisy Producer]] is a system to help you manage the production process
 of accessible media. It assumes that you are transforming the content
 from hard copy or any electronic format to [[http://www.daisy.org/projects/pipeline/][DTBook XML]]. Once you have
 the DTBook XML the [[http://www.daisy.org/projects/pipeline/][Daisy Pipeline]] and [[http://code.google.com/p/liblouis/][liblouis]] can be used to generate
@@ -18,7 +18,7 @@ and liblouis.
 
 ** License
 
-[[http://www.daisy-producer.org][Daisy Producer]] is released under the terms of the [[http://www.gnu.org/licenses/agpl.html][GNU Affero General
+[[http://www.daisyproducer.org][Daisy Producer]] is released under the terms of the [[http://www.gnu.org/licenses/agpl.html][GNU Affero General
 Public License (AGPL)]].
 
 ** How to participate
@@ -33,6 +33,6 @@ The latest release is available from the [[https://github.com/sbsdev/daisyproduc
 
 ** Documentation
 
-[[http://www.daisy-producer.org][Daisy Producer]] comes with built in documentation. See the [[http://127.0.0.1:8000/help/][Help link]] in
+[[http://www.daisyproducer.org][Daisy Producer]] comes with built in documentation. See the [[http://127.0.0.1:8000/help/][Help link]] in
 your installation.
 
