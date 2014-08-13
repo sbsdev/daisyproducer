@@ -9,45 +9,16 @@ PYTHON_FILES = \
 	$(wildcard documents/templatetags/*.py) \
 	$(wildcard documents/views/*.py)
 
-MISC_FILES =  \
-	documents/sql/state.sql \
-	$(wildcard documents/xslt/*.xsl)
-
 TEMPLATE_FILES = \
 	$(wildcard templates/*.html) \
 	$(wildcard templates/documents/*.html) \
 	templates/DTBookTemplate.xml
-
-PUBLIC_FILES = \
-	public/images/edit.png \
-	public/stylesheets/application.css
 
 TEST_FILES = \
 	$(wildcard documents/test/*.py) \
 	$(wildcard documents/test/functional/*.py) \
 	$(wildcard documents/test/unit/*.py) \
 	$(wildcard documents/fixtures/*.yaml)
-
-TEST_DATA_FILES = \
-	$(wildcard documents/test/data/*)
-
-DOC_FILES = \
-	$(wildcard doc/help/*.txt) \
-	README.org \
-	INSTALL.org
-
-nobase_dist_pkgdata_DATA = \
-	$(PO_FILES) \
-	$(MO_FILES) \
-	$(PYTHON_FILES) \
-	$(MISC_FILES) \
-	$(TEMPLATE_FILES) \
-	$(PUBLIC_FILES) \
-	$(XOPUS_FILES) \
-	$(TEST_FILES) \
-	$(TEST_DATA_FILES) \
-	$(DOC_FILES) \
-	daisyproducer.wsgi
 
 # TAGS
 ETAGS_ARGS = $(PYTHON_FILES) $(TEST_FILES) $(TEMPLATE_FILES)
