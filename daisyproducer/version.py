@@ -13,3 +13,6 @@ def getVersion():
     except OSError:
         result = settings.PACKAGE_VERSION
     return result.strip()
+
+def version_processor(request):
+    return {'version_string': getVersion()}
