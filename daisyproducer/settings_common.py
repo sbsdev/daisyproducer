@@ -9,7 +9,6 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = (
     ('Christian Egli', 'christian.egli@sbs.ch'),
-    ('Bert Frees', 'bert.frees@sbs.ch'),
 )
 
 MANAGERS = ADMINS
