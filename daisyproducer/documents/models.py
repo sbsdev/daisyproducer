@@ -6,6 +6,7 @@ from daisyproducer.documents.storage import OverwriteStorage
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.db import models
+from django.db.models import Max
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
@@ -40,8 +41,13 @@ class State(models.Model):
     def all_responsible(self):
         return ",".join([group.name for group in self.responsible.all()])
 
+    def is_last_state(self):
+        return self.sort_order == final_sort_order
+
     class Meta:
         ordering = ['sort_order']
+
+final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
 class Document(models.Model):
 
@@ -166,6 +172,16 @@ class Document(models.Model):
         self.assigned_to = None
         self.state = self.state.transitionTo(state)
         self.save()
+        if self.state.is_last_state():
+            # we just transitioned to the last state. Presumably the
+            # production is finished now. Since the images take up a
+            # lot of space we'll remove them all. If a production is
+            # picked up again we can alwas upload them again.
+            for image in self.image_set.all():
+                # we have to loop over the images themselves to make
+                # sure the delete method is invoked (which deletes the
+                # image on the file system)
+                image.delete() 
 
     def has_local_words(self):
         return self.localword_set.exists()
