@@ -42,12 +42,10 @@ class State(models.Model):
         return ",".join([group.name for group in self.responsible.all()])
 
     def is_last_state(self):
-        return self.sort_order == final_sort_order
+        return self.sort_order == self._default_manager.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
     class Meta:
         ordering = ['sort_order']
-
-final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
 class Document(models.Model):
 
