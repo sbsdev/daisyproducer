@@ -129,7 +129,7 @@ def as_epub(request, document_id):
         "dcpublisher" : document.publisher, 
         "dcdate" : document.date}
     defaults.update(form.cleaned_data)
-    DaisyPipeline.dtbook2epub(inputFile, outputFile, **defaults)
+    DaisyPipeline.dtbook2epub(inputFile, outputFile, images=document.image_set.all(), **defaults)
 
     return render_to_mimetype_response('application/epub+zip', document.title.encode('utf-8'), outputFile)
 
