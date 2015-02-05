@@ -128,7 +128,7 @@
                   </optional>
                   <optional>
                     <element name="drucker">
-                      <data type="NCName"/>
+                      <data type="token"/>
                     </element>
                   </optional>
                   <optional>
@@ -197,13 +197,22 @@
                     <data type="nonNegativeInteger"/>
                   </element>
                   <element name="vorlageHaus">
-                    <data type="NCName"/>
+                    <choice>
+                      <value>ja</value>
+                      <value>nein</value>
+                    </choice>
                   </element>
                   <element name="katalogEintrag">
-                    <data type="NCName"/>
+                    <choice>
+                      <value>ja</value>
+                      <value>nein</value>
+                    </choice>
                   </element>
                   <element name="verlagVerzeichnis">
-                    <data type="NCName"/>
+                    <choice>
+                      <value>ja</value>
+                      <value>nein</value>
+                    </choice>
                   </element>
                   <element name="daisy_producer">
                     <choice>

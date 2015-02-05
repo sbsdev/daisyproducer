@@ -36,7 +36,7 @@ start =
                    & element datenErhalten { xsd:token }?
                    & element schriftart { xsd:token }?
                    & element endformat { text }?
-                   & element drucker { xsd:NCName }?
+                   & element drucker { xsd:token }?
                    & element doppelseitig { xsd:NCName }?
                    & element bindung { xsd:token }?
                    & element breite { xsd:nonNegativeInteger }
@@ -54,9 +54,9 @@ start =
                    & element prodPagePS { xsd:nonNegativeInteger }
                    & element anzahlBaende { xsd:nonNegativeInteger }
                    & element anzahlRelief { xsd:nonNegativeInteger }
-                   & element vorlageHaus { xsd:NCName }
-                   & element katalogEintrag { xsd:NCName }
-                   & element verlagVerzeichnis { xsd:NCName }
+                   & element vorlageHaus { "ja" | "nein" }
+                   & element katalogEintrag { "ja" | "nein" }
+                   & element verlagVerzeichnis { "ja" | "nein" }
                    & element daisy_producer { "ja" | "nein" }
                    & element notizen { text }?
                    & element Aufwand_A2 { "" | "D" }?
