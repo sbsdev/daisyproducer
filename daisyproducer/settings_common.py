@@ -9,6 +9,10 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = (
     ('Christian Egli', 'christian.egli@sbs.ch'),
+    # many error mails are to do with the bug about Duplicate entry in
+    # the dictionary_globalword table. Christian has no good way atm
+    # to handle this, so we send him the error mails
+    ('Christian Waldvogel', 'christian.waldvogel@sbs.ch'),
 )
 
 MANAGERS = ADMINS
