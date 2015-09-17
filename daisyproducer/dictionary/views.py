@@ -133,9 +133,13 @@ def check(request, document_id, grade):
     # w1 LEFT JOIN dict_words w2 ON w1.untranslated=w2.untranslated
     # WHERE w2.untranslated IS NULL;
     duplicate_words = set((smart_unicode(word) for 
-                           word in 
-                           chain(GlobalWord.objects.filter(grade=grade).filter(untranslated__in=new_words).values_list('untranslated', flat=True),
-                                 LocalWord.objects.filter(grade=grade).filter(document=document).filter(untranslated__in=new_words).values_list('untranslated', flat=True))))
+                           word in
+    # exclude type 2,4 and 5 as these probably have a different
+    # translations, so we do need to show these words if they are not
+    # tagged even if they have an entry in the dictionary as a name or
+    # a place.
+                           chain(GlobalWord.objects.filter(grade=grade).exclude(type__in=(2,4,5)).filter(untranslated__in=new_words).values_list('untranslated', flat=True),
+                                 LocalWord.objects.filter(grade=grade).exclude(type__in=(2,4,5)).filter(document=document).filter(untranslated__in=new_words).values_list('untranslated', flat=True))))
     unknown_words = [{'untranslated': word, 
                       'braille': translate(getTables(grade), word),
                       'type' : 0,
