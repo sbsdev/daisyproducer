@@ -244,6 +244,14 @@ def update_word_tables(form, grade, deferred):
     else:
         # move confirmed and non-local words to the global dictionary
         GlobalWord.objects.create(grade=grade, braille=form.cleaned_data['braille'], **filter_args)
+        # In LocalWords we generally do not have entries of type 1 or
+        # 3. If we get such entries they must have been modified in
+        # the confirm interface. When deleting them from LocalWords we
+        # need to use the old types
+        if filter_args['type'] == 1:
+            filter_args['type'] = 2
+        elif filter_args['type'] == 3:
+            filter_args['type'] = 4
         # delete all entries from the LocalWord table
         LocalWord.objects.filter(grade=grade, **filter_args).delete()
     
