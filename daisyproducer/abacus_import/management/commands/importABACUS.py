@@ -21,6 +21,7 @@ import logging.config
 import numbers
 import os
 import re
+import time
 import tempfile
 
 # This command is meant to be used as a cron job which reads files
@@ -340,6 +341,9 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
 def update_xml_in_ueberarbeiten(product_number, contentFile):
     path = u'PATH:"/app:company_home/cm:Produktion/cm:Neuproduktion/cm:Überarbeiten//*"'
     q = "select * from sbs:produkt where sbs:pProduktNo = '%s' AND CONTAINS('%s')" % (product_number, path)
+    # apparently it takes Alfresco a little while to update its indexes,
+    # so wait a bit before doing a search query
+    time.sleep(60)
     resultset = cmis_request(q)
     if not resultset:
         logger.error("Product %s not found in Überarbeiten", product_number)
