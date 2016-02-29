@@ -420,7 +420,6 @@ def make_get_key_fn(evaluator):
 def get_document_content(product_number):
     # let's see if the product exists at all
     q = "select * from sbs:produkt where sbs:pProduktNo = '%s'" % product_number
-    cmis_request(q)
     resultset = cmis_request(q)
     if not resultset:
         logger.error("Product %s not found", product_number)
@@ -442,7 +441,6 @@ def get_document_content(product_number):
 def checkout_document(product_number):
     # let's see if the product exists at all
     q = "select * from sbs:produkt where sbs:pProduktNo = '%s'" % product_number
-    cmis_request(q)
     resultset = cmis_request(q)
     if not resultset:
         logger.error("Product %s not found", product_number)
