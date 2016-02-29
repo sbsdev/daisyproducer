@@ -187,8 +187,8 @@ def handle_file(file, root, relaxng):
         
     # if the product_number has never been seen before then we are talking about a new
     # production, i.e. try to check out the document in the archive
-    if not product_number_has_been_seen_before:
-        checkout_document(product_number)
+    # if not product_number_has_been_seen_before:
+    #     checkout_document(product_number)
 
     # If the order has been archived before fetch the xml from the archive
     fetch_xml(document, product_number, not product_number_has_been_seen_before)
@@ -335,8 +335,8 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
         created_by = user)
     version.content.save("updated_version.xml", content)
     # also update the content in ueberarbeiten if the product was checked out
-    if checked_out:
-        update_xml_in_ueberarbeiten(product_number, ContentFile(contentString))
+    # if checked_out:
+    #     update_xml_in_ueberarbeiten(product_number, ContentFile(contentString))
 
 def update_xml_in_ueberarbeiten(product_number, contentFile):
     path = u'PATH:"/app:company_home/cm:Produktion/cm:Neuproduktion/cm:Überarbeiten//*"'
