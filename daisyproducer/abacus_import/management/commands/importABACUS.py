@@ -397,7 +397,7 @@ def fetch_params(get_key, root):
     return params
 
 def cmis_request(q):
-    url = 'http://%s/alfresco/s/api/cmis' % settings.CMIS_HOST
+    url = 'http://%s/alfresco/cmisatom' % settings.CMIS_HOST
     cmisClient = cmislib.CmisClient(url, settings.CMIS_USER, settings.CMIS_PASSWORD)
     repo = cmisClient.defaultRepository
 
