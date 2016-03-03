@@ -349,6 +349,12 @@ def update_xml_in_ueberarbeiten(product_number, contentFile):
         logger.error("Product %s not found in Überarbeiten", product_number)
         return
     product = resultset[0]
+    # FIXME: there is a suspicion that the product is a proxy object
+    # that needs to be fetched before we can actually get its parent.
+    # Without the following seemingly pointless call to get the
+    # allowable actions, we get an exception when trying to get the
+    # parent
+    product.allowableActions
     book = product.getParent()
     isDaisyFile = lambda child: child.properties['cmis:objectTypeId'] == 'D:sbs:daisyFile'
     resultset = filter(isDaisyFile, book.getChildren())
@@ -425,6 +431,12 @@ def get_document_content(product_number):
         logger.error("Product %s not found", product_number)
         return
     product = resultset[0]
+    # FIXME: there is a suspicion that the product is a proxy object
+    # that needs to be fetched before we can actually get its parent.
+    # Without the following seemingly pointless call to get the
+    # allowable actions, we get an exception when trying to get the
+    # parent
+    product.allowableActions
     book = product.getParent()
     isDaisyFile = lambda child: child.properties['cmis:objectTypeId'] == 'D:sbs:daisyFile'
     resultset = filter(isDaisyFile, book.getChildren())
