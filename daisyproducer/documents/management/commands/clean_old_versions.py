@@ -14,7 +14,7 @@ class Command(BaseCommand):
             '--numberOfVersionsKept',
             type="int",
             dest='numberOfVersionsKept',
-            default=7,
+            default=3,
             help='Number of versions that should be kept for a document. If a document contains more versions than the specified number only said number of versions are kept. Older versions are removed.'),
         )
 
