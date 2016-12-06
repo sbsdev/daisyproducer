@@ -57,6 +57,16 @@
                     <data type="positiveInteger"/>
                   </element>
                   <optional>
+                    <element name="Korrekturstufe">
+                      <text/>
+                    </element>
+                  </optional>
+                  <optional>
+                    <element name="ProduktArt">
+                      <text/>
+                    </element>
+                  </optional>
+                  <optional>
                     <element name="untertitel">
                       <text/>
                     </element>

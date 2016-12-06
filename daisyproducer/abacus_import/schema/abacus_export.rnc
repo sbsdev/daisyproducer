@@ -22,6 +22,8 @@ start =
                   },
                   element sbs {
                      element KST { xsd:positiveInteger }
+                   & element Korrekturstufe { text }?
+                   & element ProduktArt { text }?
                    & element untertitel { text }?
                    & element reihe { text }?
                    & element verlag { xsd:token }?
