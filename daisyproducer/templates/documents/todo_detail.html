@@ -13,6 +13,7 @@
   <!-- <a href="{% url 'todo_ocr' document.id %}" accesskey="o" >{% trans "OCR" %}</a><br /> -->
   <a href="{% url 'todo_markup' document.id %}">{% trans "Markup" %}</a><br />
   <h3>{% trans "Braille Dictionary" %}</h3>
+  <a href="{% url 'dictionary_lookup_global_words' %}" target="_blank" class="popup">{% trans "Lookup global words" %}</a><br/>
   <h4>{% trans "Grade 1" %}</h4>
   <a href="{% url 'dictionary_check_g1' document.id %}">{% trans "Unknown words" %}</a><br />
   <a href="{% url 'dictionary_local_g1' document.id %}" accesskey="v">{% trans "Local words" %}</a><br />
