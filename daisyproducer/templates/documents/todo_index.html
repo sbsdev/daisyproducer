@@ -8,6 +8,7 @@
 <div id="sidebar">
   {% if perms.dictionary.add_globalword %}
   <h3>{% trans "Braille Dictionary" %}</h3>
+  <a href="/hyphenations/" target="_blank" class="popup">{% trans "Hyphenations" %}</a>
   <h4>{% trans "Grade 1" %}</h4>
   {% if not user|in_group:"Braille_Readers" %}
   <a href="{% url 'dictionary_confirm_g1' %}">{% trans "Confirm unknown words" %}</a><br />
