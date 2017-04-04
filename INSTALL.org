@@ -24,7 +24,6 @@
 - A Python database interface like [[http://www.initd.org/][psycopg2]] or [[http://sourceforge.net/projects/mysql-python][mysqldb]] for example.
 - [[http://docutils.sourceforge.net][docutils]] to render the help page (which is written in
   reStructuredText Markup).
-- [[http://south.aeracode.org/][south]] to handle changes in the database schema
 - [[http://www.thaiopensource.com/relaxng/jing.html][Jing]] for schema validation
 
 ** Required packages
@@ -35,7 +34,6 @@ In terms of (Debian/Ubuntu) packages this translates to
 
 - python
 - python-django
-- python-django-south
 - python-lxml
 - python-docutils
 - python-libxml2
@@ -54,11 +52,11 @@ In terms of (Debian/Ubuntu) packages this translates to
 Install the basic packages:
 
 #+BEGIN_EXAMPLE
-  sudo aptitude install python python-django python-django-south	\
-  python-lxml python-docutils python-libxml2 python-libxslt1            \
-  python-pypdf python-stdnum sun-java6-jre texlive-xetex                \
-  texlive-latex-extra texlive-latex-recommended texlive-lang-german     \
-  latexmk ttf-tiresias lmodern xsltproc unzip jing
+  sudo aptitude install python python-django python-lxml        \
+  python-docutils python-libxml2 python-libxslt1 python-pypdf   \
+  python-stdnum sun-java6-jre texlive-xetex texlive-latex-extra \
+  texlive-latex-recommended texlive-lang-german latexmk         \
+  ttf-tiresias lmodern xsltproc unzip jing
 #+END_EXAMPLE
 
 *** Database
@@ -294,7 +292,7 @@ Set up the initial database tables:
 
 * Upgrading from an older installation
 
-You will have to install south and migrate the database:
+You will have to migrate the database:
 
 #+BEGIN_EXAMPLE
   ./manage.py syncdb
