@@ -131,7 +131,8 @@ urlpatterns += patterns('',
 )
 
 # error
-urlpatterns += patterns('', url(r'^error/$', 'error', name='error'))
+# FIXME: tbh I'm not sure if this ever worked
+#urlpatterns += patterns('', url(r'^error/$', 'error', name='error'))
 
 # authentication
 urlpatterns += patterns('',
