@@ -309,6 +309,7 @@ class BrailleProfile(models.Model):
 
 class BrailleProfileForm(ModelForm):
     class Meta:
+        fields = "__all__"
         model = BrailleProfile
 
 class LargePrintProfile(models.Model):
@@ -366,5 +367,6 @@ class LargePrintProfile(models.Model):
 
 class LargePrintProfileForm(ModelForm):
     class Meta:
+        fields = "__all__"
         model = LargePrintProfile
 

@@ -75,10 +75,11 @@ class RestrictedWordForm(PartialWordForm):
 
 class PartialGlobalWordForm(ModelForm):
     class Meta:
+        fields = ('untranslated', 'braille', 'type', 'homograph_disambiguation')
         model = GlobalWord
         widgets = {}
         # add the title attribute to the widgets
-        for field in ('untranslated', 'braille', 'type', 'homograph_disambiguation'):
+        for field in fields:
             f = model._meta.get_field(field)
             formField = f.formfield()
             if formField:
