@@ -8,9 +8,9 @@ from django.contrib.auth.views import login, logout
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import TemplateView
 
-from daisyproducer.documents.views.manage import ManageListView, ManageDetailView
-from daisyproducer.documents.views.browse import BrowseListView, BrowseDetailView
-from daisyproducer.documents.views.todo import TodoListView
+import daisyproducer.documents.views.manage as manage
+import daisyproducer.documents.views.browse as browse
+import daisyproducer.documents.views.todo as todo
 
 PROJECT_DIR = os.path.dirname(__file__)
 
@@ -18,49 +18,49 @@ admin.autodiscover()
 
 # browse finished documents
 urlpatterns = patterns('daisyproducer.documents.views.browse',
-    url(r'^$', BrowseListView.as_view(), name='browse_index'),
-    url(r'^(?P<pk>\d+)/$', BrowseDetailView.as_view(), name='browse_detail'),
-    url(r'^(?P<document_id>\d+).pdf$', 'as_pdf', name='browse_pdf'),
-    url(r'^(?P<document_id>\d+).brl$', 'as_brl', name='browse_brl'),
-    url(r'^(?P<document_id>\d+).sbsform$', 'as_sbsform', name='browse_sbsform'),
-    url(r'^(?P<document_id>\d+).xhtml$', 'as_xhtml', name='browse_xhtml'),
-    url(r'^(?P<document_id>\d+).rtf$', 'as_rtf', name='browse_rtf'),
-    url(r'^(?P<document_id>\d+).epub$', 'as_epub', name='browse_epub'),
-    url(r'^(?P<document_id>\d+).dtb_text_only$', 'as_text_only_dtb', name='browse_text_only_dtb'),
-    url(r'^(?P<document_id>\d+).dtb$', 'as_dtb', name='browse_dtb'),
+    url(r'^$', browse.BrowseListView.as_view(), name='browse_index'),
+    url(r'^(?P<pk>\d+)/$', browse.BrowseDetailView.as_view(), name='browse_detail'),
+    url(r'^(?P<document_id>\d+).pdf$', browse.as_pdf, name='browse_pdf'),
+    url(r'^(?P<document_id>\d+).brl$', browse.as_brl, name='browse_brl'),
+    url(r'^(?P<document_id>\d+).sbsform$', browse.as_sbsform, name='browse_sbsform'),
+    url(r'^(?P<document_id>\d+).xhtml$', browse.as_xhtml, name='browse_xhtml'),
+    url(r'^(?P<document_id>\d+).rtf$', browse.as_rtf, name='browse_rtf'),
+    url(r'^(?P<document_id>\d+).epub$', browse.as_epub, name='browse_epub'),
+    url(r'^(?P<document_id>\d+).dtb_text_only$', browse.as_text_only_dtb, name='browse_text_only_dtb'),
+    url(r'^(?P<document_id>\d+).dtb$', browse.as_dtb, name='browse_dtb'),
 )
 
 # work on pending documents
 urlpatterns += patterns('daisyproducer.documents.views.todo',
-    url(r'^todo/$', TodoListView.as_view(), name='todo_index'),
-    url(r'^todo/(?P<document_id>\d+)/$', 'detail', name='todo_detail'),
-    url(r'^todo/(?P<document_id>\d+)/addVersion$', 'add_version', name='todo_add_version'),
-    url(r'^todo/(?P<document_id>\d+)/addImage$', 'add_image', name='todo_add_image'),
-    url(r'^todo/(?P<document_id>\d+)/addAttachment$', 'add_attachment', name='todo_add_attachment'),
-    url(r'^todo/(?P<document_id>\d+)/transition$', 'transition', name='todo_transition'),
-    url(r'^todo/(?P<document_id>\d+)/ocr$', 'ocr', name='todo_ocr'),
-    url(r'^todo/(?P<document_id>\d+)/markup$', 'markup', name='todo_markup'),
-    url(r'^todo/(?P<document_id>\d+)/preview_xhtml$', 'preview_xhtml', name='todo_xhtml'),
-    url(r'^todo/(?P<document_id>\d+)/preview_sbsform$', 'preview_sbsform', name='todo_sbsform'),
-    url(r'^todo/(?P<document_id>\d+)/preview_sbsform_new$', 'preview_sbsform_new', name='todo_sbsform_new'),
-    url(r'^todo/(?P<document_id>\d+)/preview_pdf$', 'preview_pdf', name='todo_pdf'),
-    url(r'^todo/(?P<document_id>\d+)/preview_sale_pdf$', 'preview_sale_pdf', name='todo_sale_pdf'),
-    url(r'^todo/(?P<document_id>\d+)/preview_library_pdf$', 'preview_library_pdf', name='todo_library_pdf'),
-    url(r'^todo/(?P<document_id>\d+)/preview_rtf$', 'preview_rtf', name='todo_rtf'),
-    url(r'^todo/(?P<document_id>\d+)/preview_epub$', 'preview_epub', name='todo_epub'),
-    url(r'^todo/(?P<document_id>\d+)/preview_odt$', 'preview_odt', name='todo_odt'),
-    url(r'^todo/(?P<document_id>\d+)/preview_text_only_dtb$', 'preview_text_only_dtb', name='todo_text_only_dtb'),
-    url(r'^todo/(?P<document_id>\d+)/preview_dtb$', 'preview_dtb', name='todo_dtb'),
+    url(r'^todo/$', todo.TodoListView.as_view(), name='todo_index'),
+    url(r'^todo/(?P<document_id>\d+)/$', todo.detail, name='todo_detail'),
+    url(r'^todo/(?P<document_id>\d+)/addVersion$', todo.add_version, name='todo_add_version'),
+    url(r'^todo/(?P<document_id>\d+)/addImage$', todo.add_image, name='todo_add_image'),
+    url(r'^todo/(?P<document_id>\d+)/addAttachment$', todo.add_attachment, name='todo_add_attachment'),
+    url(r'^todo/(?P<document_id>\d+)/transition$', todo.transition, name='todo_transition'),
+    url(r'^todo/(?P<document_id>\d+)/ocr$', todo.ocr, name='todo_ocr'),
+    url(r'^todo/(?P<document_id>\d+)/markup$', todo.markup, name='todo_markup'),
+    url(r'^todo/(?P<document_id>\d+)/preview_xhtml$', todo.preview_xhtml, name='todo_xhtml'),
+    url(r'^todo/(?P<document_id>\d+)/preview_sbsform$', todo.preview_sbsform, name='todo_sbsform'),
+    url(r'^todo/(?P<document_id>\d+)/preview_sbsform_new$', todo.preview_sbsform_new, name='todo_sbsform_new'),
+    url(r'^todo/(?P<document_id>\d+)/preview_pdf$', todo.preview_pdf, name='todo_pdf'),
+    url(r'^todo/(?P<document_id>\d+)/preview_sale_pdf$', todo.preview_sale_pdf, name='todo_sale_pdf'),
+    url(r'^todo/(?P<document_id>\d+)/preview_library_pdf$', todo.preview_library_pdf, name='todo_library_pdf'),
+    url(r'^todo/(?P<document_id>\d+)/preview_rtf$', todo.preview_rtf, name='todo_rtf'),
+    url(r'^todo/(?P<document_id>\d+)/preview_epub$', todo.preview_epub, name='todo_epub'),
+    url(r'^todo/(?P<document_id>\d+)/preview_odt$', todo.preview_odt, name='todo_odt'),
+    url(r'^todo/(?P<document_id>\d+)/preview_text_only_dtb$', todo.preview_text_only_dtb, name='todo_text_only_dtb'),
+    url(r'^todo/(?P<document_id>\d+)/preview_dtb$', todo.preview_dtb, name='todo_dtb'),
 )
 
 # management of documents and meta data
 urlpatterns += patterns('daisyproducer.documents.views.manage',
-    url(r'^manage/$', ManageListView.as_view(), name='manage_index'),
-    url(r'^manage/(?P<pk>\d+)/$', ManageDetailView.as_view(), name='manage_detail'),
-    url(r'^manage/create/$', 'create', name='manage_create'),
-    url(r'^manage/(?P<document_id>\d+)/update/$', 'update', name='manage_update'),
-    url(r'^manage/upload_metadata_csv/$', 'upload_metadata_csv', name='upload_metadata_csv'),
-    url(r'^manage/import_metadata_csv/$', 'import_metadata_csv', name='import_metadata_csv'),
+    url(r'^manage/$', manage.ManageListView.as_view(), name='manage_index'),
+    url(r'^manage/(?P<pk>\d+)/$', manage.ManageDetailView.as_view(), name='manage_detail'),
+    url(r'^manage/create/$', manage.create, name='manage_create'),
+    url(r'^manage/(?P<document_id>\d+)/update/$', manage.update, name='manage_update'),
+    url(r'^manage/upload_metadata_csv/$', manage.upload_metadata_csv, name='upload_metadata_csv'),
+    url(r'^manage/import_metadata_csv/$', manage.import_metadata_csv, name='import_metadata_csv'),
 )
 
 urlpatterns += patterns('daisyproducer.statistics.views',
