@@ -34,7 +34,7 @@ MAX_WORDS_PER_PAGE = 25
 final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def check(request, document_id, grade):
 
     document = get_object_or_404(Document, pk=document_id)
@@ -184,7 +184,7 @@ def check(request, document_id, grade):
                               context_instance=RequestContext(request))
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def local(request, document_id, grade):
 
     document = get_object_or_404(Document, pk=document_id)
@@ -257,7 +257,7 @@ def update_word_tables(form, grade, deferred):
     
 @login_required
 @permission_required("dictionary.add_globalword")
-@transaction.commit_on_success
+@transaction.atomic
 def confirm(request, grade, deferred=False):
     if [word for word in get_conflicting_words(grade)]:
         redirect = ('dictionary_confirm_deferred_conflicting_duplicates_g' if deferred
@@ -378,7 +378,7 @@ AND doc_a.state_id=%s"""
 
 @login_required
 @permission_required("dictionary.add_globalword")
-@transaction.commit_on_success
+@transaction.atomic
 def confirm_conflicting_duplicates(request, grade, deferred=False):
 
     WordFormSet = formset_factory(ConflictingWordForm, extra=0)
@@ -433,7 +433,7 @@ def confirm_conflicting_duplicates(request, grade, deferred=False):
 
 @login_required
 @permission_required("dictionary.add_globalword")
-@transaction.commit_on_success
+@transaction.atomic
 def confirm_single(request, grade, deferred=False):
     try:
         # just get one word
@@ -466,7 +466,7 @@ def confirm_single(request, grade, deferred=False):
                               context_instance=RequestContext(request))
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def edit_global_words(request, read_only):
 
     read_only = read_only or not request.user.has_perm("dictionary.change_globalword")
@@ -537,7 +537,7 @@ def edit_global_words(request, read_only):
 
 @login_required
 @permission_required("dictionary.change_globalword")
-@transaction.commit_on_success
+@transaction.atomic
 def edit_global_words_with_missing_braille(request):
 
     WordFormSet = formset_factory(GlobalWordBothGradesForm, extra=0)

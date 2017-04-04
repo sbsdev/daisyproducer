@@ -48,7 +48,7 @@ def detail(request, document_id):
                               context_instance=RequestContext(request))
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def add_attachment(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
@@ -79,7 +79,7 @@ def add_attachment(request, document_id):
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
     
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def add_image(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
@@ -116,7 +116,7 @@ def add_image(request, document_id):
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def add_version(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 

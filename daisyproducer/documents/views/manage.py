@@ -70,7 +70,7 @@ class PartialDocumentForm(ModelForm):
 
 @login_required
 @permission_required("documents.add_document")
-@transaction.commit_on_success
+@transaction.atomic
 def create(request):
     form = PartialDocumentForm()
     if request.method == 'POST':
@@ -84,7 +84,7 @@ def create(request):
 
 @login_required
 @permission_required("documents.add_document")
-@transaction.commit_on_success
+@transaction.atomic
 def update(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
@@ -125,7 +125,7 @@ class UnicodeReader:
 
 @login_required
 @permission_required("documents.add_document")
-@transaction.commit_on_success
+@transaction.atomic
 def upload_metadata_csv(request):
 
     if request.method != 'POST':
@@ -192,7 +192,7 @@ def upload_metadata_csv(request):
 
 @login_required
 @permission_required("documents.add_document")
-@transaction.commit_on_success
+@transaction.atomic
 def import_metadata_csv(request):
 
     if request.method != 'POST':
