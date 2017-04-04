@@ -299,8 +299,8 @@ class BrailleProfile(models.Model):
         ('2', _('Grade 2')),
         )
 
-    cells_per_line = models.PositiveSmallIntegerField(_("Cells per Line"), default=40, max_length=4)
-    lines_per_page = models.PositiveSmallIntegerField(_("Lines per Page"), default=28, max_length=4)
+    cells_per_line = models.PositiveSmallIntegerField(_("Cells per Line"), default=40)
+    lines_per_page = models.PositiveSmallIntegerField(_("Lines per Page"), default=28)
     contraction = models.PositiveSmallIntegerField(_("Contraction"), default=0, choices=BRAILLE_CONTRACTION_GRADE_CHOICES)
     hyphenation = models.BooleanField(_("Hyphenation"), default=True)
     show_original_page_numbers = models.BooleanField(_("Show original page numbers"), default=True)
