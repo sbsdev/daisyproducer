@@ -104,6 +104,10 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'daisyproducer.urls'
 
+LOCALE_PATHS = [
+    os.path.join(PROJECT_DIR, 'locale'),
+]
+
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
