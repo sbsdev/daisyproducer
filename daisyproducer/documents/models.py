@@ -304,8 +304,8 @@ class BrailleProfile(models.Model):
     contraction = models.PositiveSmallIntegerField(_("Contraction"), default=0, choices=BRAILLE_CONTRACTION_GRADE_CHOICES)
     hyphenation = models.BooleanField(_("Hyphenation"), default=True)
     show_original_page_numbers = models.BooleanField(_("Show original page numbers"), default=True)
-    enable_capitalization = models.BooleanField(_("Enable Capitalization"))
-    detailed_accented_characters = models.BooleanField(_("Detailed Accented Characters"))
+    enable_capitalization = models.BooleanField(_("Enable Capitalization"), default=False)
+    detailed_accented_characters = models.BooleanField(_("Detailed Accented Characters"), default=False)
 
 class BrailleProfileForm(ModelForm):
     class Meta:
