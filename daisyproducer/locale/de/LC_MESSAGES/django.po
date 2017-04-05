@@ -595,7 +595,6 @@ msgstr ""
 #: templates/documents/manage_upload_metadata_csv.html:12
 #: templates/documents/todo_dtb.html:25 templates/documents/todo_epub.html:25
 #: templates/documents/todo_markup.html:31
-#: templates/documents/todo_ocr.html:30 templates/documents/todo_pdf.html:25
 #: templates/documents/todo_rtf.html:25
 #: templates/documents/todo_sale_pdf.html:25
 #: templates/documents/todo_sbsform.html:25
@@ -774,7 +773,6 @@ msgstr "Ansicht als Volltext Audio-Buch"
 #: templates/documents/todo_dtb.html:31 templates/documents/todo_epub.html:31
 #: templates/documents/todo_index.html:68
 #: templates/documents/todo_markup.html:37
-#: templates/documents/todo_ocr.html:36 templates/documents/todo_pdf.html:31
 #: templates/documents/todo_rtf.html:31
 #: templates/documents/todo_sale_pdf.html:31
 #: templates/documents/todo_sbsform.html:31
@@ -878,11 +876,6 @@ msgstr "Dokumentdetails Aktualisieren"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: templates/documents/todo_detail.html:12
-#: templates/documents/todo_ocr.html:29
-msgid "OCR"
-msgstr "OCR"
-
 #: templates/documents/todo_detail.html:14
 #: templates/documents/todo_index.html:9
 msgid "Braille Dictionary"
@@ -966,10 +959,6 @@ msgstr "Dokument-Markup"
 #: templates/documents/todo_markup.html:30
 msgid "Save"
 msgstr "Speichern"
-
-#: templates/documents/todo_ocr.html:6 templates/documents/todo_ocr.html:11
-msgid "Document OCR"
-msgstr "Dokumente OCR"
 
 #: templates/documents/todo_pdf.html:4 templates/documents/todo_pdf.html:9
 msgid "Preview Configurable Large Print"

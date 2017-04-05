@@ -102,12 +102,6 @@ class PartialDocumentForm(ModelForm):
         model = Document
         fields = ('state',)
     
-class OCRForm(forms.Form):
-    data = forms.FileField(
-        label = _("Data from scan"), 
-        help_text = _("The image files that resulted from the scan"))
-
-
 class MarkupForm(forms.Form):
     data = forms.CharField(
         widget=forms.Textarea(

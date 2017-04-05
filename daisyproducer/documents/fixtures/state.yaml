@@ -13,13 +13,6 @@
   model: documents.state
   pk: 2
 - fields:
-    name: ocred
-    next_states: [4]
-    responsible: []
-    sort_order: 3
-  model: documents.state
-  pk: 3
-- fields:
     name: marked_up
     next_states: [5]
     responsible: []

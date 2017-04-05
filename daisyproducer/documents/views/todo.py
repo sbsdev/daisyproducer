@@ -1,7 +1,7 @@
 import shutil, tempfile, os.path
 
 from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory, Pipeline2
-from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, PartialImageForm, OCRForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm, ODTForm
+from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, PartialImageForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm, ODTForm
 from daisyproducer.documents.models import Document, Version, Attachment, Image, Product, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -163,20 +163,6 @@ def transition(request, document_id):
 
     document.transitionTo(form.cleaned_data['state'])
     return HttpResponseRedirect(reverse('todo_index'))
-
-@login_required
-def ocr(request, document_id):
-    document = Document.objects.get(pk=document_id)
-    if request.method == 'POST':
-        form = OCRForm(request.POST, request.FILES)
-        if form.is_valid():
-            # do whatever is needed here
-            return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
-    else:
-        form = OCRForm()
-
-    return render_to_response('documents/todo_ocr.html', locals(),
-                              context_instance=RequestContext(request))
 
 @login_required
 def markup(request, document_id):

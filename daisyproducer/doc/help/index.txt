@@ -45,8 +45,7 @@ Daisy Producer in 3 steps
       document you intend to work on.
 
    b) The detailed view lets you upload attachments. You could upload
-      the PDF that you received from the source publisher or a RTF
-      that resulted from the OCR process for example.
+      the PDF that you received from the source publisher for example.
       
       i) Add a comment relating to this attachment in the comment field
       ii) Add a file in the file chooser field
@@ -196,18 +195,17 @@ Add an attachment
 
 Dave is tasked to work on the document "Wachtmeister Studer". It will
 show up in his list of pending tasks. He does the necessary work to
-complete the task, e.g. scan or ocr the document and attaches the
-result to the document. Finally he indicates that he is done with his
-work which will move the workflow state to the next state.
+complete the task, e.g. scan the document and attaches the result to
+the document. Finally he indicates that he is done with his work which
+will move the workflow state to the next state.
 
 Update the document
 ~~~~~~~~~~~~~~~~~~~
 
 Eve is tasked to transform the document into valid XML. She uses
 previous results of work done on and attached to the document, e.g. a
-ocred version of the document as rtf or maybe a pdf as received from
-the publisher. She enhances the initial XML (that was created from the
-meta data) to contain the information from the respective attachment.
-Finally she indicates that she is done with her work which will move
-the workflow state to the next state.
+pdf as received from the publisher. She enhances the initial XML (that
+was created from the meta data) to contain the information from the
+respective attachment. Finally she indicates that she is done with her
+work which will move the workflow state to the next state.
 

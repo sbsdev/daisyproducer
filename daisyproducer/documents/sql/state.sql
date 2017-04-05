@@ -1,7 +1,6 @@
 -- states
 INSERT INTO documents_state (name, sort_order) VALUES ('new', 1);
 INSERT INTO documents_state (name, sort_order) VALUES ('scanned', 2);
-INSERT INTO documents_state (name, sort_order) VALUES ('ocred', 3);
 INSERT INTO documents_state (name, sort_order) VALUES ('marked_up', 4);
 INSERT INTO documents_state (name, sort_order) VALUES ('proof_read', 5);
 INSERT INTO documents_state (name, sort_order) VALUES ('approved', 6);
@@ -9,10 +8,6 @@ INSERT INTO documents_state (name, sort_order) VALUES ('approved', 6);
 -- transitions
 -- scanning
 INSERT INTO documents_state_next_states (from_state_id, to_state_id) VALUES (1, 2);
--- ocring
-INSERT INTO documents_state_next_states (from_state_id, to_state_id) VALUES (2, 3);
--- marking_up
-INSERT INTO documents_state_next_states (from_state_id, to_state_id) VALUES (3, 4);
 -- proof_reading
 INSERT INTO documents_state_next_states (from_state_id, to_state_id) VALUES (4, 5);
 -- approving
@@ -43,13 +38,10 @@ INSERT INTO auth_user_groups (id, user_id, group_id) VALUES (3, 2, 3);
 INSERT INTO auth_user_groups (id, user_id, group_id) VALUES (4, 2, 4);
 
 -- now make sure the groups are responsible for their state
--- Scanners are responsible for new and scanned documents, i.e. they
--- should do scanning and OCR
+-- Scanners are responsible for new documents, i.e. they should do
+-- scanning
 INSERT INTO documents_state_responsible (id, state_id, group_id) VALUES (1, 1, 1);
 INSERT INTO documents_state_responsible (id, state_id, group_id) VALUES (2, 2, 1);
--- Markers are responsible for ocred documents, i.e. they should do
--- markup 
-INSERT INTO documents_state_responsible (id, state_id, group_id) VALUES (3, 3, 2);
 -- Proof_Readers are responsible for marked_up documents, i.e. they
 -- should do proof reading
 INSERT INTO documents_state_responsible (id, state_id, group_id) VALUES (4, 4, 3);
