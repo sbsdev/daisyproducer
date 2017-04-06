@@ -18,3 +18,6 @@ try:
     from settings_local import *
 except ImportError:
     pass
+
+if SERVE_STATIC_FILES:
+    INSTALLED_APPS += ('django.contrib.staticfiles',)
