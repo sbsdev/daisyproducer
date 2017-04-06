@@ -135,8 +135,8 @@ urlpatterns += patterns('',
 
 # authentication
 urlpatterns += patterns('',
-    (r'^accounts/login/$',  login, {'template_name' : 'login.html'}),
-    (r'^accounts/logout/$', logout),
+    url(r'^accounts/login/$',  login, {'template_name' : 'login.html'}, name='login'),
+    url(r'^accounts/logout/$', logout, name="logout"),
 )
 
 # enable the admin:

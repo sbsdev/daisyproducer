@@ -15,13 +15,13 @@
     {% if user.is_authenticated %}
     <div id="account">
       <ul>
-	<li><a href="/accounts/logout/" class="logout">{% trans "Sign out" %}</a></li>
+	<li><a href="{% url 'logout' %}" class="logout">{% trans "Sign out" %}</a></li>
       </ul>    
     </div>
     <div id="loggedas">{% blocktrans with user.username as username %}Logged in as {{ username }}{% endblocktrans %}</div>
     {% else %}
     <div id="account">
-      <ul><li><a href="/accounts/login/" class="login">{% trans "Sign in" %}</a></li></ul>
+      <ul><li><a href="{% url 'login' %}" class="login">{% trans "Sign in" %}</a></li></ul>
     </div>
     {% endif %}
     <ul>
