@@ -14,8 +14,6 @@ import daisyproducer.documents.views.todo as todo
 
 PROJECT_DIR = os.path.dirname(__file__)
 
-admin.autodiscover()
-
 # browse finished documents
 urlpatterns = patterns('daisyproducer.documents.views.browse',
     url(r'^$', browse.BrowseListView.as_view(), name='browse_index'),
