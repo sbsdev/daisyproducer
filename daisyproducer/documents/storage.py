@@ -12,7 +12,7 @@ from django.core.files.storage import FileSystemStorage
 
 class OverwriteStorage(FileSystemStorage):
 
-    def get_available_name(self, name):
+    def get_available_name(self, name, max_length=None):
         return name
 
     def _save(self, name, content):
