@@ -277,7 +277,7 @@ class TodoViewTest(TestCase):
         self.failUnlessRaises(StateError, 
                               self.client.post,
                               reverse('todo_transition', args=[self.document.pk]), 
-                              {'state': 3})
+                              {'state': 4})
 
     def test_todo_transition_valid_state(self):
         """Check if an valid transition succeeds"""
