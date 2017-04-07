@@ -111,7 +111,7 @@ def add_image(request, document_id):
         from django.http import HttpResponse
         from django.utils import simplejson
         response_data = simplejson.dumps({'files': files})
-        return HttpResponse(response_data, mimetype = 'application/json')
+        return HttpResponse(response_data, content_type='application/json')
 
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
 

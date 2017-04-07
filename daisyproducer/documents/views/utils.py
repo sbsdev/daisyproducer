@@ -16,7 +16,7 @@ def render_to_mimetype_response(mimetype, filename, outputFile):
     assert ext != None
     
     wrapper = FileWrapper(file(outputFile))
-    response = HttpResponse(wrapper, mimetype=mimetype)
+    response = HttpResponse(wrapper, content_type=mimetype)
     response['Content-Disposition'] = "attachment; filename=\"%s%s\"" % (filename, ext)
     response['Content-Length'] = os.path.getsize(outputFile)
     

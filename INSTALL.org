@@ -287,7 +287,7 @@ daisyproducer directory and give =www-data= write access to it:
 Set up the initial database tables:
 
 #+BEGIN_EXAMPLE
-  python manage syncdb
+  python manage migrate
 #+END_EXAMPLE
 
 * Upgrading from an older installation
@@ -295,8 +295,7 @@ Set up the initial database tables:
 You will have to migrate the database:
 
 #+BEGIN_EXAMPLE
-  ./manage.py syncdb
-  ./manage.py migrate documents 0001 --fake
+  ./manage.py migrate
 #+END_EXAMPLE
 
 * Application setup
