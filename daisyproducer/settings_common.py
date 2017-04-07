@@ -2,7 +2,6 @@
 # Django settings for daisyproducer project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 import os.path
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -81,11 +80,27 @@ DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', 'tmp', 'pipeline-200
 # The publisher that should be inserted in the meta data by default
 DAISY_DEFAULT_PUBLISHER = "SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(PROJECT_DIR, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'daisyproducer.version.version_processor',
+            ],
+        },
+    },
+]
 
 RESTRUCTUREDTEXT_FILTER_SETTINGS = {'doctitle_xform': 0}
 
@@ -103,23 +118,6 @@ ROOT_URLCONF = 'daisyproducer.urls'
 LOCALE_PATHS = [
     os.path.join(PROJECT_DIR, 'locale'),
 ]
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_DIR, 'templates'),
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    "daisyproducer.version.version_processor")
 
 INSTALLED_APPS = (
     'daisyproducer.documents',

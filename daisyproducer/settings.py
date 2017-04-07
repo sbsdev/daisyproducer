@@ -2,7 +2,7 @@ from settings_common import *
 
 PACKAGE_VERSION = "0.5"
 
-DEBUG = TEMPLATE_DEBUG = True
+DEBUG = True
 
 DAISY_PIPELINE_PATH = os.path.join(PROJECT_DIR, '..', '..', '..', 'tmp', 'pipeline')
 EXTERNAL_PATH = os.path.join(PROJECT_DIR, '..', '..', '..', 'tmp')
