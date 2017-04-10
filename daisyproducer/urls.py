@@ -8,14 +8,18 @@ from django.contrib.auth.views import login, logout
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import TemplateView
 
+import django.views.static as static
+
 import daisyproducer.documents.views.manage as manage
 import daisyproducer.documents.views.browse as browse
 import daisyproducer.documents.views.todo as todo
+import daisyproducer.dictionary.views as dictionary
+import daisyproducer.statistics.views as statistics
 
 PROJECT_DIR = os.path.dirname(__file__)
 
 # browse finished documents
-urlpatterns = patterns('daisyproducer.documents.views.browse',
+urlpatterns = [
     url(r'^$', browse.BrowseListView.as_view(), name='browse_index'),
     url(r'^(?P<pk>\d+)/$', browse.BrowseDetailView.as_view(), name='browse_detail'),
     url(r'^(?P<document_id>\d+).pdf$', browse.as_pdf, name='browse_pdf'),
@@ -26,10 +30,10 @@ urlpatterns = patterns('daisyproducer.documents.views.browse',
     url(r'^(?P<document_id>\d+).epub$', browse.as_epub, name='browse_epub'),
     url(r'^(?P<document_id>\d+).dtb_text_only$', browse.as_text_only_dtb, name='browse_text_only_dtb'),
     url(r'^(?P<document_id>\d+).dtb$', browse.as_dtb, name='browse_dtb'),
-)
+]
 
 # work on pending documents
-urlpatterns += patterns('daisyproducer.documents.views.todo',
+urlpatterns += [
     url(r'^todo/$', todo.TodoListView.as_view(), name='todo_index'),
     url(r'^todo/(?P<document_id>\d+)/$', todo.detail, name='todo_detail'),
     url(r'^todo/(?P<document_id>\d+)/addVersion$', todo.add_version, name='todo_add_version'),
@@ -48,52 +52,48 @@ urlpatterns += patterns('daisyproducer.documents.views.todo',
     url(r'^todo/(?P<document_id>\d+)/preview_odt$', todo.preview_odt, name='todo_odt'),
     url(r'^todo/(?P<document_id>\d+)/preview_text_only_dtb$', todo.preview_text_only_dtb, name='todo_text_only_dtb'),
     url(r'^todo/(?P<document_id>\d+)/preview_dtb$', todo.preview_dtb, name='todo_dtb'),
-)
+]
 
 # management of documents and meta data
-urlpatterns += patterns('daisyproducer.documents.views.manage',
+urlpatterns += [
     url(r'^manage/$', manage.ManageListView.as_view(), name='manage_index'),
     url(r'^manage/(?P<pk>\d+)/$', manage.ManageDetailView.as_view(), name='manage_detail'),
     url(r'^manage/create/$', manage.create, name='manage_create'),
     url(r'^manage/(?P<document_id>\d+)/update/$', manage.update, name='manage_update'),
     url(r'^manage/upload_metadata_csv/$', manage.upload_metadata_csv, name='upload_metadata_csv'),
     url(r'^manage/import_metadata_csv/$', manage.import_metadata_csv, name='import_metadata_csv'),
-)
+]
 
-urlpatterns += patterns('daisyproducer.statistics.views',
+urlpatterns += [
     # statistics
-    url(r'^manage/stats/$', 'index', name='stats_index'),
-    url(r'^manage/stats/csv$', 'all_data_as_csv', name='all_data_as_csv'),
-)
+    url(r'^manage/stats/$', statistics.index, name='stats_index'),
+    url(r'^manage/stats/csv$', statistics.all_data_as_csv, name='all_data_as_csv'),
+]
 
 # work on dictionary
-urlpatterns += patterns('daisyproducer.dictionary.views',
-    url(r'^todo/(?P<document_id>\d+)/check_words_g1$', 'check', kwargs={'grade': 1}, name='dictionary_check_g1'),
-    url(r'^todo/(?P<document_id>\d+)/check_words_g2$', 'check', kwargs={'grade': 2}, name='dictionary_check_g2'),
-    url(r'^todo/(?P<document_id>\d+)/local_words_g1$', 'local', kwargs={'grade': 1}, name='dictionary_local_g1'),
-    url(r'^todo/(?P<document_id>\d+)/local_words_g2$', 'local', kwargs={'grade': 2}, name='dictionary_local_g2'),
-    url(r'^todo/confirm_words_g1$', 'confirm', kwargs={'grade': 1}, name='dictionary_confirm_g1'),
-    url(r'^todo/confirm_words_g2$', 'confirm', kwargs={'grade': 2}, name='dictionary_confirm_g2'),
-    url(r'^todo/confirm_deferred_words_g1$', 'confirm', kwargs={'grade': 1, 'deferred': True}, name='dictionary_confirm_deferred_g1'),
-    url(r'^todo/confirm_deferred_words_g2$', 'confirm', kwargs={'grade': 2, 'deferred': True}, name='dictionary_confirm_deferred_g2'),
-    url(r'^todo/confirm_single_word_g1$', 'confirm_single', kwargs={'grade': 1}, name='dictionary_single_confirm_g1'),
-    url(r'^todo/confirm_single_word_g2$', 'confirm_single', kwargs={'grade': 2}, name='dictionary_single_confirm_g2'),
-    url(r'^todo/confirm_single_deferred_word_g1$', 'confirm_single', kwargs={'grade': 1, 'deferred': True}, name='dictionary_single_confirm_deferred_g1'),
-    url(r'^todo/confirm_single_deferred_word_g2$', 'confirm_single', kwargs={'grade': 2, 'deferred': True}, name='dictionary_single_confirm_deferred_g2'),
-    url(r'^todo/confirm_conflicting_duplicates_g1$', 'confirm_conflicting_duplicates', kwargs={'grade': 1},
-        name='dictionary_confirm_conflicting_duplicates_g1'),
-    url(r'^todo/confirm_conflicting_duplicates_g2$', 'confirm_conflicting_duplicates', kwargs={'grade': 2}, 
-        name='dictionary_confirm_conflicting_duplicates_g2'),
-    url(r'^todo/confirm_deferred_conflicting_duplicates_g1$', 'confirm_conflicting_duplicates', kwargs={'grade': 1, 'deferred': True},
-        name='dictionary_confirm_deferred_conflicting_duplicates_g1'),
-    url(r'^todo/confirm_deferred_conflicting_duplicates_g2$', 'confirm_conflicting_duplicates', kwargs={'grade': 2, 'deferred': True}, 
-        name='dictionary_confirm_deferred_conflicting_duplicates_g2'),
-    url(r'^todo/edit_global_words$', 'edit_global_words', kwargs={'read_only': False}, name='dictionary_edit_global_words'),
-    url(r'^todo/lookup_global_words$', 'edit_global_words', kwargs={'read_only': True}, name='dictionary_lookup_global_words'),
-    url(r'^todo/edit_missing_global_words$', 'edit_global_words_with_missing_braille', name='dictionary_edit_global_words_with_missing_braille'),
-    url(r'^todo/export_words$', 'export_words', name='dictionary_export'),
-    url(r'^todo/export_global_words_with_wrong_default_translation$', 'words_with_wrong_default_translation', name='dictionary_words_with_wrong_default_translation'),
-)
+urlpatterns += [
+    url(r'^todo/(?P<document_id>\d+)/check_words_g1$', dictionary.check, kwargs={'grade': 1}, name='dictionary_check_g1'),
+    url(r'^todo/(?P<document_id>\d+)/check_words_g2$', dictionary.check, kwargs={'grade': 2}, name='dictionary_check_g2'),
+    url(r'^todo/(?P<document_id>\d+)/local_words_g1$', dictionary.local, kwargs={'grade': 1}, name='dictionary_local_g1'),
+    url(r'^todo/(?P<document_id>\d+)/local_words_g2$', dictionary.local, kwargs={'grade': 2}, name='dictionary_local_g2'),
+    url(r'^todo/confirm_words_g1$', dictionary.confirm, kwargs={'grade': 1}, name='dictionary_confirm_g1'),
+    url(r'^todo/confirm_words_g2$', dictionary.confirm, kwargs={'grade': 2}, name='dictionary_confirm_g2'),
+    url(r'^todo/confirm_deferred_words_g1$', dictionary.confirm, kwargs={'grade': 1, 'deferred': True}, name='dictionary_confirm_deferred_g1'),
+    url(r'^todo/confirm_deferred_words_g2$', dictionary.confirm, kwargs={'grade': 2, 'deferred': True}, name='dictionary_confirm_deferred_g2'),
+    url(r'^todo/confirm_single_word_g1$', dictionary.confirm_single, kwargs={'grade': 1}, name='dictionary_single_confirm_g1'),
+    url(r'^todo/confirm_single_word_g2$', dictionary.confirm_single, kwargs={'grade': 2}, name='dictionary_single_confirm_g2'),
+    url(r'^todo/confirm_single_deferred_word_g1$', dictionary.confirm_single, kwargs={'grade': 1, 'deferred': True}, name='dictionary_single_confirm_deferred_g1'),
+    url(r'^todo/confirm_single_deferred_word_g2$', dictionary.confirm_single, kwargs={'grade': 2, 'deferred': True}, name='dictionary_single_confirm_deferred_g2'),
+    url(r'^todo/confirm_conflicting_duplicates_g1$', dictionary.confirm_conflicting_duplicates, kwargs={'grade': 1}, name='dictionary_confirm_conflicting_duplicates_g1'),
+    url(r'^todo/confirm_conflicting_duplicates_g2$', dictionary.confirm_conflicting_duplicates, kwargs={'grade': 2}, name='dictionary_confirm_conflicting_duplicates_g2'),
+    url(r'^todo/confirm_deferred_conflicting_duplicates_g1$', dictionary.confirm_conflicting_duplicates, kwargs={'grade': 1, 'deferred': True}, name='dictionary_confirm_deferred_conflicting_duplicates_g1'),
+    url(r'^todo/confirm_deferred_conflicting_duplicates_g2$', dictionary.confirm_conflicting_duplicates, kwargs={'grade': 2, 'deferred': True}, name='dictionary_confirm_deferred_conflicting_duplicates_g2'),
+    url(r'^todo/edit_global_words$', dictionary.edit_global_words, kwargs={'read_only': False}, name='dictionary_edit_global_words'),
+    url(r'^todo/lookup_global_words$', dictionary.edit_global_words, kwargs={'read_only': True}, name='dictionary_lookup_global_words'),
+    url(r'^todo/edit_missing_global_words$', dictionary.edit_global_words_with_missing_braille, name='dictionary_edit_global_words_with_missing_braille'),
+    url(r'^todo/export_words$', dictionary.export_words, name='dictionary_export'),
+    url(r'^todo/export_global_words_with_wrong_default_translation$', dictionary.words_with_wrong_default_translation, name='dictionary_words_with_wrong_default_translation'),
+]
 
 # help and about
 def getRSTContent(file_name):
@@ -120,39 +120,34 @@ class AboutView(HelpView):
         return context
 
 
-urlpatterns += patterns('',
+urlpatterns += [
     # help
     url(r'^help/$', HelpView.as_view(), name="help"),
     # about
     url(r'^about/$', AboutView.as_view(), name="about"),
-)
+]
 
 # error
 # FIXME: tbh I'm not sure if this ever worked
 #urlpatterns += patterns('', url(r'^error/$', 'error', name='error'))
 
 # authentication
-urlpatterns += patterns('',
+urlpatterns += [
     url(r'^accounts/login/$',  login, {'template_name' : 'login.html'}, name='login'),
     url(r'^accounts/logout/$', logout, name="logout"),
-)
+]
 
 # enable the admin:
-if django.VERSION < (1, 3, 0, 'final', 0):
-    urlpatterns += patterns('', (r'^admin/(.*)', admin.site.root),)
-else:
-    urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)),)
+urlpatterns += [
+    url(r'^admin/', include(admin.site.urls)),
+]
 
 # static files
 if settings.SERVE_STATIC_FILES:
-    urlpatterns += patterns('',
-        (r'^stylesheets/(?P<path>.*)$', 'django.views.static.serve',
-         {'document_root': os.path.join(PROJECT_DIR, 'public', 'stylesheets')}),
-        (r'^javascripts/(?P<path>.*)$', 'django.views.static.serve',
-         {'document_root': os.path.join(PROJECT_DIR, 'public', 'javascripts')}),
-        (r'^archive/(?P<path>.*)$', 'django.views.static.serve',
-         {'document_root': os.path.join(PROJECT_DIR, 'archive')}),
-        (r'^images/(?P<path>.*)$', 'django.views.static.serve',
-         {'document_root': os.path.join(PROJECT_DIR, 'public', 'images')}),
-    )
+    urlpatterns += [
+        url(r'^stylesheets/(?P<path>.*)$', static.serve, {'document_root': os.path.join(PROJECT_DIR, 'public', 'stylesheets')}),
+        url(r'^javascripts/(?P<path>.*)$', static.serve, {'document_root': os.path.join(PROJECT_DIR, 'public', 'javascripts')}),
+        url(r'^archive/(?P<path>.*)$', static.serve, {'document_root': os.path.join(PROJECT_DIR, 'archive')}),
+        url(r'^images/(?P<path>.*)$', static.serve,  {'document_root': os.path.join(PROJECT_DIR, 'public', 'images')}),
+    ]
 
