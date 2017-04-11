@@ -53,19 +53,20 @@ class ValidationError(Exception):
         return repr(self.value)
 
 class Command(BaseCommand):
-    args = 'ABACUS_export_files'
     help = 'Import the given file as a new document'
     output_transaction = True
 
     @transaction.commit_on_success
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'ABACUS_export_file',
+            nargs='+',
+            help = 'File containing new documents to import'
+        )
+
     def handle(self, *args, **options):
 
         verbosity = int(options['verbosity'])
-
-        if len(args) < 1:
-            # no files to import, I guess we're done
-            logger.debug("No files to import.")
-            return
 
         self.numberOfDocuments = 0
 
@@ -74,7 +75,7 @@ class Command(BaseCommand):
         relaxng_schema = etree.parse(join(settings.PROJECT_DIR, 'abacus_import', 'schema', 'abacus_export.rng'),)
         relaxng = etree.RelaxNG(relaxng_schema)
 
-        for file in args:
+        for file in options['ABACUS_export_file']:
             try:
                 self.numberOfDocuments += handle_file(file, root, relaxng)
 

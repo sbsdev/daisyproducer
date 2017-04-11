@@ -7,20 +7,25 @@ from django.db.utils import IntegrityError
 from django.db import transaction
 
 class Command(BaseCommand):
-    args = 'dictionary_file'
     help = 'Import the given file as a dictionary'
     output_transaction = True
 
-    @transaction.commit_on_success
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'dictionary_file',
+            nargs=1,
+            help = 'Import the given file as a dictionary'
+        )
+
+    @transaction.atomic
     def handle(self, *args, **options):
-        if len(args) != 1:
-            raise CommandError('Incorrect number of arguments')
+        file_name = options['dictionary_file'][0]
         try:
-            f = codecs.open(args[0], "r", "utf-8" )
+            f = codecs.open(file_name, "r", "utf-8" )
         except IndexError:
             raise CommandError('No dictionary file specified')
         except IOError:
-            raise CommandError('Dictionary file "%s" not found' % args[0])
+            raise CommandError('Dictionary file "%s" not found' % file_name)
 
         verbosity = int(options['verbosity'])
 

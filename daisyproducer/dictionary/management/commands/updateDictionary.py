@@ -5,35 +5,40 @@ from daisyproducer.dictionary.models import GlobalWord
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.encoding import smart_unicode
 from django.db import transaction
-from optparse import make_option
 
 inverseTypeMap = { 0: '*', 1: 'n', 2: 'N', 3: 'p', 4: 'P', 5: 'H' }
 
 class Command(BaseCommand):
-    args = 'dictionary_file'
     help = 'Update the global dictionary with the given file (which must be encoded in UTF-8)'
 
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'dictionary_file',
+            nargs=1,
+            help='File containing the global dictionary'
+        )
+
+        parser.add_argument(
             '--dry-run',
             default=False,
-            help='Do a simulation before actually performing the import'),
-        make_option(
+            help='Do a simulation before actually performing the import'
+        )
+
+        parser.add_argument(
             '--force',
             default=False,
-            help='Ignore any warnings and just import the words'),
+            help='Ignore any warnings and just import the words'
         )
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
-        if len(args) != 1:
-            raise CommandError('Incorrect number of arguments')
+        file_name = options['dictionary_file'][0]
         try:
-            f = open(args[0])
+            f = open(file_name)
         except IndexError:
             raise CommandError('No dictionary file specified')
         except IOError:
-            raise CommandError('Dictionary file "%s" not found' % args[0])
+            raise CommandError('Dictionary file "%s" not found' % file_name)
 
         self.logger = codecs.getwriter(self.stdout.encoding if self.stdout.isatty() else 'utf-8')(self.stdout)
 

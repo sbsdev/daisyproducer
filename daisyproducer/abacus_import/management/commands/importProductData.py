@@ -2,7 +2,6 @@ from daisyproducer.documents.models import Document, Version, Product
 from daisyproducer.abacus_import.management.commands.importABACUS import get_type, get_documents_by_product_number, get_documents_by_source_or_title_source_edition
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-from optparse import make_option
 
 import csv
 import logging
@@ -15,24 +14,27 @@ logging.basicConfig(format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
-    args = 'ABACUS_export_file'
     help = 'Import the product numbers in the given file and associate them with existing documents'
     output_transaction = True
 
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'ABACUS_export_file',
+            nargs='+',
+            help = 'File containing product numbers to be associated with existing documents'
+        )
+
+        parser.add_argument(
             '-n', 
             '--dry-run',
             action='store_true',
             dest='dry_run',
             default=False,
-            help='Do a simulation before actually performing the import'),
+            help='Do a simulation before actually performing the import'
         )
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
-        if len(args) < 1:
-            raise CommandError('No ABACUS Export file specified')
 
         verbosity = int(options['verbosity'])
         if verbosity == 0:
@@ -49,7 +51,7 @@ class Command(BaseCommand):
 
         products_imported = 0
 
-        for file in args:
+        for file in options['ABACUS_export_file']:
             logger.info('Processing "%s"', file)
 
             reader = csv.reader(open(file))

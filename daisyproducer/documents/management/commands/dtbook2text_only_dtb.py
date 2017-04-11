@@ -1,5 +1,4 @@
 import shutil, tempfile, os, csv
-from optparse import make_option
 
 from daisyproducer.documents.external import DaisyPipeline, zipDirectory
 
@@ -7,24 +6,28 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
 
 class Command(BaseCommand):
-    args = '<dtbook dtbook ...>'
     help = 'Convert the given DTBook files to text-only DAISY books'
 
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'dtbook_files',
+            nargs='+',
+            metavar='DTBook',
+            help='DTBook file to be exported'
+        )
+
+        parser.add_argument(
             '--outputPath',
             action='store',
-            type="string",
             dest='outputPath',
-            help='Path where the resulting DTBs are to be stored. If not specified they will be placed alongside the DTBook XML files.'),
+            help='Path where the resulting DTBs are to be stored. If not specified they will be placed alongside the DTBook XML files.'
+        )
 
-        make_option(
+        parser.add_argument(
             '--fileNameMapping',
             action='store',
-            type="string",
             dest='fileNameMapping',
             help='Path to a csv that maps DTBook filename to a given filename for the output file. Column 0 contains the file name of the DTBook file. Column 1 contains the name of the DTB file. All other columns are ignored'),
-        )
 
     def handle(self, *args, **options):
         outputPath = options['outputPath']
@@ -40,7 +43,7 @@ class Command(BaseCommand):
 
         conversions = 0
 
-        for dtbook in args:
+        for dtbook in options['dtbook_files']:
             if verbosity >= 1:
                 self.stdout.write('Converting %s...\n' % dtbook)
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
