@@ -31,7 +31,7 @@ class Command(BaseCommand):
             help='Ignore any warnings and just delete the words'
         )
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def handle(self, *args, **options):
         file_name = options['dictionary_file'][0]
         try:

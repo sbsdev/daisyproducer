@@ -33,7 +33,7 @@ class Command(BaseCommand):
             help='Do a simulation before actually performing the import'
         )
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def handle(self, *args, **options):
 
         verbosity = int(options['verbosity'])

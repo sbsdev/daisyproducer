@@ -7,7 +7,6 @@ from django.db import transaction
 class Command(BaseCommand):
     help = 'Dump the global dictionary to a file'
     
-    @transaction.commit_on_success
     def add_arguments(self, parser):
         parser.add_argument(
             'dictionary_file',
@@ -15,6 +14,7 @@ class Command(BaseCommand):
             help = 'Dump the global dictionary to a given file'
         )
 
+    @transaction.atomic
     def handle(self, *args, **options):
         file_name = options['dictionary_file'][0]
 

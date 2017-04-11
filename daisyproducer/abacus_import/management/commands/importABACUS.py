@@ -56,7 +56,6 @@ class Command(BaseCommand):
     help = 'Import the given file as a new document'
     output_transaction = True
 
-    @transaction.commit_on_success
     def add_arguments(self, parser):
         parser.add_argument(
             'ABACUS_export_file',
@@ -64,6 +63,7 @@ class Command(BaseCommand):
             help = 'File containing new documents to import'
         )
 
+    @transaction.atomic
     def handle(self, *args, **options):
 
         verbosity = int(options['verbosity'])
