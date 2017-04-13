@@ -17,7 +17,7 @@ COVERAGE_MODULES = ['documents.views.browse', 'documents.models']
 import unittest, os, coverage
 
 from django.conf import settings
-from django.test.simple import run_tests as django_test_runner
+from django.test.runner.DiscoverRunner import run_tests as django_test_runner
 
 def test_runner(test_labels, verbosity=1, interactive=True, extra_tests=[]):
     coveragemodules = []
