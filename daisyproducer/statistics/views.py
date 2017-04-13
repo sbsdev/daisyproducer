@@ -1,6 +1,5 @@
 import csv
-from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, permission_required
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document
@@ -18,8 +17,7 @@ FROM statistics_documentstatistic
 GROUP BY statistics_documentstatistic.document_id
 ORDER BY statistics_documentstatistic.date;
 """)
-    return render_to_response('statistics/stats_index.html', locals(), 
-                              context_instance=RequestContext(request))
+    return render(request, 'statistics/stats_index.html', locals())
 
 @login_required
 @permission_required("statistics.add_documentstatistic")

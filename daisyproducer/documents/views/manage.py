@@ -13,8 +13,7 @@ from django.forms.formsets import formset_factory
 from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, get_object_or_404
 
 VALID_ISBN_RE = re.compile(u"^[0-9-X]{10,18}$")
 
@@ -79,8 +78,7 @@ def create(request):
             form.save()
             return HttpResponseRedirect(reverse('manage_index'))
 
-    return render_to_response('documents/manage_create.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/manage_create.html', locals())
 
 @login_required
 @permission_required("documents.add_document")
@@ -97,8 +95,7 @@ def update(request, document_id):
             form.save()
             return HttpResponseRedirect(reverse('manage_index'))
 
-    return render_to_response('documents/manage_update.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/manage_update.html', locals())
 
 # The following two classes are from http://docs.python.org/release/2.6.5/library/csv.html
 class UTF8Recoder:
@@ -130,13 +127,11 @@ def upload_metadata_csv(request):
 
     if request.method != 'POST':
         form = CSVUploadForm()
-        return render_to_response('documents/manage_upload_metadata_csv.html', locals(), 
-                                  context_instance=RequestContext(request))
+        return render(request, 'documents/manage_upload_metadata_csv.html', locals())
 
     form = CSVUploadForm(request.POST, request.FILES)
     if not form.is_valid():
-        return render_to_response('documents/manage_upload_metadata_csv.html', locals(), 
-                                  context_instance=RequestContext(request))
+        return render(request, 'documents/manage_upload_metadata_csv.html', locals())
             
     csv_file = request.FILES['csv']
     # FIXME: It's pretty annoying to hard code the expected encoding of the csv
@@ -187,8 +182,7 @@ def upload_metadata_csv(request):
                                            fields=('author', 'title', 'identifier', 'source', 'source_edition', 'source_publisher', 'language', 'production_series', 'production_series_number', 'production_source'), 
                                            extra=len(unique_initial), can_delete=True)
     document_formset = DocumentFormSet(queryset=Document.objects.none(), initial=unique_initial, prefix='documents')
-    return render_to_response('documents/manage_import_metadata_csv.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/manage_import_metadata_csv.html', locals())
 
 @login_required
 @permission_required("documents.add_document")
@@ -205,8 +199,7 @@ def import_metadata_csv(request):
     document_formset = DocumentFormSet(request.POST, prefix='documents')
     product_formset = ProductFormset(request.POST, prefix='products')
     if not document_formset.is_valid() or not product_formset.is_valid():
-        return render_to_response('documents/manage_import_metadata_csv.html', locals(),
-                                  context_instance=RequestContext(request))
+        return render(request, 'documents/manage_import_metadata_csv.html', locals())
     instances = document_formset.save()
     for instance in instances:
         if instance.version_set.count() == 0:

@@ -11,8 +11,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 
 class TodoListView(ListView):
@@ -44,8 +43,7 @@ def detail(request, document_id):
     imageForm = PartialImageForm()
     documentForm = PartialDocumentForm()
     documentForm.limitChoicesToValidStates(document)
-    return render_to_response('documents/todo_detail.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_detail.html', locals())
 
 @login_required
 @transaction.atomic
@@ -62,8 +60,7 @@ def add_attachment(request, document_id):
         imageForm = PartialImageForm()
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
-        return render_to_response('documents/todo_detail.html', locals(),
-                                  context_instance=RequestContext(request))
+        return render(request, 'documents/todo_detail.html', locals())
 
     # this is a bit of a hack as we need to create (and save) an
     # attachment before the id is known. We need to know the id before we
@@ -93,8 +90,7 @@ def add_image(request, document_id):
         imageForm = form
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
-        return render_to_response('documents/todo_detail.html', locals(),
-                                  context_instance=RequestContext(request))
+        return render(request, 'documents/todo_detail.html', locals())
 
     content_files = request.FILES.getlist('content')
     files = []
@@ -131,8 +127,7 @@ def add_version(request, document_id):
         imageForm = PartialImageForm()
         documentForm = PartialDocumentForm()
         documentForm.limitChoicesToValidStates(document)
-        return render_to_response('documents/todo_detail.html', locals(),
-                                  context_instance=RequestContext(request))
+        return render(request, 'documents/todo_detail.html', locals())
 
     # this is a bit of a hack as we need to create (and save) a
     # version before the id is known. We need to know the id before we
@@ -158,8 +153,7 @@ def transition(request, document_id):
         versionForm = PartialVersionForm()
         attachmentForm = PartialAttachmentForm()
         documentForm = form
-        return render_to_response('documents/todo_detail.html', locals(),
-                                  context_instance=RequestContext(request))
+        return render(request, 'documents/todo_detail.html', locals())
 
     document.transitionTo(form.cleaned_data['state'])
     return HttpResponseRedirect(reverse('todo_index'))
@@ -186,8 +180,7 @@ def markup(request, document_id):
         # on initial display of the form
         form.has_errors = False
 
-    return render_to_response('documents/todo_markup.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_markup.html', locals())
 
 @login_required
 def preview_xhtml(request, document_id):
@@ -223,8 +216,7 @@ def preview_sbsform(request, document_id):
     else:
         form = SBSFormForm()
 
-    return render_to_response('documents/todo_sbsform.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_sbsform.html', locals())
 
 @login_required
 def preview_sbsform_new(request, document_id):
@@ -243,8 +235,7 @@ def preview_sbsform_new(request, document_id):
             if isinstance(outputFile, tuple):
                 # if filename is a tuple we're actually looking at a list of error messages
                 errorMessages = outputFile
-                return render_to_response('documents/todo_sbsform.html', locals(),
-                                          context_instance=RequestContext(request))
+                return render(request, 'documents/todo_sbsform.html', locals())
 
             contraction = form.cleaned_data['contraction']
             contraction_to_mimetype_mapping = {0 : 'text/x-sbsform-g0',
@@ -255,8 +246,7 @@ def preview_sbsform_new(request, document_id):
     else:
         form = SBSFormForm()
 
-    return render_to_response('documents/todo_sbsform.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_sbsform.html', locals())
 
 @login_required
 def preview_pdf(request, document_id):
@@ -274,8 +264,7 @@ def preview_pdf(request, document_id):
     else:
         form = LargePrintProfileForm()
 
-    return render_to_response('documents/todo_pdf.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_pdf.html', locals())
 
 @login_required
 def preview_library_pdf(request, document_id):
@@ -305,8 +294,7 @@ def preview_sale_pdf(request, document_id):
     else:
         form = SalePDFForm()
 
-    return render_to_response('documents/todo_sale_pdf.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_sale_pdf.html', locals())
 
 @login_required
 def preview_rtf(request, document_id):
@@ -323,8 +311,7 @@ def preview_rtf(request, document_id):
     else:
         form = RTFForm()
 
-    return render_to_response('documents/todo_rtf.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_rtf.html', locals())
 
 @login_required
 def preview_epub(request, document_id):
@@ -350,8 +337,7 @@ def preview_epub(request, document_id):
     else:
         form = EPUBForm()
 
-    return render_to_response('documents/todo_epub.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_epub.html', locals())
 
 @login_required
 def preview_text_only_dtb(request, document_id):
@@ -369,8 +355,7 @@ def preview_text_only_dtb(request, document_id):
                 inputFile, outputDir,
                 images=document.image_set.all(), **form.cleaned_data)
             if transformationErrors:
-                return render_to_response('documents/todo_text_only_dtb.html', locals(),
-                                          context_instance=RequestContext(request))
+                return render(request, 'documents/todo_text_only_dtb.html', locals())
 
             zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
             zipFile.close() # we are only interested in a unique filename
@@ -392,8 +377,7 @@ def preview_text_only_dtb(request, document_id):
         else:
             form = TextOnlyDTBForm()
 
-    return render_to_response('documents/todo_text_only_dtb.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_text_only_dtb.html', locals())
 
 @login_required
 def preview_dtb(request, document_id):
@@ -416,8 +400,7 @@ def preview_dtb(request, document_id):
     else:
         form = DTBForm()
 
-    return render_to_response('documents/todo_dtb.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_dtb.html', locals())
 
 @login_required
 def preview_odt(request, document_id):
@@ -434,14 +417,12 @@ def preview_odt(request, document_id):
             if isinstance(filename, tuple):
                 # if filename is a tuple we're actually looking at a list of error messages
                 errorMessages = filename
-                return render_to_response('documents/todo_odt.html', locals(),
-                                          context_instance=RequestContext(request))
+                return render(request, 'documents/todo_odt.html', locals())
 
             return render_to_mimetype_response('application/vnd.oasis.opendocument.text', 
                                                document.title.encode('utf-8'), filename)
     else:
         form = ODTForm()
 
-    return render_to_response('documents/todo_odt.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'documents/todo_odt.html', locals())
 

@@ -20,8 +20,7 @@ from django.db.models import Max
 from django.forms.models import modelformset_factory
 from django.forms.formsets import formset_factory
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render, get_object_or_404
 from django.utils.encoding import smart_unicode
 from django.contrib.auth.decorators import login_required, permission_required
 from collections import defaultdict
@@ -57,8 +56,7 @@ def check(request, document_id, grade):
             redirect = 'dictionary_check_g1' if grade == 1 else 'dictionary_check_g2'
             return HttpResponseRedirect(reverse(redirect, args=[document_id]))
         else:
-            return render_to_response('dictionary/words.html', locals(),
-                                      context_instance=RequestContext(request))
+            return render(request, 'dictionary/words.html', locals())
 
     # filter some words from the xml
     content = document.latest_version().content
@@ -180,8 +178,7 @@ def check(request, document_id, grade):
     percentage = 100.0*stats.unknown/stats.total
     stats.save()
 
-    return render_to_response('dictionary/words.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'dictionary/words.html', locals())
 
 @login_required
 @transaction.atomic
@@ -203,8 +200,7 @@ def local(request, document_id, grade):
             redirect = 'dictionary_local_g1' if grade == 1 else 'dictionary_local_g2'
             return HttpResponseRedirect(reverse(redirect, args=[document_id]))
         else:
-            return render_to_response('dictionary/local.html', locals(),
-                                      context_instance=RequestContext(request))
+            return render(request, 'dictionary/local.html', locals())
 
     filterform = FilterForm(request.GET)
     if filterform.is_valid():
@@ -231,8 +227,7 @@ def local(request, document_id, grade):
 
     formset = WordFormSet(queryset=words.object_list)
 
-    return render_to_response('dictionary/local.html', locals(), 
-                              context_instance=RequestContext(request))
+    return render(request, 'dictionary/local.html', locals())
 
 def update_word_tables(form, grade, deferred):
     filter_args = dict((k, form.cleaned_data[k]) for k in ('untranslated', 'type', 'homograph_disambiguation'))
@@ -289,8 +284,7 @@ def confirm(request, grade, deferred=False):
             redirect = ('dictionary_confirm_deferred_g' if deferred else 'dictionary_confirm_g') + str(grade)
             return HttpResponseRedirect(reverse(redirect))
         else:
-            return render_to_response('dictionary/confirm.html', locals(),
-                                      context_instance=RequestContext(request))
+            return render(request, 'dictionary/confirm.html', locals())
 
     # create a default for all unconfirmed homographs which have no default, i.e. no restriction word entry
     unconfirmed_homographs = set((smart_unicode(word) for 
@@ -332,8 +326,7 @@ def confirm(request, grade, deferred=False):
     have_type = any((word['type']!=0 for word in words.object_list))
     have_homograph_disambiguation = any((word['homograph_disambiguation']!='' for word in words.object_list))
     formset = WordFormSet(initial=words.object_list)
-    return render_to_response('dictionary/confirm.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'dictionary/confirm.html', locals())
 
 def get_conflicting_words(grade):
     from django.db import connection, transaction
@@ -428,8 +421,7 @@ def confirm_conflicting_duplicates(request, grade, deferred=False):
         WordFormSet = formset_factory(ConflictingWordForm, extra=0)
         formset = WordFormSet(initial=initial)
 
-    return render_to_response('dictionary/confirm_conflicting_duplicates.html', locals(), 
-                              context_instance=RequestContext(request))
+    return render(request, 'dictionary/confirm_conflicting_duplicates.html', locals())
 
 @login_required
 @permission_required("dictionary.add_globalword")
@@ -452,8 +444,7 @@ def confirm_single(request, grade, deferred=False):
             redirect = ('dictionary_single_confirm_deferred_g' if deferred else 'dictionary_single_confirm_g') + str(grade)
             return HttpResponseRedirect(reverse(redirect))
         else:
-            return render_to_response('dictionary/confirm_single.html', locals(),
-                                      context_instance=RequestContext(request))
+            return render(request, 'dictionary/confirm_single.html', locals())
 
     initial={'untranslated': word.untranslated,
              'type': word.type,
@@ -462,8 +453,7 @@ def confirm_single(request, grade, deferred=False):
              'isLocal': word.isLocal}
         
     form = ConfirmDeferredWordForm(initial=initial) if deferred else ConfirmWordForm(initial=initial)
-    return render_to_response('dictionary/confirm_single.html', locals(), 
-                              context_instance=RequestContext(request))
+    return render(request, 'dictionary/confirm_single.html', locals())
 
 @login_required
 @transaction.atomic
@@ -481,8 +471,7 @@ def edit_global_words(request, read_only):
 
         paginationform = PaginationForm(request.POST, prefix='pagination')
         if not paginationform.is_valid():
-            return render_to_response('dictionary/edit_globals.html', locals(),
-                                      context_instance=RequestContext(request))
+            return render(request, 'dictionary/edit_globals.html', locals())
         filter_args = {}
         for key, value in [('untranslated__contains', currentFilter), 
                            ('grade', currentGrade)]:
@@ -499,8 +488,7 @@ def edit_global_words(request, read_only):
             formset.save()
             return HttpResponseRedirect(reverse('todo_index'))
         else:
-            return render_to_response('dictionary/edit_globals.html', locals(),
-                                      context_instance=RequestContext(request))
+            return render(request, 'dictionary/edit_globals.html', locals())
 
     filterform = FilterWithGradeForm(request.GET)
     if filterform.is_valid():
@@ -532,8 +520,7 @@ def edit_global_words(request, read_only):
     formset = WordFormSet(queryset=words.object_list, prefix='words')
     paginationform = PaginationForm(initial={'page': page}, prefix='pagination')
 
-    return render_to_response('dictionary/edit_globals.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'dictionary/edit_globals.html', locals())
 
 @login_required
 @permission_required("dictionary.change_globalword")
@@ -554,8 +541,7 @@ def edit_global_words_with_missing_braille(request):
                     homograph_disambiguation=form.cleaned_data['homograph_disambiguation'])
             return HttpResponseRedirect(reverse('dictionary_edit_global_words_with_missing_braille'))
         else:
-            return render_to_response('dictionary/edit_missing_globals.html', locals(),
-                                      context_instance=RequestContext(request))
+            return render(request, 'dictionary/edit_missing_globals.html', locals())
 
     WORDS_WITH_MISSING_BRAILLE = """
 SELECT l.* 
@@ -593,8 +579,7 @@ ORDER BY l.untranslated
         words = paginator.page(paginator.num_pages)
 
     formset = WordFormSet(initial=words.object_list)
-    return render_to_response('dictionary/edit_missing_globals.html', locals(),
-                              context_instance=RequestContext(request))
+    return render(request, 'dictionary/edit_missing_globals.html', locals())
 
 def export_words(request):
     if request.method == 'GET':
