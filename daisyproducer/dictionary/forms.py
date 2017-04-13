@@ -16,7 +16,7 @@ from django.utils.safestring import mark_safe
 validate_braille = RegexValidator(VALID_BRAILLE_RE, message='Some characters are not valid')
 validate_homograph = RegexValidator(VALID_HOMOGRAPH_RE, message='Some characters are not valid')
 
-labels = dict([(name, LocalWord._meta.get_field(name).verbose_name) for name in LocalWord._meta.get_all_field_names()])
+labels = dict([(field.name, field.verbose_name) for field in LocalWord._meta.get_fields()])
 
 class PartialWordForm(ModelForm):
     class Meta:
