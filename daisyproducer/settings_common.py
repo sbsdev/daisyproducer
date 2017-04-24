@@ -39,6 +39,9 @@ LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 
+# Ignore some warnings from the System check framework
+SILENCED_SYSTEM_CHECKS = ["1_6.W001"]
+
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
