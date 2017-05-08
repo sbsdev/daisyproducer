@@ -323,9 +323,9 @@ class LargePrintProfile(models.Model):
     
     FONT_CHOICES = (
         ('Tiresias LPfont', 'Tiresias LPfont'),
-        ('LMRoman10 Regular', 'LMRoman10 Regular'),
-        ('LMSans10 Regular', 'LMSans10 Regular'),
-        ('LMTypewriter10 Regular', 'LMTypewriter10 Regular'),
+        ('Latin Modern Roman', 'Latin Modern Roman'),
+        ('Latin Modern Sans', 'Latin Modern Sans'),
+        ('Latin Modern Mono', 'Latin Modern Mono'),
         )
     
     PAGESTYLE_CHOICES = (
