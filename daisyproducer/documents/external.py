@@ -350,6 +350,8 @@ class Pipeline2:
         """Transform a dtbook xml file to a Open Document Format for Office Applications (ODF)"""
         
         tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
+        # make the temp dir world readable, so that the pipeline2 user can access it
+        os.chmod(tmpDir, 0755)
         fileName = basename(inputFile)
         odtFileName = splitext(fileName)[0] + ".odt"
         tmpOdtFileName = join(tempfile.gettempdir(), odtFileName)
@@ -388,6 +390,8 @@ class Pipeline2:
         """Transform a dtbook xml file to an SBSForm"""
 
         tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
+        # make the temp dir world readable, so that the pipeline2 user can access it
+        os.chmod(tmpDir, 0755)
         fileName = basename(inputFile)
         sbsformFileName = splitext(fileName)[0] + ".sbsform"
         tmpSbsformFileName = join(tempfile.gettempdir(), sbsformFileName)
