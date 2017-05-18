@@ -159,6 +159,7 @@ def transition(request, document_id):
     return HttpResponseRedirect(reverse('todo_index'))
 
 @login_required
+@transaction.atomic
 def markup(request, document_id):
     document = Document.objects.select_related('state').get(pk=document_id)
     if request.method == 'POST':
