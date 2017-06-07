@@ -32,6 +32,8 @@ MAX_WORDS_PER_PAGE = 25
 
 final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
+HUGE_TREE_PARSER = etree.XMLParser(huge_tree=True)
+
 @login_required
 @transaction.atomic
 def check(request, document_id, grade):
@@ -62,7 +64,7 @@ def check(request, document_id, grade):
     content = document.latest_version().content
     content.open()
     # strip='none': if this parameter is not set, whitespace is removed automatically for documents with a DOCTYPE declaration
-    tree = etree.parse(saxon9he(content.file, os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'), '-strip:none', contraction=grade).stdout)
+    tree = etree.parse(saxon9he(content.file, os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'), '-strip:none', contraction=grade).stdout, parser=HUGE_TREE_PARSER)
     content.close()
 
     # grab the homographs
@@ -102,7 +104,8 @@ def check(request, document_id, grade):
                       for place in places - duplicate_places]
 
     # filter homographs, names and places from the xml
-    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter_names.xsl'))
+    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter_names.xsl'),
+                      parser=HUGE_TREE_PARSER)
     transform = etree.XSLT(xsl)
     filtered_tree = transform(tree)
     # grab the rest of the content
