@@ -25,6 +25,7 @@ class XMLContent:
         'production_series_number' : "prod:seriesNumber",
         'production_source' : "prod:source"
         }
+    HUGE_TREE_PARSER = etree.XMLParser(huge_tree=True)
 
     @staticmethod
     def getInitialContent(document):
@@ -41,7 +42,7 @@ class XMLContent:
     def getUpdatedContent(self, author, title, **kwargs):
         # update the existing version with the modified meta data
         self.version.content.open()
-        self.tree = etree.parse(self.version.content.file)
+        self.tree = etree.parse(self.version.content.file, parser=self.HUGE_TREE_PARSER)
         self.version.content.close()
         # fix author
         self._updateOrInsertMetaAttribute("dc:Creator", author)
@@ -66,7 +67,7 @@ class XMLContent:
 
     def validateContentMetaData(self, filePath, author, title, **kwargs):
         with open(filePath) as versionFile:
-            self.tree = etree.parse(versionFile)
+            self.tree = etree.parse(versionFile, parser=self.HUGE_TREE_PARSER)
         
         validationProblems = reduce(
             # flatten the list
