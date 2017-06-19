@@ -19,13 +19,13 @@ GRADE1_TABLES = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-accents.cti',
                  'sbs-de-g1-core.mod', 'sbs-special.mod']
 
 GRADE2_TABLES = GRADE1_TABLES[:]
-GRADE2_TABLES[8:10] = ('sbs-de-g2-core.mod',)
+GRADE2_TABLES[9:10] = ('sbs-de-g2-core.mod',)
 
 GRADE2_TABLES_NAME = GRADE2_TABLES[:]
-GRADE2_TABLES_NAME[8:10] = ('sbs-de-g2-name.mod',)
+GRADE2_TABLES_NAME[9:10] = ('sbs-de-g2-name.mod',)
 
 GRADE2_TABLES_PLACE = GRADE2_TABLES[:]
-GRADE2_TABLES_PLACE[8:10] = ('sbs-de-g2-place.mod', 'sbs-de-g2-name.mod')
+GRADE2_TABLES_PLACE[9:10] = ('sbs-de-g2-place.mod', 'sbs-de-g2-name.mod')
 
 def getTables(grade, name=False, place=False):
     if grade == 1:
