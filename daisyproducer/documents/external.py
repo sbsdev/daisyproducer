@@ -368,7 +368,7 @@ class Pipeline2:
         job = post_job(request)
         logger.info("Job with id %s submitted to the server", job['id'])
         job = wait_for_job(job)
-        if job['status'] == "DONE":
+        if job and job['status'] == "DONE":
             try:
                 outputDir = [r for r in job['results'] if r['type'] == "option" and r['name'] == "output-dir"][0]
                 odtFile = [f for f in outputDir['files'] if f['href'] == "%s/idx/output-dir/%s" % (outputDir['href'], odtFileName)][0]
@@ -381,8 +381,11 @@ class Pipeline2:
                 pass
 
         rmtree(tmpDir)
-        errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
-        logger.error("Conversion to Open Document failed with %s. See %s", errors, job['log'])
+        if job:
+            errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
+            logger.error("Conversion to Open Document failed with %s. See %s", errors, job['log'])
+        else:
+            errors = ("Unexpected Server Response",)
         return ("Conversion to Open Document failed with:",) + errors
 
     @staticmethod

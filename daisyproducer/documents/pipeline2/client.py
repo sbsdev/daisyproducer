@@ -32,13 +32,15 @@ def parse_job(job):
                                      'size': file.attrib['size']}
                                     for file in result.getchildren()]}
                          for result in job.xpath("/d:job/d:results/d:result", namespaces={"d": NS})],
-            'log':     job.xpath("/d:job/d:log/@href", namespaces={"d": NS})}
+            'log':     job.xpath("/d:job/d:log/@href", namespaces={"d": NS})} if job else None
 
 def wait_for_job(job):
     msgIdxs = []
     while True:
         sleep(0.5)
         job = get_job(job['id'])
+        if not job:
+            return None
         for msg in job['messages']:
             if not msg['index'] in msgIdxs:
                 msgIdxs.append(msg['index'])
