@@ -323,3 +323,20 @@ that will have to worked on. Use the admin interface to either assign
 the permission directly to the user or create a specific group (say
 "Managers") which has the permission to add documents and assign users
 to this group. The demo user has permission to add documents.
+
+* Interfaces
+** From ABACUS
+- Import and update new productions from ABACUS
+- ~importABACUS.py~
+** From Alfresco
+- When importing a new production syncronize the content with the
+  content in the archive
+- done in ~importABACUS.py~
+** To Alfresco
+- Daisyproducer used to check out documents under certain
+  circumstances. However this functionality has been retired.
+** To online
+- ebooks are copied to ~/var/spool/daisyproducer~
+** Braille translation White lists
+- There is a cron job to export the white list data from the db to a
+  Braille table so that it can be consumed by liblouis.
