@@ -105,8 +105,8 @@ def add_image(request, document_id):
 
     if 'application/json' in request.META['HTTP_ACCEPT']:
         from django.http import HttpResponse
-        from django.utils import simplejson
-        response_data = simplejson.dumps({'files': files})
+        import json
+        response_data = json.dumps({'files': files})
         return HttpResponse(response_data, content_type='application/json')
 
     return HttpResponseRedirect(reverse('todo_detail', args=[document_id]))
