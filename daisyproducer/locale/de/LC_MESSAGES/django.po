@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-13 14:05+0200\n"
-"PO-Revision-Date: 2017-04-13 14:17+0200\n"
+"POT-Creation-Date: 2017-12-05 12:20+0100\n"
+"PO-Revision-Date: 2017-12-05 12:20+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -50,10 +50,8 @@ msgid "CSV File"
 msgstr "CSV-Datei"
 
 #: daisyproducer/dictionary/forms.py:233
-#, fuzzy
-#| msgid "CSV File containing document meta data"
 msgid "CSV File containing global words"
-msgstr "CSV-Datei mit den Metadaten des Dokuments"
+msgstr "CSV-Datei mit den Globalen Wörtern"
 
 #: daisyproducer/dictionary/models.py:20 daisyproducer/documents/forms.py:248
 msgid "None"
@@ -300,10 +298,8 @@ msgid "Floating Page Numbers"
 msgstr ""
 
 #: daisyproducer/documents/forms.py:278
-#, fuzzy
-#| msgid "Markup"
 msgid "Answer Markup"
-msgstr "Markup"
+msgstr "Antwort Markup"
 
 #: daisyproducer/documents/forms.py:285
 msgid "32 kbit/s"
@@ -530,74 +526,74 @@ msgid "Plain"
 msgstr "Einfach"
 
 #: daisyproducer/documents/models.py:333
+msgid "Compact"
+msgstr "Kompakt"
+
+#: daisyproducer/documents/models.py:334
 msgid "With original page numbers"
 msgstr "Mit Original-Seitenzahlen"
 
-#: daisyproducer/documents/models.py:334
+#: daisyproducer/documents/models.py:335
 msgid "Scientific"
 msgstr "Wissenschaftlich"
 
-#: daisyproducer/documents/models.py:338
+#: daisyproducer/documents/models.py:339
 msgid "justified"
 msgstr "Blocksatz"
 
-#: daisyproducer/documents/models.py:339
+#: daisyproducer/documents/models.py:340
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: daisyproducer/documents/models.py:348
+#: daisyproducer/documents/models.py:349
 msgid "Single spacing"
 msgstr ""
 
-#: daisyproducer/documents/models.py:349
+#: daisyproducer/documents/models.py:350
 msgid "One-and-a-half spacing"
 msgstr ""
 
-#: daisyproducer/documents/models.py:350
+#: daisyproducer/documents/models.py:351
 msgid "Double spacing"
 msgstr ""
 
-#: daisyproducer/documents/models.py:354
-#, fuzzy
-#| msgid "Placement of Footnotes"
-msgid "Plain Footnotes"
-msgstr "Anordnung der Fussnoten"
-
 #: daisyproducer/documents/models.py:355
-#, fuzzy
-#| msgid "Documents"
-msgid "Document Endnotes"
-msgstr "Dokumente"
+msgid "Plain Footnotes"
+msgstr "Normale Fussnoten"
 
 #: daisyproducer/documents/models.py:356
+msgid "Document Endnotes"
+msgstr "Endnotes am Ende des Dokuments"
+
+#: daisyproducer/documents/models.py:357
 msgid "Chapter Endnotes"
 msgstr ""
 
-#: daisyproducer/documents/models.py:359
+#: daisyproducer/documents/models.py:360
 msgid "Fontsize"
 msgstr "Fontgrösse"
 
-#: daisyproducer/documents/models.py:360
+#: daisyproducer/documents/models.py:361
 msgid "Font"
 msgstr "Font"
 
-#: daisyproducer/documents/models.py:361
+#: daisyproducer/documents/models.py:362
 msgid "Page style"
 msgstr "Seitenstil"
 
-#: daisyproducer/documents/models.py:363
+#: daisyproducer/documents/models.py:364
 msgid "Stocksize"
 msgstr "Papiergösse"
 
-#: daisyproducer/documents/models.py:364
+#: daisyproducer/documents/models.py:365
 msgid "Line Spacing"
 msgstr "Zeilenabstand"
 
-#: daisyproducer/documents/models.py:365
+#: daisyproducer/documents/models.py:366
 msgid "Replace italics with quote"
 msgstr "Kursiv mit Apostrophe ersetzen"
 
-#: daisyproducer/documents/models.py:366
+#: daisyproducer/documents/models.py:367
 msgid "End Notes"
 msgstr ""
 
@@ -648,10 +644,8 @@ msgid "Swiss Library for the Blind, Visually Impaired and Print Disabled"
 msgstr "Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte"
 
 #: daisyproducer/templates/base.html:62
-#, fuzzy
-#| msgid "Versions"
 msgid "Version "
-msgstr "Versionen"
+msgstr "Version "
 
 #: daisyproducer/templates/dictionary/confirm.html:6
 #: daisyproducer/templates/dictionary/local.html:6
@@ -665,10 +659,8 @@ msgstr "Braille Wörterbuch"
 #: daisyproducer/templates/dictionary/local.html:8
 #: daisyproducer/templates/dictionary/words.html:8
 #: daisyproducer/templates/documents/todo_detail.html:14
-#, fuzzy
-#| msgid "Total local words"
 msgid "Lookup global words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Globale Wörter nachschlagen"
 
 #: daisyproducer/templates/dictionary/confirm.html:27
 #: daisyproducer/templates/dictionary/confirm_single.html:10
@@ -743,22 +735,16 @@ msgid "Confirm"
 msgstr ""
 
 #: daisyproducer/templates/dictionary/edit_globals.html:21
-#, fuzzy
-#| msgid "Total local words"
 msgid "Edit Global Words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Globale Wörter editieren"
 
 #: daisyproducer/templates/dictionary/edit_globals.html:23
-#, fuzzy
-#| msgid "Total local words"
 msgid "Lookup Global Words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Globale Wörter nachschlagen"
 
 #: daisyproducer/templates/dictionary/edit_globals.html:31
-#, fuzzy
-#| msgid "Total local words"
 msgid "Total global words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Globale Wörter insgesamt"
 
 #: daisyproducer/templates/dictionary/edit_globals.html:83
 #: daisyproducer/templates/dictionary/edit_missing_globals.html:62
@@ -771,22 +757,16 @@ msgid "Edit Missing Global Words"
 msgstr ""
 
 #: daisyproducer/templates/dictionary/edit_missing_globals.html:25
-#, fuzzy
-#| msgid "Total local words"
 msgid "Total missing global words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Fehlende Globale Wörter insgesamt"
 
 #: daisyproducer/templates/dictionary/import.html:6
 #: daisyproducer/templates/dictionary/upload.html:6
 #: daisyproducer/templates/dictionary/upload.html:9
-#, fuzzy
-#| msgid "Total local words"
 msgid "Import Global Words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Globale Wörter importieren"
 
 #: daisyproducer/templates/dictionary/import.html:33
-#, fuzzy
-#| msgid "No data to display"
 msgid "No words to display"
 msgstr "Keine Daten vorhanden"
 
@@ -1073,10 +1053,8 @@ msgid "Preview (BETA)"
 msgstr "Vorschau (BETA)"
 
 #: daisyproducer/templates/documents/todo_detail.html:30
-#, fuzzy
-#| msgid "Document"
 msgid "Open Document"
-msgstr "Dokumente"
+msgstr "Open Document"
 
 #: daisyproducer/templates/documents/todo_detail.html:31
 msgid "SBSForm (Pipeline2)"
@@ -1135,26 +1113,20 @@ msgid "Confirm deferred words"
 msgstr ""
 
 #: daisyproducer/templates/documents/todo_index.html:30
-#, fuzzy
-#| msgid "Total local words"
 msgid "Edit global words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Globale Wörter editieren"
 
 #: daisyproducer/templates/documents/todo_index.html:31
 msgid "Edit missing global words"
 msgstr ""
 
 #: daisyproducer/templates/documents/todo_index.html:32
-#, fuzzy
-#| msgid "Total local words"
 msgid "Export global words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Globale Wörter exportieren"
 
 #: daisyproducer/templates/documents/todo_index.html:33
-#, fuzzy
-#| msgid "Total local words"
 msgid "Export wrong global words"
-msgstr "Lokale Wörter insgesamt"
+msgstr "Falsche Globale Wörter exportieren"
 
 #: daisyproducer/templates/documents/todo_index.html:40
 #: daisyproducer/templates/documents/todo_index.html:54
@@ -1172,10 +1144,8 @@ msgstr "Speichern"
 
 #: daisyproducer/templates/documents/todo_odt.html:4
 #: daisyproducer/templates/documents/todo_odt.html:9
-#, fuzzy
-#| msgid "Preview (BETA)"
 msgid "Preview Open Document (BETA)"
-msgstr "Vorschau (BETA)"
+msgstr "Vorschau Open Document (BETA)"
 
 #: daisyproducer/templates/documents/todo_odt.html:22
 #: daisyproducer/templates/documents/todo_sbsform.html:22
