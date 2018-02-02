@@ -86,21 +86,24 @@
     </xsl:apply-templates>
   </xsl:template>
   
-  <!-- Add an empty line for class="precedingemptyline" -->
+  <!-- Add an empty paragraph for class="precedingemptyline" -->
   <xsl:template match="dtb:p[@class='precedingemptyline']">
+    <xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/">
+      <xsl:text> </xsl:text>
+    </xsl:element>
     <xsl:copy>
       <xsl:copy-of select="@*"/>
-      <xsl:element name="br" namespace="http://www.daisy.org/z3986/2005/dtbook/"></xsl:element>
       <xsl:apply-templates/>
     </xsl:copy>
   </xsl:template>
 
-  <!-- Add an empty line for class="precedingseparator" -->
+  <!-- Add a paragraph containing "***" for class="precedingseparator" -->
   <xsl:template match="dtb:p[@class='precedingseparator']">
+    <xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/">
+      <xsl:text>***</xsl:text>
+    </xsl:element>
     <xsl:copy>
       <xsl:copy-of select="@*"/>
-      <xsl:text>***</xsl:text>
-      <xsl:element name="br" namespace="http://www.daisy.org/z3986/2005/dtbook/"></xsl:element>
       <xsl:apply-templates/>
     </xsl:copy>
   </xsl:template>
