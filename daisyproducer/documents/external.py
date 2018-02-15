@@ -10,7 +10,7 @@ import zipfile
 from os.path import join, basename, splitext
 from pyPdf import PdfFileReader
 from shutil import rmtree, copyfile
-from subprocess import call, Popen, PIPE
+from subprocess import call, Popen, PIPE, check_output
 
 from django.conf import settings
 from daisyproducer.documents.pipeline2.client import make_job_request, post_job, wait_for_job, delete_job
@@ -51,6 +51,19 @@ def applyXSL2(xsl, stdin, stdout):
         "-s:-")
     return Popen(command, stdin=stdin, stdout=stdout)
 
+def isCompactStyle(inputFile):
+    """Given an `inputFile` determine whether it should be rendered using
+    compactStyle. Return `true` if the `inputFile` only contains
+    `level1`. Return `true` if the `inputFile` contains `level2` but
+    all `h2` are empty. Return `false` otherwise."""
+    command = (
+        "xsltproc",
+        join(settings.PROJECT_DIR, 'documents', 'xslt', 'isCompactStyle.xsl'),
+        inputFile,
+        )
+    return check_output(command)=="true"
+
+
 def generatePDF(inputFile, outputFile, images, taskscript='DTBookToLaTeX.taskScript', **kwargs):
     tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
     fileBaseName = splitext(basename(inputFile))[0]
@@ -58,7 +71,13 @@ def generatePDF(inputFile, outputFile, images, taskscript='DTBookToLaTeX.taskScr
 
     # map True and False to "true" and "false"
     kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
-        # Transform to LaTeX using pipeline
+
+    # when the page style is not explicitely requested check if the
+    # book should be rendered using compact style
+    if kwargs['page_style'] == "plain" and isCompactStyle(inputFile):
+        kwargs['page_style'] = "compact"
+
+    # Transform to LaTeX using pipeline
     command = (
         join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
         join(settings.DAISY_PIPELINE_PATH, 'scripts',
