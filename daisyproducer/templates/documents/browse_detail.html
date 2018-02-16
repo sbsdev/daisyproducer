@@ -11,11 +11,7 @@
   <a href="#pdf_view" accesskey="p" >{% trans "PDF" %}</a><br />
   <a href="#sbsform_view" accesskey="s" >{% trans "Braille (SBSForm)" %}</a><br />
   <a href="#braille_view" accesskey="b" >{% trans "Braille (liblouis)" %}</a><br />
-  <a href="#xhtml_view" accesskey="x" >{% trans "XHTML" %}</a><br />
-  <a href="#rtf_view" accesskey="r" >{% trans "RTF" %}</a><br />
-  <a href="#epub_view" accesskey="e" >{% trans "EPUB" %}</a><br />
   <a href="#text_only_view" accesskey="t" >{% trans "Text-Only Daisy book" %}</a><br />
-  <a href="#dtb_view" accesskey="a" >{% trans "Full-Text Full-Audio book" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
@@ -57,38 +53,10 @@
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>
-  <h3 id="xhtml_view">{% trans "View as XHTML" %}</h3>
-  <form action="{% url 'browse_xhtml' object.id %}" method="POST">{% csrf_token %}
-    <table>
-      {{ xhtmlform.as_table }}
-    </table>
-    <p><input type="submit" value="{% trans 'Download' %}" /></p>
-  </form>
-  <h3 id="rtf_view">{% trans "View as RTF" %}</h3>
-  <form action="{% url 'browse_rtf' object.id %}" method="POST">{% csrf_token %}
-    <table>
-      {{ rtfform.as_table }}
-    </table>
-    <p><input type="submit" value="{% trans 'Download' %}" /></p>
-  </form>
-  <h3 id="epub_view">{% trans "View as EPUB" %}</h3>
-  <form action="{% url 'browse_epub' object.id %}" method="POST">{% csrf_token %}
-    <table>
-      {{ epubform.as_table }}
-    </table>
-    <p><input type="submit" value="{% trans 'Download' %}" /></p>
-  </form>
   <h3 id="text_only_view">{% trans "View as Text-Only Daisy book" %}</h3>
   <form action="{% url 'browse_text_only_dtb' object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ textonlydtbform.as_table }}
-    </table>
-    <p><input type="submit" value="{% trans 'Download' %}" /></p>
-  </form>
-  <h3 id="dtb_view">{% trans "View as Full-Text Full-Audio book" %}</h3>
-  <form action="{% url 'browse_dtb' object.id %}" method="POST">{% csrf_token %}
-    <table>
-      {{ dtbform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>

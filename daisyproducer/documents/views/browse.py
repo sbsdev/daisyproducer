@@ -3,7 +3,7 @@ import shutil
 import tempfile
 
 from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm, zipDirectory
-from daisyproducer.documents.forms import SBSFormForm, RTFForm, XHTMLForm, EPUBForm, TextOnlyDTBForm, DTBForm
+from daisyproducer.documents.forms import SBSFormForm, TextOnlyDTBForm
 from daisyproducer.documents.models import State, Document, BrailleProfileForm, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.core.urlresolvers import reverse
@@ -34,10 +34,7 @@ class BrowseDetailView(DetailView):
             'lpform' : LargePrintProfileForm(),
             'bform' : BrailleProfileForm(),
             'sform' : SBSFormForm(),
-            'xhtmlform' : XHTMLForm(),
-            'rtfform' : RTFForm(),
-            'textonlydtbform' : TextOnlyDTBForm(),
-            'dtbform' : DTBForm()})
+            'textonlydtbform' : TextOnlyDTBForm()})
         return context
 
 def as_pdf(request, document_id):
@@ -86,53 +83,6 @@ def as_sbsform(request, document_id):
     mimetype = contraction_to_mimetype_mapping.get(contraction, 'text/x-sbsform-g2')
     return render_to_mimetype_response(mimetype, document.title.encode('utf-8'), outputFile)
 
-def as_xhtml(request, document_id):
-    form = XHTMLForm(request.POST)
-
-    if not form.is_valid():
-        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
-
-    document = Document.objects.get(pk=document_id)
-    inputFile = document.latest_version().content.path
-    outputFile = "/tmp/%s.xhtml" % document_id
-    DaisyPipeline.dtbook2xhtml(inputFile, outputFile, **form.cleaned_data)
-
-    return render_to_mimetype_response('text/html', document.title.encode('utf-8'), outputFile)
-
-def as_rtf(request, document_id):
-    form = RTFForm(request.POST)
-
-    if not form.is_valid():
-        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
-
-    document = Document.objects.get(pk=document_id)
-    inputFile = document.latest_version().content.path
-    outputFile = "/tmp/%s.rtf" % document_id
-    DaisyPipeline.dtbook2rtf(inputFile, outputFile, **form.cleaned_data)
-
-    return render_to_mimetype_response('application/rtf', document.title.encode('utf-8'), outputFile)
-
-def as_epub(request, document_id):
-    form = EPUBForm(request.POST)
-
-    if not form.is_valid():
-        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
-
-    document = Document.objects.get(pk=document_id)
-    inputFile = document.latest_version().content.path
-    outputFile = "/tmp/%s.epub" % document_id
-    defaults = {
-        "dctitle" : document.title, 
-        "dcidentifier" : document.identifier, 
-        "dclanguage" : document.language, 
-        "dccreator" : document.author, 
-        "dcpublisher" : document.publisher, 
-        "dcdate" : document.date}
-    defaults.update(form.cleaned_data)
-    DaisyPipeline.dtbook2epub(inputFile, outputFile, images=document.image_set.all(), **defaults)
-
-    return render_to_mimetype_response('application/epub+zip', document.title.encode('utf-8'), outputFile)
-
 def as_text_only_dtb(request, document_id):
     form = TextOnlyDTBForm(request.POST)
 
@@ -153,23 +103,3 @@ def as_text_only_dtb(request, document_id):
     shutil.rmtree(outputDir)
     
     return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFile.name)
-
-def as_dtb(request, document_id):
-    form = DTBForm(request.POST)
-
-    if not form.is_valid():
-        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
-
-    document = Document.objects.get(pk=document_id)
-    inputFile = document.latest_version().content.path
-    outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
-
-    DaisyPipeline.dtbook2dtb(inputFile, outputDir, **form.cleaned_data)
-
-    zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
-    zipFile.close() # we are only interested in a unique filename
-    zipDirectory(outputDir, zipFile.name, document.title)
-    shutil.rmtree(outputDir)
-
-    return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFile.name)
-

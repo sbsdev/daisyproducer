@@ -25,11 +25,7 @@ urlpatterns = [
     url(r'^(?P<document_id>\d+).pdf$', browse.as_pdf, name='browse_pdf'),
     url(r'^(?P<document_id>\d+).brl$', browse.as_brl, name='browse_brl'),
     url(r'^(?P<document_id>\d+).sbsform$', browse.as_sbsform, name='browse_sbsform'),
-    url(r'^(?P<document_id>\d+).xhtml$', browse.as_xhtml, name='browse_xhtml'),
-    url(r'^(?P<document_id>\d+).rtf$', browse.as_rtf, name='browse_rtf'),
-    url(r'^(?P<document_id>\d+).epub$', browse.as_epub, name='browse_epub'),
     url(r'^(?P<document_id>\d+).dtb_text_only$', browse.as_text_only_dtb, name='browse_text_only_dtb'),
-    url(r'^(?P<document_id>\d+).dtb$', browse.as_dtb, name='browse_dtb'),
 ]
 
 # work on pending documents
