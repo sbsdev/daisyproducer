@@ -287,24 +287,6 @@ class DaisyPipeline:
         rmtree(tmpDir)
 
     @staticmethod
-    def dtbook2text_only_fileset(inputFile, outputPath, **kwargs):
-        """Transform a dtbook xml file to a Daisy 2.02 Text-Only fileset"""
-        tmpFile = filterBrlContractionhints(inputFile)
-        # map True and False to "true" and "false"
-        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
-        command = (
-            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
-            join(settings.DAISY_PIPELINE_PATH, 'scripts',
-                 'create_distribute', 'dtb', 'Fileset-DtbookToDaisy202TextOnly.taskScript'),
-            "--input=%s" % tmpFile,
-            "--outputPath=%s" % outputPath,
-            )
-        for k, v in kwargs.iteritems():
-            command += ("--%s=%s" % (k,v),)
-        call(command)
-        os.remove(tmpFile)
-
-    @staticmethod
     def dtbook2text_only_dtb(inputFile, outputPath, images, **kwargs):
         """Transform a dtbook xml file to a Daisy 3 Text-Only"""
         tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")

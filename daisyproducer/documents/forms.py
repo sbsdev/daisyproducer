@@ -220,21 +220,6 @@ class RTFForm(forms.Form):
 class EPUBForm(forms.Form):
     pass
 
-class TextOnlyFilesetForm(forms.Form):
-    FILESET_OUTPUTENCODING_CHOICES = (
-        ('utf-8', _('utf-8')),
-        ('iso-8859-1', _('iso-8859-1')),
-        ('Shift_JIS', _('Shift_JIS')),
-        )
-    outputEncoding = forms.ChoiceField(
-        label=_("Output encoding"), choices=FILESET_OUTPUTENCODING_CHOICES)
-    doAbbrAcronymDetection = forms.BooleanField(
-        label=_("Abbreviation and acronym detection"), required=False, initial=True)
-    doSentenceDetection = forms.BooleanField(
-        label=_("Sentence detection"), required=False, initial=True)
-    doWordDetection = forms.BooleanField(
-        label=_("Word detection"), required=False)
-
 class TextOnlyDTBForm(forms.Form):
     ebookNumber = forms.RegexField(label=_("EBook Number"),regex="^EB\d{5}")
 
