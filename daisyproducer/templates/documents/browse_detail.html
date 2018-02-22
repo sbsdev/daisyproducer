@@ -10,7 +10,6 @@
   <h3>{% trans "Document" %}</h3>
   <a href="#pdf_view" accesskey="p" >{% trans "PDF" %}</a><br />
   <a href="#sbsform_view" accesskey="s" >{% trans "Braille (SBSForm)" %}</a><br />
-  <a href="#braille_view" accesskey="b" >{% trans "Braille (liblouis)" %}</a><br />
   <a href="#text_only_view" accesskey="t" >{% trans "Text-Only Daisy book" %}</a><br />
 </div>
 {% endif %}
@@ -43,13 +42,6 @@
   <form action="{% url 'browse_sbsform' object.id %}" method="POST">{% csrf_token %}
     <table>
       {{ sform.as_table }}
-    </table>
-    <p><input type="submit" value="{% trans 'Download' %}" /></p>
-  </form>
-  <h3 id="braille_view">{% trans "View as Braille (Liblouis)" %}</h3>
-  <form action="{% url 'browse_brl' object.id %}" method="POST">{% csrf_token %}
-    <table>
-      {{ bform.as_table }}
     </table>
     <p><input type="submit" value="{% trans 'Download' %}" /></p>
   </form>

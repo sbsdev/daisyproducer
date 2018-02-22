@@ -307,11 +307,6 @@ class BrailleProfile(models.Model):
     enable_capitalization = models.BooleanField(_("Enable Capitalization"), default=False)
     detailed_accented_characters = models.BooleanField(_("Detailed Accented Characters"), default=False)
 
-class BrailleProfileForm(ModelForm):
-    class Meta:
-        fields = "__all__"
-        model = BrailleProfile
-
 class LargePrintProfile(models.Model):
     FONTSIZE_CHOICES = (
         ('12pt', '12pt'),

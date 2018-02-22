@@ -4,7 +4,7 @@ import tempfile
 
 from daisyproducer.documents.external import DaisyPipeline, Liblouis, SBSForm, zipDirectory
 from daisyproducer.documents.forms import SBSFormForm, TextOnlyDTBForm
-from daisyproducer.documents.models import State, Document, BrailleProfileForm, LargePrintProfileForm
+from daisyproducer.documents.models import State, Document, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -32,7 +32,6 @@ class BrowseDetailView(DetailView):
         context = super(BrowseDetailView, self).get_context_data(**kwargs)
         context.update({
             'lpform' : LargePrintProfileForm(),
-            'bform' : BrailleProfileForm(),
             'sform' : SBSFormForm(),
             'textonlydtbform' : TextOnlyDTBForm()})
         return context
@@ -51,20 +50,6 @@ def as_pdf(request, document_id):
                              images=document.image_set.all(), **form.cleaned_data)
 
     return render_to_mimetype_response('application/pdf', document.title.encode('utf-8'), outputFile)
-
-def as_brl(request, document_id):
-    form = BrailleProfileForm(request.POST)
-
-    if not form.is_valid():
-        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
-
-    document = Document.objects.get(pk=document_id)
-
-    inputFile = document.latest_version().content.path
-    outputFile = "/tmp/%s.brl" % document_id
-    Liblouis.dtbook2brl(inputFile, outputFile, **form.cleaned_data)
-
-    return render_to_mimetype_response('text/x-brl', document.title.encode('utf-8'), outputFile)
 
 def as_sbsform(request, document_id):
     form = SBSFormForm(request.POST)

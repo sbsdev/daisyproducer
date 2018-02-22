@@ -486,65 +486,6 @@ class StandardLargePrint:
         generatePDF(tmpFile2, outputFile, images, **defaults)
         os.remove(tmpFile)
         os.remove(tmpFile2)
-        
-
-class Liblouis:
-
-    contractionMap = {
-        0 : 'de-ch-g0.utb', 
-        1 : 'de-ch-g1.ctb', 
-        2 : 'de-ch-g2.ctb'}
-
-    yesNoMap = {
-        True : "yes", 
-        False : "no" }
-
-    @staticmethod
-    def dtbook2brl(inputFile, outputFile, **kwargs):
-        """Transform a dtbook xml file to brl"""
-        tmpFile = filterBrlContractionhints(inputFile)
-        # prepare xml input for liblouis
-        command = (
-            "xsltproc",
-            join(settings.PROJECT_DIR, 'documents', 'xslt', 'brailleSanitize.xsl'),
-            tmpFile,
-            )
-        p1 = Popen(command, stdout=PIPE)
-        # transform to braille
-        command = (
-            "xml2brl",
-            "-CcellsPerLine=%(cells_per_line)s" % kwargs,
-            "-ClinesPerPage=%(lines_per_page)s" % kwargs,
-            "-CliteraryTextTable=%s" % Liblouis.contractionMap[kwargs['contraction']],
-            "-Chyphenate=%s" % Liblouis.yesNoMap[kwargs['hyphenation']],
-            "-CprintPages=%s" % Liblouis.yesNoMap[kwargs['show_original_page_numbers']],
-            "-Cinterpoint=no",
-            "-CnewEntries=no",
-            "-Cinterline=no",
-            "-CinputTextEncoding=utf8",
-            "-CoutputEncoding=ascii8",
-            "-CbraillePageNumberAt=bottom",
-            "-CprintPageNumberAt=top",
-            "-CbeginningPageNumber=1",
-            "-Cparagraphs=yes",
-            "-CbraillePages=yes",
-            "-CfileEnd=\"^z\"",
-            # FIXME: find a solution on how to pass these values
-            # r"-CpageEnd=\f",
-            # r"-ClineEnd=\n",
-            "-CsemanticFiles=dtbook.sem",
-            "-CinternetAccess=no",
-            )
-        f = open(outputFile, 'w')
-        p2 = Popen(command, stdin=p1.stdout, stdout=f, 
-                   # FIXME: xml2brl creates a temporary file in cwd,
-                   # so we have to change directory to a place where
-                   # www-data can create temporary files
-                   cwd=tempfile.gettempdir())
-        p2.communicate()
-        f.close()
-        os.remove(tmpFile)
-
 
 class SBSForm:
 
