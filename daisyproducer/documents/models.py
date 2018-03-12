@@ -326,7 +326,7 @@ class LargePrintProfile(models.Model):
     PAGESTYLE_CHOICES = (
         ('plain', _('Plain')),
         ('withPageNums', _('With original page numbers')),
-        ('loose', _('Loose')),
+        ('spacious', _('Spacious')),
         ('scientific', _('Scientific')),
         )
     
