@@ -30,6 +30,10 @@ ETAGS_ARGS = $(PYTHON_FILES) $(TEST_FILES) $(TEMPLATE_FILES)
 clean-local:
 	rm -f $(MO_FILES)
 
+# update locale messages
+makemessages:
+	django-admin makemessages --locale de
+
 # Testing
 check:
 	django-admin test --pythonpath=. --settings=settings_unittest
