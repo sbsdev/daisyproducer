@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-05 12:20+0100\n"
-"PO-Revision-Date: 2017-12-05 12:20+0100\n"
+"POT-Creation-Date: 2018-03-14 14:00+0100\n"
+"PO-Revision-Date: 2018-03-14 14:07+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -45,7 +45,7 @@ msgstr ""
 msgid "Any"
 msgstr "Beliebig"
 
-#: daisyproducer/dictionary/forms.py:232 daisyproducer/documents/forms.py:311
+#: daisyproducer/dictionary/forms.py:232 daisyproducer/documents/forms.py:296
 msgid "CSV File"
 msgstr "CSV-Datei"
 
@@ -53,7 +53,7 @@ msgstr "CSV-Datei"
 msgid "CSV File containing global words"
 msgstr "CSV-Datei mit den Globalen Wörtern"
 
-#: daisyproducer/dictionary/models.py:20 daisyproducer/documents/forms.py:248
+#: daisyproducer/dictionary/models.py:20 daisyproducer/documents/forms.py:233
 msgid "None"
 msgstr "Ohne"
 
@@ -220,112 +220,88 @@ msgstr "Inhaltsverzeichnis erzeugen"
 msgid "DAISY 2.02 style noterefs"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:225
-msgid "utf-8"
-msgstr ""
-
-#: daisyproducer/documents/forms.py:226
-msgid "iso-8859-1"
-msgstr ""
-
-#: daisyproducer/documents/forms.py:227
-msgid "Shift_JIS"
-msgstr ""
-
-#: daisyproducer/documents/forms.py:230
-msgid "Output encoding"
-msgstr ""
-
-#: daisyproducer/documents/forms.py:232
-msgid "Abbreviation and acronym detection"
-msgstr "Abkürzungs- und Akronym-Erkennung"
-
-#: daisyproducer/documents/forms.py:234 daisyproducer/documents/forms.py:297
-msgid "Sentence detection"
-msgstr "Satzerkennung"
-
-#: daisyproducer/documents/forms.py:236
-msgid "Word detection"
-msgstr "Worterkennung"
-
-#: daisyproducer/documents/forms.py:239
+#: daisyproducer/documents/forms.py:224
 msgid "EBook Number"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:243
+#: daisyproducer/documents/forms.py:228
 msgid "AsciiMath"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:244
+#: daisyproducer/documents/forms.py:229
 msgid "MathML"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:245
+#: daisyproducer/documents/forms.py:230
 msgid "Both"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:249
+#: daisyproducer/documents/forms.py:234
 msgid "Linked"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:250
+#: daisyproducer/documents/forms.py:235
 msgid "Embedded"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:253
+#: daisyproducer/documents/forms.py:238
 msgid "Math"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:258
+#: daisyproducer/documents/forms.py:243
 msgid "Phonetics"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:262
+#: daisyproducer/documents/forms.py:247
 #: daisyproducer/templates/documents/todo_detail.html:76
 msgid "Images"
 msgstr "Bilder"
 
-#: daisyproducer/documents/forms.py:266
+#: daisyproducer/documents/forms.py:251
 msgid "Line Numbers"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:270
+#: daisyproducer/documents/forms.py:255
 msgid "Page Numbers"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:274
+#: daisyproducer/documents/forms.py:259
 msgid "Floating Page Numbers"
 msgstr ""
 
-#: daisyproducer/documents/forms.py:278
+#: daisyproducer/documents/forms.py:263
 msgid "Answer Markup"
 msgstr "Antwort Markup"
 
-#: daisyproducer/documents/forms.py:285
+#: daisyproducer/documents/forms.py:270
 msgid "32 kbit/s"
 msgstr "32 kbit/s"
 
-#: daisyproducer/documents/forms.py:286
+#: daisyproducer/documents/forms.py:271
 msgid "48 kbit/s"
 msgstr "48 kbit/s"
 
-#: daisyproducer/documents/forms.py:287
+#: daisyproducer/documents/forms.py:272
 msgid "64 kbit/s"
 msgstr "64 kbit/s"
 
-#: daisyproducer/documents/forms.py:288
+#: daisyproducer/documents/forms.py:273
 msgid "128 kbit/s"
 msgstr "128 kbit/s"
 
-#: daisyproducer/documents/forms.py:292
+#: daisyproducer/documents/forms.py:277
 msgid "MP3 Bitrate"
 msgstr "MP3 Bitrate"
 
-#: daisyproducer/documents/forms.py:301
+#: daisyproducer/documents/forms.py:282
+msgid "Sentence detection"
+msgstr "Satzerkennung"
+
+#: daisyproducer/documents/forms.py:286
 msgid "Multi-language support"
 msgstr "Unterstützung von mehreren Sprachen"
 
-#: daisyproducer/documents/forms.py:312
+#: daisyproducer/documents/forms.py:297
 msgid "CSV File containing document meta data"
 msgstr "CSV-Datei mit den Metadaten des Dokuments"
 
@@ -521,79 +497,79 @@ msgstr ""
 msgid "Detailed Accented Characters"
 msgstr "Ausführliche Akzentbuchstaben"
 
-#: daisyproducer/documents/models.py:332
+#: daisyproducer/documents/models.py:327
 msgid "Plain"
 msgstr "Einfach"
 
-#: daisyproducer/documents/models.py:333
-msgid "Compact"
-msgstr "Kompakt"
-
-#: daisyproducer/documents/models.py:334
+#: daisyproducer/documents/models.py:328
 msgid "With original page numbers"
 msgstr "Mit Original-Seitenzahlen"
 
-#: daisyproducer/documents/models.py:335
+#: daisyproducer/documents/models.py:329
+msgid "Spacious"
+msgstr "Level2 in bodymatter immer auf neuer Seite"
+
+#: daisyproducer/documents/models.py:330
 msgid "Scientific"
 msgstr "Wissenschaftlich"
 
-#: daisyproducer/documents/models.py:339
+#: daisyproducer/documents/models.py:334
 msgid "justified"
 msgstr "Blocksatz"
 
-#: daisyproducer/documents/models.py:340
+#: daisyproducer/documents/models.py:335
 msgid "left aligned"
 msgstr "Linksbündig"
 
-#: daisyproducer/documents/models.py:349
+#: daisyproducer/documents/models.py:344
 msgid "Single spacing"
 msgstr ""
 
-#: daisyproducer/documents/models.py:350
+#: daisyproducer/documents/models.py:345
 msgid "One-and-a-half spacing"
 msgstr ""
 
-#: daisyproducer/documents/models.py:351
+#: daisyproducer/documents/models.py:346
 msgid "Double spacing"
 msgstr ""
 
-#: daisyproducer/documents/models.py:355
+#: daisyproducer/documents/models.py:350
 msgid "Plain Footnotes"
 msgstr "Normale Fussnoten"
 
-#: daisyproducer/documents/models.py:356
+#: daisyproducer/documents/models.py:351
 msgid "Document Endnotes"
 msgstr "Endnotes am Ende des Dokuments"
 
-#: daisyproducer/documents/models.py:357
+#: daisyproducer/documents/models.py:352
 msgid "Chapter Endnotes"
 msgstr ""
 
-#: daisyproducer/documents/models.py:360
+#: daisyproducer/documents/models.py:355
 msgid "Fontsize"
 msgstr "Fontgrösse"
 
-#: daisyproducer/documents/models.py:361
+#: daisyproducer/documents/models.py:356
 msgid "Font"
 msgstr "Font"
 
-#: daisyproducer/documents/models.py:362
+#: daisyproducer/documents/models.py:357
 msgid "Page style"
 msgstr "Seitenstil"
 
-#: daisyproducer/documents/models.py:364
+#: daisyproducer/documents/models.py:359
 msgid "Stocksize"
 msgstr "Papiergösse"
 
-#: daisyproducer/documents/models.py:365
+#: daisyproducer/documents/models.py:360
 msgid "Line Spacing"
 msgstr "Zeilenabstand"
 
-#: daisyproducer/documents/models.py:366
+#: daisyproducer/documents/models.py:361
 msgid "Replace italics with quote"
 msgstr "Kursiv mit Apostrophe ersetzen"
 
-#: daisyproducer/documents/models.py:367
+#: daisyproducer/documents/models.py:362
 msgid "End Notes"
 msgstr ""
 
@@ -614,11 +590,11 @@ msgstr "Einloggen"
 msgid "Administration"
 msgstr "Administration"
 
-#: daisyproducer/templates/base.html:31 daisyproducer/urls.py:109
+#: daisyproducer/templates/base.html:31 daisyproducer/urls.py:104
 msgid "Help"
 msgstr "Hilfe"
 
-#: daisyproducer/templates/base.html:32 daisyproducer/urls.py:118
+#: daisyproducer/templates/base.html:32 daisyproducer/urls.py:113
 msgid "About"
 msgstr "Impressum"
 
@@ -824,7 +800,7 @@ msgid "No more words to check"
 msgstr ""
 
 #: daisyproducer/templates/documents/browse_detail.html:5
-#: daisyproducer/templates/documents/browse_detail.html:25
+#: daisyproducer/templates/documents/browse_detail.html:20
 #: daisyproducer/templates/documents/manage_detail.html:5
 #: daisyproducer/templates/documents/manage_detail.html:23
 #: daisyproducer/templates/documents/todo_detail.html:6
@@ -847,78 +823,29 @@ msgid "Braille (SBSForm)"
 msgstr "Braille (SBSForm)"
 
 #: daisyproducer/templates/documents/browse_detail.html:13
-msgid "Braille (liblouis)"
-msgstr "Braille (liblouis)"
-
-#: daisyproducer/templates/documents/browse_detail.html:14
-#: daisyproducer/templates/documents/todo_detail.html:23
-msgid "XHTML"
-msgstr "XHTML"
-
-#: daisyproducer/templates/documents/browse_detail.html:15
-#: daisyproducer/templates/documents/todo_detail.html:32
-msgid "RTF"
-msgstr "RTF"
-
-#: daisyproducer/templates/documents/browse_detail.html:16
-#: daisyproducer/templates/documents/todo_detail.html:33
-msgid "EPUB"
-msgstr "EPUB"
-
-#: daisyproducer/templates/documents/browse_detail.html:17
 #: daisyproducer/templates/documents/todo_detail.html:28
 msgid "Text-Only Daisy book"
 msgstr "EBook"
 
-#: daisyproducer/templates/documents/browse_detail.html:18
-#: daisyproducer/templates/documents/todo_detail.html:34
-msgid "Full-Text Full-Audio book"
-msgstr "Volltext Audio-Buch"
-
-#: daisyproducer/templates/documents/browse_detail.html:39
+#: daisyproducer/templates/documents/browse_detail.html:34
 msgid "View as PDF"
 msgstr "Ansicht als PDF"
 
-#: daisyproducer/templates/documents/browse_detail.html:44
-#: daisyproducer/templates/documents/browse_detail.html:51
-#: daisyproducer/templates/documents/browse_detail.html:58
-#: daisyproducer/templates/documents/browse_detail.html:65
-#: daisyproducer/templates/documents/browse_detail.html:72
-#: daisyproducer/templates/documents/browse_detail.html:79
-#: daisyproducer/templates/documents/browse_detail.html:86
-#: daisyproducer/templates/documents/browse_detail.html:93
+#: daisyproducer/templates/documents/browse_detail.html:39
+#: daisyproducer/templates/documents/browse_detail.html:46
+#: daisyproducer/templates/documents/browse_detail.html:53
 msgid "Download"
 msgstr "Herunterladen"
 
-#: daisyproducer/templates/documents/browse_detail.html:46
+#: daisyproducer/templates/documents/browse_detail.html:41
 msgid "View as Braille (SBSForm)"
 msgstr "Ansicht als Braille (SBSForm)"
 
-#: daisyproducer/templates/documents/browse_detail.html:53
-msgid "View as Braille (Liblouis)"
-msgstr "Ansicht als Braille (Liblouis)"
-
-#: daisyproducer/templates/documents/browse_detail.html:60
-msgid "View as XHTML"
-msgstr "Ansicht als XHTML"
-
-#: daisyproducer/templates/documents/browse_detail.html:67
-msgid "View as RTF"
-msgstr "Ansicht als RTF"
-
-#: daisyproducer/templates/documents/browse_detail.html:74
-msgid "View as EPUB"
-msgstr "Ansicht als EPUB"
-
-#: daisyproducer/templates/documents/browse_detail.html:81
+#: daisyproducer/templates/documents/browse_detail.html:48
 msgid "View as Text-Only Daisy book"
 msgstr ""
 
-#: daisyproducer/templates/documents/browse_detail.html:88
-msgid "View as Full-Text Full-Audio book"
-msgstr "Ansicht als Volltext Audio-Buch"
-
-#: daisyproducer/templates/documents/browse_detail.html:97
+#: daisyproducer/templates/documents/browse_detail.html:57
 #: daisyproducer/templates/documents/browse_index.html:41
 #: daisyproducer/templates/documents/manage_detail.html:46
 #: daisyproducer/templates/documents/manage_index.html:49
@@ -1036,6 +963,10 @@ msgstr "Lokale Wörter"
 msgid "Preview"
 msgstr "Vorschau"
 
+#: daisyproducer/templates/documents/todo_detail.html:23
+msgid "XHTML"
+msgstr "XHTML"
+
 #: daisyproducer/templates/documents/todo_detail.html:25
 msgid "Large Print (Library)"
 msgstr "Grossdruck (Ausleih)"
@@ -1059,6 +990,18 @@ msgstr "Open Document"
 #: daisyproducer/templates/documents/todo_detail.html:31
 msgid "SBSForm (Pipeline2)"
 msgstr ""
+
+#: daisyproducer/templates/documents/todo_detail.html:32
+msgid "RTF"
+msgstr "RTF"
+
+#: daisyproducer/templates/documents/todo_detail.html:33
+msgid "EPUB"
+msgstr "EPUB"
+
+#: daisyproducer/templates/documents/todo_detail.html:34
+msgid "Full-Text Full-Audio book"
+msgstr "Volltext Audio-Buch"
 
 #: daisyproducer/templates/documents/todo_detail.html:52
 msgid "Versions"
@@ -1191,14 +1134,3 @@ msgstr ""
 msgid "Statistics"
 msgstr ""
 
-#~ msgid "Data from scan"
-#~ msgstr "Eingescannte Daten"
-
-#~ msgid "The image files that resulted from the scan"
-#~ msgstr "Eingescannte Bilddateien"
-
-#~ msgid "Preview Large Print Cover (Sale)"
-#~ msgstr "Vorschau Grossdruck Umschlag (Verkauf)"
-
-#~ msgid "Import metadata CSV File"
-#~ msgstr "CSV-Datei mit Metadaten importieren"
