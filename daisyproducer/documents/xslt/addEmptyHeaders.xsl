@@ -33,31 +33,30 @@
   <xsl:template match="dtb:frontmatter//dtb:level1[@class='titlepage'][1][not(dtb:h1)]">
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'Vorspann'"/>
+      <xsl:with-param name="blurb" select="'Bibliographische Angaben'"/>
     </xsl:apply-templates>
   </xsl:template>
 
-  <!-- Insert a h1 if we have a level2 with a heading in the frontmatter -->
-  <xsl:template match="dtb:frontmatter//dtb:level1[not(dtb:h1)][dtb:level2/dtb:h2]">
+  <!-- Add an empty header to all level1 w/o h1 in the frontmatter -->
+  <xsl:template match="dtb:frontmatter//dtb:level1[not(dtb:h1)][not(@class='titlepage')]">
+    <xsl:variable name="total" select="count(../dtb:level1[not(dtb:h1)][not(@class='titlepage')])"/>
+    <xsl:variable name="pos" select="count(preceding-sibling::dtb:level1[not(dtb:h1)][not(@class='titlepage')])+1"/>
+    <xsl:variable name="title" select="if ($total &gt; 1) then concat('Vorspann ', $pos) else 'Vorspann'"/>
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'Ohne Überschrift'"/>
+      <xsl:with-param name="blurb" select="$title"/>
     </xsl:apply-templates>
   </xsl:template>
   
-  <!-- Add an empty header to the first level1 w/o h1 in the rearmatter -->
-  <xsl:template match="dtb:rearmatter//dtb:level1[1][not(dtb:h1)]">
+  <!-- Add an empty header to all level1 w/o h1 in the rearmatter -->
+  <xsl:template match="dtb:rearmatter//dtb:level1[not(dtb:h1)]">
+    <xsl:variable name="total" select="count(../dtb:level1[not(dtb:h1)])"/>
+    <xsl:variable name="pos" select="count(preceding-sibling::dtb:level1[not(dtb:h1)])+1"/>
+    <xsl:variable name="title"
+		  select="if ($total &gt; 1) then concat('Nachspann ', $pos) else 'Nachspann'"/>
     <xsl:apply-templates select="." mode="addHeading">
       <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'Nachspann'"/>
-    </xsl:apply-templates>
-  </xsl:template>
-  
-  <!-- Add an empty header to the other level1 w/o h1 in the rearmatter -->
-  <xsl:template match="dtb:rearmatter//dtb:level1[position()>1][not(dtb:h1)]">
-    <xsl:apply-templates select="." mode="addHeading">
-      <xsl:with-param name="level" select="1"/>
-      <xsl:with-param name="blurb" select="'Ohne Überschrift'"/>
+      <xsl:with-param name="blurb" select="$title"/>
     </xsl:apply-templates>
   </xsl:template>
   
