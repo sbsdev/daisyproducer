@@ -260,8 +260,9 @@ def preview_pdf(request, document_id):
             outputFile = "/tmp/%s.pdf" % document_id
             StandardLargePrint.dtbook2pdf(inputFile, outputFile,
                                           images=document.image_set.all(), **form.cleaned_data)
+            filename = document.title + u" " + form.cleaned_data['font_size']
             return render_to_mimetype_response('application/pdf', 
-                                               document.title.encode('utf-8'), outputFile)
+                                               filename.encode('utf-8'), outputFile)
     else:
         form = LargePrintProfileForm()
 
