@@ -1,7 +1,7 @@
 import shutil, tempfile, os.path
 
 from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory, Pipeline2
-from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, PartialImageForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, TextOnlyDTBForm, DTBForm, SalePDFForm, ODTForm
+from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, PartialImageForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, EPUB3Form, DTBForm, SalePDFForm, ODTForm
 from daisyproducer.documents.models import Document, Version, Attachment, Image, Product, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -342,44 +342,35 @@ def preview_epub(request, document_id):
     return render(request, 'documents/todo_epub.html', locals())
 
 @login_required
-def preview_text_only_dtb(request, document_id):
+def preview_epub3(request, document_id):
     document = get_object_or_404(Document, pk=document_id)
 
     if request.method == 'POST':
-        form = TextOnlyDTBForm(request.POST)
+        form = EPUB3Form(request.POST)
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
             
             ebookNumber = form.cleaned_data.pop('ebookNumber')
 
-            transformationErrors = DaisyPipeline.dtbook2text_only_dtb(
+            filename = Pipeline2.dtbook2epub3(
                 inputFile, outputDir,
                 images=document.image_set.all(), **form.cleaned_data)
-            if transformationErrors:
-                return render(request, 'documents/todo_text_only_dtb.html', locals())
+            if isinstance(filename, tuple):
+                # if filename is a tuple we're actually looking at a list of error messages
+                errorMessages = filename
+                return render(request, 'documents/todo_epub3.html', locals())
 
-            zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
-            zipFile.close() # we are only interested in a unique filename
-            zipDirectory(outputDir, zipFile.name, ebookNumber)
-            shutil.rmtree(outputDir)
-
-            # put a copy of the ebook to a shared folder where it is fetched by another process that
-            # puts into the distribution system. This will change, as the distribution system should
-            # fetch the ebook directly from the archive. See fhs for a rationale about the dest
-            # folder (http://www.pathname.com/fhs/pub/fhs-2.3.html#VARSPOOLAPPLICATIONSPOOLDATA)
-            shutil.copy2(zipFile.name, os.path.join('/var/spool/daisyproducer', ebookNumber + '.zip'))
-    
-            return render_to_mimetype_response('application/zip', 
-                                               document.title.encode('utf-8'), zipFile.name)
+            return render_to_mimetype_response('application/epub+zip',
+                                               document.title.encode('utf-8'), filename)
     else:
         ebook = Product.objects.filter(document=document, type=2)
         if ebook:
-            form = TextOnlyDTBForm({'ebookNumber': ebook[0].identifier})
+            form = EPUB3Form({'ebookNumber': ebook[0].identifier})
         else:
-            form = TextOnlyDTBForm()
+            form = EPUB3Form()
 
-    return render(request, 'documents/todo_text_only_dtb.html', locals())
+    return render(request, 'documents/todo_epub3.html', locals())
 
 @login_required
 def preview_dtb(request, document_id):

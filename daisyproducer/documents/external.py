@@ -287,41 +287,6 @@ class DaisyPipeline:
         rmtree(tmpDir)
 
     @staticmethod
-    def dtbook2text_only_dtb(inputFile, outputPath, images, **kwargs):
-        """Transform a dtbook xml file to a Daisy 3 Text-Only"""
-        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
-        inputFileHandle = open(inputFile)
-        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", dir=tmpDir)
-        p1 = applyXSL('filterBrlContractionhints.xsl', inputFileHandle, subprocess.PIPE)
-        p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
-        p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
-        p4 = applyXSL('filterComments.xsl', p3.stdout, subprocess.PIPE)
-        p5 = applyXSL('filterLinenumSpans.xsl', p4.stdout, subprocess.PIPE)
-        p6 = applyXSL2('addEmptyHeaders.xsl', p5.stdout, subprocess.PIPE)
-        p7 = applyXSL2('addBoilerplate.xsl', p6.stdout, tmpFile)
-        p7.communicate()
-        for image in images:
-            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
-        # map True and False to "true" and "false"
-        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
-        command = (
-            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
-            join(settings.DAISY_PIPELINE_PATH, 'scripts',
-                 'create_distribute', 'dtb', 'DTBookToDaisy3TextOnlyDTB.taskScript'),
-            "--input=%s" % tmpFile.name,
-            "--outputPath=%s" % outputPath,
-            )
-        for k, v in kwargs.iteritems():
-            command += ("--%s=%s" % (k,v),)
-        fnull = open(os.devnull, 'w')
-        result = DaisyPipeline.filter_output(Popen(command, stdout=PIPE, stderr=fnull).communicate()[0].splitlines())
-        fnull.close()
-        inputFileHandle.close()
-        tmpFile.close()
-        rmtree(tmpDir)
-        return result
-
-    @staticmethod
     def dtbook2dtb(inputFile, outputPath, **kwargs):
         """Transform a dtbook xml file to a Daisy Full-Text Full-Audio book"""
         tmpFile = filterBrlContractionhints(inputFile)
@@ -429,6 +394,60 @@ class Pipeline2:
         errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
         logger.error("Conversion to SBSForm failed with %s. See %s", errors, job['log'])
         return ("Conversion to SBSForm failed with:",) + errors
+
+    @staticmethod
+    def dtbook2epub3(inputFile, outputPath, images=[], **kwargs):
+        """Transform a dtbook xml file to an EPUB3"""
+
+        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
+
+        inputFileHandle = open(inputFile)
+        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", dir=tmpDir)
+        p1 = applyXSL('filterBrlContractionhints.xsl', inputFileHandle, subprocess.PIPE)
+        p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
+        p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
+        p4 = applyXSL('filterComments.xsl', p3.stdout, subprocess.PIPE)
+        p5 = applyXSL('filterLinenumSpans.xsl', p4.stdout, subprocess.PIPE)
+        p6 = applyXSL2('addEmptyHeaders.xsl', p5.stdout, subprocess.PIPE)
+        p7 = applyXSL2('addBoilerplate.xsl', p6.stdout, tmpFile)
+        p7.communicate()
+
+        # make the temp dir world readable, so that the pipeline2 user can access it
+        os.chmod(tmpDir, 0755)
+        fileName = basename(tmpFile.name)
+        epubFileName = splitext(fileName)[0] + ".epub"
+        tmpEpubFileName = join(tempfile.gettempdir(), epubFileName)
+
+        # map True and False to "true" and "false"
+        kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
+
+        for image in images:
+            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
+
+        request = make_job_request("dtbook-to-epub3",
+                                   {'source': tmpFile.name},
+                                   {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
+        job = post_job(request)
+        logger.info("Job with id %s submitted to the server", job['id'])
+        job = wait_for_job(job)
+        if job['status'] == "DONE":
+            try:
+                outputDir = [r for r in job['results'] if r['type'] == "option" and r['name'] == "output-dir"][0]
+                epubFile = [f for f in outputDir['files'] if f['href'] == "%s/idx/output-dir/%s" % (outputDir['href'], epubFileName)][0]
+                copyfile(epubFile['file'], tmpEpubFileName)
+                if not delete_job(job['id']):
+                    logger.warn("The job %s has not been deleted from the server", job['id'])
+                tmpFile.close()
+                rmtree(tmpDir)
+                return tmpEpubFileName
+            except IndexError:
+                pass
+
+        tmpFile.close()
+        rmtree(tmpDir)
+        errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
+        logger.error("Conversion to EPUB3 failed with %s. See %s", errors, job['log'])
+        return ("Conversion to EPUB3 failed with:",) + errors
 
 class StandardLargePrint:
 

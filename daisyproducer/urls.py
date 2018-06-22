@@ -44,7 +44,7 @@ urlpatterns += [
     url(r'^todo/(?P<document_id>\d+)/preview_rtf$', todo.preview_rtf, name='todo_rtf'),
     url(r'^todo/(?P<document_id>\d+)/preview_epub$', todo.preview_epub, name='todo_epub'),
     url(r'^todo/(?P<document_id>\d+)/preview_odt$', todo.preview_odt, name='todo_odt'),
-    url(r'^todo/(?P<document_id>\d+)/preview_text_only_dtb$', todo.preview_text_only_dtb, name='todo_text_only_dtb'),
+    url(r'^todo/(?P<document_id>\d+)/preview_epub3$', todo.preview_epub3, name='todo_epub3'),
     url(r'^todo/(?P<document_id>\d+)/preview_dtb$', todo.preview_dtb, name='todo_dtb'),
 ]
 

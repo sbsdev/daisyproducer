@@ -1,12 +1,12 @@
 {% extends "documents/todo.html" %}
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {% trans "Preview Text-Only Daisy book" %} - {{ document.title }}{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Preview EPUB3" %} - {{ document.title }}{% endblock %}
 
 {% block content %}
 {% if document %}
 
-<h2>{% trans "Preview Text-Only Daisy book" %}</h2>
+<h2>{% trans "Preview EPUB3" %}</h2>
 
 <div class="issue">
   
@@ -15,7 +15,7 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form method="post" action="{% url 'todo_text_only_dtb' document.id %}">{% csrf_token %}
+    <form method="post" action="{% url 'todo_epub3' document.id %}">{% csrf_token %}
       <p>
 	{% if transformationErrors %}
 	<div class="errorExplanation" id="errorExplanation">
