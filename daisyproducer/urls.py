@@ -24,7 +24,6 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/$', browse.BrowseDetailView.as_view(), name='browse_detail'),
     url(r'^(?P<document_id>\d+).pdf$', browse.as_pdf, name='browse_pdf'),
     url(r'^(?P<document_id>\d+).sbsform$', browse.as_sbsform, name='browse_sbsform'),
-    url(r'^(?P<document_id>\d+).dtb_text_only$', browse.as_text_only_dtb, name='browse_text_only_dtb'),
 ]
 
 # work on pending documents

@@ -3,7 +3,7 @@ import shutil
 import tempfile
 
 from daisyproducer.documents.external import DaisyPipeline, SBSForm, zipDirectory
-from daisyproducer.documents.forms import SBSFormForm, TextOnlyDTBForm
+from daisyproducer.documents.forms import SBSFormForm
 from daisyproducer.documents.models import State, Document, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.core.urlresolvers import reverse
@@ -32,8 +32,7 @@ class BrowseDetailView(DetailView):
         context = super(BrowseDetailView, self).get_context_data(**kwargs)
         context.update({
             'lpform' : LargePrintProfileForm(),
-            'sform' : SBSFormForm(),
-            'textonlydtbform' : TextOnlyDTBForm()})
+            'sform' : SBSFormForm()})
         return context
 
 def as_pdf(request, document_id):
@@ -67,24 +66,3 @@ def as_sbsform(request, document_id):
                                        2 : 'text/x-sbsform-g2'}
     mimetype = contraction_to_mimetype_mapping.get(contraction, 'text/x-sbsform-g2')
     return render_to_mimetype_response(mimetype, document.title.encode('utf-8'), outputFile)
-
-def as_text_only_dtb(request, document_id):
-    form = TextOnlyDTBForm(request.POST)
-
-    if not form.is_valid():
-        return HttpResponseRedirect(reverse('browse_detail', args=[document_id]))
-
-    document = Document.objects.get(pk=document_id)
-    inputFile = document.latest_version().content.path
-    outputDir = tempfile.mkdtemp(prefix="daisyproducer-")
-
-    DaisyPipeline.dtbook2text_only_dtb(
-        inputFile, outputDir,
-        images=document.image_set.all(), **form.cleaned_data)
-
-    zipFile = tempfile.NamedTemporaryFile(suffix='.zip', prefix=document_id, delete=False)
-    zipFile.close() # we are only interested in a unique filename
-    zipDirectory(outputDir, zipFile.name, document.title)
-    shutil.rmtree(outputDir)
-    
-    return render_to_mimetype_response('application/zip', document.title.encode('utf-8'), zipFile.name)
