@@ -15,7 +15,7 @@ TABLES_DIR = os.path.abspath("/usr/local/share/liblouis/tables")
 
 GRADE1_TABLES = ['sbs-wordsplit.dis', 'sbs-de-core6.cti', 'sbs-de-accents.cti', 
                  'sbs-special.cti', 'sbs-whitespace.mod', 'sbs-de-letsign.mod', 
-                 'sbs-numsign.mod', 'sbs-litdigit-upper.mod', 'sbs-de-core.mod', 
+                 'sbs-numsign.mod', 'litdigits6Dots.uti', 'sbs-de-core.mod', 
                  'sbs-de-g1-core.mod', 'sbs-special.mod']
 
 GRADE2_TABLES = GRADE1_TABLES[:]
