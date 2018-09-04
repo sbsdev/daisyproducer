@@ -81,6 +81,11 @@
   </define>
   <define name="brl.time">
     <element name="brl:time">
+      <optional>
+        <attribute name="brl:render">
+          <value>compact</value>
+        </attribute>
+      </optional>
       <attribute name="value">
         <choice>
           <data type="time"/>
