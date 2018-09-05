@@ -143,6 +143,7 @@ This will help in deciding what brl:render attribute to set for this emphasis</a
     <attribute name="brl:render">
       <choice>
         <value>emph</value>
+        <value>emph2</value>
         <value>quote</value>
         <value>singlequote</value>
         <value>ignore</value>

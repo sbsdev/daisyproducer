@@ -570,6 +570,7 @@ for this emphasis</a:documentation>
     <attribute name="brl:render">
       <choice>
         <value>emph</value>
+        <value>emph2</value>
         <value>quote</value>
         <value>singlequote</value>
         <value>ignore</value>
