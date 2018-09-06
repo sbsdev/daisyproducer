@@ -27,26 +27,18 @@ def filterBrlContractionhints(file_path, dir=None):
                                           delete=False, dir=dir)
     tmpFile.close() # we are only interested in a unique filename
     command = (
-        "xsltproc",
-        "--output", tmpFile.name,
-        join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterBrlContractionhints.xsl'),
-        file_path,
-        )
+        "java",
+        "-jar", join('usr', 'share', 'java', 'Saxon-HE.jar'),
+        "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterBrlContractionhints.xsl'),
+        "-s:%s" % file_path,
+        "-o:%s" % tmpFile.name)
     call(command)
     return tmpFile.name
 
 def applyXSL(xsl, stdin, stdout):
     command = (
-        "xsltproc",
-        join(settings.PROJECT_DIR, 'documents', 'xslt', xsl),
-        "-",
-        )
-    return Popen(command, stdin=stdin, stdout=stdout)
-    
-def applyXSL2(xsl, stdin, stdout):
-    command = (
         "java",
-        "-jar", join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'lib', 'saxon9he.jar'),
+        "-jar", join('usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', xsl),
         "-s:-")
     return Popen(command, stdin=stdin, stdout=stdout)
@@ -57,9 +49,10 @@ def isCompactStyle(inputFile):
     `level1`. Return `true` if the `inputFile` contains `level2` but
     all `h2` are empty. Return `false` otherwise."""
     command = (
-        "xsltproc",
-        join(settings.PROJECT_DIR, 'documents', 'xslt', 'isCompactStyle.xsl'),
-        inputFile,
+        "java",
+        "-jar", join('usr', 'share', 'java', 'Saxon-HE.jar'),
+        "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', 'isCompactStyle.xsl'),
+        "-s:%s" % inputFile
         )
     return check_output(command)=="true"
 
@@ -297,8 +290,8 @@ class DaisyPipeline:
         p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
         p4 = applyXSL('filterComments.xsl', p3.stdout, subprocess.PIPE)
         p5 = applyXSL('filterLinenumSpans.xsl', p4.stdout, subprocess.PIPE)
-        p6 = applyXSL2('addEmptyHeaders.xsl', p5.stdout, subprocess.PIPE)
-        p7 = applyXSL2('addBoilerplate.xsl', p6.stdout, tmpFile)
+        p6 = applyXSL('addEmptyHeaders.xsl', p5.stdout, subprocess.PIPE)
+        p7 = applyXSL('addBoilerplate.xsl', p6.stdout, tmpFile)
         p7.communicate()
         for image in images:
             copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
