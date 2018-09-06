@@ -7,7 +7,7 @@
   
   <xsl:param name="contraction" select="2"/>
   
-  <xsl:output method="xml" encoding="utf-8" indent="no"
+  <xsl:output method="xml" encoding="utf-8" indent="yes"
     doctype-public="-//NISO//DTD dtbook 2005-3//EN"
     doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
   
