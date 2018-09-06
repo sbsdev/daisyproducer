@@ -28,7 +28,7 @@ def filterBrlContractionhints(file_path, dir=None):
     tmpFile.close() # we are only interested in a unique filename
     command = (
         "java",
-        "-jar", join('usr', 'share', 'java', 'Saxon-HE.jar'),
+        "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterBrlContractionhints.xsl'),
         "-s:%s" % file_path,
         "-o:%s" % tmpFile.name)
@@ -38,7 +38,7 @@ def filterBrlContractionhints(file_path, dir=None):
 def applyXSL(xsl, stdin, stdout):
     command = (
         "java",
-        "-jar", join('usr', 'share', 'java', 'Saxon-HE.jar'),
+        "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', xsl),
         "-s:-")
     return Popen(command, stdin=stdin, stdout=stdout)
@@ -50,7 +50,7 @@ def isCompactStyle(inputFile):
     all `h2` are empty. Return `false` otherwise."""
     command = (
         "java",
-        "-jar", join('usr', 'share', 'java', 'Saxon-HE.jar'),
+        "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', 'isCompactStyle.xsl'),
         "-s:%s" % inputFile
         )
