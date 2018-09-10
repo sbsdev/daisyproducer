@@ -267,7 +267,7 @@
 
 		<!--ASSERT -->
 <xsl:choose>
-         <xsl:when test="some $continuation in @brl:continuation                               satisfies normalize-space(string-join(following::text()[                               not(ancestor::*[@id and index-of(tokenize($continuation, '\s+'), @id)]) and                               following::*[@id and index-of(tokenize($continuation, '\s+'), @id)]], '')) eq ''"/>
+         <xsl:when test="some $continuation in @brl:continuation satisfies normalize-space(string-join(following::text()[not(ancestor::*[@id and index-of(tokenize($continuation, '\s+'), @id)]) and following::*[@id and index-of(tokenize($continuation, '\s+'), @id)]], '')) eq ''"/>
          <xsl:otherwise>
             <xsl:message>Elements that are linked together with continuation attributes must form a whole that is not broken down by other non-empty nodes.</xsl:message>
          </xsl:otherwise>

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar ns="http://www.daisy.org/z3986/2005/dtbook/" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:brl="http://www.daisy.org/z3986/2009/braille/" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!-- Schematron title and namespaces -->
-  <sch:title> DTBook 2005-3 Schematron tests for SBS </sch:title>
+  <sch:title>DTBook 2005-3 Schematron tests for SBS</sch:title>
   <sch:ns prefix="dtb" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
   <sch:ns prefix="brl" uri="http://www.daisy.org/z3986/2009/braille/"/>
-  <!-- ===================== -->
-  <!-- Vanilla DTBook 2005-3 -->
-  <!-- ===================== -->
+  <!--
+    =====================
+    Vanilla DTBook 2005-3
+    =====================
+  -->
   <include href="dtbook-2005-3.rng">
     <!-- Overwrite required value of version attribute -->
     <define name="dtb.attlist.dtbook" combine="interleave">
@@ -218,9 +220,11 @@
       </element>
     </define>
   </include>
-  <!-- ======= -->
-  <!-- Braille -->
-  <!-- ======= -->
+  <!--
+    =======
+    Braille
+    =======
+  -->
   <include href="dtbook-2005-3-sbs-braille.rng" ns="http://www.daisy.org/z3986/2009/braille/"/>
   <!-- Allow contraction hints and brl:select anywhere an inline element is allowed -->
   <define name="dtb.externalinline" combine="choice">
@@ -391,7 +395,7 @@
       <ref name="brl.classAttribute"/>
     </optional>
   </define>
-  <!-- Allow @brl:render on dtb:em -->
+  <!-- Allow @brl:render and @brl:continuation on dtb:em -->
   <define name="dtb.attlist.em" combine="interleave">
     <optional>
       <ref name="brl.emphasisRenderAttribute"/>
@@ -400,7 +404,7 @@
       <ref name="brl.continuationAttribute"/>
     </optional>
   </define>
-  <!-- Allow @brl:render on dtb:strong -->
+  <!-- Allow @brl:render and @brl:continuation on dtb:strong -->
   <define name="dtb.attlist.strong" combine="interleave">
     <optional>
       <ref name="brl.emphasisRenderAttribute"/>
@@ -423,16 +427,14 @@
     with @xml:lang or @brl:grade, unless the element is <dtbook>
   -->
   <sch:pattern name="sbs_lang_grade" id="sbs_lang_grade">
-		<sch:rule context="*[not(self::dtb:dtbook)][@xml:lang or @brl:grade]">
-			<sch:assert test="not(descendant::*[@xml:lang or @brl:grade])">
-				An element with xml:lang or brl:grade can not have descendants with xml:lang or brl:grade.
-			</sch:assert>
-
-		</sch:rule>
-
-	</sch:pattern>
-  <!-- ============ -->
-  <!-- Continuation -->
-  <!-- ============ -->
+    <sch:rule context="*[not(self::dtb:dtbook)][@xml:lang or @brl:grade]">
+      <sch:assert test="not(descendant::*[@xml:lang or @brl:grade])">An element with xml:lang or brl:grade can not have descendants with xml:lang or brl:grade.</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  <!--
+    ============
+    Continuation
+    ============
+  -->
   <include href="dtbook-2005-3-sbs-continuation.rng" ns="http://www.daisy.org/z3986/2009/braille/"/>
 </grammar>

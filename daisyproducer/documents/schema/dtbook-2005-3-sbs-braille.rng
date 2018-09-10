@@ -83,7 +83,10 @@
     <element name="brl:time">
       <optional>
         <attribute name="brl:render">
-          <value>compact</value>
+          <choice>
+            <value>compact</value>
+            <value>standard</value>
+          </choice>
         </attribute>
       </optional>
       <attribute name="value">

@@ -1180,6 +1180,14 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
   </define>
   <define name="time">
     <element name="brl:time">
+      <optional>
+        <attribute name="brl:render">
+          <choice>
+            <value>compact</value>
+            <value>standard</value>
+          </choice>
+        </attribute>
+      </optional>
       <attribute name="value">
         <choice>
           <data type="time"/>
