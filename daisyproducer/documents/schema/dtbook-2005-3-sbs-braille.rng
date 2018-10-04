@@ -70,33 +70,33 @@
   </define>
   <define name="brl.date">
     <element name="brl:date">
-      <attribute name="value">
-        <choice>
-          <data type="gMonthDay"/>
-          <data type="date"/>
-        </choice>
-      </attribute>
+      <optional>
+        <attribute name="value">
+          <a:documentation>make the value attribute optional, it is no longer used and
+just kept for backwards compatibility</a:documentation>
+          <choice>
+            <data type="gMonthDay"/>
+            <data type="date"/>
+          </choice>
+        </attribute>
+      </optional>
       <text/>
     </element>
   </define>
   <define name="brl.time">
     <element name="brl:time">
       <optional>
-        <attribute name="brl:render">
+        <attribute name="value">
+          <a:documentation>make the value attribute optional, it is no longer used and
+just kept for backwards compatibility</a:documentation>
           <choice>
-            <value>compact</value>
-            <value>standard</value>
+            <data type="time"/>
+            <data type="string">
+              <param name="pattern">\d\d:\d\d</param>
+            </data>
           </choice>
         </attribute>
       </optional>
-      <attribute name="value">
-        <choice>
-          <data type="time"/>
-          <data type="string">
-            <param name="pattern">\d\d:\d\d</param>
-          </data>
-        </choice>
-      </attribute>
       <text/>
     </element>
   </define>
@@ -126,6 +126,12 @@
         </zeroOrMore>
         <zeroOrMore>
           <ref name="dtb.abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.span"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="brl.select"/>
         </zeroOrMore>
       </interleave>
     </element>
