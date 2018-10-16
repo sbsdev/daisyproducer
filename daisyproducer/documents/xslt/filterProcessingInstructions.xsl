@@ -10,7 +10,7 @@
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
 
   <!-- Drop any processing instructions -->
-  <xsl:template match="processing-instruction()"/>
+  <xsl:template match="processing-instruction()" priority="10"/>
 
   <!-- Copy all other elements and attributes -->
   <xsl:template match="node()|@*">

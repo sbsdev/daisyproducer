@@ -8,7 +8,7 @@
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
 
   <!-- Drop comments -->
-  <xsl:template match="comment()"/>
+  <xsl:template match="comment()" priority="10"/>
 
   <!-- Copy all other elements and attributes -->
   <xsl:template match="node()|@*">
