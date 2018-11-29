@@ -1,3 +1,4 @@
+import requests
 import logging
 import louis
 import math
@@ -14,6 +15,7 @@ from subprocess import call, Popen, PIPE, check_output
 
 from django.conf import settings
 from daisyproducer.documents.pipeline2.client import make_job_request, post_job, wait_for_job, delete_job
+import daisyproducer.documents.pipeline2.client2 as client2
 from daisyproducer.version import getVersion
 
 logger = logging.getLogger(__name__)
@@ -399,52 +401,31 @@ class Pipeline2:
     def dtbook2epub3(inputFile, outputPath, images=[], **kwargs):
         """Transform a dtbook xml file to an EPUB3"""
 
-        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
-
-        inputFileHandle = open(inputFile)
-        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml", dir=tmpDir)
-        p1 = applyXSL('filterBrlContractionhints.xsl', inputFileHandle, subprocess.PIPE)
-        p2 = applyXSL('filterProcessingInstructions.xsl', p1.stdout, subprocess.PIPE)
-        p3 = applyXSL('filterTOC.xsl', p2.stdout, subprocess.PIPE)
-        p4 = applyXSL('filterComments.xsl', p3.stdout, subprocess.PIPE)
-        p5 = applyXSL('filterLinenumSpans.xsl', p4.stdout, subprocess.PIPE)
-        p6 = applyXSL2('addEmptyHeaders.xsl', p5.stdout, subprocess.PIPE)
-        p7 = applyXSL2('addBoilerplate.xsl', p6.stdout, tmpFile)
-        p7.communicate()
-
-        # make the temp dir world readable, so that the pipeline2 user can access it
-        os.chmod(tmpDir, 0755)
-        fileName = basename(tmpFile.name)
+        fileName = basename(inputFile)
         epubFileName = splitext(fileName)[0] + ".epub"
-        tmpEpubFileName = join(tempfile.gettempdir(), epubFileName)
 
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
 
-        for image in images:
-            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
-
-        request = make_job_request("dtbook-to-epub3",
-                                   {'source': tmpFile.name},
-                                   {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
-        job = post_job(request)
+        job = client2.post_job("sbs:dtbook-to-ebook",
+                               [inputFile],
+                               {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
         logger.info("Job with id %s submitted to the server", job['id'])
-        job = wait_for_job(job)
+        job = client2.wait_for_job(job)
         if job['status'] == "DONE":
             try:
-                outputDir = [r for r in job['results'] if r['type'] == "option" and r['name'] == "output-dir"][0]
-                epubFile = [f for f in outputDir['files'] if f['href'] == "%s/idx/output-dir/%s" % (outputDir['href'], epubFileName)][0]
-                copyfile(epubFile['file'], tmpEpubFileName)
-                if not delete_job(job['id']):
+                epubFile = [f['href'] for f in job['results'] if f['href'].endswith(".epub")][0]
+                tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".epub")
+                tmpFile.close() # we are only interested in a unique filename
+
+                with open(tmpFile.name, 'w') as file:
+                    file.write(requests.get(epubFile).content)
+                if not client2.delete_job(job['id']):
                     logger.warn("The job %s has not been deleted from the server", job['id'])
-                tmpFile.close()
-                rmtree(tmpDir)
-                return tmpEpubFileName
+                return tmpFile.name
             except IndexError:
                 pass
 
-        tmpFile.close()
-        rmtree(tmpDir)
         errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
         logger.error("Conversion to EPUB3 failed with %s. See %s", errors, job['log'])
         return ("Conversion to EPUB3 failed with:",) + errors
