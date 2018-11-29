@@ -570,6 +570,7 @@ for this emphasis</a:documentation>
     <attribute name="brl:render">
       <choice>
         <value>emph</value>
+        <value>emph2</value>
         <value>quote</value>
         <value>singlequote</value>
         <value>ignore</value>
@@ -1168,25 +1169,33 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
   </define>
   <define name="date">
     <element name="brl:date">
-      <attribute name="value">
-        <choice>
-          <data type="gMonthDay"/>
-          <data type="date"/>
-        </choice>
-      </attribute>
+      <optional>
+        <attribute name="value">
+          <a:documentation>make the value attribute optional, it is no longer used and just
+kept for backwards compatibility</a:documentation>
+          <choice>
+            <data type="gMonthDay"/>
+            <data type="date"/>
+          </choice>
+        </attribute>
+      </optional>
       <text/>
     </element>
   </define>
   <define name="time">
     <element name="brl:time">
-      <attribute name="value">
-        <choice>
-          <data type="time"/>
-          <data type="string">
-            <param name="pattern">\d\d:\d\d</param>
-          </data>
-        </choice>
-      </attribute>
+      <optional>
+        <attribute name="value">
+          <a:documentation>make the value attribute optional, it is no longer used and just
+kept for backwards compatibility</a:documentation>
+          <choice>
+            <data type="time"/>
+            <data type="string">
+              <param name="pattern">\d\d:\d\d</param>
+            </data>
+          </choice>
+        </attribute>
+      </optional>
       <text/>
     </element>
   </define>
@@ -1214,6 +1223,12 @@ can only reference another &lt;em&gt;, a &lt;strong&gt; can only reference anoth
         </zeroOrMore>
         <zeroOrMore>
           <ref name="abbr"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="span"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="select"/>
         </zeroOrMore>
       </interleave>
     </element>

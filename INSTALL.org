@@ -46,7 +46,7 @@ In terms of (Debian/Ubuntu) packages this translates to
 - texlive-lang-german
 - latexmk
 - ttf-tiresias
-- xsltproc
+- libsaxonhe-java
 - jing
 
 Install the basic packages:
@@ -56,7 +56,7 @@ Install the basic packages:
   python-docutils python-libxml2 python-libxslt1 python-pypdf   \
   python-stdnum sun-java6-jre texlive-xetex texlive-latex-extra \
   texlive-latex-recommended texlive-lang-german latexmk         \
-  ttf-tiresias lmodern xsltproc unzip jing
+  ttf-tiresias lmodern libsaxonhe-java unzip jing
 #+END_EXAMPLE
 
 *** Database

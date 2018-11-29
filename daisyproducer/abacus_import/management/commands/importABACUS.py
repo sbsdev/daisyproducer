@@ -91,7 +91,7 @@ class Command(BaseCommand):
                 logger.exception("ABACUS Export file '%s' is not valid.", file)
                 rename_failure_file(file)
             except ValidationError, e:
-                logger.exception("ABACUS Export file '%s' contains an invalid ISBN '%s'.", file, e.value)
+                logger.exception("ABACUS Export file '%s' contains an invalid ISBN or an invalid product number ('%s').", file, e.value)
                 rename_failure_file(file)
             except:
                 logger.exception("ABACUS import failed.")
@@ -137,6 +137,11 @@ def handle_file(file, root, relaxng):
                      params['title'], daisy_producer)
         return 0
     
+    # validate the product number
+    product_type = get_type(product_number)
+    if product_type == None:
+        raise ValidationError(product_number)
+
     product_number_has_been_seen_before = False
     if get_documents_by_product_number(product_number):
         # If the order has been imported before just update the meta data of the existing order
@@ -166,13 +171,12 @@ def handle_file(file, root, relaxng):
         document = update_document(document, params)
         # update the product association
         logger.debug('Updating product association ["%s" -> "%s"].', document.title, product_number)
-        Product.objects.create(identifier=product_number, type=get_type(product_number), document=document)
+        Product.objects.create(identifier=product_number, type=product_type, document=document)
     else:
         # If the the order hasn't been imported before create the new order
         logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".',
                      params['title'], product_number)
         # create and save the document
-        product_type = get_type(product_number)
         if product_type == 3:
             # etext books should have 'in_production' as initial state
             try:

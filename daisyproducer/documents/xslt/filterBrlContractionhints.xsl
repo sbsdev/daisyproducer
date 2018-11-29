@@ -54,7 +54,7 @@
 
   <!-- Copy all other elements and attributes -->
   <xsl:template match="node()|@*">
-    <xsl:copy>
+    <xsl:copy copy-namespaces="no">
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
