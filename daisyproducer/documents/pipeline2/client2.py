@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 # without auth and the default webservice url
 
 NS = "http://www.daisy.org/ns/pipeline/data"
-WS_URL = "http://localhost:8181/ws"
+WS_URL = "http://localhost:8182/ws"
 
 def job_request(script, inputs, options={}):
     root = ET.Element("jobRequest", {'xmlns': 'http://www.daisy.org/ns/pipeline/data'})
