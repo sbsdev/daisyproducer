@@ -20,7 +20,7 @@ def job_request(script, inputs, options={}):
     ET.SubElement(root, "script", {'href': "%s/scripts/%s" % (WS_URL, script)})
     input = ET.SubElement(root, "input", {'name': "source"})
     for item in inputs:
-        ET.SubElement(input, "item", {'value': urllib.quote(item)})
+        ET.SubElement(input, "item", {'value': urllib.quote(os.path.basename(item))})
     for name, value in options.iteritems():
         ET.SubElement(root, "option", {'name': name}).text = value
 
