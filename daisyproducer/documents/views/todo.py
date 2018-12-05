@@ -361,6 +361,11 @@ def preview_epub3(request, document_id):
                 errorMessages = filename
                 return render(request, 'documents/todo_epub3.html', locals())
 
+            # put a copy of the ebook to a shared folder where it is fetched by another process that
+            # puts into the distribution system. See fhs for a rationale about the dest folder
+            # (http://www.pathname.com/fhs/pub/fhs-2.3.html#VARSPOOLAPPLICATIONSPOOLDATA)
+            shutil.copy2(filename, os.path.join('/var/spool/daisyproducer', ebookNumber + '.epub'))
+
             return render_to_mimetype_response('application/epub+zip',
                                                document.title.encode('utf-8'), filename)
     else:
