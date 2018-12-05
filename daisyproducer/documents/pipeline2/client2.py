@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 
 NS = "http://www.daisy.org/ns/pipeline/data"
 WS_URL = "http://localhost:8182/ws"
+POLLING_INTERVAL = 2
 
 def job_request(script, inputs, options={}):
     root = ET.Element("jobRequest", {'xmlns': 'http://www.daisy.org/ns/pipeline/data'})
@@ -45,7 +46,7 @@ def parse_job(job):
 def wait_for_job(job):
     msgIdxs = []
     while True:
-        sleep(0.5)
+        sleep(POLLING_INTERVAL)
         job = get_job(job['id'])
         if not job:
             return None
