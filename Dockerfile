@@ -36,6 +36,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     unzip \
    && rm -rf /var/lib/apt/lists/*
 
+# Set PYTHONUNBUFFERED so output is displayed in the Docker log
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /usr/src/app
 COPY . .
 
