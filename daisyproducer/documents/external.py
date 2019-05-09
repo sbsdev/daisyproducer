@@ -14,7 +14,6 @@ from shutil import rmtree, copyfile
 from subprocess import call, Popen, PIPE, check_output
 
 from django.conf import settings
-from daisyproducer.documents.pipeline2.client import make_job_request, post_job, wait_for_job, delete_job
 import daisyproducer.documents.pipeline2.client2 as client2
 from daisyproducer.version import getVersion
 
@@ -310,38 +309,29 @@ class Pipeline2:
     def dtbook2odt(inputFile, imageFiles=None, **kwargs):
         """Transform a dtbook xml file to a Open Document Format for Office Applications (ODF)"""
         
-        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
-        # make the temp dir world readable, so that the pipeline2 user can access it
-        os.chmod(tmpDir, 0755)
-        fileName = basename(inputFile)
-        odtFileName = splitext(fileName)[0] + ".odt"
-        tmpOdtFileName = join(tempfile.gettempdir(), odtFileName)
-        tmpInputFile = join(tmpDir, fileName)
-        copyfile(inputFile, tmpInputFile)
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
-        for image in imageFiles:
-            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
 
-        request = make_job_request("sbs:dtbook-to-odt", 
-                                   {'source': tmpInputFile}, 
-                                   {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
-        job = post_job(request)
-        logger.info("Job with id %s submitted to the server", job['id'])
-        job = wait_for_job(job)
-        if job and job['status'] == "DONE":
+        job = client2.post_job("sbs:dtbook-to-odt",
+                               [inputFile] + [image.content.path for image in imageFiles],
+                               {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
+
+        job = client2.wait_for_job(job)
+
+        if job['status'] == "DONE":
             try:
-                outputDir = [r for r in job['results'] if r['type'] == "option" and r['name'] == "output-dir"][0]
-                odtFile = [f for f in outputDir['files'] if f['href'] == "%s/idx/output-dir/%s" % (outputDir['href'], odtFileName)][0]
-                copyfile(odtFile['file'], tmpOdtFileName)
-                if not delete_job(job['id']):
+                odtFile = [f['href'] for f in job['results'] if f['href'].endswith(".odt")][0]
+                tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".odt")
+                tmpFile.close() # we are only interested in a unique filename
+
+                with open(tmpFile.name, 'w') as file:
+                    file.write(requests.get(odtFile).content)
+                if not client2.delete_job(job['id']):
                     logger.warn("The job %s has not been deleted from the server", job['id'])
-                rmtree(tmpDir)
-                return tmpOdtFileName
+                return tmpFile.name
             except IndexError:
                 pass
 
-        rmtree(tmpDir)
         if job:
             errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
             logger.error("Conversion to Open Document failed with %s. See %s", errors, job['log'])
@@ -353,39 +343,31 @@ class Pipeline2:
     def dtbook2sbsform(inputFile, imageFiles=[], **kwargs):
         """Transform a dtbook xml file to an SBSForm"""
 
-        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
-        # make the temp dir world readable, so that the pipeline2 user can access it
-        os.chmod(tmpDir, 0755)
-        fileName = basename(inputFile)
-        sbsformFileName = splitext(fileName)[0] + ".sbsform"
-        tmpSbsformFileName = join(tempfile.gettempdir(), sbsformFileName)
-        tmpInputFile = join(tmpDir, fileName)
-        copyfile(inputFile, tmpInputFile)
         kwargs["version"] = getVersion()
         # map True and False to "true" and "false"
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
-        for image in imageFiles:
-            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
+        # map ints to strings as etree (the serializer) only wants strings
+        kwargs.update([(k, str(v)) for (k, v) in kwargs.iteritems() if isinstance(v, int)])
 
-        request = make_job_request("sbs:dtbook-to-sbsform", 
-                                   {'source': tmpInputFile}, 
-                                   {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
-        job = post_job(request)
-        logger.info("Job with id %s submitted to the server", job['id'])
-        job = wait_for_job(job)
+        job = client2.post_job("sbs:dtbook-to-sbsform",
+                               [inputFile] + [image.content.path for image in imageFiles],
+                               {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
+        job = client2.wait_for_job(job)
+
         if job['status'] == "DONE":
             try:
-                outputDir = [r for r in job['results'] if r['type'] == "option" and r['name'] == "output-dir"][0]
-                sbsformFile = [f for f in outputDir['files'] if f['href'] == "%s/idx/output-dir/%s" % (outputDir['href'], sbsformFileName)][0]
-                copyfile(sbsformFile['file'], tmpSbsformFileName)
-                if not delete_job(job['id']):
+                sbsformFile = [f['href'] for f in job['results'] if f['href'].endswith(".sbsform")][0]
+                tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".sbsform")
+                tmpFile.close() # we are only interested in a unique filename
+
+                with open(tmpFile.name, 'w') as file:
+                    file.write(requests.get(sbsformFile).content)
+                if not client2.delete_job(job['id']):
                     logger.warn("The job %s has not been deleted from the server", job['id'])
-                rmtree(tmpDir)
-                return tmpSbsformFileName
+                return tmpFile.name
             except IndexError:
                 pass
 
-        rmtree(tmpDir)
         errors = tuple(set([m['text'] for m in job['messages'] if m['level']=='ERROR']))
         logger.error("Conversion to SBSForm failed with %s. See %s", errors, job['log'])
         return ("Conversion to SBSForm failed with:",) + errors
