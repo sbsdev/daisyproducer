@@ -354,8 +354,10 @@ def preview_epub3(request, document_id):
             ebookNumber = form.cleaned_data.pop('ebookNumber')
 
             filename = Pipeline2.dtbook2epub3(
-                inputFile, outputDir,
-                images=document.image_set.all(), **form.cleaned_data)
+                inputFile,
+                outputDir,
+                imageFiles=document.image_set.all(),
+                **form.cleaned_data)
             if isinstance(filename, tuple):
                 # if filename is a tuple we're actually looking at a list of error messages
                 errorMessages = filename

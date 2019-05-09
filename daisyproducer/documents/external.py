@@ -306,7 +306,7 @@ class Pipeline2:
         return [p.sub(r'\1', line) for line in lines if p.match(line)]
 
     @staticmethod
-    def dtbook2odt(inputFile, imageFiles=None, **kwargs):
+    def dtbook2odt(inputFile, imageFiles=[], **kwargs):
         """Transform a dtbook xml file to a Open Document Format for Office Applications (ODF)"""
         
         # map True and False to "true" and "false"
@@ -373,7 +373,7 @@ class Pipeline2:
         return ("Conversion to SBSForm failed with:",) + errors
 
     @staticmethod
-    def dtbook2epub3(inputFile, outputPath, images=[], **kwargs):
+    def dtbook2epub3(inputFile, outputPath, imageFiles=[], **kwargs):
         """Transform a dtbook xml file to an EPUB3"""
 
         fileName = basename(inputFile)
@@ -383,7 +383,7 @@ class Pipeline2:
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
 
         job = client2.post_job("sbs:dtbook-to-ebook",
-                               [inputFile],
+                               [inputFile] + [image.content.path for image in imageFiles],
                                {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
         logger.info("Job with id %s submitted to the server", job['id'])
         job = client2.wait_for_job(job)
