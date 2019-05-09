@@ -247,7 +247,7 @@ def preview_sbsform_new(request, document_id):
     else:
         form = SBSFormForm()
 
-    return render(request, 'documents/todo_sbsform.html', locals())
+    return render(request, 'documents/todo_sbsform_new.html', locals())
 
 @login_required
 def preview_pdf(request, document_id):

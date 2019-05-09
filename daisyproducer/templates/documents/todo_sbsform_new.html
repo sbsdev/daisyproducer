@@ -1,0 +1,43 @@
+{% extends "documents/todo.html" %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Preview Braille" %} - {{ document.title }}{% endblock %}
+
+{% block content %}
+{% if document %}
+
+<h2>{% trans "Preview Braille (Pipeline2)" %}</h2>
+
+<div class="issue">
+  
+  <h3>{{ document.title }}</h3>
+  
+  {% include "documents/documentDetails.html" %}
+
+  <div id="relations">
+    <form method="post" action="{% url 'todo_sbsform_new' document.id %}">{% csrf_token %}
+      <p>
+	{% if errorMessages %}
+	<div class="errorExplanation" id="errorExplanation">
+	  {% trans "Unable to complete the preview" %}
+	  <ul>
+	    {% for error in errorMessages %}
+	    <li>{{ error }}</li>
+	    {% endfor %}
+	  </ul>
+	</div>
+	{% endif %}
+	<table>
+	  {{ form.as_table }}
+	</table>
+      <p>
+	<input type="submit" value="{% trans 'Preview' %}" />
+	<a href="{% url 'todo_detail' document.id %}">{% trans 'Cancel' %}</a>
+      </p>
+    </form>
+  </div>
+</div>
+{% else %}
+<p class="nodata">{% trans "No data to display" %}</p>
+{% endif %}
+{% endblock %}
