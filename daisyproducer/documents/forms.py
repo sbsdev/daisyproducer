@@ -220,7 +220,7 @@ class RTFForm(forms.Form):
 class EPUBForm(forms.Form):
     pass
 
-class TextOnlyDTBForm(forms.Form):
+class EPUB3Form(forms.Form):
     ebookNumber = forms.RegexField(label=_("EBook Number"),regex="^EB\d{5}")
 
 class ODTForm(forms.Form):

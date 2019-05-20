@@ -1,0 +1,5 @@
+*.pyc
+*~
+TAGS
+.git
+daisyproducer/archive

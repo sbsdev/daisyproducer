@@ -24,7 +24,6 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/$', browse.BrowseDetailView.as_view(), name='browse_detail'),
     url(r'^(?P<document_id>\d+).pdf$', browse.as_pdf, name='browse_pdf'),
     url(r'^(?P<document_id>\d+).sbsform$', browse.as_sbsform, name='browse_sbsform'),
-    url(r'^(?P<document_id>\d+).dtb_text_only$', browse.as_text_only_dtb, name='browse_text_only_dtb'),
 ]
 
 # work on pending documents
@@ -45,7 +44,7 @@ urlpatterns += [
     url(r'^todo/(?P<document_id>\d+)/preview_rtf$', todo.preview_rtf, name='todo_rtf'),
     url(r'^todo/(?P<document_id>\d+)/preview_epub$', todo.preview_epub, name='todo_epub'),
     url(r'^todo/(?P<document_id>\d+)/preview_odt$', todo.preview_odt, name='todo_odt'),
-    url(r'^todo/(?P<document_id>\d+)/preview_text_only_dtb$', todo.preview_text_only_dtb, name='todo_text_only_dtb'),
+    url(r'^todo/(?P<document_id>\d+)/preview_epub3$', todo.preview_epub3, name='todo_epub3'),
     url(r'^todo/(?P<document_id>\d+)/preview_dtb$', todo.preview_dtb, name='todo_dtb'),
 ]
 

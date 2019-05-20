@@ -1,12 +1,12 @@
 {% extends "documents/todo.html" %}
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {% trans "Preview Text-Only Daisy book" %} - {{ document.title }}{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Preview Braille" %} - {{ document.title }}{% endblock %}
 
 {% block content %}
 {% if document %}
 
-<h2>{% trans "Preview Text-Only Daisy book" %}</h2>
+<h2>{% trans "Preview Braille (Pipeline2)" %}</h2>
 
 <div class="issue">
   
@@ -15,13 +15,13 @@
   {% include "documents/documentDetails.html" %}
 
   <div id="relations">
-    <form method="post" action="{% url 'todo_text_only_dtb' document.id %}">{% csrf_token %}
+    <form method="post" action="{% url 'todo_sbsform_new' document.id %}">{% csrf_token %}
       <p>
-	{% if transformationErrors %}
+	{% if errorMessages %}
 	<div class="errorExplanation" id="errorExplanation">
 	  {% trans "Unable to complete the preview" %}
 	  <ul>
-	    {% for error in transformationErrors %}
+	    {% for error in errorMessages %}
 	    <li>{{ error }}</li>
 	    {% endfor %}
 	  </ul>
@@ -30,7 +30,6 @@
 	<table>
 	  {{ form.as_table }}
 	</table>
-      </p>
       <p>
 	<input type="submit" value="{% trans 'Preview' %}" />
 	<a href="{% url 'todo_detail' document.id %}">{% trans 'Cancel' %}</a>
