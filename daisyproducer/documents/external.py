@@ -313,7 +313,8 @@ class Pipeline2:
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
 
         job = client2.post_job("sbs:dtbook-to-odt",
-                               [inputFile] + [image.content.path for image in imageFiles],
+                               [inputFile],
+                               [image.content.path for image in imageFiles],
                                {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
 
         job = client2.wait_for_job(job)
@@ -350,7 +351,8 @@ class Pipeline2:
         kwargs.update([(k, str(v)) for (k, v) in kwargs.iteritems() if isinstance(v, int)])
 
         job = client2.post_job("sbs:dtbook-to-sbsform",
-                               [inputFile] + [image.content.path for image in imageFiles],
+                               [inputFile],
+                               [image.content.path for image in imageFiles],
                                {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
         job = client2.wait_for_job(job)
 
@@ -383,7 +385,8 @@ class Pipeline2:
         kwargs.update([(k, str(v).lower()) for (k, v) in kwargs.iteritems() if isinstance(v, bool)])
 
         job = client2.post_job("sbs:dtbook-to-ebook",
-                               [inputFile] + [image.content.path for image in imageFiles],
+                               [inputFile],
+                               [image.content.path for image in imageFiles],
                                {k.replace("_","-"): v for (k, v) in kwargs.iteritems()})
         logger.info("Job with id %s submitted to the server", job['id'])
         job = client2.wait_for_job(job)

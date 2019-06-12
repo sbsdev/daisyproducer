@@ -67,9 +67,9 @@ def job_data(inputs):
 
     return tempFile.name
 
-def post_job(script, inputs, options={}):
+def post_job(script, inputs, data, options={}):
     payload = {'job-request': job_request(script, inputs, options)}
-    files = {'job-data': open(job_data(inputs), 'rb')}
+    files = {'job-data': open(job_data(inputs+data), 'rb')}
     r = requests.post("%s/jobs" % WS_URL, data=payload, files=files)
     root = ET.fromstring(r.text)
     return parse_job(root)
