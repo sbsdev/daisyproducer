@@ -258,29 +258,6 @@ class DaisyPipeline:
         os.remove(tmpFile)
 
     @staticmethod
-    def dtbook2epub(inputFile, outputFile, images, **kwargs):
-        """Transform a dtbook xml file to EPUB"""
-        tmpDir = tempfile.mkdtemp(prefix="daisyproducer-")
-        tmpFile = filterBrlContractionhints(inputFile, tmpDir)
-        # make the file name of the html a bit nicer. Let's just call it 'content.html'
-        niceName = join(tmpDir, "content.html")
-        os.rename(tmpFile, niceName)
-        for image in images:
-            copyfile(image.content.path, join(tmpDir, basename(image.content.path)))
-        command = (
-            join(settings.DAISY_PIPELINE_PATH, 'pipeline.sh'),
-            join(settings.DAISY_PIPELINE_PATH, 'scripts',
-                 'create_distribute', 'epub', 'OPSCreator.taskScript'),
-            "--input=%s" % niceName,
-            "--output=%s" % outputFile,
-            )
-        for k, v in kwargs.iteritems():
-            value = v.encode('utf8') if isinstance(v, str) or isinstance(v, unicode) else v
-            command += ("--%s=%s" % (k,value),)
-        call(command)
-        rmtree(tmpDir)
-
-    @staticmethod
     def dtbook2dtb(inputFile, outputPath, **kwargs):
         """Transform a dtbook xml file to a Daisy Full-Text Full-Audio book"""
         tmpFile = filterBrlContractionhints(inputFile)

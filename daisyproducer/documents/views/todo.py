@@ -1,7 +1,7 @@
 import shutil, tempfile, os.path
 
 from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory, Pipeline2
-from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, PartialImageForm, MarkupForm, SBSFormForm, RTFForm, EPUBForm, EPUB3Form, DTBForm, SalePDFForm, ODTForm
+from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, PartialImageForm, MarkupForm, SBSFormForm, RTFForm, EPUB3Form, DTBForm, SalePDFForm, ODTForm
 from daisyproducer.documents.models import Document, Version, Attachment, Image, Product, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.contrib.auth.decorators import login_required
@@ -314,32 +314,6 @@ def preview_rtf(request, document_id):
         form = RTFForm()
 
     return render(request, 'documents/todo_rtf.html', locals())
-
-@login_required
-def preview_epub(request, document_id):
-    document = get_object_or_404(Document, pk=document_id)
-
-    if request.method == 'POST':
-        form = EPUBForm(request.POST)
-        if form.is_valid():
-            inputFile = document.latest_version().content.path
-            outputFile = "/tmp/%s.epub" % document_id
-            defaults = {
-                "dctitle" : document.title, 
-                "dcidentifier" : document.identifier, 
-                "dclanguage" : document.language, 
-                "dccreator" : document.author, 
-                "dcpublisher" : document.publisher, 
-                "dcdate" : document.date}
-            defaults.update(form.cleaned_data)
-            DaisyPipeline.dtbook2epub(inputFile, outputFile,
-                                      images=document.image_set.all(), **defaults)
-            return render_to_mimetype_response('application/epub+zip', 
-                                               document.title.encode('utf-8'), outputFile)
-    else:
-        form = EPUBForm()
-
-    return render(request, 'documents/todo_epub.html', locals())
 
 @login_required
 def preview_epub3(request, document_id):
