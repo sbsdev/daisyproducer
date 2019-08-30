@@ -1,9 +1,11 @@
+# coding=utf-8
 import os
+import re
 import unicodedata
 import codecs
 import tempfile
 
-from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables, write_words_with_wrong_default_translation, translate
+from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables, write_words_with_wrong_default_translation, translate, DUMMY_TEXT
 from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, LookupGlobalWordForm, GlobalWordBothGradesForm, FilterForm, PaginationForm, FilterWithGradeForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.dictionary.importExport import exportWords
@@ -33,6 +35,20 @@ MAX_WORDS_PER_PAGE = 25
 final_sort_order = State.objects.aggregate(final_sort_order=Max('sort_order')).get('final_sort_order')
 
 HUGE_TREE_PARSER = etree.XMLParser(huge_tree=True)
+
+def addEllipsis(word):
+    if word.startswith("-"):
+        word = ''.join([DUMMY_TEXT, word[1:]])
+    if word.endswith("-"):
+        word = ''.join([word[:-1], DUMMY_TEXT])
+    return word
+
+def addEllipsisToBraille(braille, word):
+    if word.startswith(DUMMY_TEXT):
+        braille = ''.join([DUMMY_TEXT, braille])
+    if word.endswith(DUMMY_TEXT):
+        braille = ''.join([braille, DUMMY_TEXT])
+    return braille
 
 @login_required
 @transaction.atomic
@@ -110,17 +126,32 @@ def check(request, document_id, grade):
     filtered_tree = transform(tree)
     # grab the rest of the content
     content = etree.tostring(filtered_tree, method="text", encoding=unicode)
+
+    # extract words with supplement hyphen (Wortersatzstrich or Ergänzungsstrich as Duden calls them)
+    supplement_hyphen_content = ''.join(
+        # replace Punctuation Dash and Punctuation other (except for "'" and "-") with space
+        c if c == u"\u0027" or c == u"\u002d" or unicodedata.category(c) not in ['Pd', 'Po'] else ' '
+        for c in content
+        # drop all chars which are not letters, separators or select
+        # punctuation which we replace with space later on
+        if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp', 'Pd', 'Po']
+        or c in ['\n', '\r'])
+    # look for words starting or ending with hyphen
+    SUPPLEMENT_HYPHEN_RE = re.compile(r"^-\w{2,}|\w{2,}-$")
+    new_hyphen_words = set((addEllipsis(w.lower()) for w in (m.group() for m in (SUPPLEMENT_HYPHEN_RE.match(w) for w in supplement_hyphen_content.split()) if m)))
     # filter all punctuation and replace dashes by space, so we can split by space below
     content = ''.join(
         # replace Punctuation Dash and Punctuation other (except for "'") with space
         c if c == u"\u0027" or unicodedata.category(c) not in ['Pd', 'Po'] else ' '
-        for c in content 
+        for c in content
         # drop all chars which are not letters, separators or select
         # punctuation which we replace with space later on
         if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp', 'Pd', 'Po']
         or c in ['\n', '\r'])
 
     new_words = set((w.lower() for w in content.split() if len(w) > 1))
+    # add the words with supplement hyphen to the new words
+    new_words = new_words | new_hyphen_words
     # FIXME: We basically do a set difference manually here. This
     # would probably be better if done inside the db. However for that
     # we would have to be able to insert the new_words into the db in
@@ -142,7 +173,7 @@ def check(request, document_id, grade):
                            chain(GlobalWord.objects.filter(grade=grade).exclude(type__in=(2,4,5)).filter(untranslated__in=new_words).values_list('untranslated', flat=True),
                                  LocalWord.objects.filter(grade=grade).exclude(type__in=(2,4,5)).filter(document=document).filter(untranslated__in=new_words).values_list('untranslated', flat=True))))
     unknown_words = [{'untranslated': word, 
-                      'braille': translate(getTables(grade), word),
+                      'braille': addEllipsisToBraille(translate(getTables(grade), word), word),
                       'type' : 0,
                       'homograph_disambiguation': ''}
                      for word in new_words - duplicate_words]

@@ -38,6 +38,8 @@ def getTables(grade, name=False, place=False):
         else:
             return GRADE2_TABLES
 
+DUMMY_TEXT = u"┊"
+
 asciiToDotsMap = {
     u'A': "1",
     u'B': "12",
@@ -199,6 +201,7 @@ asciiToDotsMap = {
     u'ẃ': "4-2456",
     u'ẅ': "4-2456",
     u'ỳ': "4-13456",
+    DUMMY_TEXT: "abcdef",
     }
 
 # register a special handler which translates unknown utf-8 into
