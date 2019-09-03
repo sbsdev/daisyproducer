@@ -127,6 +127,10 @@ def check(request, document_id, grade):
     # grab the rest of the content
     content = etree.tostring(filtered_tree, method="text", encoding=unicode)
 
+    # extract words with ellipsis
+    ELLIPSIS_RE = re.compile(r"\w{2,}\.{3}|\.{3}\w{2,}", re.UNICODE)
+    new_ellipsis_words = set((w.lower().replace(u"...", DUMMY_TEXT) for w in ELLIPSIS_RE.findall(content)))
+
     # extract words with supplement hyphen (Wortersatzstrich or Ergänzungsstrich as Duden calls them)
     supplement_hyphen_content = ''.join(
         # replace Punctuation Dash and Punctuation other (except for "'" and "-") with space
@@ -151,7 +155,7 @@ def check(request, document_id, grade):
 
     new_words = set((w.lower() for w in content.split() if len(w) > 1))
     # add the words with supplement hyphen to the new words
-    new_words = new_words | new_hyphen_words
+    new_words = new_words | new_hyphen_words | new_ellipsis_words
     # FIXME: We basically do a set difference manually here. This
     # would probably be better if done inside the db. However for that
     # we would have to be able to insert the new_words into the db in
