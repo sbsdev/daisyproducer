@@ -4,9 +4,10 @@ import re
 import unicodedata
 import codecs
 import tempfile
+import requests
 
 from daisyproducer.dictionary.brailleTables import writeLocalTables, getTables, write_words_with_wrong_default_translation, translate, DUMMY_TEXT
-from daisyproducer.dictionary.forms import RestrictedWordForm, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, LookupGlobalWordForm, GlobalWordBothGradesForm, FilterForm, PaginationForm, FilterWithGradeForm
+from daisyproducer.dictionary.forms import RestrictedWordForm, RestrictedWordFormWithHyphenation, ConfirmWordForm, ConflictingWordForm, ConfirmDeferredWordForm, PartialGlobalWordForm, LookupGlobalWordForm, GlobalWordBothGradesForm, FilterForm, PaginationForm, FilterWithGradeForm
 from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.dictionary.importExport import exportWords
 from daisyproducer.statistics.models import DocumentStatistic
@@ -51,6 +52,11 @@ def addEllipsisToBraille(braille, word):
         braille = ''.join([braille, DUMMY_TEXT])
     return braille
 
+def getHyphenation(request, word, spelling):
+    url = "%s://%s/hyphenations/api/hyphenate?word=%s&spelling=%s" % (request.scheme, request.get_host(), word, spelling)
+    response = requests.get(url)
+    return response.content if response.ok else 'Hyphenation not available'
+
 @login_required
 @transaction.atomic
 def check(request, document_id, grade):
@@ -84,6 +90,12 @@ def check(request, document_id, grade):
                   stdin=content.file, stdout=PIPE, contraction=grade)
     filtered_content = p1.communicate()[0]
     tree = etree.XML(filtered_content, parser=HUGE_TREE_PARSER)
+
+    # find out the spelling of the document. This is needed later to
+    # determine the correct hyphenation
+    languages = tree.xpath('//@xml:lang')
+    language = languages[0] if languages else None
+    spelling = 2 if '1901' in language else 1
 
     # grab the homographs
     homographs = set(("|".join(homograph.xpath('text()')).lower() 
@@ -196,7 +208,8 @@ def check(request, document_id, grade):
     unknown_words = [{'untranslated': word, 
                       'braille': addEllipsisToBraille(translate(getTables(grade), word), word),
                       'type' : 0,
-                      'homograph_disambiguation': ''}
+                      'homograph_disambiguation': '',
+                      'hyphenation': getHyphenation(request, word, spelling)}
                      for word in new_words - duplicate_words]
 
     unknown_words = unknown_words + unknown_homographs + unknown_names + unknown_places
@@ -220,7 +233,7 @@ def check(request, document_id, grade):
 
     WordFormSet = modelformset_factory(
         LocalWord, 
-        form=RestrictedWordForm,
+        form=RestrictedWordFormWithHyphenation if grade == 2 else RestrictedWordForm,
         exclude=('document', 'isConfirmed', 'isDeferred', 'grade'), 
         extra=len(words.object_list), can_delete=True)
 

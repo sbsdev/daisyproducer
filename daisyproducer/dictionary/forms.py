@@ -73,6 +73,9 @@ class RestrictedWordForm(PartialWordForm):
 
         return cleaned_data
 
+class RestrictedWordFormWithHyphenation(RestrictedWordForm):
+    hyphenation = forms.CharField(label='Hyphenation', widget=forms.TextInput(attrs={'readonly':'readonly'}))
+
 class PartialGlobalWordForm(ModelForm):
     class Meta:
         fields = "__all__"
