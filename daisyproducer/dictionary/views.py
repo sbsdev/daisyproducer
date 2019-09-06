@@ -154,6 +154,12 @@ def check(request, document_id, grade):
         or c in ['\n', '\r'])
 
     new_words = set((w.lower() for w in content.split() if len(w) > 1))
+
+    # words with supplement hyphens and ellipsis will also be found
+    # above. But quite often they aren't real words that can stand on
+    # their own. So we filter them from new_words
+    new_words -= set((w.replace(DUMMY_TEXT, '')  for w in new_hyphen_words | new_ellipsis_words))
+
     # add the words with supplement hyphen to the new words
     new_words = new_words | new_hyphen_words | new_ellipsis_words
     # FIXME: We basically do a set difference manually here. This
