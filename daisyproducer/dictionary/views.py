@@ -141,12 +141,14 @@ def check(request, document_id, grade):
         if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp', 'Pd', 'Po']
         or c in ['\n', '\r'])
     # look for words starting or ending with hyphen
-    SUPPLEMENT_HYPHEN_RE = re.compile(r"\w{2,}-(\W|$)|(^|\W)-\w{2,}", re.UNICODE)
+    SUPPLEMENT_HYPHEN_RE = re.compile(r"^-\w{2,}|\w{2,}-$", re.UNICODE)
     new_hyphen_words = set((addEllipsis(w.lower()) for w in (m.group() for m in (SUPPLEMENT_HYPHEN_RE.match(w) for w in supplement_hyphen_content.split()) if m)))
 
     # now drop all supplement hyphen and ellipsis words from the content
-    content = re.sub(ELLIPSIS_RE, "", content)
-    content = re.sub(SUPPLEMENT_HYPHEN_RE, "", content)
+    for ellipsis_word in set((w.replace(DUMMY_TEXT, u"...") for w in new_ellipsis_words)):
+        content = content.replace(ellipsis_word, "")
+    for supplement_hyphen_word in set((w.replace(DUMMY_TEXT, u"-") for w in new_hyphen_words)):
+        content = content.replace(supplement_hyphen_word, "")
 
     # filter all punctuation and replace dashes by space, so we can split by space below
     content = ''.join(
