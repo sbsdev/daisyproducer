@@ -143,6 +143,12 @@ def check(request, document_id, grade):
     # look for words starting or ending with hyphen
     SUPPLEMENT_HYPHEN_RE = re.compile(r"^-\w{2,}|\w{2,}-$", re.UNICODE)
     new_hyphen_words = set((addEllipsis(w.lower()) for w in (m.group() for m in (SUPPLEMENT_HYPHEN_RE.match(w) for w in supplement_hyphen_content.split()) if m)))
+
+    # now drop all supplement hyphen and ellipsis words from the content
+    content = re.sub(ELLIPSIS_RE, "", content)
+    SUPPLEMENT_HYPHEN_RE = re.compile(r"\w{2,}-|-\w{2,}", re.UNICODE) # need to redefine this regexp as we have slightly different requirements than above
+    content = re.sub(SUPPLEMENT_HYPHEN_RE, "", content)
+
     # filter all punctuation and replace dashes by space, so we can split by space below
     content = ''.join(
         # replace Punctuation Dash and Punctuation other (except for "'") with space
@@ -154,11 +160,6 @@ def check(request, document_id, grade):
         or c in ['\n', '\r'])
 
     new_words = set((w.lower() for w in content.split() if len(w) > 1))
-
-    # words with supplement hyphens and ellipsis will also be found
-    # above. But quite often they aren't real words that can stand on
-    # their own. So we filter them from new_words
-    new_words -= set((w.replace(DUMMY_TEXT, '')  for w in new_hyphen_words | new_ellipsis_words))
 
     # add the words with supplement hyphen to the new words
     new_words = new_words | new_hyphen_words | new_ellipsis_words
