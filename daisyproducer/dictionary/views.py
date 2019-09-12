@@ -142,7 +142,7 @@ def check(request, document_id, grade):
         or c in ['\n', '\r'])
     # look for words starting or ending with hyphen
     SUPPLEMENT_HYPHEN_RE = re.compile(r"^-\w{2,}|\w{2,}-$", re.UNICODE)
-    new_hyphen_words = set((addEllipsis(w.lower()) for w in (m.group() for m in (SUPPLEMENT_HYPHEN_RE.match(w) for w in supplement_hyphen_content.split()) if m)))
+    new_hyphen_words = set((addEllipsis(w.lower()) for w in (m.group() for m in (SUPPLEMENT_HYPHEN_RE.search(w) for w in supplement_hyphen_content.split()) if m)))
 
     # now drop all supplement hyphen and ellipsis words from the content
     for ellipsis_word in set((w.replace(DUMMY_TEXT, u"...") for w in new_ellipsis_words)):
