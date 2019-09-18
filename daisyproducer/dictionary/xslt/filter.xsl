@@ -18,10 +18,20 @@
   
   <!-- Drop the abbr elements -->
   <xsl:template match="dtb:abbr"/>
-  
+
   <!-- Drop the num elements -->
   <xsl:template match="brl:num"/>
-  
+
+  <!-- Drop hyphens immediately before an abbr or a num -->
+  <xsl:template match="text()[ends-with(., '-') and following-sibling::*[1][self::dtb:abbr or self::brl:num]]">
+    <xsl:value-of select="substring(., 1, string-length(.)-1)"/>
+  </xsl:template>
+
+  <!-- Drop hyphens immediately after an abbr or a num -->
+  <xsl:template match="text()[starts-with(., '-') and preceding-sibling::*[1][self::dtb:abbr or self::brl:num]]">
+    <xsl:value-of select="substring(., 2)"/>
+  </xsl:template>
+
   <!-- Drop brl:literals -->
   <xsl:template match="brl:literal"/>
   
