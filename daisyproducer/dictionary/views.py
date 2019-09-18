@@ -132,8 +132,8 @@ def check(request, document_id, grade):
     new_ellipsis_words = set((w.lower().replace(u"...", DUMMY_TEXT) for w in ELLIPSIS_RE.findall(content)))
 
     # drop hyphens in between words
-    HYPHEN_RE = re.compile(r"(\w{2,})(-)(\w{2,})", re.UNICODE)
-    content = HYPHEN_RE.sub(r"\1 \3", content)
+    HYPHEN_RE = re.compile(r"(\w)-(\w)", re.UNICODE)
+    content = HYPHEN_RE.sub(r"\1 \2", content)
 
     # extract words with supplement hyphen (Wortersatzstrich or Ergänzungsstrich as Duden calls them)
     supplement_hyphen_content = ''.join(
