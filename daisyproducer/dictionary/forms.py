@@ -75,6 +75,7 @@ class RestrictedWordForm(PartialWordForm):
 
 class RestrictedWordFormWithHyphenation(RestrictedWordForm):
     hyphenation = forms.CharField(label='Hyphenation', widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    field_order = ('untranslated', 'braille', 'type', 'homograph_disambiguation', 'hyphenation', 'isLocal')
 
 class PartialGlobalWordForm(ModelForm):
     class Meta:
