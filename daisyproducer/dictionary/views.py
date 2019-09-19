@@ -11,7 +11,7 @@ from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.dictionary.importExport import exportWords
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document, State
-from daisyproducer.documents.external import saxon9he, applyXSL
+from daisyproducer.documents.external import applyXSL
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
@@ -80,9 +80,12 @@ def check(request, document_id, grade):
     # filter some words from the xml
     content = document.latest_version().content
     content.open()
-    # strip='none': if this parameter is not set, whitespace is removed automatically for documents with a DOCTYPE declaration
-    tree = etree.parse(saxon9he(content.file, os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'), '-strip:none', contraction=grade).stdout, parser=HUGE_TREE_PARSER)
+    p1 = applyXSL(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'),
+                  '-strip:none', # if this is not set, whitespace is removed automatically for documents with a DOCTYPE declaration
+                  stdin=content.file, stdout=PIPE, contraction=grade)
     content.close()
+    filtered_content = p1.communicate()[0]
+    tree = etree.XML(filtered_content, parser=HUGE_TREE_PARSER)
 
     # grab the homographs
     homographs = set(("|".join(homograph.xpath('text()')).lower() 
