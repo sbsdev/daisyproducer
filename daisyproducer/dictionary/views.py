@@ -79,11 +79,9 @@ def check(request, document_id, grade):
 
     # filter some words from the xml
     content = document.latest_version().content
-    content.open()
     p1 = applyXSL(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'),
                   '-strip:none', # if this is not set, whitespace is removed automatically for documents with a DOCTYPE declaration
                   stdin=content.file, stdout=PIPE, contraction=grade)
-    content.close()
     filtered_content = p1.communicate()[0]
     tree = etree.XML(filtered_content, parser=HUGE_TREE_PARSER)
 
@@ -125,10 +123,8 @@ def check(request, document_id, grade):
 
     # filter homographs, names and places from the xml
     content = document.latest_version().content
-    content.open()
     p1 = applyXSL(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'),
                   '-strip:none', stdin=content.file, stdout=PIPE, contraction=grade)
-    content.close()
     p2 = applyXSL(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter_names.xsl'),
                   '-strip:none', stdin=p1.stdout, stdout=PIPE, contraction=grade)
     p3 = applyXSL(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'to_string.xsl'),
