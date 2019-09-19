@@ -36,13 +36,18 @@ def filterBrlContractionhints(file_path, dir=None):
     call(command)
     return tmpFile.name
 
-def applyXSL(xsl, stdin, stdout):
+def applyXSL(xsl, *args, **params):
+    stdin = params.pop('stdin', None)
+    stdout = params.pop('stdout', None)
+    stderr = params.pop('stderr', None)
     command = (
         "java",
         "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', xsl),
         "-s:-")
-    return Popen(command, stdin=stdin, stdout=stdout)
+    command = command + tuple(args)
+    command = command + tuple(["%s=%s" % (key,value) for key,value in params.iteritems()])
+    return Popen(command, stdin=stdin, stdout=stdout, stderr=stderr)
 
 def isCompactStyle(inputFile):
     """Given an `inputFile` determine whether it should be rendered using

@@ -11,7 +11,7 @@ from daisyproducer.dictionary.models import GlobalWord, LocalWord
 from daisyproducer.dictionary.importExport import exportWords
 from daisyproducer.statistics.models import DocumentStatistic
 from daisyproducer.documents.models import Document, State
-from daisyproducer.documents.external import saxon9he
+from daisyproducer.documents.external import saxon9he, applyXSL
 from daisyproducer.documents.views.utils import render_to_mimetype_response
 from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
@@ -28,6 +28,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from collections import defaultdict
 from itertools import chain
 from lxml import etree
+from subprocess import Popen, PIPE
 
 BRL_NAMESPACE = {'brl':'http://www.daisy.org/z3986/2009/braille/'}
 MAX_WORDS_PER_PAGE = 25
@@ -120,12 +121,16 @@ def check(request, document_id, grade):
                       for place in places - duplicate_places]
 
     # filter homographs, names and places from the xml
-    xsl = etree.parse(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter_names.xsl'),
-                      parser=HUGE_TREE_PARSER)
-    transform = etree.XSLT(xsl)
-    filtered_tree = transform(tree)
-    # grab the rest of the content
-    content = etree.tostring(filtered_tree, method="text", encoding=unicode)
+    content = document.latest_version().content
+    content.open()
+    p1 = applyXSL(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter.xsl'),
+                  '-strip:none', stdin=content.file, stdout=PIPE, contraction=grade)
+    content.close()
+    p2 = applyXSL(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'filter_names.xsl'),
+                  '-strip:none', stdin=p1.stdout, stdout=PIPE, contraction=grade)
+    p3 = applyXSL(os.path.join(settings.PROJECT_DIR, 'dictionary', 'xslt', 'to_string.xsl'),
+                  '-strip:none', stdin=p2.stdout, stdout=PIPE)
+    content = p3.communicate()[0].decode(encoding='UTF-8')
 
     # extract words with ellipsis
     ELLIPSIS_RE = re.compile(r"\w{2,}\.{3}|\.{3}\w{2,}", re.UNICODE)
