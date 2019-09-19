@@ -41,6 +41,15 @@
   <!-- Drop names with mixed capitalization -->
   <xsl:template match="brl:name[matches(string(.), '\p{Ll}\p{Lu}')]"/>
   
+  <!-- Again drop hyphens immediately before or after names with mixed capitalization -->
+  <xsl:template match="text()[ends-with(., '-') and following-sibling::*[1][self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]]">
+    <xsl:value-of select="substring(., 1, string-length(.)-1)"/>
+  </xsl:template>
+
+  <xsl:template match="text()[starts-with(., '-') and preceding-sibling::*[1][self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]]">
+    <xsl:value-of select="substring(., 2)"/>
+  </xsl:template>
+
   <!-- Drop foreign and downgraded words -->
   <xsl:template match="*[not(lang('de'))]"/>
   <xsl:template match="*[@brl:grade and number(@brl:grade) &lt; $contraction]"/>
