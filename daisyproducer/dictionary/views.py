@@ -132,9 +132,10 @@ def check(request, document_id, grade):
     content = p3.communicate()[0].decode(encoding='UTF-8')
 
     # extract words with ellipsis
-    ELLIPSIS_RE = re.compile(r"\w{2,}\.{3}|\.{3}\w{2,}", re.UNICODE)
+    ELLIPSIS_BEFORE_RE = re.compile(r"\.{3}\w{2,}", re.UNICODE)
+    ELLIPSIS_AFTER_RE = re.compile(r"\w{2,}\.{3}", re.UNICODE)
     NOT_ELLIPSIS_RE = re.compile(r"\d|_", re.UNICODE) # match ellipsis words containing numbers or underscore
-    new_ellipsis_words = set((w.lower().replace(u"...", DUMMY_TEXT) for w in ELLIPSIS_RE.findall(content) if not( NOT_ELLIPSIS_RE.search(w))))
+    new_ellipsis_words = set((w.lower().replace(u"...", DUMMY_TEXT) for w in ELLIPSIS_BEFORE_RE.findall(content) + ELLIPSIS_AFTER_RE.findall(content) if not( NOT_ELLIPSIS_RE.search(w))))
 
     # drop hyphens in between words
     HYPHEN_RE = re.compile(r"(\w)-(\w)", re.UNICODE)
