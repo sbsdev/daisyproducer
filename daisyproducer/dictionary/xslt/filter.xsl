@@ -14,13 +14,19 @@
   <xsl:strip-space elements="brl:select"/>
   
   <!-- Drop a, i.e. urls, etc as they will be shown in grade 0 anyway -->
-  <xsl:template match="dtb:a|brl:computer"/>
+  <xsl:template match="dtb:a|brl:computer">
+    <xsl:text> </xsl:text>
+  </xsl:template>
   
   <!-- Drop the abbr elements -->
-  <xsl:template match="dtb:abbr"/>
+  <xsl:template match="dtb:abbr">
+    <xsl:text> </xsl:text>
+  </xsl:template>
 
   <!-- Drop the num elements -->
-  <xsl:template match="brl:num"/>
+  <xsl:template match="brl:num">
+    <xsl:text> </xsl:text>
+  </xsl:template>
 
   <!-- Drop hyphens immediately before an abbr, a num or a computer -->
   <xsl:template match="text()[ends-with(., '-') and following-sibling::*[1][self::dtb:abbr or self::brl:num or self::brl:computer]]">
@@ -39,7 +45,9 @@
   <xsl:template match="brl:otherwise"/>
   
   <!-- Drop names with mixed capitalization -->
-  <xsl:template match="brl:name[matches(string(.), '\p{Ll}\p{Lu}')]"/>
+  <xsl:template match="brl:name[matches(string(.), '\p{Ll}\p{Lu}')]">
+    <xsl:text> </xsl:text>
+  </xsl:template>
   
   <!-- Again drop hyphens immediately before or after names with mixed capitalization -->
   <xsl:template match="text()[ends-with(., '-') and following-sibling::*[1][self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]]">

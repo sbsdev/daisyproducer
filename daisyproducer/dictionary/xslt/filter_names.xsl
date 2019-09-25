@@ -11,7 +11,9 @@
               doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
   
   <!-- Drop the homograph, name and place elements as they are handled separately-->
-  <xsl:template match="brl:homograph|brl:name|brl:place"/>
+  <xsl:template match="brl:homograph|brl:name|brl:place">
+    <xsl:text> </xsl:text>
+  </xsl:template>
   
   <!-- Drop hyphens immediately before a homograph, a name or a place -->
   <xsl:template match="text()[ends-with(., '-') and following-sibling::*[1][self::brl:homograph or self::brl:name or self::brl:place]]">
