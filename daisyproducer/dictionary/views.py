@@ -135,7 +135,13 @@ def check(request, document_id, grade):
     ELLIPSIS_BEFORE_RE = re.compile(r"\.{3}\w{2,}", re.UNICODE)
     ELLIPSIS_AFTER_RE = re.compile(r"\w{2,}\.{3}", re.UNICODE)
     NOT_ELLIPSIS_RE = re.compile(r"\d|_", re.UNICODE) # match ellipsis words containing numbers or underscore
-    new_ellipsis_words = set((w.lower().replace(u"...", DUMMY_TEXT) for w in ELLIPSIS_BEFORE_RE.findall(content) + ELLIPSIS_AFTER_RE.findall(content) if not( NOT_ELLIPSIS_RE.search(w))))
+    # grab all ellipsis words
+    new_ellipsis_words = set((w for w in ELLIPSIS_BEFORE_RE.findall(content) + ELLIPSIS_AFTER_RE.findall(content) if not( NOT_ELLIPSIS_RE.search(w))))
+    # drop them from the content
+    for ellipsis_word in new_ellipsis_words:
+        content = content.replace(ellipsis_word, "")
+    # lowercase them and add the dummy text
+    new_ellipsis_words = set((w.lower().replace(u"...", DUMMY_TEXT) for w in new_ellipsis_words))
 
     # drop hyphens in between words
     HYPHEN_RE = re.compile(r"(\w)-(\w)", re.UNICODE)
@@ -152,13 +158,13 @@ def check(request, document_id, grade):
         or c in ['\n', '\r'])
     # look for words starting or ending with hyphen
     SUPPLEMENT_HYPHEN_RE = re.compile(r"^-\w{2,}|\w{2,}-$", re.UNICODE)
-    new_hyphen_words = set((addEllipsis(w.lower()) for w in (m.group() for m in (SUPPLEMENT_HYPHEN_RE.search(w) for w in supplement_hyphen_content.split()) if m)))
-
-    # now drop all supplement hyphen and ellipsis words from the content
-    for ellipsis_word in set((w.replace(DUMMY_TEXT, u"...") for w in new_ellipsis_words)):
-        content = content.replace(ellipsis_word, "")
-    for supplement_hyphen_word in set((w.replace(DUMMY_TEXT, u"-") for w in new_hyphen_words)):
+    # grab all supplement hyphen words
+    new_hyphen_words = set((m.group() for m in (SUPPLEMENT_HYPHEN_RE.search(w) for w in supplement_hyphen_content.split()) if m))
+    # drop them from the content
+    for supplement_hyphen_word in new_hyphen_words:
         content = content.replace(supplement_hyphen_word, "")
+    # lowercase them and add the dummy text
+    new_hyphen_words = set((addEllipsis(w.lower()) for w in new_hyphen_words))
 
     # filter all punctuation and replace dashes by space, so we can split by space below
     content = ''.join(
