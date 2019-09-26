@@ -229,6 +229,7 @@ def translate(table, word):
 def writeTable(fileName, words, translate):
     f = codecs.open(os.path.join(TABLES_DIR, fileName), "w", "utf-8", 'liblouis')
     for (untranslated, contracted) in words:
+        contracted = contracted.replace(DUMMY_TEXT, '') # remove the DUMMY_TEXT from the braille as the translation doesn't contain it anyway
         if translate(smart_unicode(untranslated)) != smart_unicode(contracted):
             # FIXME do we need to translate unichr(0x250A)) back to '|'?
             try:
