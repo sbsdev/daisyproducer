@@ -237,7 +237,7 @@ def check(request, document_id, grade):
 
     # Document statistic
     stats = DocumentStatistic(document=document, grade=grade, total=len(new_words), unknown=len(unknown_words))
-    percentage = 100.0*stats.unknown/stats.total
+    percentage = 100.0*stats.unknown/stats.total if stats.total > 0 else 100.0
     stats.save()
 
     return render(request, 'dictionary/words.html', locals())
