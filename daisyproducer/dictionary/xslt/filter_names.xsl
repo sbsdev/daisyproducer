@@ -6,9 +6,7 @@
 		xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
 		exclude-result-prefixes="dtb brl">
   
-  <xsl:output method="xml" encoding="utf-8" indent="yes" 
-	      doctype-public="-//NISO//DTD dtbook 2005-3//EN"
-              doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" />
+  <xsl:output method="xml" encoding="utf-8" indent="yes"/>
   
   <!-- Drop the homograph, name and place elements as they are handled separately-->
   <xsl:template match="brl:homograph|brl:name|brl:place">
