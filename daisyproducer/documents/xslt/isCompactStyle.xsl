@@ -8,7 +8,7 @@ This stylesheet determines whether a document qualifies for compact
 style rendering. If it does it returns "true". Otherwise it will
 return "false". -->
 
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
 		xmlns:my="http://my-functions"

@@ -18,6 +18,7 @@ import daisyproducer.documents.pipeline2.client2 as client2
 from daisyproducer.version import getVersion
 
 logger = logging.getLogger(__name__)
+catalog_files = "/etc/xml/catalog"
 
 def filterBrlContractionhints(file_path, dir=None):
     """Filter all the brl:contractionhints from the given file_path.
@@ -31,6 +32,7 @@ def filterBrlContractionhints(file_path, dir=None):
         "java",
         "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterBrlContractionhints.xsl'),
+        "-catalog:%s" % catalog_files,
         "-s:%s" % file_path,
         "-o:%s" % tmpFile.name)
     call(command)
@@ -44,6 +46,7 @@ def applyXSL(xsl, *args, **params):
         "java",
         "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', xsl),
+        "-catalog:%s" % catalog_files,
         "-s:-")
     command = command + tuple(args)
     command = command + tuple(["%s=%s" % (key,value) for key,value in params.iteritems()])
@@ -58,6 +61,7 @@ def isCompactStyle(inputFile):
         "java",
         "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', 'isCompactStyle.xsl'),
+        "-catalog:%s" % catalog_files,
         "-s:%s" % inputFile
         )
     return check_output(command)=="true"
@@ -138,8 +142,9 @@ def zipDirectory(directory, zipFileName, document_title=None):
 def saxon9he(source, xsl, *args, **params):
     command = (
         "java",
-        "-jar", join(settings.EXTERNAL_PATH, 'dtbook2sbsform', 'lib', 'saxon9he.jar'),
+        "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
         "-xsl:%s" % xsl,
+        "-catalog:%s" % catalog_files,
         "-s:%s" % source)
     command = command + tuple(args)
     command = command + tuple(["%s=%s" % (key,value) for key,value in params.iteritems()])
