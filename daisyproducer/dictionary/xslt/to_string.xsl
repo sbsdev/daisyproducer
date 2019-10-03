@@ -6,10 +6,9 @@
 		exclude-result-prefixes="dtb brl">
 
   <xsl:output method="text" encoding="utf-8" indent="no" />
-  
+
   <xsl:template match="text()">
     <xsl:value-of select="string(.)"/>
-    <xsl:text> </xsl:text>
   </xsl:template>
   
 </xsl:stylesheet>
