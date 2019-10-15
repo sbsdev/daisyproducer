@@ -132,8 +132,8 @@ def check(request, document_id, grade):
     content = p3.communicate()[0].decode(encoding='UTF-8')
 
     # extract words with ellipsis
-    ELLIPSIS_BEFORE_RE = re.compile(r"\.{3}\w{2,}", re.UNICODE)
-    ELLIPSIS_AFTER_RE = re.compile(r"\w{2,}\.{3}", re.UNICODE)
+    ELLIPSIS_BEFORE_RE = re.compile(r"\.{3}[\w']{2,}", re.UNICODE)
+    ELLIPSIS_AFTER_RE = re.compile(r"[\w']{2,}\.{3}", re.UNICODE)
     NOT_ELLIPSIS_RE = re.compile(r"\d|_", re.UNICODE) # match ellipsis words containing numbers or underscore
     # grab all ellipsis words
     new_ellipsis_words = set((w for w in ELLIPSIS_BEFORE_RE.findall(content) + ELLIPSIS_AFTER_RE.findall(content) if not( NOT_ELLIPSIS_RE.search(w))))
@@ -157,7 +157,7 @@ def check(request, document_id, grade):
         if unicodedata.category(c) in ['Lu', 'Ll', 'Zs', 'Zl', 'Zp', 'Pd', 'Po']
         or c in ['\n', '\r'])
     # look for words starting or ending with hyphen
-    SUPPLEMENT_HYPHEN_RE = re.compile(r"^-\w{2,}|\w{2,}-$", re.UNICODE)
+    SUPPLEMENT_HYPHEN_RE = re.compile(r"^-[\w']{2,}|[\w']{2,}-$", re.UNICODE)
     # grab all supplement hyphen words
     new_hyphen_words = set((m.group() for m in (SUPPLEMENT_HYPHEN_RE.search(w) for w in supplement_hyphen_content.split()) if m))
     # drop them from the content
