@@ -26,14 +26,24 @@
     <xsl:text> </xsl:text>
   </xsl:template>
 
-  <!-- Drop hyphens immediately before an abbr, a num or a computer -->
-  <xsl:template match="text()[ends-with(., '-') and following-sibling::*[1][self::dtb:abbr or self::brl:num or self::brl:computer]]">
+  <!-- Drop hyphens immediately before an abbr, a num, a computer  or names with mixed capitalization -->
+  <xsl:template match="text()[ends-with(., '-')
+		       and following-sibling::*[1][self::dtb:abbr or self::brl:num or self::brl:computer or self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]]">
     <xsl:value-of select="substring(., 1, string-length(.)-1)"/>
   </xsl:template>
 
-  <!-- Drop hyphens immediately after an abbr, a num or a computer -->
-  <xsl:template match="text()[starts-with(., '-') and preceding-sibling::*[1][self::dtb:abbr or self::brl:num or self::brl:computer]]">
+  <!-- Drop hyphens immediately after an abbr, a num, a computer or names with mixed capitalization -->
+  <xsl:template match="text()[starts-with(., '-')
+		       and preceding-sibling::*[1][self::dtb:abbr or self::brl:num or self::brl:computer or self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]]">
     <xsl:value-of select="substring(., 2)"/>
+  </xsl:template>
+
+  <!-- Drop hyphens immediately between an abbr, a num, a computer or names with mixed capitalization -->
+  <xsl:template match="text()[starts-with(., '-') and ends-with(., '-')
+		       and preceding-sibling::*[1][self::dtb:abbr or self::brl:num or self::brl:computer or self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]
+		       and following-sibling::*[1][self::dtb:abbr or self::brl:num or self::brl:computer or self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]]"
+		       priority="10">
+    <xsl:value-of select="substring(., 2, string-length(.)-2)"/>
   </xsl:template>
 
   <!-- Drop brl:literals -->
@@ -47,15 +57,6 @@
     <xsl:text> </xsl:text>
   </xsl:template>
   
-  <!-- Again drop hyphens immediately before or after names with mixed capitalization -->
-  <xsl:template match="text()[ends-with(., '-') and following-sibling::*[1][self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]]">
-    <xsl:value-of select="substring(., 1, string-length(.)-1)"/>
-  </xsl:template>
-
-  <xsl:template match="text()[starts-with(., '-') and preceding-sibling::*[1][self::brl:name[matches(string(.), '\p{Ll}\p{Lu}')]]]">
-    <xsl:value-of select="substring(., 2)"/>
-  </xsl:template>
-
   <!-- Drop foreign and downgraded words -->
   <xsl:template match="*[not(lang('de'))]"/>
   <xsl:template match="*[@brl:grade and number(@brl:grade) &lt; $contraction]"/>

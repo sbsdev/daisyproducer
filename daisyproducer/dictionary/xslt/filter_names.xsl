@@ -23,6 +23,14 @@
     <xsl:value-of select="substring(., 2)"/>
   </xsl:template>
 
+  <!-- Drop hyphens between a homograph, a name or a place -->
+  <xsl:template match="text()[starts-with(., '-') and ends-with(., '-')
+		       and preceding-sibling::*[1][self::brl:homograph or self::brl:name or self::brl:place]
+		       and following-sibling::*[1][self::brl:homograph or self::brl:name or self::brl:place]]"
+		       priority="10">
+    <xsl:value-of select="substring(., 2, string-length(.)-2)"/>
+  </xsl:template>
+
   <!-- Make sure the first/last words in running-line and toc-line elements are
        not joined with other words -->
   <xsl:template match="brl:running-line|brl:toc-line">
