@@ -1,0 +1,30 @@
+@startuml
+
+title Import from ABACUS
+
+start
+while (SN Alfresco Files?)
+  if (product number known?) then (yes)
+    :update meta data;
+  elseif (isbn or title and source edition known?) then (yes)
+    :update meta data;
+    :associate product with document;
+  else (nothing known)
+    :create document;
+    :associate product with document;
+    :create empty xml with meta data;
+  endif
+  if (product number not known?)
+    :check out document;
+  endif
+  if (document archived?)
+    :update xml with content from archive;
+    if (document checked out?)
+      :update xml in Überarbeitung;
+    endif
+  endif
+  :Remove SN Alfresco File;
+endwhile
+stop
+
+@enduml
