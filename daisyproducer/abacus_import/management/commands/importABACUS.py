@@ -3,7 +3,7 @@ from daisyproducer.documents.external import DaisyPipeline
 from daisyproducer.documents.models import Document, Version, Product, State
 from daisyproducer.documents.versionHelper import XMLContent
 from django.conf import settings
-from django.core.files.base import ContentFile
+from django.core.files.base import File, ContentFile
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.db.models import Q
@@ -11,6 +11,7 @@ from django.forms.models import model_to_dict
 from lxml import etree
 from os.path import join, basename, dirname
 from stdnum.isbn import is_valid
+from subprocess import Popen, PIPE
 
 import cmislib
 import datetime
@@ -43,7 +44,11 @@ logging.config.fileConfig(join(settings.PROJECT_DIR, 'logging.conf'))
 logger = logging.getLogger(__name__)
 
 class ImportError(Exception):
-    pass
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 class ValidationError(Exception):
     def __init__(self, value):
@@ -92,6 +97,9 @@ class Command(BaseCommand):
                 rename_failure_file(file)
             except ValidationError, e:
                 logger.exception("ABACUS Export file '%s' contains an invalid ISBN or an invalid product number ('%s').", file, e.value)
+                rename_failure_file(file)
+            except ImportError, e:
+                logger.exception("ABACUS import failed with %s", e.value)
                 rename_failure_file(file)
             except:
                 logger.exception("ABACUS import failed.")
@@ -309,36 +317,61 @@ def validate_content(fileName, contentMetaData):
             ("The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple for errorTuple in errorList))
 
 def update_xml_with_content_from_archive(document, product_number, checked_out):
+    ATTRIBUTE_FIELD_MAP = {
+        "dc:Creator" : 'author',
+        "dc:Date" : 'date',
+        "dc:Description" : 'description',
+        "dc:Identifier" : 'identifier',
+        "dtb:uid" : 'identifier',
+        "dc:Title" : 'title',
+        "dc:Language" : 'language',
+        "dc:Subject" : 'subject',
+        "dc:Publisher" : 'publisher',
+        "dc:Source" : 'source',
+        "dc:Rights" : 'rights',
+        "dtb:uid" : 'identifier',
+        "dtb:sourceDate" : 'source_date',
+        "dtb:sourcePublisher" : 'source_publisher',
+        "dtb:sourceEdition" : 'source_edition',
+        "dtb:sourceRights" : 'source_rights',
+        "prod:series" : 'production_series',
+        "prod:seriesNumber" : 'production_series_number',
+        "prod:source" : 'production_source'
+        }
+
     user = get_abacus_user()
     contentString = get_document_content(product_number)
     if not contentString:
         return
-    # fix meta data
-    xsl = etree.parse(join(settings.PROJECT_DIR, 'abacus_import', 'xslt', 'fixMetaData.xsl'))
-    stylesheet_params = model_to_dict(document)
-    stylesheet_params.update(((k, v.isoformat())) for (k, v) in stylesheet_params.iteritems() if isinstance(v, datetime.date))
-    stylesheet_params.update(((k, '')) for (k, v) in stylesheet_params.iteritems() if v == None)
-    stylesheet_params.update(((k, etree.XSLT.strparam(v))) for (k, v) in stylesheet_params.iteritems() if isinstance(v, basestring)) # escape single quotes
-    stylesheet_params.update(((k, "%s" % v)) for (k, v) in stylesheet_params.iteritems() if isinstance(v, numbers.Number))
-    transform = etree.XSLT(xsl)
-    fixed_tree = transform(etree.fromstring(contentString), **stylesheet_params)
-    contentString = etree.tostring(fixed_tree, xml_declaration=True, encoding='utf-8')
-    # write content to file
     tmpFile, tmpFileName = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")
-    tmpFile = os.fdopen(tmpFile,'w')
-    tmpFile.write(contentString)
-    tmpFile.close()
+    # fix meta data
+    metadata_params = {k: v for k, v in model_to_dict(document).iteritems() if v != None and v != ''}
+    metadata_params.update(((k, v.isoformat())) for (k, v) in metadata_params.iteritems() if isinstance(v, datetime.date))
+    # metadata_params.update(((k, etree.XSLT.strparam(v))) for (k, v) in metadata_params.iteritems() if isinstance(v, basestring)) # escape single quotes
+    metadata_params.update(((k, "%s" % v)) for (k, v) in metadata_params.iteritems() if isinstance(v, numbers.Number))
+    metadata_params = {k: metadata_params[v] for k, v in ATTRIBUTE_FIELD_MAP.iteritems() if v in metadata_params}
+    logger.debug("Updating meta data with %s", metadata_params)
+    command = ("java",)
+    command = command + tuple(["-D%s=%s" % (key,value) for key,value in metadata_params.iteritems()])
+    command += ("-jar", join('/usr', 'share', 'java', 'update-dtbook-metadata.jar'))
+    p = Popen(command, stdin=PIPE, stdout=tmpFile, stderr=PIPE)
+    (_, error) = p.communicate(input=contentString)
+    if p.returncode != 0:
+        # the XML could not be transformed for some reason
+        raise ImportError(error)
+
     validation_problems = validate_content(tmpFileName, model_to_dict(document))
-    os.remove(tmpFileName)
     if validation_problems:
         logger.critical('Archived XML is not valid. Fails with %s', validation_problems)
         return
-    content = ContentFile(contentString)
+    content = File(os.fdopen(tmpFile))
     version = Version.objects.create(
         comment = "Updated version due fetch from archive",
         document = document,
         created_by = user)
     version.content.save("updated_version.xml", content)
+    content.close()
+    os.remove(tmpFileName)
     # also update the content in ueberarbeiten if the product was checked out
     # if checked_out:
     #     update_xml_in_ueberarbeiten(product_number, ContentFile(contentString))
