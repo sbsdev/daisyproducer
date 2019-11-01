@@ -2,7 +2,7 @@ import os.path
 
 import django
 from django.conf import settings
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 from django.utils.translation import ugettext_lazy as _

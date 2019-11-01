@@ -2,7 +2,7 @@ import mimetypes
 import os
 
 from django.http import HttpResponse
-from django.core.servers.basehttp import FileWrapper
+from wsgiref.util import FileWrapper
 
 mimetypes.init()
 mimetypes.add_type('application/epub+zip','.epub')
