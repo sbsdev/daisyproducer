@@ -43,13 +43,6 @@ import tempfile
 logging.config.fileConfig(join(settings.PROJECT_DIR, 'logging.conf'))
 logger = logging.getLogger(__name__)
 
-class ImportError(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
 class ValidationError(Exception):
     def __init__(self, value):
         self.value = value
@@ -97,9 +90,6 @@ class Command(BaseCommand):
                 rename_failure_file(file)
             except ValidationError, e:
                 logger.exception("ABACUS Export file '%s' contains an invalid ISBN or an invalid product number ('%s').", file, e.value)
-                rename_failure_file(file)
-            except ImportError, e:
-                logger.exception("ABACUS import failed with %s", e.value)
                 rename_failure_file(file)
             except:
                 logger.exception("ABACUS import failed.")
