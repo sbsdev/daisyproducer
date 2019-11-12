@@ -10,23 +10,26 @@ class XMLContent:
     
     DTBOOK_NAMESPACE = "http://www.daisy.org/z3986/2005/dtbook/"
     XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace"
-    FIELD_ATTRIBUTE_MAP = {
-        'subject' : "dc:Subject",
-        'description' : "dc:Description",
-        'publisher' : "dc:Publisher",
-        'date' : "dc:Date",
-        'identifier' : "dc:Identifier",
-        'source' : "dc:Source",
-        'language' : "dc:Language",
-        'rights' : "dc:Rights",
-        'identifier' : "dtb:uid",
-        'source_date' : "dtb:sourceDate",
-        'source_publisher': "dtb:sourcePublisher",
-        'source_edition' : "dtb:sourceEdition",
-        'source_rights' : "dtb:sourceRights",
-        'production_series' : "prod:series",
-        'production_series_number' : "prod:seriesNumber",
-        'production_source' : "prod:source"
+    ATTRIBUTE_FIELD_MAP = {
+        "dc:Creator" : 'author',
+        "dc:Date" : 'date',
+        "dc:Description" : 'description',
+        "dc:Identifier" : 'identifier',
+        "dtb:uid" : 'identifier',
+        "dc:Title" : 'title',
+        "dc:Language" : 'language',
+        "dc:Subject" : 'subject',
+        "dc:Publisher" : 'publisher',
+        "dc:Source" : 'source',
+        "dc:Rights" : 'rights',
+        "dtb:uid" : 'identifier',
+        "dtb:sourceDate" : 'source_date',
+        "dtb:sourcePublisher" : 'source_publisher',
+        "dtb:sourceEdition" : 'source_edition',
+        "dtb:sourceRights" : 'source_rights',
+        "prod:series" : 'production_series',
+        "prod:seriesNumber" : 'production_series_number',
+        "prod:source" : 'production_source'
         }
     HUGE_TREE_PARSER = etree.XMLParser(huge_tree=True)
 
@@ -55,31 +58,23 @@ class XMLContent:
     def __init__(self, version=None):
         self.version = version
 
-    def getUpdatedContent(self, author, title, **kwargs):
-        # update the existing version with the modified meta data
-        self.version.content.open()
-        self.tree = etree.parse(self.version.content.file, parser=self.HUGE_TREE_PARSER)
-        self.version.content.close()
-        # fix author
-        self._updateOrInsertMetaAttribute("dc:Creator", author)
-        # FIXME: Sometimes the docauthor contains xml markup, such as
-        # <em> and <abbr>, which is not in the meta tag. The following
-        # will just wipe this out.
-        # self._updateMetaElement("docauthor", author)
-        # fix title
-        self._updateOrInsertMetaAttribute("dc:Title", title)
-        # FIXME: Sometimes the doctitle contains xml markup, such as
-        # <em> and <abbr>, which is not in the meta tag. The following
-        # will just wipe this out.
-        # self._updateMetaElement("doctitle", title)
-        # fix xml:lang
-        self._updateLangAttribute(kwargs.get('language'))
-        for model_field, field_value in kwargs.items():
-            # fix attribute
-            if self.FIELD_ATTRIBUTE_MAP.has_key(model_field):
-                self._updateOrInsertMetaAttribute(self.FIELD_ATTRIBUTE_MAP[model_field], (field_value or ''))
-       
-        return etree.tostring(self.tree, xml_declaration=True, encoding="UTF-8")
+    def update_version_with_metadata(self, **kwargs):
+        """Update the existing version with the modified meta data"""
+
+        # prepare meta data
+        metadata = {k: v for k, v in kwargs.iteritems() if v != None and v != ''}
+        metadata.update(((k, v.isoformat())) for (k, v) in metadata.iteritems() if isinstance(v, datetime.date))
+        metadata.update(((k, "%s" % v)) for (k, v) in metadata.iteritems() if isinstance(v, numbers.Number))
+        metadata = {k: metadata[v] for k, v in self.ATTRIBUTE_FIELD_MAP.iteritems() if v in metadata}
+
+        with tempfile.NamedTemporaryFile(suffix='.xml', prefix='daisyproducer-') as tmpFile:
+            update_xml_metadata(self.version.content.file, tmpFile, metadata)
+            content = File(tmpFile)
+            version = Version.objects.create(
+                comment = "Updated version due to meta data change",
+                document = self.version.document,
+                created_by = self.user)
+            version.content.save("updated_version.xml", content)
 
     def validateContentMetaData(self, filePath, author, title, **kwargs):
         with open(filePath) as versionFile:
@@ -117,25 +112,6 @@ class XMLContent:
             self._validateLangAttribute(kwargs.get('language', ''))
             )
         
-    def _updateOrInsertMetaAttribute(self, key, value):
-        if isinstance(value, datetime.date):
-            value = value.isoformat()
-        elements = self.tree.findall("//{%s}meta[@name='%s']" % (self.DTBOOK_NAMESPACE, key))
-        if not elements and value:
-            # insert a new meta element if there wasn't one before and if the value is not empty
-            head = self.tree.find("//{%s}head" % self.DTBOOK_NAMESPACE)
-            etree.SubElement(head, "{%s}meta" % self.DTBOOK_NAMESPACE, name=key, content=value)
-        else:
-            for element in elements:
-                element.attrib['content'] = value
-        
-    def _updateMetaElement(self, key, value):
-        for element in self.tree.findall("//{%s}%s" % (self.DTBOOK_NAMESPACE, key)):
-            element.text = value
-    
-    def _updateLangAttribute(self, language):
-        self.tree.getroot().attrib['{%s}lang' % self.XML_NAMESPACE] = language
-
     def _validateMetaAttribute(self, key, value):
         """Return a list of tuples for each meta data of name key
         where the value of the attribute 'content' doesn't match the

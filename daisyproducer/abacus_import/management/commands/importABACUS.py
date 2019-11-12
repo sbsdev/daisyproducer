@@ -292,13 +292,7 @@ def update_xml_with_metadata(document, **params):
     else:
         # create a new version with the new content
         xmlContent = XMLContent(document.latest_version())
-        contentString = xmlContent.getUpdatedContent(**params)
-        content = ContentFile(contentString)
-        version = Version.objects.create(
-            comment = "Updated version due to meta data change",
-            document = document,
-            created_by = user)
-        version.content.save("updated_version.xml", content)
+        xmlContent.update_version_with_metadata(**params)
 
 def validate_content(fileName, contentMetaData):
     # make sure the uploaded version is valid xml
@@ -343,35 +337,32 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
     contentString = get_document_content(product_number)
     if not contentString:
         return
-    tmpFile, tmpFileName = tempfile.mkstemp(prefix="daisyproducer-", suffix=".xml")
+
     # fix meta data
     metadata_params = {k: v for k, v in model_to_dict(document).iteritems() if v != None and v != ''}
     metadata_params.update(((k, v.isoformat())) for (k, v) in metadata_params.iteritems() if isinstance(v, datetime.date))
     # metadata_params.update(((k, etree.XSLT.strparam(v))) for (k, v) in metadata_params.iteritems() if isinstance(v, basestring)) # escape single quotes
     metadata_params.update(((k, "%s" % v)) for (k, v) in metadata_params.iteritems() if isinstance(v, numbers.Number))
     metadata_params = {k: metadata_params[v] for k, v in ATTRIBUTE_FIELD_MAP.iteritems() if v in metadata_params}
-    logger.debug("Updating meta data with %s", metadata_params)
-    command = ("java",)
-    command = command + tuple(["-D%s=%s" % (key,value) for key,value in metadata_params.iteritems()])
-    command += ("-jar", join('/usr', 'share', 'java', 'update-dtbook-metadata.jar'))
-    p = Popen(command, stdin=PIPE, stdout=tmpFile, stderr=PIPE)
-    (_, error) = p.communicate(input=contentString)
-    if p.returncode != 0:
-        # the XML could not be transformed for some reason
-        raise ImportError(error)
 
-    validation_problems = validate_content(tmpFileName, model_to_dict(document))
-    if validation_problems:
-        logger.critical('Archived XML is not valid. Fails with %s', validation_problems)
-        return
-    content = File(os.fdopen(tmpFile))
-    version = Version.objects.create(
-        comment = "Updated version due fetch from archive",
-        document = document,
-        created_by = user)
-    version.content.save("updated_version.xml", content)
-    content.close()
-    os.remove(tmpFileName)
+    with tempfile.NamedTemporaryFile(suffix='.xml', prefix='daisyproducer-', delete=False) as inputTmpFile:
+        inputTmpFile.write(contentString)
+
+    with open(inputTmpFile.name) as inputTmpFile, tempfile.NamedTemporaryFile(suffix='.xml', prefix='daisyproducer-') as tmpFile:
+        XMLContent.update_xml_metadata(inputTmpFile, tmpFile, metadata_params)
+
+        validation_problems = validate_content(tmpFile.name, model_to_dict(document))
+        if validation_problems:
+            logger.critical('Archived XML is not valid. Fails with %s', validation_problems)
+            logger.debug("Metadata: %s", model_to_dict(document))
+            return
+        content = File(tmpFile)
+        version = Version.objects.create(
+            comment = "Updated version due fetch from archive",
+            document = document,
+            created_by = user)
+        version.content.save("updated_version.xml", content)
+        content.close()
     # also update the content in ueberarbeiten if the product was checked out
     # if checked_out:
     #     update_xml_in_ueberarbeiten(product_number, ContentFile(contentString))
