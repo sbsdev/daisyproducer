@@ -58,13 +58,7 @@ class PartialDocumentForm(ModelForm):
         else:
             # create a new version with the new content
             xmlContent = XMLContent(instance.latest_version())
-            contentString = xmlContent.getUpdatedContent(**self.cleaned_data)
-            content = ContentFile(contentString)
-            version = Version.objects.create(
-                comment = "Updated version due to meta data change",
-                document = instance,
-                created_by = self.user)
-            version.content.save("updated_version.xml", content)
+            xmlContent.update_version_with_metadata(**self.cleaned_data)
         return instance
 
 @login_required
