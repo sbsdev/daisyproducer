@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbaConnectContainer>
+  <Task>
+    <Parameter/>
+    <Transaction>
+      <DocumentData command="mdaDocModify">
+        <artikel_nr>PS99999</artikel_nr>
+        <title>Titel Kurz (Testbuch)</title>
+        <MetaData>
+          <dc>
+            <title>Titel Kurz (Testbuch)</title>
+            <creator>Autor kurz</creator>
+            <source>978-3-7645-0192-1</source>
+            <language>de</language>
+            <identifier>PS99999</identifier>
+            <date>2019-10-24</date>
+          </dc>
+          <sbs>
+            <KST>10000</KST>
+            <untertitel>Untertitel kurz</untertitel>
+            <reihe>Musterreihe</reihe>
+            <verlag>Test SBS</verlag>
+            <verlagsort>Zürich</verlagsort>
+            <auflageJahr>1. / 2007</auflageJahr>
+            <printPageNumber>414</printPageNumber>
+            <ausleihNr>BG 17727</ausleihNr>
+            <prodStatus>UNKLAR (ALFRESCO)</prodStatus>
+            <schriftart>Kurzschrift</schriftart>
+            <endformat>28 x 28</endformat>
+            <drucker>Endlos</drucker>
+            <doppelseitig>doppelseitig</doppelseitig>
+            <bindung>WmD</bindung>
+            <breite>28</breite>
+            <zeilen>28</zeilen>
+            <auszug>Testbuch (Auszug)</auszug>
+            <qualitaet>Testbuch (Qualität)</qualitaet>
+            <prodPageSS>0</prodPageSS>
+            <bpz>0</bpz>
+            <ervNr>0</ervNr>
+            <laufzettelNr>100015</laufzettelNr>
+            <rucksackNr>131</rucksackNr>
+            <altersgruppe>A4</altersgruppe>
+            <gdBuchNr>0</gdBuchNr>
+            <prodPagePS>760</prodPagePS>
+            <anzahlBaende>8</anzahlBaende>
+            <anzahlRelief>0</anzahlRelief>
+            <vorlageHaus>ja</vorlageHaus>
+            <katalogEintrag>ja</katalogEintrag>
+            <verlagVerzeichnis>ja</verlagVerzeichnis>
+            <daisy_producer>ja</daisy_producer>
+            <verkaufstext>Verkaufstexte - Autor[xx]Verkaufstexte - Titel (Testbuch)[xx]Verkaustexte - Untertitel 1[xx]Verkaustexte - Untertitel 2[xx]Verkaustexte - Untertitel 3</verkaufstext>
+          </sbs>
+          <ncc>
+            <setInfo>0</setInfo>
+          </ncc>
+        </MetaData>
+      </DocumentData>
+    </Transaction>
+  </Task>
+</AbaConnectContainer>
