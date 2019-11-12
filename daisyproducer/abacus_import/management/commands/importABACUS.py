@@ -301,28 +301,6 @@ def validate_content(fileName, contentMetaData):
             ("The meta data '%s' in the uploaded file does not correspond to the value in the document: '%s' instead of '%s'" % errorTuple for errorTuple in errorList))
 
 def update_xml_with_content_from_archive(document, product_number, checked_out):
-    ATTRIBUTE_FIELD_MAP = {
-        "dc:Creator" : 'author',
-        "dc:Date" : 'date',
-        "dc:Description" : 'description',
-        "dc:Identifier" : 'identifier',
-        "dtb:uid" : 'identifier',
-        "dc:Title" : 'title',
-        "dc:Language" : 'language',
-        "dc:Subject" : 'subject',
-        "dc:Publisher" : 'publisher',
-        "dc:Source" : 'source',
-        "dc:Rights" : 'rights',
-        "dtb:uid" : 'identifier',
-        "dtb:sourceDate" : 'source_date',
-        "dtb:sourcePublisher" : 'source_publisher',
-        "dtb:sourceEdition" : 'source_edition',
-        "dtb:sourceRights" : 'source_rights',
-        "prod:series" : 'production_series',
-        "prod:seriesNumber" : 'production_series_number',
-        "prod:source" : 'production_source'
-        }
-
     user = get_abacus_user()
     contentString = get_document_content(product_number)
     if not contentString:
@@ -333,7 +311,7 @@ def update_xml_with_content_from_archive(document, product_number, checked_out):
     metadata_params.update(((k, v.isoformat())) for (k, v) in metadata_params.iteritems() if isinstance(v, datetime.date))
     # metadata_params.update(((k, etree.XSLT.strparam(v))) for (k, v) in metadata_params.iteritems() if isinstance(v, basestring)) # escape single quotes
     metadata_params.update(((k, "%s" % v)) for (k, v) in metadata_params.iteritems() if isinstance(v, numbers.Number))
-    metadata_params = {k: metadata_params[v] for k, v in ATTRIBUTE_FIELD_MAP.iteritems() if v in metadata_params}
+    metadata_params = {k: metadata_params[v] for k, v in XMLContent.ATTRIBUTE_FIELD_MAP.iteritems() if v in metadata_params}
 
     with tempfile.NamedTemporaryFile(suffix='.xml', prefix='daisyproducer-', delete=False) as inputTmpFile:
         inputTmpFile.write(contentString)
