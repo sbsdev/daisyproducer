@@ -76,38 +76,18 @@ class XMLContent:
                 created_by = self.user)
             version.content.save("updated_version.xml", content)
 
-    def validateContentMetaData(self, filePath, author, title, **kwargs):
+    def validateContentMetaData(self, filePath, **kwargs):
         with open(filePath) as versionFile:
             self.tree = etree.parse(versionFile, parser=self.HUGE_TREE_PARSER)
         
         validationProblems = reduce(
             # flatten the list
             lambda x,y: x+y, 
-            [self._validateMetaAttribute(self.FIELD_ATTRIBUTE_MAP[field], (kwargs.get(field, '') or '')) 
-             for field in 
-             ('source_publisher', 'subject', 'description', 'publisher', 'date', 'source', 
-              'language', 'rights', 'source_date', 'source_edition', 'source_rights', 
-              'production_series', 'production_series_number', 'production_source')])
+            [self._validateMetaAttribute(field, (kwargs.get(self.ATTRIBUTE_FIELD_MAP[field], '') or ''))
+             for field in self.ATTRIBUTE_FIELD_MAP.keys()])
 
         return filter(None, validationProblems) + filter(
             None, 
-            # validate author
-            self._validateMetaAttribute("dc:Creator", author) +
-            # FIXME: It would be nice to check the docauthor element,
-            # however it can contain (almost arbitrary) tags such as
-            # <em>, <abbr> or any contraction hint. If we want to
-            # check we need to strip the tags first.
-#            self._validateMetaElement("docauthor", author) +
-            # validate title
-            self._validateMetaAttribute("dc:Title", title) +
-            # FIXME: It would be nice to check the doctitle element,
-            # however it can contain (almost arbitrary) tags such as
-            # <em>, <abbr> or any contraction hint. If we want to
-            # check we need to strip the tags first.
-#            self._validateMetaElement("doctitle", title) +
-            # validate identifier
-            self._validateMetaAttribute("dc:Identifier", kwargs.get('identifier', '')) +
-            self._validateMetaAttribute("dtb:uid", kwargs.get('identifier', '')) +
             # validate language
             self._validateLangAttribute(kwargs.get('language', ''))
             )
@@ -127,14 +107,6 @@ class XMLContent:
             return [tuple([key, element.attrib['content'], value]) 
                     for element in r if element.attrib['content'] != value]
         
-    def _validateMetaElement(self, key, value):
-        """Return a list of tuples for each element of name key where
-        the text doesn't match the given value. The tuple contains the
-        key, the given value and the value of the text node"""
-        r = self.tree.xpath("//%s" % (key,), namespaces={'dtb': self.DTBOOK_NAMESPACE})
-        # in theory we should also check for an empty result set r. However the schema already takes care of that
-        return [tuple([key, element.text, value]) for element in r if element.text != value and not (element.text == None and value == '')]
-
     def _validateLangAttribute(self, language):
         lang_attribute = self.tree.getroot().attrib['{%s}lang' % self.XML_NAMESPACE]
         return [('xml:lang', lang_attribute, language)] if lang_attribute != language else []
