@@ -1,7 +1,10 @@
 import datetime
+import tempfile
 
 from django.template.loader import render_to_string
 from lxml import etree
+from subprocess import Popen, PIPE
+from os.path import join
 
 class XMLContent:
     
@@ -35,7 +38,20 @@ class XMLContent:
         dictionary['source_date'] = document.source_date.isoformat() if document.source_date else ''
         content = render_to_string('DTBookTemplate.xml', dictionary)
         return content.encode('utf-8')
-        
+
+    @staticmethod
+    def update_xml_metadata(input, output, metadata):
+        """Update the meta data in given `input` file. Write the result to the
+        given `output` file. Entities are not expanded."""
+        command = ("java",)
+        command = command + tuple(["-D%s=%s" % (key,value) for key,value in metadata.iteritems()])
+        command += ("-jar", join('/usr', 'share', 'java', 'update-dtbook-metadata.jar'))
+        p = Popen(command, stdin=input, stdout=output, stderr=PIPE)
+        (_, error) = p.communicate()
+        if p.returncode != 0:
+            # the XML could not be transformed for some reason
+            raise Exception(error)
+
     def __init__(self, version=None):
         self.version = version
 
