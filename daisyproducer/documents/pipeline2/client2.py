@@ -12,12 +12,12 @@ import xml.etree.ElementTree as ET
 # the following assumes that the pipeline is run in remote mode
 # without auth and the default webservice url
 
-NS = "http://www.daisy.org/ns/pipeline/data"
+ns = {'d': 'http://www.daisy.org/ns/pipeline/data'}
 WS_URL = "http://localhost:8181/ws"
 POLLING_INTERVAL = 2
 
 def job_request(script, inputs, options={}):
-    root = ET.Element("jobRequest", {'xmlns': 'http://www.daisy.org/ns/pipeline/data'})
+    root = ET.Element("jobRequest", {'xmlns': ns['d']})
     ET.SubElement(root, "script", {'href': "%s/scripts/%s" % (WS_URL, script)})
     input = ET.SubElement(root, "input", {'name': "source"})
     for item in inputs:
@@ -27,21 +27,33 @@ def job_request(script, inputs, options={}):
 
     return ET.tostring(root, encoding="UTF-8")
 
+def parse_trace(job):
+    trace = job.findall('.//d:trace',namespaces=ns)
+    return trace[0].text if trace else None
+
 def parse_log(job):
-    log = job.findall(".//d:log", namespaces={"d": NS})
+    log = job.findall(".//d:log", namespaces=ns)
     return log[0].attrib['href'] if log else None
 
 def parse_job(job):
-    return {'id':       job.attrib['id'],
-            'status':   job.attrib['status'],
-            'messages': [{'level': message.attrib['level'],
-                          'index': int(message.attrib['sequence']),
-                          'text': message.text}
-                         for message in job.findall(".//d:message", namespaces={"d": NS})],
-            'results':  [{'href': result.attrib['href'],
-                          'size': result.attrib['size']}
-                         for result in job.findall(".//d:results/d:result/d:result", namespaces={"d": NS})],
-            'log': parse_log(job)}
+    if 'error' in job.tag:
+        return {'status': "error",
+                'messages': [{'level': 'ERROR',
+                              'index': None,
+                              'text': description.text}
+                             for description in job.findall('./d:description',namespaces=ns)],
+                'log': parse_trace(job)}
+    else:
+        return {'id':       job.attrib['id'],
+                'status':   job.attrib['status'],
+                'messages': [{'level': message.attrib['level'],
+                              'index': int(message.attrib['sequence']),
+                              'text': message.text}
+                             for message in job.findall(".//d:message", namespaces=ns)],
+                'results':  [{'href': result.attrib['href'],
+                              'size': result.attrib['size']}
+                             for result in job.findall(".//d:results/d:result/d:result", namespaces=ns)],
+                'log': parse_log(job)}
 
 def wait_for_job(job):
     msgIdxs = []
