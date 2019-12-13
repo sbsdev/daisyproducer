@@ -99,6 +99,7 @@ def generatePDF(inputFile, outputFile, images, taskscript='DTBookToLaTeX.taskScr
         "--top_margin=%(top_margin)s" % kwargs if 'top_margin' in kwargs else None,
         "--bottom_margin=%(bottom_margin)s" % kwargs if 'bottom_margin' in kwargs else None,
         "--endnotes=%(end_notes)s" % kwargs if 'end_notes' in kwargs else None,
+        "--image_visibility=%(image_visibility)s" % kwargs if 'image_visibility' in kwargs else None,
         )
     command = filter(None, command) # filter out empty arguments
     call(command)
@@ -408,6 +409,8 @@ class StandardLargePrint:
         'top_margin': '20mm',
         'bottom_margin': '20mm',
         'replace_em_with_quote': 'true',
+        'end_notes': 'none',
+        'image_visibility': 'ignore'
         }
 
     @staticmethod
