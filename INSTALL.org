@@ -39,6 +39,7 @@ In terms of (Debian/Ubuntu) packages this translates to
 - python-libxml2
 - python-libxslt1
 - python-pypdf
+- python-requests
 - python-stdnum
 - sun-java6-jre
 - texlive-xetex

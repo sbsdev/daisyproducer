@@ -9,7 +9,7 @@ import tempfile
 import zipfile
 
 from os.path import join, basename, splitext
-from pyPdf import PdfFileReader
+from PyPDF2 import PdfFileReader
 from shutil import rmtree, copyfile
 from subprocess import call, Popen, PIPE, check_output
 
