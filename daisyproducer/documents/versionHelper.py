@@ -1,5 +1,6 @@
 import datetime
 import tempfile
+import numbers
 
 from django.template.loader import render_to_string
 from lxml import etree
