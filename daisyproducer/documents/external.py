@@ -19,6 +19,9 @@ from daisyproducer.version import getVersion
 
 logger = logging.getLogger(__name__)
 
+class LatexError(Exception):
+    pass
+
 def filterBrlContractionhints(file_path, dir=None):
     """Filter all the brl:contractionhints from the given file_path.
     This is done using an XSLT stylesheet. Return the name of a
@@ -112,11 +115,16 @@ def generatePDF(inputFile, outputFile, images, taskscript='DTBookToLaTeX.taskScr
     command = (
          # use latexmk to make sure latex is run enough times so that toc and all the page refs are properly resolved
         "latexmk",
-        "-quiet",
+        "-interaction=batchmode",
         "-xelatex",
         latexFileName,
         )
-    call(command)
+    exitCode = call(command)
+    if exitCode != 0:
+        # if the call failed something is wrong. Leave the wreckage
+        # around for later analysis
+        raise LatexError("The PDF could not be generated. Is maybe an image missing?")
+
     os.rename(pdfFileName, outputFile)
     os.chdir(currentDir)
     rmtree(tmpDir)

@@ -1,6 +1,6 @@
 import shutil, tempfile, os.path
 
-from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory, Pipeline2
+from daisyproducer.documents.external import DaisyPipeline, SBSForm, StandardLargePrint, zipDirectory, Pipeline2, LatexError
 from daisyproducer.documents.forms import PartialDocumentForm, PartialVersionForm, PartialAttachmentForm, PartialImageForm, MarkupForm, SBSFormForm, RTFForm, EPUB3Form, DTBForm, SalePDFForm, ODTForm
 from daisyproducer.documents.models import Document, Version, Attachment, Image, Product, LargePrintProfileForm
 from daisyproducer.documents.views.utils import render_to_mimetype_response
@@ -258,8 +258,13 @@ def preview_pdf(request, document_id):
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputFile = "/tmp/%s.pdf" % document_id
-            StandardLargePrint.dtbook2pdf(inputFile, outputFile,
-                                          images=document.image_set.all(), **form.cleaned_data)
+            try:
+                StandardLargePrint.dtbook2pdf(inputFile, outputFile,
+                                              images=document.image_set.all(), **form.cleaned_data)
+            except LatexError as e:
+                errorMessages = [e]
+                return render(request, 'documents/todo_pdf.html', locals())
+
             filename = document.title + u" " + form.cleaned_data['font_size']
             return render_to_mimetype_response('application/pdf', 
                                                filename.encode('utf-8'), outputFile)
@@ -288,8 +293,13 @@ def preview_sale_pdf(request, document_id):
         if form.is_valid():
             inputFile = document.latest_version().content.path
             outputFile = "/tmp/%s.pdf" % document_id
-            StandardLargePrint.dtbook2pdf(inputFile, outputFile,
-                                          images=document.image_set.all(), **form.cleaned_data)
+            try:
+                StandardLargePrint.dtbook2pdf(inputFile, outputFile,
+                                              images=document.image_set.all(), **form.cleaned_data)
+            except LatexError as e:
+                errorMessages = [e]
+                return render(request, 'documents/todo_sale_pdf.html', locals())
+
             filename = document.title + u" " + form.cleaned_data['font_size']
             return render_to_mimetype_response('application/pdf', 
                                                filename.encode('utf-8'), outputFile)
