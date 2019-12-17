@@ -69,7 +69,7 @@ class XMLContent:
         metadata = {k: metadata[v] for k, v in self.ATTRIBUTE_FIELD_MAP.iteritems() if v in metadata}
 
         with tempfile.NamedTemporaryFile(suffix='.xml', prefix='daisyproducer-') as tmpFile:
-            update_xml_metadata(self.version.content.file, tmpFile, metadata)
+            XMLContent.update_xml_metadata(self.version.content.file, tmpFile, metadata)
             content = File(tmpFile)
             version = Version.objects.create(
                 comment = "Updated version due to meta data change",
