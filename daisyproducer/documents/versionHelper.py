@@ -3,6 +3,8 @@ import tempfile
 import numbers
 
 from django.template.loader import render_to_string
+from django.core.files.base import File
+from daisyproducer.documents.models import Version
 from lxml import etree
 from subprocess import Popen, PIPE
 from os.path import join
