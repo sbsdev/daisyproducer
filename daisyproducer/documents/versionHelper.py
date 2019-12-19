@@ -58,8 +58,9 @@ class XMLContent:
             # the XML could not be transformed for some reason
             raise Exception(error)
 
-    def __init__(self, version=None):
+    def __init__(self, version=None, user=None):
         self.version = version
+        self.user = user
 
     def update_version_with_metadata(self, **kwargs):
         """Update the existing version with the modified meta data"""
