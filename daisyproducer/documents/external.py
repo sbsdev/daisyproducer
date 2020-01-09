@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 class LatexError(Exception):
     pass
 
-def filterBrlContractionhints(file_path, dir=None):
+def filterBrlContractionhints(file_path):
     """Filter all the brl:contractionhints from the given file_path.
     This is done using an XSLT stylesheet. Return the name of a
     temporary file that contains the filtered content. The caller is
     responsible for removing the temporary file."""
     tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml",
-                                          delete=False, dir=dir)
+                                          delete=False)
     with open(file_path) as infile, tmpFile as outfile:
         p1 = applyXSL('filterBrlContractionhints.xsl', stdin=infile, stdout=outfile)
         p1.communicate()
