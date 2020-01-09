@@ -29,14 +29,9 @@ def filterBrlContractionhints(file_path, dir=None):
     responsible for removing the temporary file."""
     tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml",
                                           delete=False, dir=dir)
-    tmpFile.close() # we are only interested in a unique filename
-    command = (
-        "java",
-        "-jar", join('/usr', 'share', 'java', 'Saxon-HE.jar'),
-        "-xsl:%s" % join(settings.PROJECT_DIR, 'documents', 'xslt', 'filterBrlContractionhints.xsl'),
-        "-s:%s" % file_path,
-        "-o:%s" % tmpFile.name)
-    call(command)
+    with open(file_path) as infile, tmpFile as outfile:
+        p1 = applyXSL('filterBrlContractionhints.xsl', stdin=infile, stdout=outfile)
+        p1.communicate()
     return tmpFile.name
 
 def applyXSL(xsl, *args, **params):
