@@ -225,9 +225,14 @@ class DaisyPipeline:
     def dtbook2pdf(inputFile, outputFile, images, **kwargs):
         """Transform a dtbook xml file to pdf"""
 
-        tmpFile = filterBrlContractionhints(inputFile)
+        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml",
+                                              delete=False)
+        with open(inputFile) as infile, tmpFile as outfile:
+            p1 = applyXSL('filterBrlContractionhints.xsl', stdin=infile, stdout=PIPE)
+            p2 = applyXSL('addImageRefs.xsl', stdin=p1.stdout, stdout=outfile)
+            p2.communicate()
 
-        generatePDF(tmpFile, outputFile, images, **kwargs)
+        generatePDF(tmpFile.name, outputFile, images, **kwargs)
         os.remove(tmpFile)
 
     @staticmethod
@@ -443,14 +448,20 @@ class StandardLargePrint:
     @staticmethod
     def dtbook2pdf(inputFile, outputFile, images, **kwargs):
         """Transform a dtbook xml file to pdf"""
-        tmpFile = filterBrlContractionhints(inputFile)
+        tmpFile = tempfile.NamedTemporaryFile(prefix="daisyproducer-", suffix=".xml",
+                                              delete=False)
+        with open(inputFile) as infile, tmpFile as outfile:
+            p1 = applyXSL('filterBrlContractionhints.xsl', stdin=infile, stdout=PIPE)
+            p2 = applyXSL('addImageRefs.xsl', stdin=p1.stdout, stdout=outfile)
+            p2.communicate()
+
         defaults = StandardLargePrint.PARAMETER_DEFAULTS.copy()
         defaults.update(kwargs)
-        numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile, images, **defaults)
-        tmpFile2 = StandardLargePrint.insertVolumeSplitPoints(tmpFile, numberOfVolumes)
+        numberOfVolumes =  StandardLargePrint.determineNumberOfVolumes(tmpFile.name, images, **defaults)
+        tmpFile2 = StandardLargePrint.insertVolumeSplitPoints(tmpFile.name, numberOfVolumes)
 
         generatePDF(tmpFile2, outputFile, images, **defaults)
-        os.remove(tmpFile)
+        os.remove(tmpFile.name)
         os.remove(tmpFile2)
 
 class SBSForm:
