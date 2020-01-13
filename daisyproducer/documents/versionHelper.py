@@ -1,7 +1,10 @@
 import datetime
 import tempfile
+import numbers
 
 from django.template.loader import render_to_string
+from django.core.files.base import File
+from daisyproducer.documents.models import Version
 from lxml import etree
 from subprocess import Popen, PIPE
 from os.path import join
@@ -55,8 +58,9 @@ class XMLContent:
             # the XML could not be transformed for some reason
             raise Exception(error)
 
-    def __init__(self, version=None):
+    def __init__(self, version=None, user=None):
         self.version = version
+        self.user = user
 
     def update_version_with_metadata(self, **kwargs):
         """Update the existing version with the modified meta data"""
@@ -68,7 +72,7 @@ class XMLContent:
         metadata = {k: metadata[v] for k, v in self.ATTRIBUTE_FIELD_MAP.iteritems() if v in metadata}
 
         with tempfile.NamedTemporaryFile(suffix='.xml', prefix='daisyproducer-') as tmpFile:
-            update_xml_metadata(self.version.content.file, tmpFile, metadata)
+            XMLContent.update_xml_metadata(self.version.content.file, tmpFile, metadata)
             content = File(tmpFile)
             version = Version.objects.create(
                 comment = "Updated version due to meta data change",

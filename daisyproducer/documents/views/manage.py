@@ -57,7 +57,7 @@ class PartialDocumentForm(ModelForm):
             version.content.save("initial_version.xml", content)
         else:
             # create a new version with the new content
-            xmlContent = XMLContent(instance.latest_version())
+            xmlContent = XMLContent(instance.latest_version(), self.user)
             xmlContent.update_version_with_metadata(**self.cleaned_data)
         return instance
 

@@ -281,7 +281,7 @@ def update_xml_with_metadata(document, **params):
         version.content.save("initial_version.xml", content)
     else:
         # create a new version with the new content
-        xmlContent = XMLContent(document.latest_version())
+        xmlContent = XMLContent(document.latest_version(), user)
         xmlContent.update_version_with_metadata(**params)
 
 def validate_content(fileName, contentMetaData):
