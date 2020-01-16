@@ -258,6 +258,7 @@ class Image(models.Model):
 
     MIME_TYPE_CHOICES = (
         ('image/jpeg', 'JPEG image'),
+        ('image/png', 'PNG image'),
         )
 
     document = models.ForeignKey(Document)
