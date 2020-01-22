@@ -17,6 +17,7 @@ from django.conf import settings
 import daisyproducer.documents.pipeline2.client2 as client2
 from daisyproducer.version import getVersion
 
+logging.config.fileConfig(join(settings.PROJECT_DIR, 'logging.conf'))
 logger = logging.getLogger(__name__)
 
 class LatexError(Exception):
@@ -114,8 +115,11 @@ def generatePDF(inputFile, outputFile, images, taskscript='DTBookToLaTeX.taskScr
         "-xelatex",
         latexFileName,
         )
-    exitCode = call(command)
-    if exitCode != 0:
+    try:
+        check_output(command, stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as e:
+        message = "{1}\n{0}\n{1}".format(e.output, "%"*50)
+        logger.error("latexmk failed with exit code %s and the following output:\n%s", e.returncode, message)
         # if the call failed something is wrong. Leave the wreckage
         # around for later analysis
         raise LatexError("The PDF could not be generated. Is maybe an image missing?")
