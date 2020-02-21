@@ -65,6 +65,8 @@ start =
                      # the verkaufstext contains "author[xx]title[xx]subtitleN[xx]..." 
                      # the export from abacus also optionaly contains new lines, hence the '\n?
                    & element verkaufstext { xsd:token { pattern='.*\n?\[xx\].+(\n?\[xx\].+)*' }? }?
+                   & element bilder { "ja" | "nein" }?
+                   & element anzahlBilder { xsd:nonNegativeInteger }?
                   },
                   element ncc {
                      element setInfo { xsd:integer }
@@ -75,4 +77,4 @@ start =
       }
    }
 title = element title { text }
-   
+
