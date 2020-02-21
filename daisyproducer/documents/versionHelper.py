@@ -52,7 +52,9 @@ class XMLContent:
         command = ("java",)
         command = command + tuple(["-D%s=%s" % (key,value) for key,value in metadata.iteritems()])
         command += ("-jar", join('/usr', 'share', 'java', 'update-dtbook-metadata.jar'))
-        p = Popen(command, stdin=input, stdout=output, stderr=PIPE)
+        # convert the command to utf-8
+        command = (s.encode('utf-8') for s in command)
+        p = Popen(command, stdin=input, stdout=output, stderr=PIPE, env={"LANG": "C.UTF-8"})
         (_, error) = p.communicate()
         if p.returncode != 0:
             # the XML could not be transformed for some reason

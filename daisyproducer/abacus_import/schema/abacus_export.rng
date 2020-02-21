@@ -256,6 +256,19 @@
                       </optional>
                     </element>
                   </optional>
+                  <optional>
+                    <element name="bilder">
+                      <choice>
+                        <value>ja</value>
+                        <value>nein</value>
+                      </choice>
+                    </element>
+                  </optional>
+                  <optional>
+                    <element name="anzahlBilder">
+                      <data type="nonNegativeInteger"/>
+                    </element>
+                  </optional>
                 </interleave>
               </element>
               <element name="ncc">
