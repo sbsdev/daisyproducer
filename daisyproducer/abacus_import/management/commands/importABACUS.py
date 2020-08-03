@@ -131,7 +131,7 @@ def handle_file(file, root, relaxng):
     # If the XML indicates that this product is not produced with Daisy Producer ignore this file
     daisy_producer = get_key("%s/MetaData/sbs/daisy_producer" % root)
     if daisy_producer != "ja":
-        logger.debug('Ignoring "%s" as daisy_producer is set to "%s"',
+        logger.warning('Ignoring "%s" as daisy_producer is set to "%s"',
                      params['title'], daisy_producer)
         return 0
     
