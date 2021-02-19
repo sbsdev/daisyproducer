@@ -13,12 +13,9 @@
   <h3>{% trans "Braille Dictionary" %}</h3>
   <a href="{% url 'dictionary_lookup_global_words' %}" target="_blank" class="popup">{% trans "Lookup global words" %}</a><br/>
   <a href="/hyphenations/" target="_blank" class="popup">{% trans "Hyphenations" %}</a>
-  <h4>{% trans "Grade 1" %}</h4>
-  <a href="{% url 'dictionary_check_g1' document.id %}">{% trans "Unknown words" %}</a><br />
-  <a href="{% url 'dictionary_local_g1' document.id %}" accesskey="v">{% trans "Local words" %}</a><br />
-  <h4>{% trans "Grade 2" %}</h4>
-  <a href="{% url 'dictionary_check_g2' document.id %}">{% trans "Unknown words" %}</a><br />
-  <a href="{% url 'dictionary_local_g2' document.id %}" accesskey="k">{% trans "Local words" %}</a><br />
+  <hr/>
+  <a href="/daisyproducer2/documents/{% document.id %}/unknown">{% trans "Unknown words" %}</a><br />
+  <a href="/daisyproducer2/documents/{% document.id %}/local" accesskey="v">{% trans "Local words" %}</a><br />
   <h3>{% trans "Preview" %}</h3>
   <a href="{% url 'todo_xhtml' document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
   <a href="{% url 'todo_sbsform' document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
