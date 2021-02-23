@@ -14,8 +14,8 @@
   <a href="{% url 'dictionary_lookup_global_words' %}" target="_blank" class="popup">{% trans "Lookup global words" %}</a><br/>
   <a href="/hyphenations/" target="_blank" class="popup">{% trans "Hyphenations" %}</a>
   <hr/>
-  <a href="http://localhost:3000/#/documents/{{ document.id }}/unknown" target="_blank" class="popup">{% trans "Unknown words" %}</a><br />
-  <a href="http://localhost:3000/#/documents/{{ document.id }}/local" accesskey="v" target="_blank" class="popup">{% trans "Local words" %}</a><br />
+  <a href="http://{{ request.META.HTTP_HOST }}:3000/#/documents/{{ document.id }}/unknown" target="_blank" class="popup">{% trans "Unknown words" %}</a><br />
+  <a href="http://{{ request.META.HTTP_HOST }}:3000/#/documents/{{ document.id }}/local" accesskey="v" target="_blank" class="popup">{% trans "Local words" %}</a><br />
   <h3>{% trans "Preview" %}</h3>
   <a href="{% url 'todo_xhtml' document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
   <a href="{% url 'todo_sbsform' document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
