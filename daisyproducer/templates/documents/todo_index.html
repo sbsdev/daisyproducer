@@ -7,32 +7,7 @@
 <div id="sidebar">
   {% if perms.dictionary.add_globalword %}
   <h3>{% trans "Braille Dictionary" %}</h3>
-  <a href="/hyphenations/" target="_blank" class="popup">{% trans "Hyphenations" %}</a>
-  <h4>{% trans "Grade 1" %}</h4>
-  {% if not user|in_group:"Braille_Readers" %}
-  <a href="{% url 'dictionary_confirm_g1' %}">{% trans "Confirm unknown words" %}</a><br />
-  <a href="{% url 'dictionary_confirm_deferred_g1' %}">{% trans "Confirm deferred words" %}</a><br />
-  {% else %}
-  <a href="{% url 'dictionary_single_confirm_g1' %}" accesskey="v">{% trans "Confirm unknown words" %}</a><br />
-  <a href="{% url 'dictionary_single_confirm_deferred_g1' %}" accesskey="V">{% trans "Confirm deferred words" %}</a><br />
-  {% endif %}
-  <h4>{% trans "Grade 2" %}</h4>
-  {% if not user|in_group:"Braille_Readers" %}
-  <a href="{% url 'dictionary_confirm_g2' %}">{% trans "Confirm unknown words" %}</a><br />
-  <a href="{% url 'dictionary_confirm_deferred_g2' %}">{% trans "Confirm deferred words" %}</a><br />
-  {% else %}
-  <a href="{% url 'dictionary_single_confirm_g2' %}" accesskey="k">{% trans "Confirm unknown words" %}</a><br />
-  <a href="{% url 'dictionary_single_confirm_deferred_g2' %}" accesskey="K">{% trans "Confirm deferred words" %}</a><br />
-  {% endif %}
-  {% if perms.dictionary.change_globalword %}
-  <h4>{% trans "Edit" %}</h4>
-  {% if not user|in_group:"Braille_Readers" %}
-  <a href="{% url 'dictionary_edit_global_words' %}">{% trans "Edit global words" %}</a><br />
-  <a href="{% url 'dictionary_edit_global_words_with_missing_braille' %}">{% trans "Edit missing global words" %}</a><br />
-  <a href="{% url 'dictionary_export' %}">{% trans "Export global words" %}</a><br />
-  <a href="{% url 'dictionary_words_with_wrong_default_translation' %}">{% trans "Export wrong global words" %}</a><br />
-  {% endif %}
-  {% endif %}
+  <a href="http://{{ request.META.HTTP_HOST }}:3000/" target="_blank" class="popup">{% trans "Hyphenations" %}</a>
   {% endif %}
 </div>
 {% endblock %}
