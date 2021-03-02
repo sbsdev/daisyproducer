@@ -11,7 +11,7 @@
   <h3>{% trans "Edit" %}</h3>
   <a href="{% url 'todo_markup' document.id %}">{% trans "Markup" %}</a><br />
   <h3>{% trans "Braille Dictionary" %}</h3>
-  <a href="http://{{ request.META.HTTP_HOST }}:3000/" target="_blank" class="popup">{% trans "Hyphenations" %}</a>
+  <a href="http://{{ request.META.HTTP_HOST }}:3000/" target="_blank" class="popup">{% trans "Hyphenations" %}</a><br />
   <a href="http://{{ request.META.HTTP_HOST }}:3000/" target="_blank" class="popup">{% trans "Unknown words" %}</a><br />
   <h3>{% trans "Preview" %}</h3>
   <a href="{% url 'todo_xhtml' document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
