@@ -5,10 +5,6 @@
 
 {% block sidebar %}
 <div id="sidebar">
-  {% if perms.dictionary.add_globalword %}
-  <h3>{% trans "Braille Dictionary" %}</h3>
-  <a href="http://{{ request.META.HTTP_HOST }}:3000/" target="_blank" class="popup">{% trans "Hyphenations" %}</a>
-  {% endif %}
 </div>
 {% endblock %}
 
