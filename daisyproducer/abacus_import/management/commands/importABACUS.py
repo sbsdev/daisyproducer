@@ -219,6 +219,9 @@ def fetch_xml(document, product_number, checked_out):
         update_xml_with_content_from_archive(document, product_number, checked_out)
 
 def update_document(document, params):
+    # do not update the language as it doesn't contain accurate information, the fact that a book
+    # is in old spelling is not in ABACUS
+    if "language" in params: del params["language"]
     if params_changed(document, params):
         logger.debug('Import params differ from document meta data. Updating meta data with %s.',
                      params)
