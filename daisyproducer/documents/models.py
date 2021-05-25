@@ -366,7 +366,7 @@ class LargePrintProfile(models.Model):
     line_spacing = models.CharField(_("Line Spacing"), default='onehalfspacing', max_length=16, choices=LINESPACING_CHOICES)
     replace_em_with_quote = models.BooleanField(_("Replace italics with quote"), default=True)
     end_notes = models.CharField(_("End Notes"), default='none', max_length=16, choices=ENDNOTE_CHOICES)
-    image_visibility = models.CharField(_("Images"), default='show', max_length=16, choices=IMAGE_CHOICES)
+    image_visibility = models.CharField(_("Images"), default='ignore', max_length=16, choices=IMAGE_CHOICES)
 
 class LargePrintProfileForm(ModelForm):
     class Meta:
