@@ -42,6 +42,7 @@
                   <choice>
                     <value>de</value>
                     <value>de-CH</value>
+                    <value>it</value>
                   </choice>
                 </element>
                 <element name="identifier">
