@@ -350,7 +350,11 @@ def preview_epub3(request, document_id):
             # put a copy of the ebook to a shared folder where it is fetched by another process that
             # puts into the distribution system. See fhs for a rationale about the dest folder
             # (http://www.pathname.com/fhs/pub/fhs-2.3.html#VARSPOOLAPPLICATIONSPOOLDATA)
-            shutil.copy2(filename, os.path.join('/var/spool/daisyproducer', ebookNumber + '.epub'))
+            if document.language == "it":
+                spool_dir = '/var/spool/daisyproducer/it'
+            else:
+                spool_dir = '/var/spool/daisyproducer/'
+            shutil.copy2(filename, os.path.join(spool_dir, ebookNumber + '.epub'))
 
             return render_to_mimetype_response('application/epub+zip',
                                                document.title.encode('utf-8'), filename)
