@@ -164,7 +164,6 @@
   <define name="accentsAttribute">
     <attribute name="brl:accents">
       <choice>
-        <value>detailed</value>
         <value>reduced</value>
       </choice>
     </attribute>

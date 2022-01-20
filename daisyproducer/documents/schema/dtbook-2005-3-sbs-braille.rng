@@ -247,7 +247,6 @@ This will help in deciding what brl:render attribute to set for this emphasis</a
   <define name="brl.accentsAttribute" combine="interleave">
     <attribute name="brl:accents">
       <choice>
-        <value>detailed</value>
         <value>reduced</value>
       </choice>
     </attribute>
