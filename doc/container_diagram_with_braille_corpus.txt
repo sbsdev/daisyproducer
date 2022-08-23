@@ -1,0 +1,33 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(transcriber, "transcriber")
+
+System_Boundary(daisyproducer, "Daisyproducer") {
+	Container(web_app, "Web Application", "Python, Django")
+	Container(dp1, "DAISY Pipeline 1")
+	Container(dp2, "DAISY Pipeline 2")
+	ContainerDb(db, "Production Database", "MySQL", "Stores productions and their state")
+	Container(filestorage, "File storage", "NFS", "Store DTBook XML and Images")
+	System_Boundary(dtbook2sbsform, "DTBook2sbsform") {
+		Container(xsl, "XSL")
+		Container(liblouis, "Liblouis")
+	}
+	ContainerDb(corpus_db, "Braille Corpus Database", "MySQL", "Stores certified Braille translations")
+	Container(corpus_edit, "Braille Corpus Editor", "SPA, React, ClojureScript")
+}
+System_Ext(sbsform, "SBSform")
+
+Rel(transcriber, web_app, "Uses", "HTTP")
+Rel(web_app, dp1, "Uses", "Shell command")
+Rel(web_app, dp2, "Uses", "HTTP")
+Rel(web_app, xsl, "Uses", "Shell command")
+Rel(web_app, filestorage, "Uses")
+Rel(xsl, liblouis, "Uses", "Shared Library")
+Rel(web_app, db, "Reads and writes", "Django ORM")
+Rel(transcriber, sbsform, "Format Braille")
+Rel_R(web_app, corpus_edit, "Forward")
+Rel(corpus_edit, corpus_db, "Reads and writes", "JDBC")
+Rel(corpus_db, liblouis, "Writes tables")
+
+@enduml

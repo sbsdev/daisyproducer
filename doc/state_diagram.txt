@@ -1,0 +1,17 @@
+@startuml
+
+title Daisyproducer State Diagram
+
+new: New
+in_production: In Production
+finished: Finished
+
+[*] --> new
+
+new --> in_production
+in_production --> finished
+finished --> new
+
+finished --> [*]
+
+@enduml

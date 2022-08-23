@@ -1,0 +1,25 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+System(daisyproducer, "Daisyproducer")
+System(dp2, "DAISY Pipeline 2")
+System(dp1, "DAISY Pipeline 1")
+System(liblouis, "Liblouis")
+System_Ext(online, "Online")
+System_Ext(library, "Library")
+Person(transcriber, "transcriber")
+Person(customer_service, "Customer Service")
+Person(customers, "Customers")
+
+Rel(transcriber, daisyproducer, "Uses")
+Rel(daisyproducer, dp1, "Uses")
+Rel(daisyproducer, dp2, "Uses")
+Rel(daisyproducer, liblouis, "Uses")
+Rel(daisyproducer, online, "Delivers", "EPUB3")
+Rel(daisyproducer, library, "Delivers", "Braille, Large Print")
+Rel(daisyproducer, customer_service, "Delivers", "MS Word")
+Rel(online, customers, "Uses")
+Rel(library, customers, "Uses")
+Rel(customer_service, customers, "Uses")
+
+@enduml
