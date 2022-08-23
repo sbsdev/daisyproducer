@@ -3,6 +3,9 @@
 
 Person(transcriber, "transcriber")
 
+System_Ext(erp, "ERP", "ABACUS")
+System_Ext(archive, "Archive", "Alfresco ECM")
+
 System_Boundary(daisyproducer, "Daisyproducer") {
 	Container(web_app, "Web Application", "Python, Django")
 	Container(dp1, "DAISY Pipeline 1")
@@ -14,15 +17,19 @@ System_Boundary(daisyproducer, "Daisyproducer") {
 		Container(liblouis, "Liblouis")
 	}
 }
-System_Ext(sbsform, "SBSform")
+System_Ext(sbsform, "SBSform", "MS-DOS")
+System_Ext(distribution, "Distribution")
 
 Rel(transcriber, web_app, "Uses", "HTTP")
+Rel_R(erp, web_app, "Receives", "File based events")
+Rel_R(web_app, archive, "Stores", "DTBook XML")
 Rel(web_app, dp1, "Uses", "Shell command")
 Rel(web_app, dp2, "Uses", "HTTP")
 Rel(web_app, xsl, "Uses", "Shell command")
 Rel(web_app, filestorage, "Uses")
+Rel(web_app, distribution, "Delivers")
 Rel(xsl, liblouis, "Uses", "Shared Library")
 Rel(web_app, db, "Reads and writes", "Django ORM")
-Rel(transcriber, sbsform, "Format Braille")
+Rel_L(xsl, sbsform, "Format Braille")
 
 @enduml
