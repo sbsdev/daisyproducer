@@ -38,7 +38,7 @@
 
   <!-- Replace space inside num elements with non-breaking space -->
   <!-- FIXME: This should probably be in the dtbook2latex converter,
-       but since that one dosn't know anything about num elements this
+       but since that one doesn't know anything about num elements this
        template is here for now. -->
   <xsl:template match="brl:num//text()">
     <xsl:value-of select="translate(normalize-space(string(current())), ' ', ' ')"/>
