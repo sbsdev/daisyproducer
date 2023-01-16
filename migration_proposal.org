@@ -1,0 +1,109 @@
+#+OPTIONS: author:t c:nil creator:nil 
+#+OPTIONS: timestamp:nil title:t todo:t
+#+TITLE: Django Migration Proposal
+#+DATE: <2017-02-09 Thu>
+
+#+PROPERTY: Effort_ALL low middle high
+#+PROPERTY: Risk_ALL low middle high
+#+COLUMNS: %40ITEM(Option) %Effort %Risk %ROI
+
+* Ausgangslage
+- Daisyproducer ist mit Hilfe des Django Frameworks geschrieben und
+  läuft auf einer sehr alten Version dieses Frameworks (1.4).
+- Das Django Framework wird in [[https://docs.djangoproject.com/en/1.10/releases/][regelmässigen Abständen erneuert]] und
+  alte Features werden deprecated, d.h. nicht mehr unterstützt.
+- Auf der Developer-Maschine (mit Django 1.8) läuft Daisyproducer
+  darum nicht mehr und kann nicht getestet werden. Das macht die
+  Entwicklung schwierig.
+- Wenn wir XMLP (die Produktions-Maschine des Daisyproducers) auf das
+  momentan aktuelle Debian migrieren wird der Daisyproducer ebenfalls
+  nicht mehr funktionieren.
+- Ich habe vor zwei Jahren die Migration nach Django 1.6 gemacht.
+  Daisyproducer läuft also auf den Versionen 1.4, 1.5 und 1.6
+
+#+CAPTION: Django Versionen nach OS
+#+NAME:   tab:django-version-by-os
+| OS                           | Django | Host          |
+|------------------------------+--------+---------------|
+| Debian oldstable             |    1.4 | XMLP          |
+| Debian stable                |    1.7 |               |
+| Debian stable with backports |    1.8 |               |
+| Debian next                  |   1.10 |               |
+| Ubuntu LTS old               |    1.6 |               |
+| Ubuntu LTS                   |    1.8 | Developer box |
+| Ubuntu 16.10                 |    1.8 |               |
+| Ubuntu 17.4                  |    1.8 |               |
+
+#+CAPTION: Django Versionen
+#+NAME:   tab:django-version
+| Django |    Date |
+|--------+---------|
+|    1.4 | 2012-03 |
+|    1.5 | 2013-02 |
+|    1.6 | 2013-11 |
+|    1.7 | 2014-09 |
+|    1.8 | 2015-04 |
+|    1.9 | 2015-12 |
+|   1.10 | 2016-04 |
+
+* Optionen
+  :PROPERTIES:
+  :ID:       e94507f4-6399-4ac8-a922-a8c7aa260d2f
+  :END:
+** Ignore the problem
+   :PROPERTIES:
+   :EFFORT:   low
+   :RISK:     middle
+   :END:
+- Do not attempt to upgrade
+- do minor corrections on the Django 1.4
+- develop and test on xmlp-test
+- Pro
+  - Easy
+- Contra
+  - block any major development, i.e. new features
+
+** Port to Django 1.8
+   :PROPERTIES:
+   :EFFORT:   middle
+   :RISK:     middle
+   :END:
+- Then it will run both on the development and production machine
+- see [[https://docs.djangoproject.com/en/1.10/releases/1.8/#backwards-incompatible-changes-in-1-8][Backwards incompatible changes in 1.8]], [[https://docs.djangoproject.com/en/1.10/releases/1.8/#features-deprecated-in-1-8][Features deprecated in 1.8]] and the [[https://docs.djangoproject.com/en/1.10/internals/deprecation/#deprecation-removed-in-1-8][Deprecation Plan]].
+- Pro
+  - solid solution that should last a few years
+- Contra
+  - expensive
+  - always forced to upgrade
+
+** Refactor
+   :PROPERTIES:
+   :EFFORT:   high
+   :RISK:     high
+   :END:
+- There is a lot of old code that is no longer needed
+  - things that we originally thought were needed (epub2, support for
+    end-user self serve, etc)
+  - this code will also have to be ported with Option [[Port to Django 1.8]]
+- The other production infrastructure (Madras, Kati, Hyphenator) runs
+  on a different, more modern infrastructure, which is simpler, has
+  less moving parts and a slower release cycle
+
+- Pro
+  - similar infrastructure in all projects
+  - frees us from the upgrade cycle
+  - new features can be created faster
+
+- Contra
+  - lots of code to replace
+    - introduction of bugs
+  - blocks development of new features
+
+* Evaluation
+#+BEGIN: columnview :hlines 1 :id "e94507f4-6399-4ac8-a922-a8c7aa260d2f"
+| Option            | Effort | Risk   | ROI |
+|-------------------+--------+--------+-----|
+| Avoid the problem | low    | middle |     |
+| Port to 1.8       | middle | middle |     |
+| Refactor          | high   | high   |     |
+#+END:
