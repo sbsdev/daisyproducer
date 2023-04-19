@@ -123,10 +123,6 @@ msgstr ""
 msgid "Grade 0"
 msgstr "Basisschrift"
 
-#: daisyproducer/documents/forms.py:148
-msgid "All Accents Detailed"
-msgstr "Alle ausführlich"
-
 #: daisyproducer/documents/forms.py:149
 msgid "All Accents Reduced"
 msgstr "Alle nur mit Grundbuchstaben"
