@@ -1,0 +1,19 @@
+# -*- restclient -*-
+
+#################################
+# Manual tests for the REST API #
+#################################
+
+:basic-auth = Basic <secret>
+
+# Get an overview from pam04
+#
+GET https://pam04.sbszh.ch/alfresco/cmisatom
+Authorization: :basic-auth
+
+#
+# Get an overview from pam01
+#
+GET http://pam02.sbszh.ch/alfresco/cmisatom
+Authorization: :basic-auth
+
