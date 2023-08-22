@@ -93,8 +93,9 @@ class Document(models.Model):
                         # ('gsw', 'gsw',),
                         ('en', 'en',),
                         ('fr', 'fr',),
-                        # ('it', 'it',),
+                        ('it', 'it',),
                         ('es', 'es',),
+                        ('rm-sursilv','Sursilvan')
                         # ('und', 'Undefined',),
                         )
     language = models.CharField(
