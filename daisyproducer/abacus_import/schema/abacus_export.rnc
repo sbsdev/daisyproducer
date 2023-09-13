@@ -16,7 +16,7 @@ start =
                      # make sure the contents of the source element is a text node that has either a
                      # proper isbn number or is the empty string
                      element source { xsd:token { pattern='keine|SBS[0-9]{6}|(978-|979-)?\d{1,5}-\d{1,7}-\d{1,6}-[0-9xX]' }? }?,
-                     element language { "de" | "de-CH" | "it" },
+                     element language { "de" | "de-CH" | "it" | "rm-sursilv"},
                      element identifier { xsd:NCName },
                      element date { xsd:date }
                   },
