@@ -146,7 +146,7 @@ class SBSFormForm(forms.Form):
         )
     BRAILLE_ACCENTS_CHOICES = (
         ('de-accents', _('All Accents Reduced')),
-        ('de-accents-ch', _('Only Swiss Accents Detailed')),
+        ('de-accents-ch', _('Swiss Accents Detailed')),
         )
     BRAILLE_TOC_DEPTH_CHOICES = (
         ('0', 0),

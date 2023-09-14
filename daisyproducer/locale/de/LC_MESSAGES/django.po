@@ -128,8 +128,8 @@ msgid "All Accents Reduced"
 msgstr "Alle nur mit Grundbuchstaben"
 
 #: daisyproducer/documents/forms.py:150
-msgid "Only Swiss Accents Detailed"
-msgstr "Nur Schweizer Akzente ausführlich"
+msgid "Swiss Accents Detailed"
+msgstr "Schweizer Akzente ausführlich"
 
 #: daisyproducer/documents/forms.py:162
 msgid "Standard"
