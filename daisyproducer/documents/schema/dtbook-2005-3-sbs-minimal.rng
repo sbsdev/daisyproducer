@@ -14,6 +14,8 @@
           <value>de-1901</value>
           <value>de-CH</value>
           <value>de-CH-1901</value>
+          <value>it</value>
+          <value>rm-sursilv</value>
         </choice>
       </attribute>
       <ref name="head"/>
