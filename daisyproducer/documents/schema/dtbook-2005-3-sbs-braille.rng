@@ -122,6 +122,12 @@ just kept for backwards compatibility</a:documentation>
           <ref name="dtb.pagenum"/>
         </optional>
         <zeroOrMore>
+          <ref name="dtb.em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="dtb.strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="brl.contractionhint"/>
         </zeroOrMore>
         <zeroOrMore>

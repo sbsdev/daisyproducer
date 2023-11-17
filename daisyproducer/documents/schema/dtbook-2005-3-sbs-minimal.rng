@@ -1221,6 +1221,12 @@ kept for backwards compatibility</a:documentation>
           <ref name="pagenum"/>
         </optional>
         <zeroOrMore>
+          <ref name="em"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="strong"/>
+        </zeroOrMore>
+        <zeroOrMore>
           <ref name="contractionhints"/>
         </zeroOrMore>
         <zeroOrMore>
