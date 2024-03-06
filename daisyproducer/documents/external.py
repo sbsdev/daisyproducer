@@ -476,7 +476,7 @@ class SBSForm:
         hyphenate = kwargs.get('hyphenation', False)
         hyphenator = (
             "java",
-            "-jar", join(settings.EXTERNAL_PATH, 'dtbook_hyphenator', 'dtbook_hyphenator.jar'),
+            "-jar", "/usr/local/share/java/dtbook-hyphenator.jar",
             inputFile,
             )
         translator = (
