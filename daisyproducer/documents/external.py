@@ -475,7 +475,7 @@ class SBSForm:
         """Transform a dtbook xml file to sbsform"""
         hyphenate = kwargs.get('hyphenation', False)
         hyphenator = (
-            "java",
+            "/opt/adoptium/java17/bin/java", # FIXME: this is bound to bite
             "-jar", "/usr/local/share/java/dtbook-hyphenator.jar",
             inputFile,
             )
