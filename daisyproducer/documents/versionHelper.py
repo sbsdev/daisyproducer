@@ -68,7 +68,7 @@ class XMLContent:
         """Update the existing version with the modified meta data"""
 
         # prepare meta data
-        metadata = {k: v for k, v in kwargs.iteritems() if v != None and v != ''}
+        metadata = {k: v for k, v in kwargs.iteritems() if v != None and v != ''} # FIXME: what if the metadata is _explicitely_ blank? Then we do want to update it
         metadata.update(((k, v.isoformat())) for (k, v) in metadata.iteritems() if isinstance(v, datetime.date))
         metadata.update(((k, "%s" % v)) for (k, v) in metadata.iteritems() if isinstance(v, numbers.Number))
         metadata = {k: metadata[v] for k, v in self.ATTRIBUTE_FIELD_MAP.iteritems() if v in metadata}
