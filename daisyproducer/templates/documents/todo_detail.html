@@ -8,13 +8,10 @@
 {% block sidebar %}
 {% if document %}
 <div id="sidebar">
-  <h3>{% trans "Edit" %}</h3>
-  <a href="{% url 'todo_markup' document.id %}">{% trans "Markup" %}</a><br />
   <h3>{% trans "Braille Dictionary" %}</h3>
   <a href="http://{{ request.META.HTTP_HOST }}:3000/" target="_blank" class="popup">{% trans "Hyphenations" %}</a><br />
   <a href="http://{{ request.META.HTTP_HOST }}:3000/" target="_blank" class="popup">{% trans "Unknown words" %}</a><br />
   <h3>{% trans "Preview" %}</h3>
-  <a href="{% url 'todo_xhtml' document.id %}" accesskey="x" >{% trans "XHTML" %}</a><br />
   <a href="{% url 'todo_sbsform' document.id %}" accesskey="b" >{% trans "Braille (SBSForm)" %}</a><br />
   <a href="{% url 'todo_library_pdf' document.id %}">{% trans "Large Print (Library)" %}</a><br />
   <a href="{% url 'todo_sale_pdf' document.id %}">{% trans "Large Print (Sale)" %}</a><br />
@@ -22,9 +19,6 @@
   <a href="{% url 'todo_epub3' document.id %}">{% trans "EPUB3" %}</a><br />
   <h3>{% trans "Preview (BETA)" %}</h3>
   <a href="{% url 'todo_odt' document.id %}">{% trans "Open Document" %}</a><br />
-  <!-- <a href="{% url 'todo_sbsform_new' document.id %}" accesskey="b" >{% trans "SBSForm (Pipeline2)" %}</a><br /> -->
-  <a href="{% url 'todo_rtf' document.id %}">{% trans "RTF" %}</a><br />
-  <a href="{% url 'todo_dtb' document.id %}">{% trans "Full-Text Full-Audio book" %}</a><br />
 </div>
 {% endif %}
 {% endblock %}
