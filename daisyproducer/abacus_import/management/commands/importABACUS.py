@@ -175,12 +175,11 @@ def handle_file(file, root, relaxng):
         logger.debug('Document "%s" has not yet been imported. Creating document for product "%s".',
                      params['title'], product_number)
         # create and save the document
-        if product_type == 3:
-            # etext books should have 'in_production' as initial state
-            try:
-                params['state'] = State.objects.get(name='in_production')
-            except State.DoesNotExist:
-                params['state'] = State.objects.order_by('sort_order')[0]
+        # all books should have 'open' as initial state
+        try:
+            params['state'] = State.objects.get(name='open')
+        except State.DoesNotExist:
+            params['state'] = State.objects.order_by('sort_order')[0]
 
         document = Document.objects.create(**params)
         # create the product association
