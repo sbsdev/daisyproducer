@@ -14,7 +14,7 @@ Person(customer_service, "Customer Service")
 Person(customers, "Customers")
 
 Rel_R(erp, daisyproducer, "Receives", "New productions (meta data)")
-Rel_R(daisyproducer, archive, "Stores", "DTBook XML")
+Rel_L(archive, daisyproducer, "Synchronizes", "DTBook XML")
 Rel(transcriber, daisyproducer, "Uses")
 Rel(daisyproducer, dp1, "Uses")
 Rel(daisyproducer, dp2, "Uses")
