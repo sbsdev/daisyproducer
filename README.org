@@ -18,6 +18,10 @@ For the generation of accessible media Daisy Producer offers a nice
 interface however the work is essentially done by the Daisy Pipeline
 and liblouis.
 
+** Status
+This project is no longer maintained. It has been superseded by
+[[https://github.com/sbsdev/daisyproducer2][Daisyproducer2]].
+
 ** License
 
 [[daisyproducer][Daisy Producer]] is released under the terms of the [[http://www.gnu.org/licenses/agpl.html][GNU Affero General
